@@ -1,0 +1,120 @@
+{
+	"preferences": 
+	{
+		// use tooltips to know what namespaces are avalaible
+		//for example: if the tooltip says "UserPreferencesView.use_quit_dialog" the namespace will be "view".
+		"view": 
+		{
+			// "use_auto_perspective": true
+			// ,"smooth_view": 0
+			// ,"use_quit_dialog": false
+		},
+		"system":
+		{
+			// "use_tabs_as_spaces": false
+			// ,"use_region_overlap": true
+		}
+	},
+	// panels to destroy
+	"panels": [
+		// "bpy.types.VIEW3D_PT_view3d_name"
+		// ,"bpy.types.OBJECT_PT_delta_transform"
+		// ,"bpy.types.OBJECT_PT_transform"
+		// ,"bpy.types.OBJECT_PT_transform_locks"
+		// ,"bpy.types.VIEW3D_PT_tools_transform"
+		// ,"bpy.types.VIEW3D_PT_tools_object"
+		// ,"bpy.types.VIEW3D_PT_tools_history"
+		// ,"bpy.types.VIEW3D_PT_tools_add_object"
+		// ,"bpy.types.VIEW3D_PT_tools_relations"
+		// ,"bpy.types.VIEW3D_PT_tools_animation"
+		// ,"bpy.types.VIEW3D_PT_tools_rigid_body"
+		// ,"bpy.types.VIEW3D_PT_tools_grease_pencil"
+		// ,"bpy.types.VIEW3D_PT_view3d_motion_tracking"
+		// ,"bpy.types.VIEW3D_PT_tools_add_mesh_edit"
+		// ,"bpy.types.VIEW3D_PT_tools_shading"
+		// ,"bpy.types.VIEW3D_PT_tools_uvs"
+	],
+	//keyboard settings
+	// [command, map, operator, properties, shorcut type]
+
+	//command: enum, "key", "mouse" or "del", sets or remove a key or mouse shortcut
+	//map: string, keyboard map, same as blender user preferences
+	//operator name: string, operator idname
+	//operator properties: dict, operator arguments
+	//key properties: dict, shortcut properties, type, modifiers, etc.
+
+	// Complete list of avalaible keys at 
+	// http://www.blender.org/api/blender_python_api_2_72b_release/bpy.types.KeyMapItem.html?highlight=key_modifier#bpy.types.KeyMapItem.key_modifier
+
+	"keyboard": [
+		// // moved search menu to shift + A
+		// ["key", "Window", "wm.search_menu", {}, {"type": "A", "shift": true}]
+		// // add objects moved to spacebar
+		// , ["key", "Object Mode", "wm.call_menu", {"name": "INFO_MT_add"}, {"type": "SPACE"}]
+		// // // quickly change layout
+		// , ["key","Window", "wm.call_menu_pie", {"name": "WINDOW_MT_layout_menu"}, {"type": "F5"}]
+		// // view selected moved to D, grease pencil to numpad period
+		// , ["key", "3D View", "view3d.view_selected", {"use_all_regions": false}, {"type": "D"}]
+		// , ["key","Grease Pencil", "gpencil.draw",  {"mode": "DRAW"}, {"map_type": "MOUSE", "key_modifier": "NUMPAD_PERIOD"}]
+		// // snap to selected and the opposite to shift /alt + left click
+		// , ["key","3D View", "view3d.snap_cursor_to_selected", {}, {"type": "ACTIONMOUSE", "shift": true}]
+		// , ["key","3D View", "view3d.snap_selected_to_cursor", {"use_offset": false}, {"type": "ACTIONMOUSE", "alt": true}]
+		// , ["key","Outliner", "outliner.show_active", {}, {"type": "D"}]
+		// , ["key","Mesh", "wm.call_menu", {"name": "INFO_MT_mesh_add"}, {"type": "SPACE"}]
+		// // Mesh select modes mapped to 1, 2, 3 backslash to occlude geometry
+		// , ["key","Mesh", "wm.context_set_value", {"data_path": "tool_settings.mesh_select_mode", "value":"[True, False, False]"}, {"type": "ONE"}]
+		// , ["key","Mesh", "wm.context_set_value", {"data_path": "tool_settings.mesh_select_mode", "value":"[False, True, False]"}, {"type": "TWO"}]
+		// , ["key","Mesh", "wm.context_set_value", {"data_path": "tool_settings.mesh_select_mode", "value":"[False, False, True]"}, {"type": "THREE"}]
+		// , ["key","Mesh", "wm.context_toggle", {"data_path": "space_data.use_occlude_geometry"}, {"type": "BACK_SLASH"}]
+		// , ["key","Mesh", "wm.context_menu_enum", {"data_path": "tool_settings.snap_element"}, {"type": "TAB", "ctrl": true}]
+		// , ["key","Mesh", "wm.context_toggle_enum", {"data_path": "tool_settings.proportional_edit", "value_1": "DISABLED", "value_2": "CONNECTED"}, {"type": "O"}]
+		// , ["key","Mesh", "wm.context_toggle_enum", {"data_path": "tool_settings.proportional_edit", "value_1": "DISABLED", "value_2": "ENABLED"}, {"type": "O", "alt": true}]
+		// , ["key","Mesh", "wm.context_toggle", {"data_path": "object.data.show_normal_face"}, {"type": "N", "shift": true}]
+		// // toggle seams on and off
+		// , ["key","Mesh", "mesh.smart_mark_seam", {}, {"type": "M"}]
+		// //, ["key","Mesh", "mesh.select_pair_rings", {}, {"type": "SELECTMOUSE", "ctrl": true, "alt": true}]
+		// , ["key", "Curve", "wm.call_menu", {"name": "INFO_MT_edit_curve_add"}, {"type":"SPACE"}]
+		// , ["key", "Curve", "curve.select_path", {}, {"type":"RIGHTMOUSE", "ctrl": true}]
+		// , ["key","Node Editor", "wm.call_menu", {"name": "NODE_MT_add"}, {"type": "SPACE"}]
+		// , ["key","Text", "text.comment", {}, {"type": "ONE", "ctrl":true}]
+		// , ["key","Text", "text.uncomment", {}, {"type": "TWO", "ctrl": true}]
+		// , ["key","Image", "image.external_edit", {}, {"type": "E"}]
+		// , ["key","Image", "image.view_all", {}, {"type": "D"}]
+		// , ["key","Image", "wm.context_toggle_enum", {"data_path": "space_data.mode", "value_1":"VIEW", "value_2":"PAINT"}, {"type": "TAB", "ctrl": true}]
+		// , ["key","Image Paint", "wm.radial_control", {"data_path_primary":"tool_settings.image_paint.brush.texture_slot.angle", "rotation_path": "tool_settings.image_paint.brush.texture_slot.angle", "color_path":"tool_settings.image_paint.brush.cursor_color_add", "image_id":"tool_settings.image_paint.brush", "secondary_tex":false}, {"type": "G"}]
+		// //enable fly mode on paint mode
+		// , ["key","Image Paint", "view3d.navigate", {}, {"type": "F", "shift": true}]
+		// // Create key for strenght Ctrl F for example
+		// , ["key","UV Editor", "image.view_selected", {}, {"type": "D"}]
+		// , ["key","UV Editor", "uv.smart_select", {"value": "VERTEX"}, {"type": "ONE"}]
+		// , ["key","UV Editor", "uv.smart_select", {"value": "EDGE"}, {"type": "TWO"}]
+		// , ["key","UV Editor", "uv.smart_select", {"value": "FACE"}, {"type": "THREE"}]
+		// , ["key","UV Editor", "uv.smart_select", {"value": "ISLAND"}, {"type": "FOUR"}]
+		// , ["key","UV Editor", "wm.context_toggle", {"data_path": "space_data.uv_editor.show_stretch"}, {"type": "FIVE"}]
+		// , ["key","UV Editor", "uv.smart_pin", {}, {"type": "P"}]
+		// , ["key","UV Editor", "wm.context_toggle", {"data_path": "tool_settings.use_uv_select_sync"}, {"type": "BACK_SLASH"}]
+		// , ["key","UV Editor", "mesh.smart_mark_seam",{}, {"type": "M"}]
+		// , ["key","UV Editor", "uv.snap_cursor", {"target":"SELECTED"}, {"type": "ACTIONMOUSE", "shift": true}]
+		// , ["key","UV Editor", "uv.snap_selected", {"target":"CURSOR"}, {"type": "ACTIONMOUSE", "alt": true}]
+		// , ["key","UV Editor", "wm.context_menu_enum", {"data_path": "tool_settings.snap_uv_element"}, {"type":"TAB", "ctrl": true}]
+		// , ["key","UV Editor", "wm.context_menu_enum", {"data_path": "space_data.uv_editor.sticky_select_mode"}, {"type":"TAB", "ctrl": true, "shift": true}]
+		// , ["key","Sequencer", "wm.call_menu",{"name": "SEQUENCER_MT_add"}, {"type": "SPACE"}]
+		// , ["key","Object Non-modal", "object.mode_set",  {"mode": "TEXTURE_PAINT", "toggle": true}, {"type":"TAB", "ctrl":true}]
+		// , ["key","Timeline", "time.view_all", {}, {"type": "D"}]
+		// , ["key","Animation", "anim.previewrange_set", {}, {"map_type": "TWEAK", "type":"EVT_TWEAK_L", "shift": true, "value": "ANY"}]
+		// , ["key","Animation", "anim.previewrange_clear", {}, {"map_type": "MOUSE", "type":"LEFTMOUSE", "shift": true}]
+		// , ["key","Dopesheet", "action.view_selected", {}, {"type":"D"}]
+		// , ["key","Graph Editor", "graph.view_selected", {},{"type": "D"}]
+		// , ["key","Graph Editor", "graph.keyframe_insert", {"type":"SEL"},{"type": "I"}]
+		// , ["key","Graph Editor", "wm.context_menu_enum", {"data_path": "space_data.auto_snap"},{"type": "TAB", "shift":true}]
+		// , ["key","Graph Editor Generic", "graph.show_toggle", {"cmd":"hide"}, {"type":"H"}]
+		// , ["key","Graph Editor Generic", "graph.show_toggle", {"cmd":"solo"}, {"type":"H", "shift": true}]
+		// , ["key","Graph Editor Generic", "graph.show_toggle", {"cmd":"unhide"}, {"type":"H", "alt": true}]
+	]
+}
+
+
+
+
+
+
