@@ -22,7 +22,7 @@
 bl_info = {
     "name": "T+ SymDim",
     "author": "mkbreuer",
-    "version": (1, 0, 1),
+    "version": (1, 1),
     "blender": (2, 7, 8),
     "location": "VIEW3D > Tool Shelf [T] or Property Shelf [N]",
     "description": "Addon for symmetrizing objects",
