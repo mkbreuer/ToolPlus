@@ -12,7 +12,7 @@
 
  * The T+ Addons Sets in this folders are tool collections and includes free scripts from allover.
 
- * Means: one part of an set is scripted by me and the other part is taken from different authors who give them away for free.
+ * Means: one part of is scripted by me and the other part is taken from different authors who give them away for free.
 
  * Take a look into a script if you want more information about single authors, functions, wiki links or more about the included GNU General Public Licenses.
  
