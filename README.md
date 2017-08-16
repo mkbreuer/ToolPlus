@@ -12,15 +12,15 @@
 
  * The T+ Addons Sets in this folders are tool collections and includes free scripts from allover.
 
- * I created them in my private time and for my personal workflow.
-
- * One part of an set is scripted by me and the other part is taken from different authors who give them away for free.
+ * Means: one part of an set is scripted by me and the other part is taken from different authors who give them away for free.
 
  * Take a look into a script if you want more information about single authors, functions, wiki links or more about the included GNU General Public Licenses.
  
+ * I created the t+ addons in my private time and for my personal workflow, because it makes fun and save time at the end.
+ 
  * Maybe you like the setups and want to reward this work, please feel free to make some contribution here:   [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GTXQ32YXXM4NU)   :)
 
- * Or get some of my special stuff from gumroad: coming soon
+ * Or get some of my special stuff from gumroad, etc.: coming soon
 
 
 -----------
