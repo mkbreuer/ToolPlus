@@ -20,7 +20,7 @@
  
  * If you like the setups and want to reward this work, please feel free to make some contribution here:   [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GTXQ32YXXM4NU)   :)
 
- * Maybe you want to get some special stuff from me, take a look at gumroad, etc.: coming soon
+ * Maybe you want to get some special stuff from me, take a look at gumroad, etc.: coming soon 
 
 -----------
 
