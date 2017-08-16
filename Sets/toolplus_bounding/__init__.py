@@ -19,8 +19,8 @@
 
 bl_info = {
 "name": "T+ Bounding", 
-"author": "marvink.k.breuer (MKB)",
-"version": (2, 3),
+"author": "Marvink.k.Breuer (MKB)",
+"version": (2, 4),
 "blender": (2, 78, 0),
 "location": "View3D > TAB Tools > Panel: Bounding / Menu: ADD [SHIFT+A]",
 "description": "create bounding geomtry on selected objects",
@@ -583,7 +583,7 @@ class Dropdown_BBox_Panel_Props(bpy.types.PropertyGroup):
 
 # ADD TO DEFAULT MENU #  
 from .icons.icons import load_icons 
-def draw_item(self, context):
+def draw_bound_item(self, context):
     icons = load_icons()
 
     layout = self.layout
@@ -602,23 +602,24 @@ def draw_item(self, context):
 
 # ADD TO DEFAULT SPECIAL MENU [W] #  
 from .icons.icons import load_icons 
-def draw_item_replace(self, context):
+def draw_recoplanar_item(self, context):
     icons = load_icons()
 
     layout = self.layout
 
     layout.separator()    
 
-    layout.operator("tp_ops.set_new_local", icon = "MANIPUL") 
+    button_relocal = icons.get("icon_relocal") 
+    layout.operator("tp_ops.set_new_local", icon_value=button_relocal.icon_id) 
 
     button_recenter = icons.get("icon_recenter") 
-    layout.operator("tp_ops.recenter", icon_value=button_recenter.icon_id)   
+    layout.operator("tp_ops.recenter", icon_value=button_recenter.icon_id)  
 
     button_reposition = icons.get("icon_reposition") 
     layout.operator("tp_ops.reposition", icon_value=button_reposition.icon_id)
   
     button_bloc = icons.get("icon_bloc") 
-    row.operator("tp_ops.copy_transform", icon_value=button_bloc.icon_id ) 
+    layout.operator("tp_ops.copy_local_transform", icon_value=button_bloc.icon_id ) 
 
 
 
@@ -634,8 +635,8 @@ def register():
     update_display_tools(None, bpy.context)
 
     # TO MENU
-    bpy.types.VIEW3D_MT_object_specials.append(draw_item_replace) 
-    bpy.types.INFO_MT_mesh_add.append(draw_item) 
+    bpy.types.INFO_MT_mesh_add.append(draw_bound_item) 
+    bpy.types.VIEW3D_MT_object_specials.append(draw_recoplanar_item) 
    
     # PROPS
     bpy.types.WindowManager.bbox_window = bpy.props.PointerProperty(type = Dropdown_BBox_Props)    

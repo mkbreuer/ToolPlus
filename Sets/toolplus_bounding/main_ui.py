@@ -609,9 +609,11 @@ def draw_panel_layout(context, layout):
             row.prop(tp, "sphere_smooth", icon="BLANK1")
             row.prop(tp, "sphere_edges", icon="BLANK1")                                   
 
+        box.separator()
+        box = col.box().column(1)  
+
+
     box.separator() 
-
-
 
     display_select = context.user_preferences.addons[__package__].preferences.tab_display_select
     if display_select == 'on': 
@@ -639,13 +641,11 @@ def draw_panel_layout(context, layout):
         if tp_props.display_select:  
 
             row = box.row(1) 
-            row.label("", icon="BLANK1")             
-            row.label(" ")             
-            
-            sub = row.row(1)
-            sub.scale_x = 1.175
-            sub.operator("tp_ops.unfreeze_restrict", text="Unfreeze", icon="RESTRICT_SELECT_OFF")           
-            sub.operator("tp_ops.freeze_restrict", text="Freeze", icon="RESTRICT_SELECT_ON") 
+
+
+            row.operator_menu_enum("object.select_linked", "type", text="Linked", icon ="LINKED")                     
+            row.operator("tp_ops.unfreeze_restrict", text="Unfreeze", icon="RESTRICT_SELECT_OFF")           
+            row.operator("tp_ops.freeze_restrict", text="Freeze", icon="RESTRICT_SELECT_ON") 
 
             box.separator()
         
@@ -734,11 +734,7 @@ def draw_panel_layout(context, layout):
                 row.operator("object.rno_add_subfix_prefix", "Add Prefix / Subfix", icon="DISCLOSURE_TRI_RIGHT_VEC") 
 
             box.separator()        
-            box = col.box().column(1)  
-        
-        else:
-            box.separator()   
-   
+
 
 
     display_apply = context.user_preferences.addons[__package__].preferences.tab_display_apply

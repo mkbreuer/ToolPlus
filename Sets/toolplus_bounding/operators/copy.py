@@ -33,10 +33,10 @@ def local_rotate(mesh, mat):
         v.co = vec
         
 # OPERATOR #
-class VIEW3D_TP_Copy_Local_Transform(bpy.types.Operator):
+class VIEW3D_TP_Copy_Transform_Local(bpy.types.Operator):
     """copy location, rotation & scale and local orientation"""
     bl_idname = "tp_ops.copy_local_transform"
-    bl_label = "Copy Transform"
+    bl_label = "ReMove"
     bl_options = {'REGISTER', 'UNDO'}
 
     # TRANSFORM #
@@ -216,13 +216,13 @@ class VIEW3D_TP_Copy_Local_Transform(bpy.types.Operator):
                         obj.rotation_euler = active.rotation_euler 
 
 
-        # Widget .z
+        # Widget
         if self.set_widget == "tp_w0":
             pass
         elif self.set_widget == "tp_w1":
-            bpy.ops.tp_ops.space_local()               
+            bpy.context.space_data.transform_orientation = 'LOCAL'              
         else:
-            bpy.ops.tp_ops.space_global()   
+            bpy.context.space_data.transform_orientation = 'GLOBAL'  
 
         return {'FINISHED'}
 
@@ -230,29 +230,6 @@ class VIEW3D_TP_Copy_Local_Transform(bpy.types.Operator):
     def invoke(self, context, event):
         return context.window_manager.invoke_props_popup(self, event)
 
-
-
-
-class View3D_TP_GLOBAL(bpy.types.Operator):
-    """Transform Orientation Global"""
-    bl_idname = "tp_ops.space_global"
-    bl_label = "Transform Orientation GLOBAL"
-    bl_options = {'INTERNAL'}
-
-    def execute(self, context):
-        bpy.context.space_data.transform_orientation = 'GLOBAL'
-        return {'FINISHED'}
-    
-
-class View3D_TP_LOCAL(bpy.types.Operator):
-    """Transform Orientation LOCAL"""
-    bl_idname = "tp_ops.space_local"
-    bl_label = "Transform Orientation LOCAL"
-    bl_options = {'INTERNAL'}
-    
-    def execute(self, context):
-        bpy.context.space_data.transform_orientation = 'LOCAL'
-        return {'FINISHED'}
 
 
 

@@ -165,7 +165,7 @@ class VIEW3D_TP_ReLocate(bpy.types.Operator):
 class VIEW3D_TP_RePosition(bpy.types.Operator):
     """reposition to previous location with unapplied rotation / Attention: purge all orphaned meshdata"""
     bl_idname = "tp_ops.reposition"
-    bl_label = "RePosition"
+    bl_label = "RePlace"
     bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod

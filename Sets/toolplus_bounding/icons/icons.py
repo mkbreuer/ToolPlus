@@ -16,6 +16,7 @@ def load_icons():
     icons_dir = os.path.join(os.path.dirname(__file__))
 
     mkb_icons.load("icon_matcap", os.path.join(icons_dir, "matcap.png"), 'IMAGE')
+    mkb_icons.load("icon_linked", os.path.join(icons_dir, "linked.png"), 'IMAGE')
 
     mkb_icons.load("icon_center", os.path.join(icons_dir, "axis_centered.png"), 'IMAGE')   
     mkb_icons.load("icon_deltas", os.path.join(icons_dir, "axis_deltas.png"), 'IMAGE')   
@@ -31,6 +32,7 @@ def load_icons():
     mkb_icons.load("icon_apply_rota", os.path.join(icons_dir, "apply_rota.png"), 'IMAGE')  
     mkb_icons.load("icon_apply_scale", os.path.join(icons_dir, "apply_scale.png"), 'IMAGE')    
 
+    mkb_icons.load("icon_relocal", os.path.join(icons_dir, "relocal.png"), 'IMAGE')    
     mkb_icons.load("icon_recenter", os.path.join(icons_dir, "recenter.png"), 'IMAGE')    
     mkb_icons.load("icon_reposition", os.path.join(icons_dir, "reposition.png"), 'IMAGE')   
     

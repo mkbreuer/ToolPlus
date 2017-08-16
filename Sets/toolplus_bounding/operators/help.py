@@ -18,14 +18,15 @@ class TP_BBox_Help(bpy.types.Operator):
         layout.label("3.)  Mesh Type: shade off > transparent mesh", icon = "LAYER_USED") 
         layout.label("4.)  Mesh Type: wire only > deleted faces", icon = "LAYER_USED") 
         layout.label("5.)  Settings: stores last used adjustments", icon = "LAYER_USED") 
-        layout.label("6.)  Use redo last [F6] to change settings on the fly", icon = "LAYER_USED") 
-        layout.label("", icon = "TRIA_UP")     
-
+        layout.label("6.)  Redo Last [F6]: to change settings on the fly", icon = "LAYER_USED") 
+        layout.label("7.)  Operator Presets: store or reset all to default values", icon = "LAYER_USED") 
+        layout.label("", icon = "TRIA_UP")  
+    
     def execute(self, context):
         return {'FINISHED'}
 
     def invoke(self, context, event):
-        return context.window_manager.invoke_popup(self, width = 300)
+        return context.window_manager.invoke_popup(self, width = 315)
 
 
 
@@ -43,14 +44,16 @@ class TP_BCyl_Help(bpy.types.Operator):
         layout.label("3.)  Mesh Type: shade off > transparent mesh", icon = "LAYER_USED") 
         layout.label("4.)  Mesh Type: wire only > deleted faces", icon = "LAYER_USED") 
         layout.label("5.)  Settings: stores last used adjustments", icon = "LAYER_USED") 
-        layout.label("6.)  Use redo last [F6] to change settings on the fly", icon = "LAYER_USED") 
+        layout.label("6.)  Redo Last [F6]: to change settings on the fly", icon = "LAYER_USED") 
+        layout.label("7.)  Operator Presets: store or reset all to default values", icon = "LAYER_USED") 
         layout.label("", icon = "TRIA_UP")  
     
     def execute(self, context):
         return {'FINISHED'}
 
     def invoke(self, context, event):
-        return context.window_manager.invoke_popup(self, width = 300)
+        return context.window_manager.invoke_popup(self, width = 315)
+ 
     
 
 # HELP OPERATOR #
@@ -67,14 +70,15 @@ class TP_BSph_Help(bpy.types.Operator):
         layout.label("3.)  Mesh Type: shade off > transparent mesh", icon = "LAYER_USED") 
         layout.label("4.)  Mesh Type: wire only > deleted faces", icon = "LAYER_USED") 
         layout.label("5.)  Settings: stores last used adjustments", icon = "LAYER_USED") 
-        layout.label("6.)  Use redo last [F6] to change settings on the fly", icon = "LAYER_USED") 
+        layout.label("6.)  Redo Last [F6]: to change settings on the fly", icon = "LAYER_USED") 
+        layout.label("7.)  Operator Presets: store or reset all to default values", icon = "LAYER_USED") 
         layout.label("", icon = "TRIA_UP")  
     
     def execute(self, context):
         return {'FINISHED'}
 
     def invoke(self, context, event):
-        return context.window_manager.invoke_popup(self, width = 300)
+        return context.window_manager.invoke_popup(self, width = 315)
 
 
 
