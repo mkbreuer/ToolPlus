@@ -41,7 +41,8 @@ from toolplus_scene.ops_layer  import apply_layer_settings
 from toolplus_scene.gui_panel  import (VIEW3D_TP_Scene_Panel_TOOLS)
 from toolplus_scene.gui_panel  import (VIEW3D_TP_Scene_Panel_UI)
 
-
+# LOAD PRESETS #
+from toolplus_scene.operators.opengl    import (opengl_setup)
 
 # LOAD: ICONS #
 from . icons.icons  import load_icons
@@ -407,6 +408,9 @@ import traceback
 
 def register():
     
+    # PRESETS #
+    opengl_setup()
+
     try: bpy.utils.register_module(__name__)
     except: traceback.print_exc()
 
@@ -474,6 +478,7 @@ if __name__ == "__main__":
 
 
               
+
 
 
 

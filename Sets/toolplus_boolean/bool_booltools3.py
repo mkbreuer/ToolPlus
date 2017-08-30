@@ -28,14 +28,15 @@ bl_info = {
     "tracker_url": "https://developer.blender.org/maniphest/task/create/?project=3&type=Bug",
     "category": "T+ Auxiliary"}
 
+
+from .icons.icons import load_icons
+
+
 import bpy
 import bmesh
 import time
 from bpy.app.handlers import persistent
-from bpy.types import (
-    Operator,
-    Panel,
-)
+from bpy.types import (Operator, Panel)
 
 
 # -------------------  Bool Tool FUNCTIONS------------------------------
@@ -832,82 +833,151 @@ class BTool_BrushToMesh(Operator):
 # Apply This Brush To Mesh
 
 
+EDIT = ["OBJECT", "EDIT_MESH"]
+GEOM = ['MESH']
 
-# ---------------- Bool Tools ---------------------
-class BoolTool_Brush_TOOLS(Panel):
-    bl_label = "Brush Boolean"
-    bl_idname = "BoolTool_Tools"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "TOOLS"
-    bl_category = "Bool"
-    bl_context = "objectmode"
+# ---------- Operators --------------------------------------------------------
 
+class BoolTool_Brush_TOOLS(bpy.types.Panel):
+    bl_category = "T+"
+    bl_idname = "BoolTool_Brush_TOOLS"
+    bl_label = "Boolean BT"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS'
+    bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        isModelingMode = not (
+        context.sculpt_object or 
+        context.vertex_paint_object
+        or context.weight_paint_object
+        or context.image_paint_object)
+        obj = context.active_object     
+        if obj:
+            obj_type = obj.type                                                                
+            if obj_type in GEOM:        
+                return isModelingMode and context.mode in EDIT
+    
     def draw(self, context):
-        layout = self.layout
-        
-        box = layout.box().column(1)
+        layout = self.layout.column_flow(1)  
+        layout.operator_context = 'INVOKE_REGION_WIN'
 
-        row = box.column(1) 
-        row.operator("btool.boolean_union", text="Union", icon="ROTATECOLLECTION")
-        row.operator("btool.boolean_diff", text="Difference", icon="ROTACTIVE")
-        row.operator("btool.boolean_inters", text="Intersection", icon="ROTATECENTER")
+        draw_boolean_brush_panel_layout(self, context, layout) 
+               
 
-        box.separator()
-        
-        row.operator("btool.boolean_slice", text="Slice Rebool", icon="ROTATECENTER")
+class BoolTool_Brush_UI(bpy.types.Panel):
+    bl_idname = "BoolTool_Brush_UI"
+    bl_label = "Boolean BT"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_options = {'DEFAULT_CLOSED'}
 
-        box.separator()
-     
-        row = box.column(1) 
-        row.label("Draw:", icon="MOD_BEVEL")
-        
-        box.separator()
-       
-        row.operator("btool.draw_polybrush", icon="LINE_DATA")
-
-
-
-class BoolTool_Brush_UI(Panel):
-    bl_label = "Brush Boolean"
-    bl_idname = "BoolTool_Tools"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
-    bl_context = "objectmode"
-
+    @classmethod
+    def poll(cls, context):
+        isModelingMode = not (
+        context.sculpt_object or 
+        context.vertex_paint_object
+        or context.weight_paint_object
+        or context.image_paint_object)        
+        obj = context.active_object     
+        if obj:
+            obj_type = obj.type                                                                
+            if obj_type in GEOM:        
+                return isModelingMode and context.mode in EDIT
+    
     def draw(self, context):
-        layout = self.layout
-        
-        box = layout.box().column(1)
+        layout = self.layout.column_flow(1)  
+        layout.operator_context = 'INVOKE_REGION_WIN'
 
-        row = box.column(1) 
-        row.operator("btool.boolean_union", text="Union", icon="ROTATECOLLECTION")
-        row.operator("btool.boolean_diff", text="Difference", icon="ROTACTIVE")
-        row.operator("btool.boolean_inters", text="Intersection", icon="ROTATECENTER")
+        draw_boolean_brush_panel_layout(self, context, layout) 
 
-        box.separator()
-        
-        row.operator("btool.boolean_slice", text="Slice Rebool", icon="ROTATECENTER")
 
-        box.separator()
+
+def draw_boolean_brush_panel_layout(self, context, layout):
      
-        row = box.column(1) 
-        row.label("Draw:", icon="MOD_BEVEL")
+    layout = self.layout
+    layout.operator_context = 'INVOKE_REGION_WIN'    
+    icons = load_icons()    
+
+    box = layout.box().column(1)
+
+
+    if bpy.context.object.mode == "EDIT":
         
-        box.separator()
-       
-        row.operator("btool.draw_polybrush", icon="LINE_DATA")
+        row = box.column(1) 
+
+        button_boolean_edge = icons.get("icon_boolean_edge")
+        row.operator("object.boolean_bevel_custom_edge", text="Custom Edge", icon_value=button_boolean_edge.icon_id)
+        
+        button_boolean_bridge = icons.get("icon_boolean_bridge")
+        row.operator("object.boolean_bevel_bridge", text="Bridge Edge", icon_value=button_boolean_bridge.icon_id)
+        
+
+    else:
+
+        row = box.column(1) 
+        
+        button_boolean_union_brush = icons.get("icon_boolean_union_brush")
+        row.operator("tp_ops.tboolean_union", text="BT-Union", icon_value=button_boolean_union_brush.icon_id)            
+        
+        button_boolean_intersect_brush = icons.get("icon_boolean_intersect_brush")
+        row.operator("tp_ops.tboolean_inters", text="BT-Intersect", icon_value=button_boolean_intersect_brush.icon_id)
+        
+        button_boolean_difference_brush = icons.get("icon_boolean_difference_brush")
+        row.operator("tp_ops.tboolean_diff", text="BT-Difference", icon_value=button_boolean_difference_brush.icon_id)
+        
+        row.separator()
+
+        button_boolean_rebool_brush = icons.get("icon_boolean_rebool_brush")
+        row.operator("tp_ops.tboolean_slice", text="BT-SliceRebool", icon_value=button_boolean_rebool_brush.icon_id)
+
+        layout.operator_context = 'INVOKE_REGION_WIN'
+        button_boolean_draw = icons.get("icon_boolean_draw")
+        row.operator("tp_ops.draw_polybrush", text="BT-DrawPoly", icon_value=button_boolean_draw.icon_id)
+
+
+        if (isCanvas(context.active_object)) or (isBrush(context.active_object)):
+
+            row.separator()
+
+            if 0 < len(bpy.context.selected_objects) < 2 and bpy.context.object.mode == "OBJECT":
+                button_boolean_bevel = icons.get("icon_boolean_bevel")
+                row.operator("object.boolean_bevel", text="Run BoolBevel", icon_value=button_boolean_bevel.icon_id)
+
+                if bpy.data.objects.find('BOOLEAN_BEVEL_CURVE') != -1 and bpy.data.objects.find('BOOLEAN_BEVEL_GUIDE') != -1:
+                    row.operator("object.boolean_custom_bevel", text="Custom BoolBevel", icon='MOD_BEVEL')
+                
+                row.operator("tp_ops.cleanup_boolbevel", text="Finish BoolBevel", icon='PANEL_CLOSE')
+
+        row.separator()
 
 
 
 # ---------- Properties --------------------------------------------------------
-class BoolTool_Config_TOOLS(Panel):
-    bl_label = "Brush Props"
-    bl_idname = "BoolTool_BConfig"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "TOOLS"
-    bl_category = "Bool"
-    bl_context = "objectmode"
 
+class BoolTool_Config_TOOLS(bpy.types.Panel):
+    bl_category = "T+"
+    bl_idname = "BoolTool_Config_TOOLS"
+    bl_label = "BT Props"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS'
+    bl_context = "objectmode"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        isModelingMode = not (
+        context.sculpt_object or 
+        context.vertex_paint_object
+        or context.weight_paint_object
+        or context.image_paint_object)
+        obj = context.active_object     
+        if obj:
+            obj_type = obj.type                                                                
+            if obj_type in GEOM:        
+                return isModelingMode 
+    
     @classmethod
     def poll(cls, context):
 
@@ -918,6 +988,54 @@ class BoolTool_Config_TOOLS(Panel):
         return result
 
     def draw(self, context):
+        layout = self.layout.column_flow(1)  
+        layout.operator_context = 'INVOKE_REGION_WIN'
+
+        draw_boolean_config_panel_layout(self, context, layout) 
+               
+
+
+class BoolTool_Config_UI(bpy.types.Panel):
+    bl_idname = "BoolTool_Config_UI"
+    bl_label = "BT Props"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_context = "objectmode"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        isModelingMode = not (
+        context.sculpt_object or 
+        context.vertex_paint_object
+        or context.weight_paint_object
+        or context.image_paint_object)
+        obj = context.active_object     
+        if obj:
+            obj_type = obj.type                                                                
+            if obj_type in GEOM:        
+                return isModelingMode 
+    
+    @classmethod
+    def poll(cls, context):
+
+        result = False
+        actObj = bpy.context.active_object
+        if (isCanvas(actObj) or isBrush(actObj) or isPolyBrush(actObj)):
+            result = True
+        return result
+
+
+    def draw(self, context):
+        layout = self.layout.column_flow(1)  
+        layout.operator_context = 'INVOKE_REGION_WIN'
+
+        draw_boolean_config_panel_layout(self, context, layout) 
+
+
+
+def draw_boolean_config_panel_layout(self, context, layout):
+    
         actObj = bpy.context.active_object
         icon = ""
 
@@ -995,110 +1113,35 @@ class BoolTool_Config_TOOLS(Panel):
 
         box.separator()
 
-class BoolTool_Config_UI(Panel):
-    bl_label = "Brush Props"
-    bl_idname = "BoolTool_BConfig"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
-    bl_context = "objectmode"
-
-    @classmethod
-    def poll(cls, context):
-
-        result = False
-        actObj = bpy.context.active_object
-        if (isCanvas(actObj) or isBrush(actObj) or isPolyBrush(actObj)):
-            result = True
-        return result
-
-    def draw(self, context):
-        actObj = bpy.context.active_object
-        icon = ""
-
-        layout = self.layout
-        box = layout.box().column(1)
-         
-        row = box.row(1)  
-        # CANVAS ---------------------------------------------------
-        if isCanvas(actObj):
-            row.label("CANVAS", icon="MESH_GRID")
-            
-            row = box.row()
-            row.prop(context.scene, 'BoolHide', text="Hide Bool objects")
-            
-            row = box.row(True)
-            row.operator("btool.to_mesh", icon="MOD_LATTICE", text="Apply All")
-
-            row = box.row(True)
-            Rem = row.operator("btool.remove", icon="CANCEL", text="Remove All")
-            Rem.thisObj = ""
-            Rem.Prop = "CANVAS"
-
-            if isBrush(actObj):
-                layout.separator()
-
-        # BRUSH ------------------------------------------------------
-        if isBrush(actObj):
-
-            if (actObj["BoolToolBrush"] == "UNION"):
-                icon = "ROTATECOLLECTION"
-            if (actObj["BoolToolBrush"] == "DIFFERENCE"):
-                icon = "ROTATECENTER"
-            if (actObj["BoolToolBrush"] == "INTERSECT"):
-                icon = "ROTACTIVE"
-            if (actObj["BoolToolBrush"] == "SLICE"):
-                icon = "ROTATECENTER"
 
 
-            row = box.row(True)
-            row.label("BRUSH", icon=icon)
-            # layout.separator()
 
-            icon = ""
-            if actObj["BoolTool_FTransform"] == "True":
-                icon = "PMARKER_ACT"
-            else:
-                icon = "PMARKER"
-            if isFTransf():
-                pass
-
-            if isFTransf():
-                row = box.row(True)
-                row.operator(BTool_EnableFTransform.bl_idname, text="Fast Vis", icon=icon)
-                Enable = row.operator(BTool_EnableThisBrush.bl_idname, text="Enable", icon="VISIBLE_IPO_ON")
-                row = box.row(True)
-            else:
-                Enable = row.operator(BTool_EnableThisBrush.bl_idname, icon="VISIBLE_IPO_ON")
-                row = box.row(True)
-
-        if isPolyBrush(actObj):
-            row = box.row(False)
-            row.label("POLY BRUSH", icon="LINE_DATA")
-            mod = actObj.modifiers["BTool_PolyBrush"]
-            row = box.row(False)
-            row.prop(mod, "thickness", text="Size")
-            layout.separator()
-
-        if isBrush(actObj):
-            row = box.row(True)
-            row.operator("btool.brush_to_mesh", icon="MOD_LATTICE", text="Apply Brush")
-            row = box.row(True)
-            Rem = row.operator("btool.remove", icon="CANCEL", text="Remove Brush")
-            Rem.thisObj = ""
-            Rem.Prop = "BRUSH"
-
-        box.separator()
 
 
 # ---------- Tree Viewer-------------------------------------------------------
-class BoolTool_BViwer_TOOLS(Panel):
-    bl_label = "Brush Viewer"
-    bl_idname = "BoolTool_BViwer"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "TOOLS"
-    bl_category = "Bool"
-    bl_context = "objectmode"
 
+class BoolTool_BViewer_TOOLS(bpy.types.Panel):
+    bl_category = "T+"
+    bl_idname = "BoolTool_BViewer_TOOLS"
+    bl_label = "Brush Viewer"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS'
+    bl_context = "objectmode"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        isModelingMode = not (
+        context.sculpt_object or 
+        context.vertex_paint_object
+        or context.weight_paint_object
+        or context.image_paint_object)
+        obj = context.active_object     
+        if obj:
+            obj_type = obj.type                                                                
+            if obj_type in GEOM:        
+                return isModelingMode 
+    
     @classmethod
     def poll(cls, context):
         actObj = bpy.context.active_object
@@ -1109,6 +1152,55 @@ class BoolTool_BViwer_TOOLS(Panel):
             return False
 
     def draw(self, context):
+        layout = self.layout.column_flow(1)  
+        layout.operator_context = 'INVOKE_REGION_WIN'
+
+        draw_boolean_bviewer_panel_layout(self, context, layout) 
+               
+
+class BoolTool_BViewer_UI(bpy.types.Panel):
+    bl_idname = "BoolTool_BViewer_UI"
+    bl_label = "Brush Viewer"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_context = "objectmode"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        isModelingMode = not (
+        context.sculpt_object or 
+        context.vertex_paint_object
+        or context.weight_paint_object
+        or context.image_paint_object)
+        obj = context.active_object     
+        if obj:
+            obj_type = obj.type                                                                
+            if obj_type in GEOM:        
+                return isModelingMode 
+    
+    @classmethod
+    def poll(cls, context):
+        actObj = bpy.context.active_object
+
+        if isCanvas(actObj):
+            return True
+        else:
+            return False
+
+
+    def draw(self, context):
+        layout = self.layout.column_flow(1)  
+        layout.operator_context = 'INVOKE_REGION_WIN'
+
+        draw_boolean_bviewer_panel_layout(self, context, layout) 
+
+
+
+
+def draw_boolean_bviewer_panel_layout(self, context, layout):
+
+        icons = load_icons()
 
         actObj = bpy.context.active_object
         icon = ""
@@ -1120,14 +1212,23 @@ class BoolTool_BViwer_TOOLS(Panel):
                 row = container.row(True)
                 icon = ""
                 if ("BTool_" in mod.name):
+                  
                     if (mod.operation == "UNION"):
+
                         icon = "ROTATECOLLECTION"
+                   
                     if (mod.operation == "DIFFERENCE"):
+
                         icon = "ROTATECENTER"
+                   
                     if (mod.operation == "INTERSECT"):
+
                         icon = "ROTACTIVE"
+                   
                     if (mod.operation == "SLICE"):
+
                         icon = "ROTATECENTER"
+
 
                     objSelect = row.operator("btool.find_brush", text=mod.object.name, icon=icon, emboss=False)
                     objSelect.obj = mod.object.name
@@ -1163,78 +1264,6 @@ class BoolTool_BViwer_TOOLS(Panel):
                     Dw.direction = "DOWN"
 
 
-
-# ---------- Tree Viewer-------------------------------------------------------
-class BoolTool_BViwer_UI(Panel):
-    bl_label = "Brush Viewer"
-    bl_idname = "BoolTool_BViwer"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
-    bl_context = "objectmode"
-
-    @classmethod
-    def poll(cls, context):
-        actObj = bpy.context.active_object
-
-        if isCanvas(actObj):
-            return True
-        else:
-            return False
-
-    def draw(self, context):
-
-        actObj = bpy.context.active_object
-        icon = ""
-
-        if isCanvas(actObj):
-
-            for mod in actObj.modifiers:
-                container = self.layout.box()
-                row = container.row(True)
-                icon = ""
-                if ("BTool_" in mod.name):
-                    if (mod.operation == "UNION"):
-                        icon = "ROTATECOLLECTION"
-                    if (mod.operation == "DIFFERENCE"):
-                        icon = "ROTATECENTER"
-                    if (mod.operation == "INTERSECT"):
-                        icon = "ROTACTIVE"
-                    if (mod.operation == "SLICE"):
-                        icon = "ROTATECENTER"
-
-                    objSelect = row.operator("btool.find_brush", text=mod.object.name, icon=icon, emboss=False)
-                    objSelect.obj = mod.object.name
-
-                    EnableIcon = "RESTRICT_VIEW_ON"
-                    if (mod.show_viewport):
-                        EnableIcon = "RESTRICT_VIEW_OFF"
-                    Enable = row.operator(BTool_EnableBrush.bl_idname, icon=EnableIcon, emboss=False)
-                    Enable.thisObj = mod.object.name
-
-                    Remove = row.operator("btool.remove", icon="CANCEL", emboss=False)
-                    Remove.thisObj = mod.object.name
-                    Remove.Prop = "THIS"
-
-                    # Stack Changer
-                    Up = row.operator("btool.move_stack", icon="TRIA_UP", emboss=False)
-                    Up.modif = mod.name
-                    Up.direction = "UP"
-
-                    Dw = row.operator("btool.move_stack", icon="TRIA_DOWN", emboss=False)
-                    Dw.modif = mod.name
-                    Dw.direction = "DOWN"
-
-                else:
-                    row.label(mod.name)
-                    # Stack Changer
-                    Up = row.operator("btool.move_stack", icon="TRIA_UP", emboss=False)
-                    Up.modif = mod.name
-                    Up.direction = "UP"
-
-                    Dw = row.operator("btool.move_stack", icon="TRIA_DOWN", emboss=False)
-                    Dw.modif = mod.name
-                    Dw.direction = "DOWN"
-                    
                     
 
 #

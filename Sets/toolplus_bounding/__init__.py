@@ -38,6 +38,9 @@ from toolplus_bounding.panel    import (VIEW3D_TP_BBOX_MESHES_UI)
 from . icons.icons              import load_icons
 from . icons.icons              import clear_icons
 
+# LOAD PRESETS #
+from toolplus_bounding.visuals.opengl    import (opengl_setup)
+
 
 # LOAD OPERATORS #
 import sys, os
@@ -627,18 +630,21 @@ def draw_recoplanar_item(self, context):
 import traceback
 
 def register():
-
+    
+    # PRESETS #
+    opengl_setup()
+    
     try: bpy.utils.register_module(__name__)
     except: traceback.print_exc()
 
     update_panel_location(None, bpy.context)
     update_display_tools(None, bpy.context)
 
-    # TO MENU
+    # TO MENU #
     bpy.types.INFO_MT_mesh_add.append(draw_bound_item) 
     bpy.types.VIEW3D_MT_object_specials.append(draw_recoplanar_item) 
    
-    # PROPS
+    # PROPS #
     bpy.types.WindowManager.bbox_window = bpy.props.PointerProperty(type = Dropdown_BBox_Props)    
     bpy.types.WindowManager.tp_props_bbox = bpy.props.PointerProperty(type = Dropdown_BBox_Panel_Props)      
 
@@ -657,7 +663,7 @@ def register():
 
 def unregister():
 
-    # PROPS    
+    # PROPS #
     del bpy.types.WindowManager.bbox_window
     del bpy.types.WindowManager.tp_props_bbox
 

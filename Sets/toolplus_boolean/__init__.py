@@ -1,7 +1,5 @@
 # ##### BEGIN GPL LICENSE BLOCK #####
 #
-#Copyright (C) 2017  Marvin.K.Breuer (MKB)]
-#
 #  This program is free software; you can redistribute it and / or
 #  modify it under the terms of the GNU General Public License
 #  as published by the Free Software Foundation; either version 2
@@ -21,58 +19,73 @@
 
 bl_info = {
     "name": "T+ Boolean",
-    "author": "Multi Authors (see URL), MKB",
-    "version": (0, 1, 4),
+    "author": "Multi Authors (see URL), Marvin.K.Breuer (MKB)",
+    "version": (0, 1, 5),
     "blender": (2, 7, 8),
     "location": "View3D > Tool Shelf [T] or Property Shelf [N] ",
-    "description": "Panel and Menu for Boolean Operator",
+    "description": "Collection of Boolean Tools",
     "warning": "",
-    "wiki_url": "",
+    "wiki_url": "https://github.com/mkbreuer/ToolPlus",
     "tracker_url": "",
     "category": "ToolPlus"}
 
 
+
+# LOAD UI #
+from toolplus_boolean.bool_gui    import (VIEW3D_TP_Edit_Boolean_Panel_TOOLS)
+from toolplus_boolean.bool_gui    import (VIEW3D_TP_Edit_Boolean_Panel_UI)
+
+from toolplus_boolean.bool_menu   import (VIEW3D_TP_Boolean_Menu)
+from toolplus_boolean.bool_menu   import (VIEW3D_TP_BoolTool_Brush_Menu)
+
 from toolplus_boolean.bool_booltools3    import (BoolTool_Brush_TOOLS)
 from toolplus_boolean.bool_booltools3    import (BoolTool_Brush_UI)
 
-from toolplus_boolean.bool_booltools3    import (BoolTool_BViwer_TOOLS)
-from toolplus_boolean.bool_booltools3    import (BoolTool_BViwer_UI)
+from toolplus_boolean.bool_booltools3    import (BoolTool_BViewer_TOOLS)
+from toolplus_boolean.bool_booltools3    import (BoolTool_BViewer_UI)
 
 from toolplus_boolean.bool_booltools3    import (BoolTool_Config_TOOLS)
 from toolplus_boolean.bool_booltools3    import (BoolTool_Config_UI)
 
+
+# LOAD PROPS #
 from toolplus_boolean.bool_carver         import (CarverPrefs)
 
+
+# LOAD ICONS #
 from . icons.icons                  import load_icons
 from . icons.icons                  import clear_icons
 
 ##################################
 
+# LOAD OPERATORS #
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'toolplus_boolean'))
 
 if "bpy" in locals():
     import imp
     imp.reload(bool_action)
+    imp.reload(bool_bevel)
     imp.reload(bool_boolean2d)
     imp.reload(bool_booltools3)
     imp.reload(bool_carver)
 
 else:
     from . import bool_action         
+    from . import bool_bevel        
     from . import bool_boolean2d         
     from . import bool_booltools3                                   
     from . import bool_carver                                   
 
     
-    
+# LOAD MODULS #     
 import bpy
 from bpy import*
-
-import bpy.utils.previews
+from bpy.props import* 
 from bpy.types import AddonPreferences, PropertyGroup
-from bpy.props import* #(StringProperty, BoolProperty, FloatVectorProperty, FloatProperty, EnumProperty, IntProperty)
 
+
+# UI REGISTRY #
 def update_panel_position(self, context):
     try:
         bpy.utils.unregister_class(VIEW3D_TP_Edit_Boolean_Panel_UI)
@@ -142,24 +155,27 @@ def update_panel_position_brush(self, context):
 
 
 
-
+# TOOLS REGISTRY #
 def update_tools(self, context):
    
-    if context.user_preferences.addons[__name__].preferences.tab_optimize == 'on':
-        return
-    
-    if context.user_preferences.addons[__name__].preferences.tab_optimize == 'off':
-        pass 
+    try:
+        return True
+    except:
+        pass
+
+    if context.user_preferences.addons[__name__].preferences.tab_display_tools == 'on':
+        return True
+
+    if context.user_preferences.addons[__name__].preferences.tab_display_tools == 'off':
+        pass    
 
 
-
-
-
+# MENU REGISTRY #
 addon_keymaps_menu = []
 
 def update_menu(self, context):
     try:
-        bpy.utils.unregister_class(BoolTool_Menu)
+        bpy.utils.unregister_class(VIEW3D_TP_Boolean_Menu)
         
         # Keymapping
         # remove keymaps when add-on is deactivated
@@ -173,16 +189,16 @@ def update_menu(self, context):
     
     if context.user_preferences.addons[__name__].preferences.tab_menu_view == 'menu':
      
-        BoolTool_Menu.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_menu
+        VIEW3D_TP_Boolean_Menu.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_menu
     
-        bpy.utils.register_class(BoolTool_Menu)
+        bpy.utils.register_class(VIEW3D_TP_Boolean_Menu)
     
         # booltool: create the booleanhotkey in opjectmode
         wm = bpy.context.window_manager
         km = wm.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')
 
         kmi = km.keymap_items.new('wm.call_menu', 'T', 'PRESS', shift=True) #ctrl=True, alt=True, 
-        kmi.properties.name = 'OBJECT_MT_BoolTool_Menu'
+        kmi.properties.name = 'VIEW3D_TP_Boolean_Menu'
 
 
     if context.user_preferences.addons[__name__].preferences.tab_menu_view == 'off':
@@ -198,7 +214,7 @@ def UpdateBoolTool_Pref(self, context):
         UnRegisterFastT()
 
 
-#Panel preferences
+# ADDON PREFERENCES #
 class TP_Panels_Preferences(AddonPreferences):
     bl_idname = __name__
     
@@ -234,8 +250,17 @@ class TP_Panels_Preferences(AddonPreferences):
                default='menu', update = update_menu)
 
 
+    tab_bool_direct = EnumProperty(name = 'Display Tools', description = 'on / off',
+                  items=(('on', 'Direct Boolean on', 'enable tools'), ('off', 'Direct Boolean off', 'disable tools')), default='on', update = update_tools)
+
+    tab_btbool_brush = EnumProperty(name = 'Display Tools', description = 'on / off',
+                  items=(('on', 'Brush Boolean on', 'enable tools'), ('off', 'Brush Boolean off', 'disable tools')), default='on', update = update_tools)
+
+    tab_bool_intersect = EnumProperty(name = 'Display Tools', description = 'on / off',
+                  items=(('on', 'Edit Intersection on', 'enable tools'), ('off', 'Edit Intersection off', 'disable tools')), default='on', update = update_tools)
+
     tab_optimize = EnumProperty(name = 'Display Tools', description = 'on / off',
-                  items=(('on', 'Optimize on', 'enable optimize tools'), ('off', 'Optimize off', 'disable optimize tools')), default='off', update = update_tools)
+                  items=(('on', 'Optimize on', 'enable tools'), ('off', 'Optimize off', 'disable tools')), default='off', update = update_tools)
  
 
     tools_category_menu = bpy.props.BoolProperty(name = "Boolean Menu", description = "enable or disable menu", default=True, update = update_menu)
@@ -258,13 +283,13 @@ class TP_Panels_Preferences(AddonPreferences):
        
         if self.prefs_tabs == 'info':
             row = layout.row()
-            row.label(text="Welcome to the T+ Boolean Collection!")
+            row.label(text="Welcome to T+ Boolean!")
 
             row = layout.column()
-            row.label(text="This is a coolection of  different boolean operators.")
+            row.label(text="This is custom version of different boolean addons.")
             row.label(text="It allows you to boolean more directly.")
-            row.label(text="You have the abiltiy to enabel or disable the Panel or the Menu and with HotKey.")
-            row.label(text="You can also choose between toolshelf [T] or property shelf [N] for the Panel.")
+            row.label(text="If needed can enabel or disable Brush Boolean: as Panel, in Menu and with HotKeys.")
+            row.label(text="Also choose between toolshelf [T] or property shelf [N].")
             row.label(text="Have Fun! ;)")
 
         #Tools
@@ -272,7 +297,10 @@ class TP_Panels_Preferences(AddonPreferences):
 
             box = layout.box().column(1)
 
-            row = box.row()
+            row = box.column_flow(4)
+            row.prop(self, 'tab_bool_direct', expand=True)
+            row.prop(self, 'tab_btbool_brush', expand=True)
+            row.prop(self, 'tab_bool_intersect', expand=True)
             row.prop(self, 'tab_optimize', expand=True)
 
             row = layout.row()
@@ -283,6 +311,7 @@ class TP_Panels_Preferences(AddonPreferences):
 
         #Location
         if self.prefs_tabs == 'location':
+            
             box = layout.box().column(1)
              
             row = box.row(1)  
@@ -293,9 +322,13 @@ class TP_Panels_Preferences(AddonPreferences):
                                    
             if self.tab_location == 'tools':
                 
+                box.separator()
+                
                 row = box.row(1)                                                
                 row.prop(self, "tools_category")
 
+            box.separator()
+            
             box = layout.box().column(1)
              
             row = box.row(1)  
@@ -306,14 +339,20 @@ class TP_Panels_Preferences(AddonPreferences):
                        
             if self.tab_location_brush == 'tools':
                 
+                box.separator()
+                
                 row = box.row(1)                
                 row.prop(self, "tools_category_brush")
                 
             if self.tab_location_brush == 'off':                
 
+                box.separator()
+                
                 row = box.row()
                 row.label(text="! keys hidden with next reboot !", icon ="INFO")
 
+            box.separator()
+            
             row = layout.row()
             row.label(text="! please reboot blender after changing the panel location !", icon ="INFO")
 
@@ -393,192 +432,11 @@ class TP_Panels_Preferences(AddonPreferences):
             row.operator('wm.url_open', text = 'Booltron', icon = 'HELP').url = "https://github.com/mrachinskiy/blender-addon-booltron"
             row.operator('wm.url_open', text = 'BoolTools', icon = 'HELP').url = "https://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/Object/BoolTool"
             row.operator('wm.url_open', text = 'Boolean 2D Union', icon = 'HELP').url = "https://blenderartists.org/forum/showthread.php?338703-Addon-Boolean-2D-Union"
-            row.operator('wm.url_open', text = 'Carver', icon = 'HELP').url = "https://blenderartists.org/forum/showthread.php?400038-Carver"
+            row.operator('wm.url_open', text = 'Bevel after Boolean', icon = 'HELP').url = "https://blenderartists.org/forum/showthread.php?434699-Bevel-after-Boolean"
             row.operator('wm.url_open', text = 'Thread', icon = 'BLENDER').url = "https://blenderartists.org/forum/showthread.php?410098-Addon-T-Boolean&p=3118012#post3118012"
+            row.operator('wm.url_open', text = 'GitHub', icon = 'RECOVER_LAST').url = "https://github.com/mkbreuer/ToolPlus"
 
 
-
-
-def draw_boolean_panel_layout(self, context, layout):
-
-        icons = load_icons()
-
-        if context.mode == "OBJECT":
-
-            box = layout.box().column(1)                                                   
-
-            row = box.column(1) 
-            
-            button_boolean_union = icons.get("icon_boolean_union")
-            row.operator("btool.direct_union", text="Union", icon_value=button_boolean_union.icon_id)
-
-            button_boolean_intersect = icons.get("icon_boolean_intersect")
-            row.operator("btool.direct_intersect", text="Intersect", icon_value=button_boolean_intersect.icon_id)
-
-            button_boolean_difference = icons.get("icon_boolean_difference")
-            row.operator("btool.direct_difference", text="Difference", icon_value=button_boolean_difference.icon_id)
-                        
-            row.separator()  
-
-            button_boolean_substract = icons.get("icon_boolean_substract")
-            row.operator("btool.direct_subtract", icon_value=button_boolean_substract.icon_id)              
-
-            button_boolean_rebool = icons.get("icon_boolean_rebool")
-            row.operator("btool.direct_slice", "Slice Rebool", icon_value=button_boolean_rebool.icon_id)        
-
-            Display_Optimize = context.user_preferences.addons[__name__].preferences.tab_optimize
-            if Display_Optimize == 'on':  
-
-                box.separator()         
-
-                box = layout.box().column(1)   
-
-                row = box.column(1) 
-                
-                button_origin_obm = icons.get("icon_origin_obm")
-                row.operator("object.origin_set", "Set Origin", icon_value=button_origin_obm.icon_id).type='ORIGIN_GEOMETRY'
-            
-            box.separator()         
-
-            box = layout.box().column(1)               
-
-            row = box.column(1)   
-
-            button_boolean_carver = icons.get("icon_boolean_carver")
-            row.operator("object.carver", text="3d Carver", icon_value=button_boolean_carver.icon_id)
-
-            ###
-            box.separator()         
-  
-
-
-        if context.mode == "EDIT_MESH":
-
-
-            box = layout.box().column(1)                     
-
-            row = box.column(1)                        
-
-            button_boolean_union = icons.get("icon_boolean_union")
-            row.operator("tp_ops.bool_union", text="Union", icon_value=button_boolean_union.icon_id) 
-
-            button_boolean_intersect = icons.get("icon_boolean_intersect")
-            row.operator("tp_ops.bool_intersect",text="Intersect", icon_value=button_boolean_intersect.icon_id) 
-
-            button_boolean_difference = icons.get("icon_boolean_difference")
-            row.operator("tp_ops.bool_difference",text="Difference", icon_value=button_boolean_difference.icon_id)  
-
-            box.separator()  
-
-            box = layout.box().column(1)                     
-
-            row = box.column(1)  
-
-            button_boolean_weld = icons.get("icon_boolean_weld")
-            row.operator("mesh.intersect", "Weld", icon_value=button_boolean_weld.icon_id).use_separate = False
-
-            button_boolean_isolate = icons.get("icon_boolean_isolate")
-            row.operator("mesh.intersect", "Isolate", icon_value=button_boolean_isolate.icon_id).use_separate = True   
-            
-            box.separator()          
-            
-            row = box.row(1)           
-            row.label("Planes")         
-
-            button_axis_x = icons.get("icon_axis_x")
-            row.operator("tp_ops.plane_x",text="", icon_value=button_axis_x.icon_id)      
-          
-            button_axis_y = icons.get("icon_axis_y")
-            row.operator("tp_ops.plane_y",text="", icon_value=button_axis_y.icon_id)       
-
-            button_axis_z = icons.get("icon_axis_z")
-            row.operator("tp_ops.plane_z",text="", icon_value=button_axis_z.icon_id) 
-
-            box.separator() 
-
-            box = layout.box().column(1)                     
-
-            row = box.row(1) 
-            
-            button_boolean_facemerge = icons.get("icon_boolean_facemerge")
-            row.operator("bpt.boolean_2d_union", text= "2d Union", icon_value=button_boolean_facemerge.icon_id)        
-
-            ###
-            box.separator() 
-
-
-            Display_Optimize = context.user_preferences.addons[__name__].preferences.tab_optimize
-            if Display_Optimize == 'on':   
-
-                box = layout.box().column(1)                          
-
-                row = box.column(1)  
-                
-                button_select_link = icons.get("icon_select_link")
-                row.operator("mesh.select_linked",text="Select Linked", icon_value=button_select_link.icon_id)
-
-                button_remove_double = icons.get("icon_remove_double")
-                row.operator("mesh.remove_doubles",text="Remove Doubles", icon_value=button_remove_double.icon_id)             
-
-                row.operator("mesh.normals_make_consistent", text="Recalc. Normals", icon="SNAP_NORMAL")
-
-                row.separator() 
-
-                button_origin_edm = icons.get("icon_origin_edm")
-                row.operator("tp_ops.origin_edm",text="Set Origin", icon_value=button_origin_edm.icon_id)
-
-                ###                   
-                box.separator()
-
-
-
-
-class VIEW3D_TP_Edit_Boolean_Panel_TOOLS(bpy.types.Panel):
-    bl_category = "T+"
-    bl_idname = "VIEW3D_TP_Edit_Boolean_Panel_TOOLS"
-    bl_label = "Boolean"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'TOOLS'
-    bl_options = {'DEFAULT_CLOSED'}
-
-    @classmethod
-    def poll(cls, context):
-        isModelingMode = not (
-        context.sculpt_object or 
-        context.vertex_paint_object
-        or context.weight_paint_object
-        or context.image_paint_object)
-        return (isModelingMode)
-    
-    def draw(self, context):
-        layout = self.layout.column_flow(1)  
-        layout.operator_context = 'INVOKE_REGION_WIN'
-
-        draw_boolean_panel_layout(self, context, layout) 
-        
-                
-
-class VIEW3D_TP_Edit_Boolean_Panel_UI(bpy.types.Panel):
-    bl_idname = "VIEW3D_TP_Edit_Boolean_Panel_UI"
-    bl_label = "Boolean"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI'
-    bl_options = {'DEFAULT_CLOSED'}
-
-    @classmethod
-    def poll(cls, context):
-        isModelingMode = not (
-        context.sculpt_object or 
-        context.vertex_paint_object
-        or context.weight_paint_object
-        or context.image_paint_object)
-        return (isModelingMode)
-    
-    def draw(self, context):
-        layout = self.layout.column_flow(1)  
-        layout.operator_context = 'INVOKE_REGION_WIN'
-
-        draw_boolean_panel_layout(self, context, layout) 
 
 
 # Hide boolean objects
@@ -589,151 +447,6 @@ def update_BoolHide(self, context):
 
     for o in objs:
         o.hide = hide_state
-
-# Object is a Canvas
-def isCanvas(_obj):
-    try:
-        if _obj["BoolToolRoot"]:
-            return True
-    except:
-        return False
-
-
-# Object is a Brush Tool Bool
-def isBrush(_obj):
-    try:
-        if _obj["BoolToolBrush"]:
-            return True
-    except:
-        return False
-
-# 3Dview Header Menu
-class BoolTool_Menu(bpy.types.Menu):
-    bl_label = "Boolean :)"
-    bl_idname = "OBJECT_MT_BoolTool_Menu"
-
-    def draw(self, context):
-        layout = self.layout
-        layout.operator_context = 'INVOKE_REGION_WIN'
-        
-        icons = load_icons()
-        
-        if context.mode == 'OBJECT':
-
-            button_boolean_union = icons.get("icon_boolean_union")
-            layout.operator("tp_ops.bool_union_obm_menu", text="Union", icon_value=button_boolean_union.icon_id)
-
-            button_boolean_intersect = icons.get("icon_boolean_intersect")
-            layout.operator("tp_ops.bool_intersect_obm_menu", text="Intersect", icon_value=button_boolean_intersect.icon_id)
-
-            button_boolean_difference = icons.get("icon_boolean_difference")
-            layout.operator("tp_ops.bool_difference_obm_menu", text="Difference", icon_value=button_boolean_difference.icon_id)
-                        
-            layout.separator() 
-
-            button_boolean_substract = icons.get("icon_boolean_substract")
-            layout.operator("btool.direct_subtract", icon_value=button_boolean_substract.icon_id)              
-
-            button_boolean_rebool = icons.get("icon_boolean_rebool")
-            layout.operator("tp_ops.bool_rebool_obm_menu", "Slice Rebool", icon_value=button_boolean_rebool.icon_id)
-
-            layout.separator() 
-
-            button_boolean_carver = icons.get("icon_boolean_carver")
-            layout.operator("object.carver", text="3d Carver", icon_value=button_boolean_carver.icon_id)
-
-            Display_Optimize = context.user_preferences.addons[__name__].preferences.tab_optimize
-            if Display_Optimize == 'on':  
-
-                layout.separator()
-                
-                button_origin_obm = icons.get("icon_origin_obm")
-                layout.operator("tp_ops.origin_obm", "", icon_value=button_origin_obm.icon_id)
-
-
-            active_brush = context.user_preferences.addons[__name__].preferences.tab_location_brush 
-            if active_brush == 'tools' or active_brush == 'ui':
-
-                layout.separator()
-
-                layout.operator("btool.boolean_union", icon="ROTATECOLLECTION")
-                layout.operator("btool.boolean_diff", icon="ROTACTIVE")
-                layout.operator("btool.boolean_inters", icon="ROTATECENTER")
-            
-                layout.separator()
-
-                layout.operator("btool.boolean_slice", text="Brush Slice Rebool", icon="ROTATECENTER")
-
-                layout.separator()
-                layout.operator_context = 'INVOKE_REGION_WIN'
-                #layout.operator_context = 'EXEC_REGION_WIN'
-                layout.operator("btool.draw_polybrush", icon="LINE_DATA")
-
-                if (isCanvas(context.active_object)):
-                    layout.separator()
-                    layout.operator("btool.to_mesh", icon="MOD_LATTICE", text="Apply All")
-                    Rem = layout.operator("btool.remove", icon="CANCEL", text="Remove All")
-                    Rem.thisObj = ""
-                    Rem.Prop = "CANVAS"
-
-                if (isBrush(context.active_object)):
-                    layout.separator()
-                    layout.operator("btool.brush_to_mesh", icon="MOD_LATTICE", text="Apply Brush")
-                    Rem = layout.operator("btool.remove", icon="CANCEL", text="Remove Brush")
-                    Rem.thisObj = ""
-                    Rem.Prop = "BRUSH"
-
-            else:
-                pass
-
-
-
-        if context.mode == 'EDIT_MESH':
-                      
-            button_boolean_union = icons.get("icon_boolean_union")
-            layout.operator("tp_ops.bool_union_edm_menu", text="Union", icon_value=button_boolean_union.icon_id) 
-
-            button_boolean_intersect = icons.get("icon_boolean_intersect")
-            layout.operator("tp_ops.bool_intersect_edm_menu",text="Intersect", icon_value=button_boolean_intersect.icon_id) 
-
-            button_boolean_difference = icons.get("icon_boolean_difference")
-            layout.operator("tp_ops.bool_difference_edm_menu",text="Difference", icon_value=button_boolean_difference.icon_id)  
-
-            layout.separator()  
-
-            button_boolean_weld = icons.get("icon_boolean_weld")
-            layout.operator("mesh.intersect", "Weld", icon_value=button_boolean_weld.icon_id).use_separate = False
-
-            button_boolean_isolate = icons.get("icon_boolean_isolate")
-            layout.operator("mesh.intersect", "Isolate", icon_value=button_boolean_isolate.icon_id).use_separate = True   
-            
-            button_axis_xyz_planes = icons.get("icon_axis_xyz_planes")
-            layout.menu("tp_menu.intersetion_planes", text ="Planes", icon_value=button_axis_xyz_planes.icon_id)      
-
-            layout.separator()          
-           
-            button_boolean_facemerge = icons.get("icon_boolean_facemerge")
-            layout.operator("tp_ops.boolean_2d_union_edm_menu", text= "2d Union", icon_value=button_boolean_facemerge.icon_id)      
-
-
-            Display_Optimize = context.user_preferences.addons[__name__].preferences.tab_optimize
-            if Display_Optimize == 'on':  
-
-                layout.separator()
-                                    
-                button_select_link = icons.get("icon_select_link")
-                layout.operator("tp_ops.select_linked_edm",text="Select Linked", icon_value=button_select_link.icon_id)
-
-                button_remove_double = icons.get("icon_remove_double")
-                layout.operator("mesh.remove_doubles",text="Remove Doubles", icon_value=button_remove_double.icon_id)             
-
-                layout.operator("mesh.normals_make_consistent", text="Recalc. Normals", icon="SNAP_NORMAL")
-
-                layout.separator()          
-
-                button_origin_edm = icons.get("icon_origin_edm")
-                layout.operator("tp_ops.origin_edm",text="Set Origin", icon_value=button_origin_edm.icon_id)
-
 
 
         

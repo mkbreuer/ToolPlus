@@ -131,7 +131,7 @@ def get_default_presets():
     return presets
 
 
-def setup():
+def opengl_setup():
     # make sure there is directory for presets
     preset_subdir = "opengl_lights_presets"
     preset_directory = os.path.join(bpy.utils.user_resource('SCRIPTS'), "presets", preset_subdir)
@@ -223,7 +223,7 @@ class VIEW3D_MT_opengl_lights_presets(bpy.types.Menu):
 ######################################################
 
 def register():
-    setup()
+    opengl_setup()
 
     bpy.utils.register_module(__name__)
 
