@@ -22,6 +22,22 @@ from bpy.props import *
 from .icons.icons import load_icons
 
 
+# Object is a Canvas
+def isCanvas(_obj):
+    try:
+        if _obj["BoolToolRoot"]:
+            return True
+    except:
+        return False
+
+
+# Object is a Brush Tool Bool
+def isBrush(_obj):
+    try:
+        if _obj["BoolToolBrush"]:
+            return True
+    except:
+        return False
 
 # MAIN MENU #
 class VIEW3D_TP_Boolean_Menu(bpy.types.Menu):
@@ -82,24 +98,31 @@ class VIEW3D_TP_Boolean_Menu(bpy.types.Menu):
                 button_boolean_draw = icons.get("icon_boolean_draw")
                 layout.operator("tp_ops.draw_polybrush", text="BT-DrawPoly", icon_value=button_boolean_draw.icon_id)
 
+                
+                display_brush_config = context.user_preferences.addons[__package__].preferences.tab_btbool_props 
+                if display_brush_config == 'on':
+
+                    if (isCanvas(context.active_object)) or (isBrush(context.active_object)):
+
+                        layout.menu("tp_menu.bool_brush_menu", icon="CANCEL")
+
+                
                 if (isCanvas(context.active_object)) or (isBrush(context.active_object)):
+                    layout.separator()
 
-                    layout.menu("tp_menu.bool_brush_menu", icon="CANCEL")
-
-                layout.separator()
+                    if 0 < len(bpy.context.selected_objects) < 2 and bpy.context.object.mode == "OBJECT":
 
 
-                if 0 < len(bpy.context.selected_objects) < 2 and bpy.context.object.mode == "OBJECT":
-                    button_boolean_bevel = icons.get("icon_boolean_bevel")
-                    layout.operator("object.boolean_bevel", text="Brush BoolBevel", icon_value=button_boolean_bevel.icon_id)
+                        button_boolean_bevel = icons.get("icon_boolean_bevel")
+                        layout.operator("object.boolean_bevel", text="Brush BoolBevel", icon_value=button_boolean_bevel.icon_id)
 
-                    if bpy.data.objects.find('BOOLEAN_BEVEL_CURVE') != -1 and bpy.data.objects.find('BOOLEAN_BEVEL_GUIDE') != -1:
-                        layout.operator("object.boolean_custom_bevel", text="Custom BoolBevel", icon='MOD_BEVEL')
-                    
-                    layout.operator("tp_ops.cleanup_boolbevel", text="Finish BoolBevel", icon='PANEL_CLOSE')
-               
-                layout.separator() 
+                        if bpy.data.objects.find('BOOLEAN_BEVEL_CURVE') != -1 and bpy.data.objects.find('BOOLEAN_BEVEL_GUIDE') != -1:
+                            layout.operator("object.boolean_custom_bevel", text="Custom BoolBevel", icon='MOD_BEVEL')
+                        
+                        layout.operator("tp_ops.cleanup_boolbevel", text="Finish BoolBevel", icon='PANEL_CLOSE')
+                   
 
+            layout.separator() 
 
             button_boolean_carver = icons.get("icon_boolean_carver")
             layout.operator("object.carver", text="3d Carver", icon_value=button_boolean_carver.icon_id)
@@ -184,24 +207,6 @@ class VIEW3D_TP_Boolean_Menu(bpy.types.Menu):
                 button_origin_edm = icons.get("icon_origin_edm")
                 layout.operator("tp_ops.origin_edm",text="Set Origin", icon_value=button_origin_edm.icon_id)
 
-
-
-# Object is a Canvas
-def isCanvas(_obj):
-    try:
-        if _obj["BoolToolRoot"]:
-            return True
-    except:
-        return False
-
-
-# Object is a Brush Tool Bool
-def isBrush(_obj):
-    try:
-        if _obj["BoolToolBrush"]:
-            return True
-    except:
-        return False
 
 
 # MENU #

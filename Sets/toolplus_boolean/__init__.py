@@ -32,20 +32,20 @@ bl_info = {
 
 
 # LOAD UI #
-from toolplus_boolean.bool_gui    import (VIEW3D_TP_Edit_Boolean_Panel_TOOLS)
-from toolplus_boolean.bool_gui    import (VIEW3D_TP_Edit_Boolean_Panel_UI)
+from toolplus_boolean.bool_gui_main    import (VIEW3D_TP_Edit_Boolean_Panel_TOOLS)
+from toolplus_boolean.bool_gui_main    import (VIEW3D_TP_Edit_Boolean_Panel_UI)
+
+from toolplus_boolean.bool_gui_btools    import (VIEW3D_TP_BoolTool_Brush_TOOLS)
+from toolplus_boolean.bool_gui_btools    import (VIEW3D_TP_BoolTool_Brush_UI)
+
+from toolplus_boolean.bool_gui_btprops    import (VIEW3D_TP_BoolTool_BViewer_TOOLS)
+from toolplus_boolean.bool_gui_btprops    import (VIEW3D_TP_BoolTool_BViewer_UI)
+
+from toolplus_boolean.bool_gui_btprops    import (VIEW3D_TP_BoolTool_Config_TOOLS)
+from toolplus_boolean.bool_gui_btprops    import (VIEW3D_TP_BoolTool_Config_UI)
 
 from toolplus_boolean.bool_menu   import (VIEW3D_TP_Boolean_Menu)
 from toolplus_boolean.bool_menu   import (VIEW3D_TP_BoolTool_Brush_Menu)
-
-from toolplus_boolean.bool_booltools3    import (BoolTool_Brush_TOOLS)
-from toolplus_boolean.bool_booltools3    import (BoolTool_Brush_UI)
-
-from toolplus_boolean.bool_booltools3    import (BoolTool_BViewer_TOOLS)
-from toolplus_boolean.bool_booltools3    import (BoolTool_BViewer_UI)
-
-from toolplus_boolean.bool_booltools3    import (BoolTool_Config_TOOLS)
-from toolplus_boolean.bool_booltools3    import (BoolTool_Config_UI)
 
 
 # LOAD PROPS #
@@ -88,8 +88,7 @@ from bpy.types import AddonPreferences, PropertyGroup
 # UI REGISTRY #
 def update_panel_position(self, context):
     try:
-        bpy.utils.unregister_class(VIEW3D_TP_Edit_Boolean_Panel_UI)
-        
+        bpy.utils.unregister_class(VIEW3D_TP_Edit_Boolean_Panel_UI)        
         bpy.utils.unregister_class(VIEW3D_TP_Edit_Boolean_Panel_TOOLS)
         
     except:
@@ -100,64 +99,78 @@ def update_panel_position(self, context):
     except:
         pass
     
-    if context.user_preferences.addons[__name__].preferences.tab_location == 'tools':
+
+    if context.user_preferences.addons[__name__].preferences.tab_location_main == 'tools':
      
-        VIEW3D_TP_Edit_Boolean_Panel_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category
-    
+        VIEW3D_TP_Edit_Boolean_Panel_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_main
         bpy.utils.register_class(VIEW3D_TP_Edit_Boolean_Panel_TOOLS)
     
-    else:
+    if context.user_preferences.addons[__name__].preferences.tab_location_main == 'ui':
         bpy.utils.register_class(VIEW3D_TP_Edit_Boolean_Panel_UI)
-  
+
+    if context.user_preferences.addons[__name__].preferences.tab_location_main == 'off':  
+        pass
 
 
 def update_panel_position_brush(self, context):
     try:
-        bpy.utils.unregister_class(BoolTool_Brush_UI)
-        bpy.utils.unregister_class(BoolTool_BViwer_UI)
-        bpy.utils.unregister_class(BoolTool_Config_UI)
-        
-        bpy.utils.unregister_class(BoolTool_Brush_TOOLS)
-        bpy.utils.unregister_class(BoolTool_BViwer_TOOLS)
-        bpy.utils.unregister_class(BoolTool_Config_TOOLS)        
+        bpy.utils.unregister_class(VIEW3D_TP_BoolTool_Brush_UI)        
+        bpy.utils.unregister_class(VIEW3D_TP_BoolTool_Brush_TOOLS)      
     except:
         pass
     
     try:
-        bpy.utils.unregister_class(BoolTool_Brush_UI)
-        bpy.utils.unregister_class(BoolTool_BViwer_UI)
-        bpy.utils.unregister_class(BoolTool_Config_UI)
-    except:
-        pass
-    
-    try:
-        pass
+        bpy.utils.unregister_class(VIEW3D_TP_BoolTool_Brush_UI)
     except:
         pass
 
     if context.user_preferences.addons[__name__].preferences.tab_location_brush == 'tools':
      
-        BoolTool_Brush_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_brush
-        BoolTool_BViwer_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_brush
-        BoolTool_Config_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_brush
-    
-        bpy.utils.register_class(BoolTool_Brush_UI)
-        bpy.utils.register_class(BoolTool_BViwer_TOOLS)
-        bpy.utils.register_class(BoolTool_Config_TOOLS)
+        VIEW3D_TP_BoolTool_Brush_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_brush
+        bpy.utils.register_class(VIEW3D_TP_BoolTool_Brush_TOOLS)
     
     if context.user_preferences.addons[__name__].preferences.tab_location_brush == 'ui':
-        bpy.utils.register_class(BoolTool_Brush_UI)
-        bpy.utils.register_class(BoolTool_BViwer_UI)
-        bpy.utils.register_class(BoolTool_Config_UI)
+        bpy.utils.register_class(VIEW3D_TP_BoolTool_Brush_UI)
     
     if context.user_preferences.addons[__name__].preferences.tab_location_brush == 'off':
         pass
 
 
+def update_panel_position_props(self, context):
+    try:
+        bpy.utils.unregister_class(VIEW3D_TP_BoolTool_BViewer_UI)
+        bpy.utils.unregister_class(VIEW3D_TP_BoolTool_Config_UI)
+
+        bpy.utils.unregister_class(VIEW3D_TP_BoolTool_BViewer_TOOLS)
+        bpy.utils.unregister_class(VIEW3D_TP_BoolTool_Config_TOOLS)        
+    except:
+        pass
+    
+    try:
+        bpy.utils.unregister_class(VIEW3D_TP_BoolTool_BViewer_UI)
+        bpy.utils.unregister_class(VIEW3D_TP_BoolTool_Config_UI)
+    except:
+        pass
+
+    if context.user_preferences.addons[__name__].preferences.tab_location_props == 'tools':
+     
+        VIEW3D_TP_BoolTool_BViewer_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_props
+        VIEW3D_TP_BoolTool_Config_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_props
+    
+        bpy.utils.register_class(VIEW3D_TP_BoolTool_BViewer_TOOLS)
+        bpy.utils.register_class(VIEW3D_TP_BoolTool_Config_TOOLS)
+    
+    if context.user_preferences.addons[__name__].preferences.tab_location_props == 'ui':
+        bpy.utils.register_class(VIEW3D_TP_BoolTool_BViewer_UI)
+        bpy.utils.register_class(VIEW3D_TP_BoolTool_Config_UI)
+    
+    if context.user_preferences.addons[__name__].preferences.tab_location_props == 'off':
+        pass
+
 
 # TOOLS REGISTRY #
 def update_tools(self, context):
-   
+
     try:
         return True
     except:
@@ -168,6 +181,7 @@ def update_tools(self, context):
 
     if context.user_preferences.addons[__name__].preferences.tab_display_tools == 'off':
         pass    
+
 
 
 # MENU REGISTRY #
@@ -227,11 +241,12 @@ class TP_Panels_Preferences(AddonPreferences):
                default='info')
 
     #Tab Location           
-    tab_location = EnumProperty(
+    tab_location_main = EnumProperty(
         name = 'Panel Location',
         description = 'save user settings and restart blender after switching the panel location',
         items=(('tools', 'Tool Shelf', 'place panel in the tool shelf [T]'),
-               ('ui', 'Property Shelf', 'place panel in the property shelf [N]')),
+               ('ui', 'Property Shelf', 'place panel in the property shelf [N]'),
+               ('off', 'Off Shelf', 'enable or disable panel in the shelf')),
                default='tools', update = update_panel_position)
 
     tab_location_brush = EnumProperty(
@@ -240,7 +255,15 @@ class TP_Panels_Preferences(AddonPreferences):
         items=(('tools', 'Tool Shelf', 'place panel in the tool shelf [T]'),
                ('ui', 'Property Shelf', 'place panel in the property shelf [N]'),
                ('off', 'Off Shelf', 'enable or disable panel in the shelf')),
-               default='off', update = update_panel_position_brush)
+               default='tools', update = update_panel_position_brush)
+
+    tab_location_props = EnumProperty(
+        name = 'Panel Location',
+        description = 'save user settings and restart blender after switching the panel location',
+        items=(('tools', 'Tool Shelf', 'place panel in the tool shelf [T]'),
+               ('ui', 'Property Shelf', 'place panel in the property shelf [N]'),
+               ('off', 'Off Shelf', 'enable or disable panel in the shelf')),
+               default='off', update = update_panel_position_props)
 
     tab_menu_view = EnumProperty(
         name = '3d View Menu',
@@ -256,6 +279,9 @@ class TP_Panels_Preferences(AddonPreferences):
     tab_btbool_brush = EnumProperty(name = 'Display Tools', description = 'on / off',
                   items=(('on', 'Brush Boolean on', 'enable tools'), ('off', 'Brush Boolean off', 'disable tools')), default='on', update = update_tools)
 
+    tab_btbool_props = EnumProperty(name = 'Display Tools', description = 'on / off',
+                  items=(('on', 'Brush Props on', 'enable tools'), ('off', 'Brush Props off', 'disable tools')), default='off', update = update_tools)
+
     tab_bool_intersect = EnumProperty(name = 'Display Tools', description = 'on / off',
                   items=(('on', 'Edit Intersection on', 'enable tools'), ('off', 'Edit Intersection off', 'disable tools')), default='on', update = update_tools)
 
@@ -265,8 +291,9 @@ class TP_Panels_Preferences(AddonPreferences):
 
     tools_category_menu = bpy.props.BoolProperty(name = "Boolean Menu", description = "enable or disable menu", default=True, update = update_menu)
     
-    tools_category = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position)
+    tools_category_main = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position)
     tools_category_brush = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position_brush)
+    tools_category_props = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position_props)
 
     fast_transform = bpy.props.BoolProperty(name="Fast Transformations", default=False, update=UpdateBoolTool_Pref, description="Replace the Transform HotKeys (G,R,S) for a custom version that can optimize the visualization of Brushes")
     make_vertex_groups = bpy.props.BoolProperty(name="Make Vertex Groups", default=False, description="When Apply a Brush to de Object it will create a new vertex group of the new faces" )
@@ -300,6 +327,7 @@ class TP_Panels_Preferences(AddonPreferences):
             row = box.column_flow(4)
             row.prop(self, 'tab_bool_direct', expand=True)
             row.prop(self, 'tab_btbool_brush', expand=True)
+            row.prop(self, 'tab_btbool_props', expand=True)
             row.prop(self, 'tab_bool_intersect', expand=True)
             row.prop(self, 'tab_optimize', expand=True)
 
@@ -318,14 +346,14 @@ class TP_Panels_Preferences(AddonPreferences):
             row.label("Location Direct Boolean: ")
             
             row= box.row(1)
-            row.prop(self, 'tab_location', expand=True)
+            row.prop(self, 'tab_location_main', expand=True)
                                    
-            if self.tab_location == 'tools':
+            if self.tab_location_main == 'tools':
                 
                 box.separator()
                 
                 row = box.row(1)                                                
-                row.prop(self, "tools_category")
+                row.prop(self, "tools_category_main")
 
             box.separator()
             
@@ -344,18 +372,32 @@ class TP_Panels_Preferences(AddonPreferences):
                 row = box.row(1)                
                 row.prop(self, "tools_category_brush")
                 
-            if self.tab_location_brush == 'off':                
-
-                box.separator()
-                
-                row = box.row()
-                row.label(text="! keys hidden with next reboot !", icon ="INFO")
-
             box.separator()
             
-            row = layout.row()
-            row.label(text="! please reboot blender after changing the panel location !", icon ="INFO")
 
+            box = layout.box().column(1)
+             
+            row = box.row(1)  
+            row.label("Location Brush Properties: ")
+            
+            row= box.row(1)
+            row.prop(self, 'tab_location_props', expand=True)
+                       
+            if self.tab_location_props == 'tools':
+                
+                box.separator()
+                
+                row = box.row(1)                
+                row.prop(self, "tools_category_props")
+                
+
+            box.separator()
+
+            row = layout.row()
+            row.label(text="! save user settings for permant location change !", icon ="INFO")
+
+            box.separator() 
+            
 
         #Keys
         if self.prefs_tabs == 'keys':
@@ -553,6 +595,7 @@ def register():
     update_menu(None, bpy.context)
     update_panel_position(None, bpy.context)
     update_panel_position_brush(None, bpy.context)
+    update_panel_position_props(None, bpy.context)
 
 
 
@@ -583,6 +626,8 @@ if __name__ == "__main__":
     register()
         
         
+
+
 
 
 
