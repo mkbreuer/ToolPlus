@@ -53,8 +53,8 @@ from toolplus_boolean.bool_carver         import (CarverPrefs)
 
 
 # LOAD ICONS #
-from . icons.icons                  import load_icons
-from . icons.icons                  import clear_icons
+from . icons.icons   import load_icons
+from . icons.icons   import clear_icons
 
 ##################################
 
@@ -279,6 +279,12 @@ class TP_Panels_Preferences(AddonPreferences):
     tab_btbool_brush = EnumProperty(name = 'Display Tools', description = 'on / off',
                   items=(('on', 'Brush Boolean on', 'enable tools'), ('off', 'Brush Boolean off', 'disable tools')), default='on', update = update_tools)
 
+    tab_btbool_brush_simple = EnumProperty(name = 'Display Tools', description = 'on / off',
+                  items=(('on', 'All Boolean Brushes on', 'enable tools'), ('off', 'All Boolean Brushes off', 'disable tools')), default='on', update = update_tools)
+
+    tab_btbool_brush_simple_pl = EnumProperty(name = 'Display Tools', description = 'on / off',
+                  items=(('on', 'All Boolean Brushes on', 'enable tools'), ('off', 'All Boolean Brushes off', 'disable tools')), default='on', update = update_tools)
+
     tab_btbool_props = EnumProperty(name = 'Display Tools', description = 'on / off',
                   items=(('on', 'Brush Props on', 'enable tools'), ('off', 'Brush Props off', 'disable tools')), default='off', update = update_tools)
 
@@ -288,6 +294,13 @@ class TP_Panels_Preferences(AddonPreferences):
     tab_optimize = EnumProperty(name = 'Display Tools', description = 'on / off',
                   items=(('on', 'Optimize on', 'enable tools'), ('off', 'Optimize off', 'disable tools')), default='off', update = update_tools)
  
+    tab_direct_keys = EnumProperty(name = 'Display Tools', description = 'on / off',
+                  items=(('on', 'HotKeys on', 'enable tools'), ('off', 'HotKeys off', 'disable tools')), default='on', update = update_tools)
+
+    tab_brush_keys = EnumProperty(name = 'Display Tools', description = 'on / off',
+                  items=(('on', 'HotKeys on', 'enable tools'), ('off', 'HotKeys off', 'disable tools')), default='on', update = update_tools)
+
+
 
     tools_category_menu = bpy.props.BoolProperty(name = "Boolean Menu", description = "enable or disable menu", default=True, update = update_menu)
     
@@ -303,6 +316,7 @@ class TP_Panels_Preferences(AddonPreferences):
 
     def draw(self, context):
         layout = self.layout
+        icons = load_icons()   
         
         #Info
         row= layout.row(align=True)
@@ -313,24 +327,69 @@ class TP_Panels_Preferences(AddonPreferences):
             row.label(text="Welcome to T+ Boolean!")
 
             row = layout.column()
-            row.label(text="This is custom version of different boolean addons.")
-            row.label(text="It allows you to boolean more directly.")
-            row.label(text="If needed can enabel or disable Brush Boolean: as Panel, in Menu and with HotKeys.")
-            row.label(text="Also choose between toolshelf [T] or property shelf [N].")
-            row.label(text="Have Fun! ;)")
+            row.label(text="This is a collection of different boolean addons.")
+            row.label(text="BoolTron / BoolTools / Bevel after Boolean / 2D Union")
+            row.label(text="It allows you to boolean directly or with booltool brushes and bevel it after.")
+            row.label(text="You can enabel and disable all Panel separatly or choose between toolshelf [T] or property shelf [N].")
+            row.label(text="For a faster workflow reduced the tools in menu or panel or activate the NUMPAD HotKeys.")
+            row.label(text="Need more Informations: please follow the links in the urls tab")
+            row.label(text="And don't forget: Have Fun! ;)")
 
         #Tools
         if self.prefs_tabs == 'toolset':
 
             box = layout.box().column(1)
-
-            row = box.column_flow(4)
+           
+            row = box.row(1)
+            row.label(text="Menu Tools:")
             row.prop(self, 'tab_bool_direct', expand=True)
-            row.prop(self, 'tab_btbool_brush', expand=True)
-            row.prop(self, 'tab_btbool_props', expand=True)
-            row.prop(self, 'tab_bool_intersect', expand=True)
-            row.prop(self, 'tab_optimize', expand=True)
 
+            box.separator()  
+            box.separator()  
+
+            row = box.row(1)
+            row.label(text="")
+            row.prop(self, 'tab_bool_intersect', expand=True)
+
+            box.separator()  
+            box.separator()  
+
+            row = box.row(1)
+            row.label(text="")
+            row.prop(self, 'tab_btbool_brush', expand=True)
+
+            box.separator()  
+            box.separator()  
+
+            row = box.row(1)
+            row.label(text="")
+            row.prop(self, 'tab_btbool_props', expand=True)
+             
+            box.separator()  
+            box.separator()  
+
+            row = box.row(1)
+            row.label(text="Panel & Menu Tools:")
+            row.prop(self, 'tab_optimize', expand=True) 
+
+            box.separator()    
+            box.separator()    
+                            
+            row = box.row(1)
+            row.label(text="Menu Tools:")
+            row.prop(self, 'tab_btbool_brush_simple', expand=True)   
+
+            box.separator()  
+            box.separator()  
+
+            row = box.row(1)            
+            row.label(text="Panel Tools: Boolean BT")
+            row.prop(self, 'tab_btbool_brush_simple_pl', expand=True)         
+
+
+            box.separator()  
+            box.separator()  
+       
             row = layout.row()
             row.label(text="! save user settings for permant on/off !", icon ="INFO")
 
@@ -401,26 +460,11 @@ class TP_Panels_Preferences(AddonPreferences):
 
         #Keys
         if self.prefs_tabs == 'keys':
-            box = layout.box().column(1)
-             
-            row = box.column(1)  
-            
-            row.label("Experimental Features:")
-            
-            row.separator()
-                       
-            row.prop(self, "fast_transform")
-            row.prop(self, "use_wire", text="Use Wire Instead Of Bbox")
 
             box = layout.box().column(1)
              
-            row = box.column(1)  
-            row.label("Boolean Menu:", icon ="COLLAPSEMENU") 
-            
-            row.separator()           
-            row.label("Menu: 'T', 'PRESS', shift=True")
-
-            row = box.row(1)          
+            row = box.row(1)  
+            row.label("BoolMenu: [SHIFT+T]", icon ="COLLAPSEMENU")         
             row.prop(self, 'tab_menu_view', expand=True)
             
             if self.tab_menu_view == 'off':
@@ -428,60 +472,117 @@ class TP_Panels_Preferences(AddonPreferences):
                 row = box.row(1) 
                 row.label(text="! menu hidden with next reboot durably!", icon ="INFO")
 
-            box = layout.box().column(1)
-             
-            row = box.column(1)              
-            row.label("Direct Operators:", icon ="MOD_WIREFRAME")
-            
-            row.separator()
-            
-            row.label("Direct_Union: 'NUMPAD_PLUS', 'PRESS', ctrl=True")
-            row.label("Direct_Difference: 'NUMPAD_MINUS', 'PRESS', ctrl=True")
-            row.label("Direct_Intersect: 'NUMPAD_ASTERIX', 'PRESS', ctrl=True")
-            row.label("Direct_Slice: 'NUMPAD_SLASH', 'PRESS', ctrl=True")
-            
-            row.separator()
-            
-            row.label("Editmode:")
-            row.separator()
-
-            row.label("Direct_Union: 'NUMPAD_PLUS', 'PRESS', shift=True")
-            row.label("Direct_Difference: 'NUMPAD_MINUS', 'PRESS', shift=True")
-            row.label("Direct_Intersect: 'NUMPAD_ASTERIX', 'PRESS', shift=True")
-            row.label("Direct_Slice: 'NUMPAD_SLASH', 'PRESS', shift=True")
+            box.separator()
 
             box = layout.box().column(1)
              
-            row = box.column(1)              
-            row.label("Brush Operators:", icon ="MOD_MESHDEFORM")
+            row = box.row(1)              
+            row.label("Direct Boolean:", icon ="INFO") 
+            row.prop(self, 'tab_direct_keys', expand=True)
                                    
-            row.separator()
+            box.separator()
+            box.separator()
+
+            row = box.column_flow(2)              
             
-            row.label("Union: 'NUMPAD_PLUS', 'PRESS', ctrl=True, shift=True")
-            row.label("Diff: 'NUMPAD_MINUS', 'PRESS', ctrl=True, shift=True")
-            row.label("Intersect: 'NUMPAD_ASTERIX', 'PRESS', ctrl=True, shift=True")
-            row.label("Slice Rebool: 'NUMPAD_SLASH', 'PRESS', ctrl=True, shift=True")
-          
-            row.separator()
+            # column 1
+            row.label("Objectmode:")
             
-            row.label("BTool_BrushToMesh: 'NUMPAD_ENTER', 'PRESS', ctrl=True")
-            row.label("BTool_AllBrushToMesh: 'NUMPAD_ENTER', 'PRESS', ctrl=True, shift=True")
+            button_boolean_union = icons.get("icon_boolean_union")            
+            row.label("Direct_Union: [CTR+NUMPAD PLUS]", icon_value=button_boolean_union.icon_id)
+            
+            button_boolean_intersect = icons.get("icon_boolean_intersect")
+            row.label("Intersect: [CTRL+NUMPAD ASTERIX]", icon_value=button_boolean_intersect.icon_id)
+
+            button_boolean_difference = icons.get("icon_boolean_difference")
+            row.label("Difference: [CTRL+NUMPAD MINUS]", icon_value=button_boolean_difference.icon_id)
+
+            button_boolean_rebool = icons.get("icon_boolean_rebool")
+            row.label("SliceRebool: [CTRL+NUMPAD_SLASH]", icon_value=button_boolean_rebool.icon_id)
+
+            # column 2
+            row.label("Editmode:")
+     
+            button_boolean_union = icons.get("icon_boolean_union")
+            row.label("Union: [SHIFT+NUMPAD _PLUS]", icon_value=button_boolean_union.icon_id)
+            
+            button_boolean_intersect = icons.get("icon_boolean_intersect")
+            row.label("Intersect: [SHIFT+NUMPAD_ASTERIX]", icon_value=button_boolean_intersect.icon_id)
+            
+            button_boolean_difference = icons.get("icon_boolean_difference")
+            row.label("Difference: [SHIFT+NUMPAD_MINUS]", icon_value=button_boolean_difference.icon_id)
+            
+            button_boolean_rebool = icons.get("icon_boolean_rebool")
+            row.label("SliceRebool: [SHIFT+NUMPAD_SLASH]", icon_value=button_boolean_rebool.icon_id)
+       
+            box.separator()
+
+
+            box = layout.box().column(1)
+
+            row = box.row(1)              
+            row.label("Brush Boolean", icon ="INFO") 
+            row.prop(self, 'tab_brush_keys', expand=True)
+                                   
+            box.separator()
+            box.separator()
+
+ 
+            # column 1
+            row = box.column(1)               
+            split = row.split(percentage=0.5)
+
+            col = split.column()            
+            button_boolean_union_brush = icons.get("icon_boolean_union_brush")
+            col.label("BT-Union: [CTRL+SHIFT+NUMPAD PLUS]", icon_value=button_boolean_union_brush.icon_id)
+            
+            button_boolean_intersect_brush = icons.get("icon_boolean_intersect_brush")
+            col.label("BT-Intersect: [CTRL+SHIFT+NUMPAD ASTERIX]", icon_value=button_boolean_intersect_brush.icon_id)
+            
+            button_boolean_difference_brush = icons.get("icon_boolean_difference_brush")
+            col.label("BT-Difference: [CTRL+SHIFT+NUMPAD MINUS]", icon_value=button_boolean_difference_brush.icon_id)
+            
+            button_boolean_rebool_brush = icons.get("icon_boolean_rebool_brush")
+            col.label("BT-SliceRebool: [CTRL+SHIFT+NUMPAD SLASH]", icon_value=button_boolean_rebool_brush.icon_id)
+                      
+            col.separator()
+
+            col.label("Apply Brush: [CTRL+NUMPAD ENTER]", icon = 'MOD_LATTICE')
+            col.label("Apply All: [CTRL+SHIFT+NUMPAD ENTER]", icon = 'MOD_LATTICE')
+
+            
+            # column 2
+            split = split.split(percentage=0.5)
+           
+            col = split.column()              
+            col.label("Experimental BoolTool Features:")
+            
+            col.separator()
+                       
+            col.prop(self, "fast_transform")
+            col.prop(self, "use_wire", text="Use Wire Instead Of Bbox")
+         
+            box.separator()
 
 
         #Weblinks
         if self.prefs_tabs == 'url':
-            row = layout.row()
-            row.operator('wm.url_open', text = 'Booltron', icon = 'HELP').url = "https://github.com/mrachinskiy/blender-addon-booltron"
-            row.operator('wm.url_open', text = 'BoolTools', icon = 'HELP').url = "https://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/Object/BoolTool"
-            row.operator('wm.url_open', text = 'Boolean 2D Union', icon = 'HELP').url = "https://blenderartists.org/forum/showthread.php?338703-Addon-Boolean-2D-Union"
-            row.operator('wm.url_open', text = 'Bevel after Boolean', icon = 'HELP').url = "https://blenderartists.org/forum/showthread.php?434699-Bevel-after-Boolean"
+            row = layout.column_flow(2)
+       
+            # column 1
+            row.operator('wm.url_open', text = 'Booltron', icon = 'INFO').url = "https://github.com/mrachinskiy/blender-addon-booltron"
+            row.operator('wm.url_open', text = 'BoolTools', icon = 'INFO').url = "https://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/Object/BoolTool"
             row.operator('wm.url_open', text = 'Thread', icon = 'BLENDER').url = "https://blenderartists.org/forum/showthread.php?410098-Addon-T-Boolean&p=3118012#post3118012"
+
+            # column 2
+            row.operator('wm.url_open', text = '2D Union', icon = 'INFO').url = "https://blenderartists.org/forum/showthread.php?338703-Addon-Boolean-2D-Union"
+            row.operator('wm.url_open', text = 'Bevel after Boolean', icon = 'INFO').url = "https://blenderartists.org/forum/showthread.php?434699-Bevel-after-Boolean"
             row.operator('wm.url_open', text = 'GitHub', icon = 'RECOVER_LAST').url = "https://github.com/mkbreuer/ToolPlus"
 
 
 
 
-# Hide boolean objects
+# BOOLTOOL: Hide boolean objects #
 def update_BoolHide(self, context):
     ao = context.scene.objects.active
     objs = [i.object for i in ao.modifiers if i.type == 'BOOLEAN']
@@ -492,11 +593,11 @@ def update_BoolHide(self, context):
 
 
         
-# register Keymaps
+# REGISTRY KEYMAPS #
 addon_keymaps = []
 addon_keymapsFastT = []
 
-# booltool: Fast Transform HotKeys Register
+# BOOLTOOL: Fast Transform HotKeys Register #
 def RegisterFastT():
     wm = bpy.context.window_manager
     km = wm.keyconfigs.addon.keymaps.new(name='Object Mode', space_type='EMPTY')
@@ -514,7 +615,7 @@ def RegisterFastT():
     addon_keymapsFastT.append((km, kmi))
 
 
-# booltool: Fast Transform HotKeys UnRegister
+# BOOLTOOL: Fast Transform HotKeys UnRegister #
 def UnRegisterFastT():
     wm = bpy.context.window_manager
     km = wm.keyconfigs.addon.keymaps.new(name='Object Mode', space_type='EMPTY')
@@ -524,8 +625,7 @@ def UnRegisterFastT():
     addon_keymapsFastT.clear()
 
 
-# register
-
+# REGISTRY #
 import traceback
 
 def register():
@@ -539,47 +639,40 @@ def register():
 
     # booltool: Scene variables
     bpy.types.Scene.BoolHide = bpy.props.BoolProperty(default=False, description='Hide boolean objects', update=update_BoolHide)
-    
-    # booltool: Handlers
-    #bpy.app.handlers.scene_update_post.append(HandleScene)
+
 
     try: bpy.utils.register_module(__name__)
     except: traceback.print_exc()
         
-    # booltool: create the booleanhotkey in opjectmode
-    wm = bpy.context.window_manager
-    km = wm.keyconfigs.addon.keymaps.new(name='Object Mode')
-
-    # booltool: Direct Operators
-    kmi = km.keymap_items.new("btool.direct_union", 'NUMPAD_PLUS', 'PRESS', ctrl=True)
-    kmi = km.keymap_items.new("btool.direct_difference", 'NUMPAD_MINUS', 'PRESS', ctrl=True)
-    kmi = km.keymap_items.new("btool.direct_intersect", 'NUMPAD_ASTERIX', 'PRESS', ctrl=True)
-    kmi = km.keymap_items.new("btool.direct_slice", 'NUMPAD_SLASH', 'PRESS', ctrl=True)
-    
-    
-    # edit: create the boolean menu hotkey in editmode
-    km = wm.keyconfigs.addon.keymaps.new(name='Mesh')
-
-    # edit: Direct Operators
-    kmi = km.keymap_items.new("tp_ops.bool_union", 'NUMPAD_PLUS', 'PRESS', shift=True)
-    kmi = km.keymap_items.new("tp_ops.bool_difference", 'NUMPAD_MINUS', 'PRESS', shift=True)
-    kmi = km.keymap_items.new("tp_ops.bool_intersect", 'NUMPAD_ASTERIX', 'PRESS', shift=True)
-    kmi = km.keymap_items.new("bpt.boolean_2d_union", 'NUMPAD_SLASH', 'PRESS', shift=True)
-
-
-    #km = wm.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')
-
-    #kmi = km.keymap_items.new('wm.call_menu', 'T', 'PRESS', shift=True) #ctrl=True, alt=True, 
-    #kmi.properties.name = 'OBJECT_MT_BoolTool_Menu'
-
-
-    active_brush = context.user_preferences.addons[__name__].preferences.tab_location_brush 
-    if active_brush == 'tools' or active_brush == 'ui':
+    # direct bool: create the hotkey for objectmode and editmode
+    bool_direct_keys = context.user_preferences.addons[__name__].preferences.tab_direct_keys
+    if bool_direct_keys == 'on':
 
         wm = bpy.context.window_manager
-        km = wm.keyconfigs.addon.keymaps.new(name='Object Mode')
 
-        # booltool: Brush Operators
+        # objectmode
+        km = wm.keyconfigs.addon.keymaps.new(name='Object Mode')
+        kmi = km.keymap_items.new("btool.direct_union", 'NUMPAD_PLUS', 'PRESS', ctrl=True)
+        kmi = km.keymap_items.new("btool.direct_difference", 'NUMPAD_MINUS', 'PRESS', ctrl=True)
+        kmi = km.keymap_items.new("btool.direct_intersect", 'NUMPAD_ASTERIX', 'PRESS', ctrl=True)
+        kmi = km.keymap_items.new("btool.direct_slice", 'NUMPAD_SLASH', 'PRESS', ctrl=True)
+               
+        # editmode
+        km = wm.keyconfigs.addon.keymaps.new(name='Mesh')
+        kmi = km.keymap_items.new("tp_ops.bool_union", 'NUMPAD_PLUS', 'PRESS', shift=True)
+        kmi = km.keymap_items.new("tp_ops.bool_difference", 'NUMPAD_MINUS', 'PRESS', shift=True)
+        kmi = km.keymap_items.new("tp_ops.bool_intersect", 'NUMPAD_ASTERIX', 'PRESS', shift=True)
+        kmi = km.keymap_items.new("bpt.boolean_2d_union", 'NUMPAD_SLASH', 'PRESS', shift=True)
+
+
+    # brush bool: create the hotkey for objectmode
+    bool_brush_keys = context.user_preferences.addons[__name__].preferences.tab_brush_keys
+    if bool_brush_keys == 'on':
+
+        wm = bpy.context.window_manager
+
+        # objectmode
+        km = wm.keyconfigs.addon.keymaps.new(name='Object Mode')        
         kmi = km.keymap_items.new("btool.boolean_union", 'NUMPAD_PLUS', 'PRESS', ctrl=True, shift=True)
         kmi = km.keymap_items.new("btool.boolean_diff", 'NUMPAD_MINUS', 'PRESS', ctrl=True, shift=True)
         kmi = km.keymap_items.new("btool.boolean_inters", 'NUMPAD_ASTERIX', 'PRESS', ctrl=True, shift=True)

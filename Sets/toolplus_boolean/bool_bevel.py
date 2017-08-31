@@ -1,4 +1,4 @@
-import time
+﻿import time
 import random
 
 time_start = False
@@ -31,7 +31,7 @@ class ObjectBooleanBevelBridge(bpy.types.Operator):
     """Create the bridge on Object"""
     bl_idname = "object.boolean_bevel_bridge"
     bl_label = "Boolean Bevel Bridge"
-    bl_options = {'REGISTER', 'UNDO'}
+    bl_options = {'REGISTER', 'UNDO', 'PRESET'}
 
     number_cuts = bpy.props.IntProperty(name="Bridge Segments", default=5, min=4, max=1000)
     relax = bpy.props.EnumProperty(name="Relax",
@@ -68,63 +68,119 @@ class ObjectBooleanBevel(bpy.types.Operator):
     """Create the bevel on Object"""
     bl_idname = "object.boolean_bevel"
     bl_label = "Boolean Bevel"
-    bl_options = {'REGISTER', 'UNDO'}
+    bl_options = {'REGISTER', 'UNDO', 'PRESET'}
 
     def draw(self, context):
 
         layout = self.layout
+
         box = layout.box()
-        box.label("Show/Hide:")
+
         row = box.row(align=True)
-        row.alignment = 'CENTER'
+        row.label("Show/Hide:") 
         row.prop(self, "wire")
         row.prop(self, "preview_curve")
 
-        box = layout.box()
+
+        ###
+        box = layout.box()      
         box.label("Basic Parameters:")
+       
         box.prop(self, "change_operation")
-        box.prop(self, "change_subdivide")
+
+        box.separator()
+
+        row = box.row(align=True)
+        row.prop(self, "change_subdivide", text="Sudivide")   
+        row.prop(self, "value_radius", text="Radius")
+        
         if self.change_subdivide:
-            box.prop(self, "subdiv_a")
-            box.prop(self, "subdiv_b")
-        box.prop(self, "value_radius")
+
+            row = box.row(align=True)
+            row.prop(self, "subdiv_a", text="SDiv A")
+            row.prop(self, "subdiv_b", text="SDiv B")
+        
+
+        row = box.row(align=True)
+        row.prop(self, "fillet_profile", text="Profile")
+        row.prop(self, "fillet_segments", text="Segments")
+    
         box.separator()
-        box.prop(self, "fillet_profile")
-        box.prop(self, "fillet_segments")
-        box.separator()
-        box.prop(self, "smooth_bevel")
-        if self.smooth_bevel:
-            box.prop(self, "smooth_bevel_value")
-            box.prop(self, "smooth_bevel_step")
-        box.prop(self, "use_material")
+
+        ###
         box = layout.box()
         box.label("Curve Parameters:")
-        box.prop(self, "relax")
-        box.prop(self, "repeat")
-        box.prop(self, "simplify")
-        box.prop(self, "subdivide")
+      
         row = box.row(align=True)
         row.alignment = 'EXPAND'
         row.prop(self, "sharp")
-        row.prop(self, "sharp_angle")
-        box.prop(self, "sides")
-        box.prop(self, "interpolation")
-        box.prop(self, "vertex_remove")
+        row.prop(self, "sharp_angle") 
+ 
+        box.separator()
+  
+        row = box.row(align=True)
+        row.label("Relax:") 
+        row.prop(self, "relax", text="")
+     
+        row = box.row(align=True) 
+        row.label("Relax Repeat:") 
+        row.prop(self, "repeat", text="")
 
+        row = box.row(align=True)
+        row.label("Interpolation:")        
+        row.prop(self, "interpolation", text="")
+
+        box.separator()
+  
+        row = box.row(align=True)
+        row.prop(self, "sides", text="Sides")        
+        row.prop(self, "vertex_remove", text="Remove")
+              
+        row = box.row(align=True)
+        row.prop(self, "simplify")
+        row.prop(self, "subdivide", text="SDiv Patch")
+     
+        box.separator()      
+
+
+        ###
         box = layout.box()
         box.label("Other Parameters:")
         box.prop(self, "fix_curve")
-        box.prop(self, "curve_tilt")
-        box.prop(self, "twist_mode")
-        box.prop(self, "smooth")
+   
+        row = box.row(align=True)
+        row.prop(self, "curve_tilt", text="Tilt")
+        row.prop(self, "smooth", text="Smooth")      
+
+        row = box.row(align=True)
+        row.label("Twist:") 
+        row.prop(self, "twist_mode", text="")
+       
+        row = box.row(align=True)
+        row.label("Path:")          
+        row.prop(self, "union_path", text="")
+
         box.separator()
-        box.prop(self, "union_path")
-        box.separator()
-        box.prop(self, "triangulate")
+
+        box.prop(self, "triangulate", text="Triangulate Ngons")
         if self.triangulate:
             box.prop(self, "method")
+       
+        box.separator()
 
+        ###
+        box = layout.box()
 
+        box.prop(self, "smooth_bevel")
+        if self.smooth_bevel:
+
+            row = box.row(align=True)
+            row.prop(self, "smooth_bevel_value", text="Value")
+            row.prop(self, "smooth_bevel_step", text="Steps")
+       
+        box.prop(self, "use_material", text="Random Material")
+
+        box.separator()
 
     interpolation = bpy.props.EnumProperty(name="Interpolation",
                                            items=(("cubic", "Cubic", "Natural cubic spline, smooth results"),
@@ -391,7 +447,7 @@ class ObjectBooleanBevelCustomEdge(bpy.types.Operator):
         # bpy.ops.object.boolean_bevel('INVOKE_DEFAULT')
         return {'FINISHED'}
 
-
+"""
 class BooleanBevelPanel(bpy.types.Panel):
     bl_label = "Boolean Bevel"
     bl_space_type = 'VIEW_3D'
@@ -411,7 +467,7 @@ class BooleanBevelPanel(bpy.types.Panel):
             if bpy.context.object.mode == "EDIT":
                 col.operator("object.boolean_bevel_custom_edge", text="Custom Edge", icon='EDGESEL')
                 col.operator("object.boolean_bevel_bridge", text="Bridge Edge", icon='EDGESEL')
-
+"""
 
 def prepare_object(scene, src_obj, change_subdivide, subdiv_a, subdiv_b, change_operation):
     print("Prepare start: %.4f sec" % (time.time() - time_start))
@@ -778,7 +834,7 @@ def clear_objects(scene, src_obj):
 
 
 def register():
-    bpy.utils.register_class(BooleanBevelPanel)
+    #bpy.utils.register_class(BooleanBevelPanel)
     bpy.utils.register_class(ObjectBooleanBevel)
     bpy.utils.register_class(ObjectBooleanCustomBevel)
     bpy.utils.register_class(ObjectBooleanBevelCustomEdge)
@@ -787,7 +843,7 @@ def register():
 
 
 def unregister():
-    bpy.utils.unregister_class(BooleanBevelPanel)
+    #bpy.utils.unregister_class(BooleanBevelPanel)
     bpy.utils.unregister_class(ObjectBooleanBevel)
     bpy.utils.unregister_class(ObjectBooleanCustomBevel)
     bpy.utils.unregister_class(ObjectBooleanBevelCustomEdge)

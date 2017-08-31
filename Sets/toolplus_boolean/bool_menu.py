@@ -41,7 +41,7 @@ def isBrush(_obj):
 
 # MAIN MENU #
 class VIEW3D_TP_Boolean_Menu(bpy.types.Menu):
-    bl_label = "Boolean"
+    bl_label = "BoolMenu"
     bl_idname = "VIEW3D_TP_Boolean_Menu"
 
     def draw(self, context):
@@ -83,28 +83,32 @@ class VIEW3D_TP_Boolean_Menu(bpy.types.Menu):
                 button_boolean_union_brush = icons.get("icon_boolean_union_brush")
                 layout.operator("tp_ops.tboolean_union", text="BT-Union", icon_value=button_boolean_union_brush.icon_id)            
                 
-                button_boolean_intersect_brush = icons.get("icon_boolean_intersect_brush")
-                layout.operator("tp_ops.tboolean_inters", text="BT-Intersect", icon_value=button_boolean_intersect_brush.icon_id)
                 
-                button_boolean_difference_brush = icons.get("icon_boolean_difference_brush")
-                layout.operator("tp_ops.tboolean_diff", text="BT-Difference", icon_value=button_boolean_difference_brush.icon_id)
-                
-                layout.separator()
+                display_btbool_brush_simple = context.user_preferences.addons[__package__].preferences.tab_btbool_brush_simple 
+                if display_btbool_brush_simple == 'on':
 
-                button_boolean_rebool_brush = icons.get("icon_boolean_rebool_brush")
-                layout.operator("tp_ops.tboolean_slice", text="BT-SliceRebool", icon_value=button_boolean_rebool_brush.icon_id)
+                    button_boolean_intersect_brush = icons.get("icon_boolean_intersect_brush")
+                    layout.operator("tp_ops.tboolean_inters", text="BT-Intersect", icon_value=button_boolean_intersect_brush.icon_id)
+                    
+                    button_boolean_difference_brush = icons.get("icon_boolean_difference_brush")
+                    layout.operator("tp_ops.tboolean_diff", text="BT-Difference", icon_value=button_boolean_difference_brush.icon_id)
+                    
+                    layout.separator()
 
-                layout.operator_context = 'INVOKE_REGION_WIN'
-                button_boolean_draw = icons.get("icon_boolean_draw")
-                layout.operator("tp_ops.draw_polybrush", text="BT-DrawPoly", icon_value=button_boolean_draw.icon_id)
+                    button_boolean_rebool_brush = icons.get("icon_boolean_rebool_brush")
+                    layout.operator("tp_ops.tboolean_slice", text="BT-SliceRebool", icon_value=button_boolean_rebool_brush.icon_id)
 
-                
-                display_brush_config = context.user_preferences.addons[__package__].preferences.tab_btbool_props 
-                if display_brush_config == 'on':
+                    layout.operator_context = 'INVOKE_REGION_WIN'
+                    button_boolean_draw = icons.get("icon_boolean_draw")
+                    layout.operator("tp_ops.draw_polybrush", text="BT-DrawPoly", icon_value=button_boolean_draw.icon_id)
 
-                    if (isCanvas(context.active_object)) or (isBrush(context.active_object)):
+                    
+                    display_brush_config = context.user_preferences.addons[__package__].preferences.tab_btbool_props 
+                    if display_brush_config == 'on':
 
-                        layout.menu("tp_menu.bool_brush_menu", icon="CANCEL")
+                        if (isCanvas(context.active_object)) or (isBrush(context.active_object)):
+
+                            layout.menu("tp_menu.bool_brush_menu", icon="CANCEL")
 
                 
                 if (isCanvas(context.active_object)) or (isBrush(context.active_object)):

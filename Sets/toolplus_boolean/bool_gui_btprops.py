@@ -219,7 +219,7 @@ def draw_bt_config_panel_layout(self, context, layout):
 class VIEW3D_TP_BoolTool_BViewer_TOOLS(bpy.types.Panel):
     bl_category = "T+"
     bl_idname = "VIEW3D_TP_BoolTool_BViewer_TOOLS"
-    bl_label = "Brush Viewer"
+    bl_label = "BT Viewer"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
     bl_context = "objectmode"
@@ -256,7 +256,7 @@ class VIEW3D_TP_BoolTool_BViewer_TOOLS(bpy.types.Panel):
 
 class VIEW3D_TP_BoolTool_BViewer_UI(bpy.types.Panel):
     bl_idname = "VIEW3D_TP_BoolTool_BViewer_UI"
-    bl_label = "Brush Viewer"
+    bl_label = "BT Viewer"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_context = "objectmode"
@@ -298,10 +298,6 @@ def draw_bt_bviewer_panel_layout(self, context, layout):
 
         actObj = bpy.context.active_object
         icon = ""
-
-        box = layout.box().column(1)
-         
-        row = box.row(1)  
 
         if isCanvas(actObj):
 
