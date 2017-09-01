@@ -180,10 +180,10 @@ class VIEW3D_TP_Boolean_Menu(bpy.types.Menu):
             if display_bool_brush == 'on':
 
                 button_boolean_edge = icons.get("icon_boolean_edge")
-                layout.operator("object.boolean_bevel_custom_edge", text="Custom Edge", icon_value=button_boolean_edge.icon_id)
+                layout.operator("object.boolean_bevel_custom_edge", text="Custom BevelEdge", icon_value=button_boolean_edge.icon_id)
                 
-                button_boolean_bridge = icons.get("icon_boolean_bridge")
-                layout.operator("object.boolean_bevel_bridge", text="Bridge Edge", icon_value=button_boolean_bridge.icon_id)
+                #button_boolean_bridge = icons.get("icon_boolean_bridge")
+                #layout.operator("object.boolean_bevel_bridge", text="Bridge Edge", icon_value=button_boolean_bridge.icon_id)
                 
                 layout.separator()          
 

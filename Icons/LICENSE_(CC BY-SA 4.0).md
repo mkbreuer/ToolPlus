@@ -1,12 +1,6 @@
 T+ Addons Icons 
 
-Copyright (C) 2017  Marvin.K.Breuer (MKB)
-
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
-
-You are not permitted to: Sell
-
-    > selling any Icons (modified or not) by themselves or in a texture pack, material, shader, scale modelling papers (pre-printed or digital), scrapbooking pack, etc.;
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
 
 You are free to:   Share &  Adapt 
 
@@ -25,13 +19,11 @@ Under the following terms:
  
     > You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
 
-2 > NonCommercial 
-
-3 > ShareAlike: 		
+2 > ShareAlike: 		
 
     > If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
 
-4 > No additional restrictions: 	
+3 > No additional restrictions: 	
 
     > You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
 
@@ -42,3 +34,5 @@ Notices:
     > No warranties are given. 
     > The license may not give you all of the permissions necessary for your intended use. 
     > For example, other rights such as publicity, privacy, or moral rights may limit how you use the material.
+
+Copyright (C) 2017  Marvin.K.Breuer (MKB)

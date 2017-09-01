@@ -7,22 +7,7 @@
 
    > complete collection: [ToolPlus-master.zip](https://github.com/mkbreuer/ToolPlus/archive/master.zip)
 
-
------------
-
- * The T+ Addons Sets in this folders are tool collections and includes free scripts from allover.
-
- * Means: one part of is scripted by me and the other part is taken from different authors who give them away for free.
-
- * Take a look into a script if you want more information about single authors, functions, wiki links or more about the included GNU General Public Licenses.
- 
- * I created the t+ addons in my private time and for my personal workflow, because it makes fun and save time at the end.
- 
- * If you like the setups and want to reward this work, please feel free to make some contribution here:   [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GTXQ32YXXM4NU)   :)
-
- * Maybe you want to get some special stuff from me, take a look at gumroad, etc.: coming soon 
-
------------
+----------
 
 Install Instruction
 
@@ -53,6 +38,18 @@ Install Instruction
   
 
 -----------
+
+ * The T+ Addons Sets in this folders are tool collections and includes free scripts from allover.
+
+ * Means: one part of is scripted by me and the other part is taken from different authors who give them away for free.
+
+ * Take a look into a script if you want more information about single authors, functions, wiki links or more about the included GNU General Public Licenses.
+ 
+ * I created the t+ addons in my private time and for my personal workflow, because it makes fun and save time at the end.
+ 
+ * If you like the setups and want to reward this work, please feel free to make some contribution here:   [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GTXQ32YXXM4NU)   :)
+
+ * Maybe you want to get some special stuff from me, take a look at gumroad, etc.: coming soon 
 
 
 
