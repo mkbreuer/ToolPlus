@@ -185,8 +185,7 @@ class ObjectBooleanBevelRemoveObjects(bpy.types.Operator):
 
     def execute(self, context):
         bpy.ops.object.select_all(action='DESELECT')
-        for i in ['BOOLEAN_BEVEL_CURVE', 'BOOLEAN_BEVEL_GUIDE', 'BOOLEAN_BEVEL_CURVE_PROFILE',
-                  'BOOLEAN_BEVEL_GUIDE_CUSTOM']:
+        for i in ['BOOLEAN_BEVEL_CURVE', 'BOOLEAN_BEVEL_GUIDE', 'BOOLEAN_BEVEL_CURVE_PROFILE', 'BOOLEAN_BEVEL_GUIDE_CUSTOM']:
             index = bpy.data.objects.find(i)
             if index != -1:
                 bpy.data.objects[i].select = True
@@ -414,37 +413,48 @@ class ObjectBooleanBevel(bpy.types.Operator):
 
         time_start = time.time()
         context.tool_settings.vertex_group_weight = 1.0
+
         custom = False
+
         scene = context.scene
         src_obj = scene.objects.active
         clear_objects(scene, src_obj)
+
         # bpy.ops.object.select_all(action='DESELECT')
         # scene.objects.active = src_obj
+
         if bpy.data.objects.find('BOOLEAN_BEVEL_GUIDE_CUSTOM') != -1:
             custom = True
 
         if not custom:
-            have_bool = prepare_object(scene, src_obj, self.change_subdivide, self.subdiv_a, self.subdiv_b,
-                                       self.change_operation)
+            have_bool = prepare_object(scene, src_obj, self.change_subdivide, self.subdiv_a, self.subdiv_b, self.change_operation)
         else:
             have_bool = [True, 0, "NoName"]
+
         print("Prepare: %.4f sec" % (time.time() - time_start))
+
         if have_bool[0]:
             src_obj.show_wire = self.wire
             src_obj.show_all_edges = self.wire
+         
             if self.change_operation == "SLICE" and not custom:
+             
                 src_obj.select = True
+            
                 bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked": False, "mode": 'TRANSLATION'})
+             
                 slice_object = scene.objects.active
                 slice_object.name = src_obj.name + "_SLICE"
-                slice_object.modifiers[len(slice_object.modifiers) - 1].operation = "INTERSECT"
+                slice_object.modifiers[len(slice_object.modifiers) - 1].operation = "INTERSECT"              
                 bpy.ops.object.modifier_apply(apply_as='DATA', modifier=have_bool[1])
 
                 bpy.ops.object.mode_set(mode='EDIT')
                 bpy.ops.mesh.select_mode(type='VERT')
                 bpy.ops.mesh.select_all(action='SELECT')
+              
                 bpy.ops.mesh.hide(unselected=False)
                 bpy.ops.object.mode_set(mode='OBJECT')
+              
                 scene.objects.active = src_obj
                 bpy.ops.object.select_all(action='DESELECT')
 
@@ -455,12 +465,12 @@ class ObjectBooleanBevel(bpy.types.Operator):
                               self.interpolation, self.vertex_remove, self.repeat, src_obj, have_bool[2])
 
             print("Get Guide: %.4f sec" % (time.time() - time_start))
+
             if not guide:
                 self.report({'ERROR'}, "Error on get_guide")
                 return {'CANCELLED'}
             else:
-                create_curve(self.value_radius, self.sides, self.fix_curve, self.curve_tilt, self.twist_mode, scene,
-                             self.smooth)
+                create_curve(self.value_radius, self.sides, self.fix_curve, self.curve_tilt, self.twist_mode, scene, self.smooth)
                 print("Create Curve: %.4f sec" % (time.time() - time_start))
                 if self.preview_curve:
                     return {'FINISHED'}
@@ -633,7 +643,7 @@ class ObjectBooleanBevelCustomEdge(bpy.types.Operator):
         # bpy.ops.object.boolean_bevel('INVOKE_DEFAULT')
         return {'FINISHED'}
 
-
+"""
 class BooleanBevelPanel(bpy.types.Panel):
     bl_label = "Boolean Bevel"
     bl_space_type = 'VIEW_3D'
@@ -658,7 +668,7 @@ class BooleanBevelPanel(bpy.types.Panel):
         if len(bpy.context.selected_objects) > 0 and bpy.context.object.mode == "OBJECT":
             col.operator("object.boolean_bevel_apply_modifiers", text="Apply Modifiers", icon='IMPORT')
             col.operator("object.boolean_bevel_remove_modifiers", text="Remove Modifiers", icon='X')
-
+"""
 
 def prepare_object(scene, src_obj, change_subdivide, subdiv_a, subdiv_b, change_operation):
     print("Prepare start: %.4f sec" % (time.time() - time_start))
@@ -1029,7 +1039,7 @@ def clear_objects(scene, src_obj):
 
 
 def register():
-    bpy.utils.register_class(BooleanBevelPanel)
+    #bpy.utils.register_class(BooleanBevelPanel)
     bpy.utils.register_class(ObjectBooleanBevel)
     bpy.utils.register_class(ObjectBooleanCustomBevel)
     bpy.utils.register_class(ObjectBooleanBevelCustomEdge)
@@ -1041,7 +1051,7 @@ def register():
 
 
 def unregister():
-    bpy.utils.unregister_class(BooleanBevelPanel)
+    #bpy.utils.unregister_class(BooleanBevelPanel)
     bpy.utils.unregister_class(ObjectBooleanBevel)
     bpy.utils.unregister_class(ObjectBooleanCustomBevel)
     bpy.utils.unregister_class(ObjectBooleanBevelCustomEdge)
