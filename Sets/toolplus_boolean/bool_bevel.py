@@ -1,30 +1,9 @@
-# ##### BEGIN GPL LICENSE BLOCK #####
-#
-#  This program is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU General Public License
-#  as published by the Free Software Foundation; either version 2
-#  of the License, or (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software Foundation,
-#  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-#
-# ##### END GPL LICENSE BLOCK #####
 
 
-import time
-import random
-
-time_start = False
 bl_info = {
     "name": "Boolean Bevel",
     "author": "Rodinkov Ilya",
-    "version": (0, 0, 6),
+    "version": (0, 0, 7),
     "blender": (2, 75, 0),
     "location": "View3D > Tools > Boolean Bevel > Bevel",
     "description": "Create bevel after boolean",
@@ -33,9 +12,15 @@ bl_info = {
     "category": "Object",
 }
 
+
 import bpy
 import addon_utils
 from bpy.types import AddonPreferences
+
+import time
+import random
+
+time_start = False
 
 
 class BooleanBevelPreferences(AddonPreferences):
@@ -56,9 +41,9 @@ class ObjectBooleanBevelBridge(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     number_cuts = bpy.props.IntProperty(name="Bridge Segments", default=5, min=4, max=1000)
-
     relax = bpy.props.EnumProperty(name="Relax",
-                                   items=(("1", "1", "One"),
+                                   items=(("0", "Not Use", "Not Use"),
+                                          ("1", "1", "One"),
                                           ("3", "3", "Three"),
                                           ("5", "5", "Five"),
                                           ("10", "10", "Ten"),
@@ -120,6 +105,7 @@ class ObjectBooleanBevelBridge(bpy.types.Operator):
         return {'FINISHED'}
 
 
+
 class ObjectBooleanBevelApplyModifiers(bpy.types.Operator):
     """Apply all modifiers on selected Objects"""
     bl_idname = "object.boolean_bevel_apply_modifiers"
@@ -177,6 +163,7 @@ class ObjectBooleanBevelRemoveModifiers(bpy.types.Operator):
         return {'FINISHED'}
 
 
+
 class ObjectBooleanBevelRemoveObjects(bpy.types.Operator):
     """Remove all created Guides and Curves"""
     bl_idname = "object.boolean_bevel_remove_objects"
@@ -185,12 +172,15 @@ class ObjectBooleanBevelRemoveObjects(bpy.types.Operator):
 
     def execute(self, context):
         bpy.ops.object.select_all(action='DESELECT')
-        for i in ['BOOLEAN_BEVEL_CURVE', 'BOOLEAN_BEVEL_GUIDE', 'BOOLEAN_BEVEL_CURVE_PROFILE', 'BOOLEAN_BEVEL_GUIDE_CUSTOM']:
+        for i in ['BOOLEAN_BEVEL_CURVE', 'BOOLEAN_BEVEL_GUIDE', 'BOOLEAN_BEVEL_CURVE_PROFILE',
+                  'BOOLEAN_BEVEL_GUIDE_CUSTOM']:
             index = bpy.data.objects.find(i)
             if index != -1:
                 bpy.data.objects[i].select = True
                 bpy.ops.object.delete(use_global=False)
         return {'FINISHED'}
+
+
 
 
 class ObjectBooleanBevel(bpy.types.Operator):
@@ -200,6 +190,7 @@ class ObjectBooleanBevel(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO', 'PRESET'}
 
     def draw(self, context):
+
 
         layout = self.layout
         box = layout.box()
@@ -278,8 +269,6 @@ class ObjectBooleanBevel(bpy.types.Operator):
         box.separator()     
 
 
-
-
         if self.all_settings:
 
             ###
@@ -307,7 +296,6 @@ class ObjectBooleanBevel(bpy.types.Operator):
            
             box.separator()
 
-
         ###
         box = layout.box()
 
@@ -323,13 +311,16 @@ class ObjectBooleanBevel(bpy.types.Operator):
                 row.prop(self, "smooth_bevel_step", text="Steps")
 
 
+
+
+
     interpolation = bpy.props.EnumProperty(name="Interpolation",
                                            items=(("cubic", "Cubic", "Natural cubic spline, smooth results"),
                                                   ("linear", "Linear", "Vertices are projected on existing edges")),
                                            description="Algorithm used for interpolation",
                                            default='cubic')
 
-    wire = bpy.props.BoolProperty(name="Wire", default=False)
+    wire = bpy.props.BoolProperty(name="Wire", default=True)
 
     change_operation = bpy.props.EnumProperty(name="Operation",
                                               items=(("False", "Not change", "Not change"),
@@ -379,7 +370,7 @@ class ObjectBooleanBevel(bpy.types.Operator):
                                         default="UNION")
 
     fillet_profile = bpy.props.FloatProperty(name="Fillet Profile", default=0.7, min=-0.15, max=1.0)
-    fillet_segments = bpy.props.IntProperty(name="Fillet Segments", default=5, min=0, max=30)
+    fillet_segments = bpy.props.IntProperty(name="Fillet Segments", default=20, min=0, max=30)
 
     triangulate = bpy.props.BoolProperty(name="Split NGon", default=False)
     method = bpy.props.EnumProperty(name="Method",
@@ -387,10 +378,9 @@ class ObjectBooleanBevel(bpy.types.Operator):
                                            ("CLIP", "CLIP", "Use CLIP")),
                                     description="Method for splitting the polygons into triangles",
                                     default="BEAUTY")
-
     smooth_bevel = bpy.props.BoolProperty(name="Smooth Bevel", default=False)
     smooth_bevel_value = bpy.props.IntProperty(name="Smooth Value", default=5, min=0, max=30)
-    smooth_bevel_step = bpy.props.IntProperty(name="Smooth Step", default=5, min=0, max=1000)
+    smooth_bevel_step = bpy.props.IntProperty(name="Smooth Step", default=3, min=0, max=1000)
 
     vertex_remove = bpy.props.FloatProperty(name="Remove Vertex", default=0.00001, min=0.0, max=5.0, step=0.1)
 
@@ -401,6 +391,8 @@ class ObjectBooleanBevel(bpy.types.Operator):
     all_settings = bpy.props.BoolProperty(name="All settings", default=False)
 
     do_bevel = bpy.props.BoolProperty(name="Create Bevel", default=True)
+
+    custom_normals = bpy.props.BoolProperty(name="Custom Normals", default=True)
 
     def execute(self, context):
         loop_tools_addon = "mesh_looptools"
@@ -413,48 +405,108 @@ class ObjectBooleanBevel(bpy.types.Operator):
 
         time_start = time.time()
         context.tool_settings.vertex_group_weight = 1.0
-
         custom = False
-
         scene = context.scene
         src_obj = scene.objects.active
         clear_objects(scene, src_obj)
-
         # bpy.ops.object.select_all(action='DESELECT')
         # scene.objects.active = src_obj
-
         if bpy.data.objects.find('BOOLEAN_BEVEL_GUIDE_CUSTOM') != -1:
             custom = True
 
         if not custom:
-            have_bool = prepare_object(scene, src_obj, self.change_subdivide, self.subdiv_a, self.subdiv_b, self.change_operation)
+            have_bool = prepare_object(scene, src_obj, self.change_subdivide, self.subdiv_a, self.subdiv_b,
+                                       self.change_operation)
         else:
             have_bool = [True, 0, "NoName"]
-
         print("Prepare: %.4f sec" % (time.time() - time_start))
-
         if have_bool[0]:
             src_obj.show_wire = self.wire
             src_obj.show_all_edges = self.wire
-         
-            if self.change_operation == "SLICE" and not custom:
-             
+            if self.custom_normals:
                 src_obj.select = True
-            
                 bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked": False, "mode": 'TRANSLATION'})
-             
+                normals_object = scene.objects.active
+                normals_object.name = src_obj.name + "_Normals"
+                src_obj.select = False
+                normals_object.select = True
+                bpy.ops.object.shade_smooth()
+                normals_object.hide_render = True
+                # normals_object.hide = True
+                normals_object_bool = normals_object.modifiers[len(normals_object.modifiers) - 1].object
+                operation_name = normals_object.modifiers[len(normals_object.modifiers) - 1].operation
+                bpy.ops.object.modifier_remove(modifier=normals_object.modifiers[len(normals_object.modifiers) - 1].name)
+
+                bpy.ops.object.select_all(action='DESELECT')
+
+                normals_object_bool.select = True
+                scene.objects.active = normals_object_bool
+                bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked": False, "mode": 'TRANSLATION'})
+                normals_object_bool = scene.objects.active
+                normals_object_bool.name = src_obj.name + "_Normals_bool"
+                src_obj.select = False
+                normals_object_bool.select = True
+                bpy.ops.object.shade_smooth()
+                print(operation_name)
+                if operation_name == "DIFFERENCE":
+                    bpy.ops.object.mode_set(mode='EDIT')
+                    bpy.ops.mesh.select_mode(type='VERT')
+                    bpy.ops.mesh.flip_normals()
+                    bpy.ops.object.mode_set(mode='OBJECT')
+                normals_object_bool.hide_render = True
+                # normals_object_bool.hide = True
+
+                scene.objects.active = src_obj
+                bpy.ops.object.select_all(action='DESELECT')
+            if self.change_operation == "SLICE" and not custom:
+                src_obj.select = True
+                bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked": False, "mode": 'TRANSLATION'})
                 slice_object = scene.objects.active
                 slice_object.name = src_obj.name + "_SLICE"
-                slice_object.modifiers[len(slice_object.modifiers) - 1].operation = "INTERSECT"              
+                slice_object.modifiers[len(slice_object.modifiers) - 1].operation = "INTERSECT"
                 bpy.ops.object.modifier_apply(apply_as='DATA', modifier=have_bool[1])
 
                 bpy.ops.object.mode_set(mode='EDIT')
                 bpy.ops.mesh.select_mode(type='VERT')
                 bpy.ops.mesh.select_all(action='SELECT')
-              
                 bpy.ops.mesh.hide(unselected=False)
                 bpy.ops.object.mode_set(mode='OBJECT')
-              
+                #
+                # if self.custom_normals:
+                #     normals_object.select = True
+                #     # scene.objects.active = normals_object
+                #     bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked": False, "mode": 'TRANSLATION'})
+                #     normals_object = scene.objects.active
+                #     normals_object.name = slice_object.name + "_Normals"
+                #     slice_object.select = False
+                #     normals_object.select = True
+                #     bpy.ops.object.shade_smooth()
+                #     normals_object.hide_render = True
+                #     normals_object.hide = True
+                #     # normals_object_bool = normals_object.modifiers[len(normals_object.modifiers) - 1].object
+                #     # operation_name = normals_object.modifiers[len(normals_object.modifiers) - 1].operation
+                #     # bpy.ops.object.modifier_remove(
+                #     #     modifier=normals_object.modifiers[len(normals_object.modifiers) - 1].name)
+                #
+                #     bpy.ops.object.select_all(action='DESELECT')
+
+                    # normals_object_bool.select = True
+                    # scene.objects.active = normals_object_bool
+                    # bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked": False, "mode": 'TRANSLATION'})
+                    # normals_object_bool = scene.objects.active
+                    # normals_object_bool.name = src_obj.name + "_Normals_bool"
+                    # src_obj.select = False
+                    # normals_object_bool.select = True
+                    # bpy.ops.object.shade_smooth()
+                    # # print(operation_name)
+                    # # if operation_name == "DIFFERENCE":
+                    # #     bpy.ops.object.mode_set(mode='EDIT')
+                    # #     bpy.ops.mesh.select_mode(type='VERT')
+                    # #     bpy.ops.mesh.flip_normals()
+                    # #     bpy.ops.object.mode_set(mode='OBJECT')
+                    # normals_object_bool.hide_render = True
+                    # normals_object_bool.hide = True
+
                 scene.objects.active = src_obj
                 bpy.ops.object.select_all(action='DESELECT')
 
@@ -465,12 +517,12 @@ class ObjectBooleanBevel(bpy.types.Operator):
                               self.interpolation, self.vertex_remove, self.repeat, src_obj, have_bool[2])
 
             print("Get Guide: %.4f sec" % (time.time() - time_start))
-
             if not guide:
                 self.report({'ERROR'}, "Error on get_guide")
                 return {'CANCELLED'}
             else:
-                create_curve(self.value_radius, self.sides, self.fix_curve, self.curve_tilt, self.twist_mode, scene, self.smooth)
+                create_curve(self.value_radius, self.sides, self.fix_curve, self.curve_tilt, self.twist_mode, scene,
+                             self.smooth)
                 print("Create Curve: %.4f sec" % (time.time() - time_start))
                 if self.preview_curve:
                     return {'FINISHED'}
@@ -479,28 +531,59 @@ class ObjectBooleanBevel(bpy.types.Operator):
                     print("Do Boolean: %.4f sec" % (time.time() - time_start))
                     create_bevel(scene, src_obj, self.fillet_profile, self.fillet_segments, self.triangulate,
                                  self.smooth_bevel, self.method, self.smooth_bevel_value, self.smooth_bevel_step,
-                                 have_bool[2], self.do_bevel)
+                                 have_bool[2], self.do_bevel, self.custom_normals)
                     if self.use_material:
                         set_material(self.smooth_bevel, src_obj, have_bool[2])
                     print("Create Bevel: %.4f sec" % (time.time() - time_start))
+
+                    if self.custom_normals:
+                        for modifier in src_obj.modifiers:
+                            modifier.show_viewport = False
+
+                        for modifier in src_obj.modifiers:
+                            try:
+                                bpy.ops.object.modifier_apply(apply_as='DATA', modifier=modifier.name)
+                            except:
+                                bpy.ops.object.modifier_remove(modifier=modifier.name)
+                        src_obj.vertex_groups.clear()
 
                     if self.change_operation == "SLICE" and not custom:
                         scene.objects.active = slice_object
                         do_boolean(scene, slice_object, self.union_path)
                         create_bevel(scene, slice_object, self.fillet_profile, self.fillet_segments, self.triangulate,
                                      self.smooth_bevel, self.method, self.smooth_bevel_value, self.smooth_bevel_step,
-                                     have_bool[2], self.do_bevel)
+                                     have_bool[2], self.do_bevel, self.custom_normals)
                         if self.use_material:
                             set_material(self.smooth_bevel, slice_object, have_bool[2])
+
+                        if self.custom_normals:
+                            for modifier in slice_object.modifiers:
+                                modifier.show_viewport = False
+
+                            for modifier in slice_object.modifiers:
+                                try:
+                                    bpy.ops.object.modifier_apply(apply_as='DATA', modifier=modifier.name)
+                                except:
+                                    bpy.ops.object.modifier_remove(modifier=modifier.name)
+                            slice_object.vertex_groups.clear()
+
                     clear_objects(scene, src_obj)
+
+                    if self.custom_normals:
+                        bpy.ops.object.select_all(action='DESELECT')
+                        bpy.data.objects[src_obj.name + "_Normals_bool"].select = True
+                        bpy.data.objects[src_obj.name + "_Normals"].select = True
+
+                        bpy.ops.object.delete(use_global=False)
+                        src_obj.select = True
+                        scene.objects.active = src_obj
                     print("Finish: %.4f sec\n" % (time.time() - time_start))
+
 
                     return {'FINISHED'}
         else:
             self.report({'ERROR'}, "Object does not have a Boolean modifier")
             return {'CANCELLED'}
-
-
 
 
 class ObjectBooleanCustomBevel(bpy.types.Operator):
@@ -513,50 +596,26 @@ class ObjectBooleanCustomBevel(bpy.types.Operator):
 
         layout = self.layout
 
-        ###
         box = layout.box()
-        
-        row = box.row(align=True)
-        row.prop(self, "fillet_profile", text="Profile")
-        row.prop(self, "fillet_segments", text="Segments")
-
-        box.separator()
-
-        box.prop(self, "do_bevel")
         box.prop(self, "stop_calc")
-
-
-        ###
-        box = layout.box()
-
-        row = box.row(align=True)
-        row.label("Path:")          
-        row.prop(self, "union_path", text="")
-
-        row = box.row(align=True)  
-        row.label(" ")   
-        row.prop(self, "vertex_remove", text="Remove")
+        box.prop(self, "fillet_profile")
+        box.prop(self, "fillet_segments")
 
         box.separator()
-
-        box.prop(self, "triangulate", text="Triangulate Ngons")
-        if self.triangulate:
-            box.prop(self, "method")
-
-
-        ###
-        box = layout.box()
-        
-        box.prop(self, "use_material", text="Random Material")
-        
+        box.prop(self, "do_bevel")
         box.prop(self, "smooth_bevel")
         if self.smooth_bevel:
+            box.prop(self, "smooth_bevel_value")
+            box.prop(self, "smooth_bevel_step")
+        box.prop(self, "use_material")
 
-            row = box.row(align=True)
-            row.prop(self, "smooth_bevel_value", text="Value")
-            row.prop(self, "smooth_bevel_step", text="Steps")
-
-
+        box = layout.box()
+        box.prop(self, "union_path")
+        box.prop(self, "remove")
+        box.separator()
+        box.prop(self, "triangulate")
+        if self.triangulate:
+            box.prop(self, "method")
 
     union_path = bpy.props.EnumProperty(name="Path Operation",
                                         items=(("UNION", "Union", "Use Union"),
@@ -576,7 +635,7 @@ class ObjectBooleanCustomBevel(bpy.types.Operator):
                                     default="BEAUTY")
 
     do_bevel = bpy.props.BoolProperty(name="Create Bevel", default=True)
-    smooth_bevel = bpy.props.BoolProperty(name="Smooth Bevel", default=False)
+    smooth_bevel = bpy.props.BoolProperty(name="Smooth Bevel", default=True)
     smooth_bevel_value = bpy.props.IntProperty(name="Smooth Value", default=1, min=0, max=30)
     smooth_bevel_step = bpy.props.IntProperty(name="Smooth Step", default=2, min=0, max=1000)
 
@@ -643,32 +702,32 @@ class ObjectBooleanBevelCustomEdge(bpy.types.Operator):
         # bpy.ops.object.boolean_bevel('INVOKE_DEFAULT')
         return {'FINISHED'}
 
-"""
-class BooleanBevelPanel(bpy.types.Panel):
-    bl_label = "Boolean Bevel"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'TOOLS'
-    bl_category = "Tools"
 
-    def draw(self, context):
-        layout = self.layout
-        split = layout.split()
-        col = split.column(align=True)
-        if bpy.context.object:
-            if 0 < len(bpy.context.selected_objects) < 2 and bpy.context.object.mode == "OBJECT":
-                col.operator("object.boolean_bevel", text="Bevel", icon='MOD_BEVEL')
-                if bpy.data.objects.find('BOOLEAN_BEVEL_CURVE') != -1 and bpy.data.objects.find(
-                        'BOOLEAN_BEVEL_GUIDE') != -1:
-                    col.operator("object.boolean_custom_bevel", text="Custom Bevel", icon='MOD_BEVEL')
-            if bpy.context.object.mode == "EDIT":
-                col.operator("object.boolean_bevel_custom_edge", text="Custom Edge", icon='EDGESEL')
-                # col.operator("object.boolean_bevel_bridge", text="Bridge Edge", icon='EDGESEL')
-        col.separator()
-        col.operator("object.boolean_bevel_remove_objects", text="Remove Objects", icon='X')
-        if len(bpy.context.selected_objects) > 0 and bpy.context.object.mode == "OBJECT":
-            col.operator("object.boolean_bevel_apply_modifiers", text="Apply Modifiers", icon='IMPORT')
-            col.operator("object.boolean_bevel_remove_modifiers", text="Remove Modifiers", icon='X')
-"""
+#class BooleanBevelPanel(bpy.types.Panel):
+#    bl_label = "Boolean Bevel"
+#    bl_space_type = 'VIEW_3D'
+#    bl_region_type = 'TOOLS'
+#    bl_category = "Tools"
+
+#    def draw(self, context):
+#        layout = self.layout
+#        split = layout.split()
+#        col = split.column(align=True)
+#        if bpy.context.object:
+#            if 0 < len(bpy.context.selected_objects) < 2 and bpy.context.object.mode == "OBJECT":
+#                col.operator("object.boolean_bevel", text="Bevel", icon='MOD_BEVEL')
+#                if bpy.data.objects.find('BOOLEAN_BEVEL_CURVE') != -1 and bpy.data.objects.find(
+#                        'BOOLEAN_BEVEL_GUIDE') != -1:
+#                    col.operator("object.boolean_custom_bevel", text="Custom Bevel", icon='MOD_BEVEL')
+#            if bpy.context.object.mode == "EDIT":
+#                col.operator("object.boolean_bevel_custom_edge", text="Custom Edge", icon='EDGESEL')
+#                # col.operator("object.boolean_bevel_bridge", text="Bridge Edge", icon='EDGESEL')
+#        col.separator()
+#        col.operator("object.boolean_bevel_remove_objects", text="Remove Objects", icon='X')
+#        if len(bpy.context.selected_objects) > 0 and bpy.context.object.mode == "OBJECT":
+#            col.operator("object.boolean_bevel_apply_modifiers", text="Apply Modifiers", icon='IMPORT')
+#            col.operator("object.boolean_bevel_remove_modifiers", text="Remove Modifiers", icon='X')
+
 
 def prepare_object(scene, src_obj, change_subdivide, subdiv_a, subdiv_b, change_operation):
     print("Prepare start: %.4f sec" % (time.time() - time_start))
@@ -837,6 +896,7 @@ def create_curve(value_radius, sides, fix_curve, curve_tilt, twist_mode, scene, 
         bpy.ops.transform.tilt(value=curve_tilt)
         bpy.ops.object.mode_set(mode='OBJECT')
     bpy.ops.mesh.primitive_circle_add(vertices=sides, radius=value_radius)
+    bpy.ops.object.mode_set(mode='OBJECT')
     bpy.ops.object.convert(target='CURVE', keep_original=False)
     circle = scene.objects.active
     circle.name = "BOOLEAN_BEVEL_CURVE_PROFILE"
@@ -870,7 +930,7 @@ def do_boolean(scene, src_obj, union_path):
 
 
 def create_bevel(scene, src_obj, fillet_profile, fillet_segments, triangulate, smooth_bevel, method, smooth_bevel_value,
-                 smooth_bevel_step, name, do_bevel):
+                 smooth_bevel_step, name, do_bevel, custom_normals):
     bpy.ops.object.mode_set(mode='EDIT')
     bpy.ops.mesh.select_mode(type='VERT')
     bpy.ops.mesh.select_all(action='SELECT')
@@ -922,8 +982,13 @@ def create_bevel(scene, src_obj, fillet_profile, fillet_segments, triangulate, s
 
     if triangulate:
         bpy.ops.mesh.select_all(action='DESELECT')
-        bpy.ops.mesh.select_face_by_sides(number=4, type='GREATER', extend=True)
+        bpy.ops.object.vertex_group_select()
+        bpy.ops.mesh.select_more(use_face_step=True)
+        bpy.ops.mesh.select_more(use_face_step=True)
+        bpy.ops.mesh.hide(unselected=True)
+        bpy.ops.mesh.select_face_by_sides(number=4, type='GREATER', extend=False)
         bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY', ngon_method=method)
+        bpy.ops.mesh.reveal()
 
     bpy.ops.mesh.select_all(action='DESELECT')
     if smooth_bevel:
@@ -946,7 +1011,8 @@ def create_bevel(scene, src_obj, fillet_profile, fillet_segments, triangulate, s
         fillet_modifier.offset_type = 'PERCENT'
         fillet_modifier.profile = fillet_profile
         fillet_modifier.segments = fillet_segments
-        fillet_modifier.use_clamp_overlap = True
+        fillet_modifier.use_clamp_overlap = False
+        # fillet_modifier.use_clamp_overlap = True
         fillet_modifier.limit_method = 'VGROUP'
         fillet_modifier.vertex_group = bevel_group
         fillet_modifier.width = 98
@@ -982,6 +1048,38 @@ def create_bevel(scene, src_obj, fillet_profile, fillet_segments, triangulate, s
     bpy.ops.object.vertex_group_assign()
     bpy.ops.mesh.select_all(action='DESELECT')
     bpy.ops.object.mode_set(mode='OBJECT')
+
+    if custom_normals:
+
+        data_transfer_modifier = src_obj.modifiers.new(name="Boolean Bevel Custom Normals", type="DATA_TRANSFER")
+        if bpy.data.objects.find(src_obj.name + "_Normals") != -1:
+            data_transfer_modifier.object = bpy.data.objects[src_obj.name + "_Normals"]
+        else:
+            data_transfer_modifier.object = bpy.data.objects[src_obj.vertex_groups[0].name + "_Normals"]
+        data_transfer_modifier.use_vert_data = True
+        data_transfer_modifier.vert_mapping = "NEAREST"
+        data_transfer_modifier.use_loop_data = True
+        data_transfer_modifier.loop_mapping = "POLYINTERP_NEAREST"
+        if bpy.data.objects.find(src_obj.name + "_Normals") != -1:
+            data_transfer_modifier.vertex_group = src_obj.name
+        else:
+            data_transfer_modifier.vertex_group = src_obj.vertex_groups[0].name
+        data_transfer_modifier.data_types_verts = {'VGROUP_WEIGHTS'}
+        data_transfer_modifier.data_types_loops = {"CUSTOM_NORMAL"}
+
+        if bpy.data.objects.find(src_obj.name + "_Normals_bool") != -1:
+            data_transfer_modifier = src_obj.modifiers.new(name="Boolean Bevel Custom Normals", type="DATA_TRANSFER")
+            data_transfer_modifier.object = bpy.data.objects[src_obj.name + "_Normals_bool"]
+            data_transfer_modifier.use_vert_data = True
+            data_transfer_modifier.vert_mapping = "NEAREST"
+            data_transfer_modifier.use_loop_data = True
+            data_transfer_modifier.loop_mapping = "POLYINTERP_NEAREST"
+            data_transfer_modifier.vertex_group = src_obj.vertex_groups[len(src_obj.vertex_groups) - 2 - smooth_bevel].name
+            data_transfer_modifier.data_types_verts = {'VGROUP_WEIGHTS'}
+            data_transfer_modifier.data_types_loops = {"CUSTOM_NORMAL"}
+
+        bpy.context.object.data.use_auto_smooth = True
+        bpy.context.object.data.auto_smooth_angle = 3.14159
     src_obj.select = True
     bpy.ops.object.shade_smooth()
     bpy.ops.object.select_all(action='DESELECT')

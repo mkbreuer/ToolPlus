@@ -159,5 +159,15 @@ def draw_bt_brush_panel_layout(self, context, layout):
                 
                 row.operator("tp_ops.cleanup_boolbevel", text="Finish BoolBevel", icon='PANEL_CLOSE')
 
+
+                #row.separator()
+               
+                #row.operator("object.boolean_bevel_remove_objects", text="Remove Objects", icon='X')
+                
+                #if len(bpy.context.selected_objects) > 0 and bpy.context.object.mode == "OBJECT":
+                    #row.operator("object.boolean_bevel_apply_modifiers", text="Apply Modifiers", icon='IMPORT')
+                    #row.operator("object.boolean_bevel_remove_modifiers", text="Remove Modifiers", icon='X')
+
+
         row.separator()
 
