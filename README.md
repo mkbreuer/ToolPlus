@@ -28,7 +28,7 @@ Install Instruction
 
 (#___)
 
-* for fast installation you can use a zip the specific zip folder.
+* for fast installation you can use a zip from the specific zip folder.
 
 * for a single pyhton script is no zip required, just add it to blender text editor 
 
