@@ -28,9 +28,7 @@ Install Instruction
 
 (#___)
 
-* the addons in the master zip are all unzipped
-
-* for installation of an a collection you have to zip the individual folder.
+* for fast installation you can use a zip the specific zip folder.
 
 * for a single pyhton script is no zip required, just add it to blender text editor 
 
