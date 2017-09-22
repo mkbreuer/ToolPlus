@@ -20,7 +20,7 @@
 bl_info = {
     "name": "T+ Boolean",
     "author": "Multi Authors (see URL), Marvin.K.Breuer (MKB)",
-    "version": (0, 1, 8),
+    "version": (1, 8, 1),
     "blender": (2, 7, 9),
     "location": "View3D > Tool Shelf [T] or Property Shelf [N] ",
     "description": "Collection of Boolean Tools",
@@ -86,86 +86,90 @@ from bpy.types import AddonPreferences, PropertyGroup
 
 
 # UI REGISTRY #
+panels_main = (VIEW3D_TP_Edit_Boolean_Panel_UI, VIEW3D_TP_Edit_Boolean_Panel_TOOLS)
+
 def update_panel_position(self, context):
+    message = "LoopTools: Updating Panel locations has failed"
     try:
-        bpy.utils.unregister_class(VIEW3D_TP_Edit_Boolean_Panel_UI)        
-        bpy.utils.unregister_class(VIEW3D_TP_Edit_Boolean_Panel_TOOLS)
-        
-    except:
-        pass
-    
-    try:
-        bpy.utils.unregister_class(VIEW3D_TP_Edit_Boolean_Panel_UI)
-    except:
-        pass
-    
+        for panel in panels_main:
+            if "bl_rna" in panel.__dict__:
+                bpy.utils.unregister_class(panel)
 
-    if context.user_preferences.addons[__name__].preferences.tab_location_main == 'tools':
-     
-        VIEW3D_TP_Edit_Boolean_Panel_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_main
-        bpy.utils.register_class(VIEW3D_TP_Edit_Boolean_Panel_TOOLS)
-    
-    if context.user_preferences.addons[__name__].preferences.tab_location_main == 'ui':
-        bpy.utils.register_class(VIEW3D_TP_Edit_Boolean_Panel_UI)
+        for panel in panels_main:    
+            if context.user_preferences.addons[__name__].preferences.tab_location_main == 'tools':
+             
+                VIEW3D_TP_Edit_Boolean_Panel_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_main
+                bpy.utils.register_class(VIEW3D_TP_Edit_Boolean_Panel_TOOLS)
+            
+            if context.user_preferences.addons[__name__].preferences.tab_location_main == 'ui':
+                bpy.utils.register_class(VIEW3D_TP_Edit_Boolean_Panel_UI)
 
-    if context.user_preferences.addons[__name__].preferences.tab_location_main == 'off':  
+            if context.user_preferences.addons[__name__].preferences.tab_location_main == 'off':  
+                pass
+
+    except Exception as e:
+        print("\n[{}]\n{}\n\nError:\n{}".format(__name__, message, e))
         pass
 
+
+
+panels_bt = (VIEW3D_TP_BoolTool_Brush_UI, VIEW3D_TP_BoolTool_Brush_TOOLS)
 
 def update_panel_position_brush(self, context):
+    message = "LoopTools: Updating Panel locations has failed"
     try:
-        bpy.utils.unregister_class(VIEW3D_TP_BoolTool_Brush_UI)        
-        bpy.utils.unregister_class(VIEW3D_TP_BoolTool_Brush_TOOLS)      
-    except:
-        pass
-    
-    try:
-        bpy.utils.unregister_class(VIEW3D_TP_BoolTool_Brush_UI)
-    except:
+        for panel in panels_bt:
+            if "bl_rna" in panel.__dict__:
+                bpy.utils.unregister_class(panel)
+
+        for panel in panels_bt:    
+            if context.user_preferences.addons[__name__].preferences.tab_location_brush == 'tools':
+             
+                VIEW3D_TP_BoolTool_Brush_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_brush
+                bpy.utils.register_class(VIEW3D_TP_BoolTool_Brush_TOOLS)
+            
+            if context.user_preferences.addons[__name__].preferences.tab_location_brush == 'ui':
+                bpy.utils.register_class(VIEW3D_TP_BoolTool_Brush_UI)
+            
+            if context.user_preferences.addons[__name__].preferences.tab_location_brush == 'off':
+                pass
+
+    except Exception as e:
+        print("\n[{}]\n{}\n\nError:\n{}".format(__name__, message, e))
         pass
 
-    if context.user_preferences.addons[__name__].preferences.tab_location_brush == 'tools':
-     
-        VIEW3D_TP_BoolTool_Brush_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_brush
-        bpy.utils.register_class(VIEW3D_TP_BoolTool_Brush_TOOLS)
-    
-    if context.user_preferences.addons[__name__].preferences.tab_location_brush == 'ui':
-        bpy.utils.register_class(VIEW3D_TP_BoolTool_Brush_UI)
-    
-    if context.user_preferences.addons[__name__].preferences.tab_location_brush == 'off':
-        pass
 
+
+panels_vw = (VIEW3D_TP_BoolTool_BViewer_UI, VIEW3D_TP_BoolTool_Config_UI)
 
 def update_panel_position_props(self, context):
+    message = "LoopTools: Updating Panel locations has failed"
     try:
-        bpy.utils.unregister_class(VIEW3D_TP_BoolTool_BViewer_UI)
-        bpy.utils.unregister_class(VIEW3D_TP_BoolTool_Config_UI)
+        for panel in panels_vw:
+            if "bl_rna" in panel.__dict__:
+                bpy.utils.unregister_class(panel)
 
-        bpy.utils.unregister_class(VIEW3D_TP_BoolTool_BViewer_TOOLS)
-        bpy.utils.unregister_class(VIEW3D_TP_BoolTool_Config_TOOLS)        
-    except:
-        pass
-    
-    try:
-        bpy.utils.unregister_class(VIEW3D_TP_BoolTool_BViewer_UI)
-        bpy.utils.unregister_class(VIEW3D_TP_BoolTool_Config_UI)
-    except:
+        for panel in panels_vw:   
+            if context.user_preferences.addons[__name__].preferences.tab_location_props == 'tools':
+             
+                VIEW3D_TP_BoolTool_BViewer_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_props
+                VIEW3D_TP_BoolTool_Config_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_props
+            
+                bpy.utils.register_class(VIEW3D_TP_BoolTool_BViewer_TOOLS)
+                bpy.utils.register_class(VIEW3D_TP_BoolTool_Config_TOOLS)
+            
+            if context.user_preferences.addons[__name__].preferences.tab_location_props == 'ui':
+                bpy.utils.register_class(VIEW3D_TP_BoolTool_BViewer_UI)
+                bpy.utils.register_class(VIEW3D_TP_BoolTool_Config_UI)
+            
+            if context.user_preferences.addons[__name__].preferences.tab_location_props == 'off':
+                pass
+
+    except Exception as e:
+        print("\n[{}]\n{}\n\nError:\n{}".format(__name__, message, e))
         pass
 
-    if context.user_preferences.addons[__name__].preferences.tab_location_props == 'tools':
-     
-        VIEW3D_TP_BoolTool_BViewer_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_props
-        VIEW3D_TP_BoolTool_Config_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_props
-    
-        bpy.utils.register_class(VIEW3D_TP_BoolTool_BViewer_TOOLS)
-        bpy.utils.register_class(VIEW3D_TP_BoolTool_Config_TOOLS)
-    
-    if context.user_preferences.addons[__name__].preferences.tab_location_props == 'ui':
-        bpy.utils.register_class(VIEW3D_TP_BoolTool_BViewer_UI)
-        bpy.utils.register_class(VIEW3D_TP_BoolTool_Config_UI)
-    
-    if context.user_preferences.addons[__name__].preferences.tab_location_props == 'off':
-        pass
+
 
 
 # TOOLS REGISTRY #
