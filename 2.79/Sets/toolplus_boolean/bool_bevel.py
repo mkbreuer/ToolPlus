@@ -102,8 +102,10 @@ class ObjectBooleanBevelBridge(bpy.types.Operator):
         return {'FINISHED'}
 
 
+
+
 class ObjectBooleanBevelSymmetrize(bpy.types.Operator):
-    """Create the bridge on Object"""
+    """Symmetrize Object"""
     bl_idname = "object.boolean_bevel_symmetrize"
     bl_label = "Boolean Bevel Symmetrize"
     bl_options = {'REGISTER', 'UNDO'}
@@ -122,6 +124,7 @@ class ObjectBooleanBevelSymmetrize(bpy.types.Operator):
 
     def execute(self, context):
         src_obj = bpy.context.active_object
+        # bpy.ops.object.vertex_group_remove(all=True)
         bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked": False, "mode": 'TRANSLATION'})
         normals_object = bpy.context.active_object
         normals_object.name = src_obj.name + "_Normals"
@@ -156,7 +159,7 @@ class ObjectBooleanBevelSymmetrize(bpy.types.Operator):
                     # print(vert.co[0])
         bpy.ops.mesh.select_more(use_face_step=True)
         bpy.ops.mesh.select_less(use_face_step=True)
-        bpy.ops.mesh.split()
+        # bpy.ops.mesh.split()
         src_obj.vertex_groups.new(name="symmetrize")
         bpy.ops.object.vertex_group_assign()
         symmetrize_group = src_obj.vertex_groups.active.name
@@ -192,6 +195,7 @@ class ObjectBooleanBevelSymmetrize(bpy.types.Operator):
         bpy.ops.object.delete(use_global=False)
         src_obj.select = True
         bpy.context.scene.objects.active = src_obj
+        bpy.ops.object.vertex_group_remove(all=True)
         return {'FINISHED'}
 
 
@@ -274,7 +278,6 @@ class ObjectBooleanBevel(bpy.types.Operator):
     bl_idname = "object.boolean_bevel"
     bl_label = "Boolean Bevel"
     bl_options = {'REGISTER', 'UNDO', 'PRESET'}
-
 
     # DRAW REDO LAST [F6] #
     def draw(self, context):
@@ -1305,7 +1308,7 @@ def clear_objects(scene, src_obj):
 
 
 def register():
-    #bpy.utils.register_class(BooleanBevelPanel)
+#    bpy.utils.register_class(BooleanBevelPanel)
     bpy.utils.register_class(ObjectBooleanBevel)
     bpy.utils.register_class(ObjectBooleanCustomBevel)
     bpy.utils.register_class(ObjectBooleanBevelCustomEdge)
@@ -1318,7 +1321,7 @@ def register():
 
 
 def unregister():
-    #bpy.utils.unregister_class(BooleanBevelPanel)
+#    bpy.utils.unregister_class(BooleanBevelPanel)
     bpy.utils.unregister_class(ObjectBooleanBevel)
     bpy.utils.unregister_class(ObjectBooleanCustomBevel)
     bpy.utils.unregister_class(ObjectBooleanBevelCustomEdge)

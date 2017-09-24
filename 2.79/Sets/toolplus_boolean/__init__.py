@@ -20,7 +20,7 @@
 bl_info = {
     "name": "T+ Boolean",
     "author": "Multi Authors (see URL), Marvin.K.Breuer (MKB)",
-    "version": (1, 8, 1),
+    "version": (1, 8, 2),
     "blender": (2, 7, 9),
     "location": "View3D > Tool Shelf [T] or Property Shelf [N] ",
     "description": "Collection of Boolean Tools",
@@ -89,7 +89,7 @@ from bpy.types import AddonPreferences, PropertyGroup
 panels_main = (VIEW3D_TP_Edit_Boolean_Panel_UI, VIEW3D_TP_Edit_Boolean_Panel_TOOLS)
 
 def update_panel_position(self, context):
-    message = "LoopTools: Updating Panel locations has failed"
+    message = "T+ Boolean: Updating Panel locations has failed"
     try:
         for panel in panels_main:
             if "bl_rna" in panel.__dict__:
@@ -116,7 +116,7 @@ def update_panel_position(self, context):
 panels_bt = (VIEW3D_TP_BoolTool_Brush_UI, VIEW3D_TP_BoolTool_Brush_TOOLS)
 
 def update_panel_position_brush(self, context):
-    message = "LoopTools: Updating Panel locations has failed"
+    message = "T+ Boolean Brush: Updating Panel locations has failed"
     try:
         for panel in panels_bt:
             if "bl_rna" in panel.__dict__:
@@ -143,7 +143,7 @@ def update_panel_position_brush(self, context):
 panels_vw = (VIEW3D_TP_BoolTool_BViewer_UI, VIEW3D_TP_BoolTool_Config_UI)
 
 def update_panel_position_props(self, context):
-    message = "LoopTools: Updating Panel locations has failed"
+    message = "T+ Boolean Viewer: Updating Panel locations has failed"
     try:
         for panel in panels_vw:
             if "bl_rna" in panel.__dict__:
@@ -723,6 +723,7 @@ if __name__ == "__main__":
     register()
         
         
+
 
 
 
