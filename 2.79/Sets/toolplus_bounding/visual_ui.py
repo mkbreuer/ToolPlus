@@ -16,7 +16,7 @@ bpy.types.Scene.tp_visual_category = bpy.props.EnumProperty(name = " ", default 
 
 
 
-def draw_visual_layout(self, context, layout):
+def draw_visual_layout(context, layout):
         tp_props = context.window_manager.tp_props_visual            
         tp_display = context.scene.display_props      
         tp_orphan = context.scene.orphan_props      

@@ -20,7 +20,7 @@
 bl_info = {
     "name": "MAT-Random",
     "author": "Marvin.K.Breuer (MKB)",
-    "version": (0, 1, 0),
+    "version": (0, 1, 1),
     "blender": (2, 7, 8),
     "location": "View3D > Tool Shelf [T] or Property Shelf [N] > MAT-Random Panel",
     "description": "simple material randomizer > random, darken or invert the color(based on cookbook) > added random for cycles materials",
@@ -39,27 +39,29 @@ from bpy.types import AddonPreferences, PropertyGroup
 
 
 # UI REGISTRY #
+panels = (VIEW3D_TP_MATRANDOM_Panel_UI, VIEW3D_TP_MATRANDOM_Panel_TOOLS)
+
 def update_panel_location(self, context):
+    message = "LoopTools: Updating Panel locations has failed"
     try:
-        bpy.utils.unregister_class(VIEW3D_TP_MATRANDOM_Panel_UI)     
-        bpy.utils.unregister_class(VIEW3D_TP_MATRANDOM_Panel_TOOLS)   
-    except:
-        pass    
-    try:
-        bpy.utils.unregister_class(VIEW3D_TP_MATRANDOM_Panel_UI)
-    except:
-        pass
-    
-    if context.user_preferences.addons[__name__].preferences.tab_location == 'tools':
+        for panel in panels:
+            if "bl_rna" in panel.__dict__:
+                bpy.utils.unregister_class(panel)
+
+        if context.user_preferences.addons[__name__].preferences.tab_location == 'tools':            
+            VIEW3D_TP_MATRANDOM_Panel_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category        
+            bpy.utils.register_class(VIEW3D_TP_MATRANDOM_Panel_TOOLS)
         
-        VIEW3D_TP_MATRANDOM_Panel_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category        
-        bpy.utils.register_class(VIEW3D_TP_MATRANDOM_Panel_TOOLS)
-    
-    if context.user_preferences.addons[__name__].preferences.tab_location == 'ui':
-        bpy.utils.register_class(VIEW3D_TP_MATRANDOM_Panel_UI)
-  
-    if context.user_preferences.addons[__name__].preferences.tab_location == 'off':
+        if context.user_preferences.addons[__name__].preferences.tab_location == 'ui':
+            bpy.utils.register_class(VIEW3D_TP_MATRANDOM_Panel_UI)
+      
+        if context.user_preferences.addons[__name__].preferences.tab_location == 'off':
+            return None
+
+    except Exception as e:
+        print("\n[{}]\n{}\n\nError:\n{}".format(__name__, message, e))
         pass
+
 
 
 

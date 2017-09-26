@@ -19,13 +19,13 @@
 
 
 bl_info = {
-"name": "T+ 3D Visuals (WIP)", 
+"name": "T+ 3D Visuals", 
 "author": "MKB",
 "version": (1, 0, 0),
 "blender": (2, 78, 0),
 "location": "View3D > TAB T+ > Display",
 "description": "visual tools for the 3D view",
-"warning": "!!!not finish!!!",
+"warning": "",
 "wiki_url": "",
 "tracker_url": "",
 "category": "ToolPlus"}

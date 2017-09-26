@@ -94,18 +94,17 @@ def update_panel_position(self, context):
         for panel in panels_main:
             if "bl_rna" in panel.__dict__:
                 bpy.utils.unregister_class(panel)
+  
+        if context.user_preferences.addons[__name__].preferences.tab_location_main == 'tools':
+         
+            VIEW3D_TP_Edit_Boolean_Panel_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_main
+            bpy.utils.register_class(VIEW3D_TP_Edit_Boolean_Panel_TOOLS)
+        
+        if context.user_preferences.addons[__name__].preferences.tab_location_main == 'ui':
+            bpy.utils.register_class(VIEW3D_TP_Edit_Boolean_Panel_UI)
 
-        for panel in panels_main:    
-            if context.user_preferences.addons[__name__].preferences.tab_location_main == 'tools':
-             
-                VIEW3D_TP_Edit_Boolean_Panel_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_main
-                bpy.utils.register_class(VIEW3D_TP_Edit_Boolean_Panel_TOOLS)
-            
-            if context.user_preferences.addons[__name__].preferences.tab_location_main == 'ui':
-                bpy.utils.register_class(VIEW3D_TP_Edit_Boolean_Panel_UI)
-
-            if context.user_preferences.addons[__name__].preferences.tab_location_main == 'off':  
-                pass
+        if context.user_preferences.addons[__name__].preferences.tab_location_main == 'off':  
+            return None
 
     except Exception as e:
         print("\n[{}]\n{}\n\nError:\n{}".format(__name__, message, e))
@@ -121,18 +120,17 @@ def update_panel_position_brush(self, context):
         for panel in panels_bt:
             if "bl_rna" in panel.__dict__:
                 bpy.utils.unregister_class(panel)
-
-        for panel in panels_bt:    
-            if context.user_preferences.addons[__name__].preferences.tab_location_brush == 'tools':
-             
-                VIEW3D_TP_BoolTool_Brush_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_brush
-                bpy.utils.register_class(VIEW3D_TP_BoolTool_Brush_TOOLS)
-            
-            if context.user_preferences.addons[__name__].preferences.tab_location_brush == 'ui':
-                bpy.utils.register_class(VIEW3D_TP_BoolTool_Brush_UI)
-            
-            if context.user_preferences.addons[__name__].preferences.tab_location_brush == 'off':
-                pass
+   
+        if context.user_preferences.addons[__name__].preferences.tab_location_brush == 'tools':
+         
+            VIEW3D_TP_BoolTool_Brush_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_brush
+            bpy.utils.register_class(VIEW3D_TP_BoolTool_Brush_TOOLS)
+        
+        if context.user_preferences.addons[__name__].preferences.tab_location_brush == 'ui':
+            bpy.utils.register_class(VIEW3D_TP_BoolTool_Brush_UI)
+        
+        if context.user_preferences.addons[__name__].preferences.tab_location_brush == 'off':
+            return None
 
     except Exception as e:
         print("\n[{}]\n{}\n\nError:\n{}".format(__name__, message, e))
@@ -140,7 +138,7 @@ def update_panel_position_brush(self, context):
 
 
 
-panels_vw = (VIEW3D_TP_BoolTool_BViewer_UI, VIEW3D_TP_BoolTool_Config_UI)
+panels_vw = (VIEW3D_TP_BoolTool_BViewer_UI, VIEW3D_TP_BoolTool_BViewer_TOOLS, VIEW3D_TP_BoolTool_Config_UI, VIEW3D_TP_BoolTool_Config_TOOLS)
 
 def update_panel_position_props(self, context):
     message = "T+ Boolean Viewer: Updating Panel locations has failed"
@@ -149,21 +147,20 @@ def update_panel_position_props(self, context):
             if "bl_rna" in panel.__dict__:
                 bpy.utils.unregister_class(panel)
 
-        for panel in panels_vw:   
-            if context.user_preferences.addons[__name__].preferences.tab_location_props == 'tools':
-             
-                VIEW3D_TP_BoolTool_BViewer_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_props
-                VIEW3D_TP_BoolTool_Config_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_props
-            
-                bpy.utils.register_class(VIEW3D_TP_BoolTool_BViewer_TOOLS)
-                bpy.utils.register_class(VIEW3D_TP_BoolTool_Config_TOOLS)
-            
-            if context.user_preferences.addons[__name__].preferences.tab_location_props == 'ui':
-                bpy.utils.register_class(VIEW3D_TP_BoolTool_BViewer_UI)
-                bpy.utils.register_class(VIEW3D_TP_BoolTool_Config_UI)
-            
-            if context.user_preferences.addons[__name__].preferences.tab_location_props == 'off':
-                pass
+        if context.user_preferences.addons[__name__].preferences.tab_location_props == 'tools':
+         
+            VIEW3D_TP_BoolTool_BViewer_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_props
+            VIEW3D_TP_BoolTool_Config_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_props
+        
+            bpy.utils.register_class(VIEW3D_TP_BoolTool_BViewer_TOOLS)
+            bpy.utils.register_class(VIEW3D_TP_BoolTool_Config_TOOLS)
+        
+        if context.user_preferences.addons[__name__].preferences.tab_location_props == 'ui':
+            bpy.utils.register_class(VIEW3D_TP_BoolTool_BViewer_UI)
+            bpy.utils.register_class(VIEW3D_TP_BoolTool_Config_UI)
+        
+        if context.user_preferences.addons[__name__].preferences.tab_location_props == 'off':
+            return None
 
     except Exception as e:
         print("\n[{}]\n{}\n\nError:\n{}".format(__name__, message, e))
@@ -184,7 +181,7 @@ def update_tools(self, context):
         return True
 
     if context.user_preferences.addons[__name__].preferences.tab_display_tools == 'off':
-        pass    
+        return None    
 
 
 
@@ -220,7 +217,7 @@ def update_menu(self, context):
 
 
     if context.user_preferences.addons[__name__].preferences.tab_menu_view == 'off':
-        pass
+        return None
 
 
 
