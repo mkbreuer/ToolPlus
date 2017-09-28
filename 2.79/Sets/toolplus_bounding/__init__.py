@@ -20,7 +20,7 @@
 bl_info = {
 "name": "T+ Bounding", 
 "author": "marvink.k.breuer (MKB)",
-"version": (2, 5),
+"version": (2, 6),
 "blender": (2, 79, 0),
 "location": "View3D > TAB Tools > Panel: Bounding / Menu: ADD [SHIFT+A]",
 "description": "create bounding geomtry on selected objects",
@@ -51,9 +51,9 @@ if "bpy" in locals():
     imp.reload(boxes) 
     imp.reload(copy) 
     imp.reload(recoplanar) 
+    imp.reload(relocal)  
     imp.reload(rename)    
-    imp.reload(selection)    
-    imp.reload(setlocal)    
+    imp.reload(selection)      
     imp.reload(spheres)    
     imp.reload(tubes) 
     imp.reload(help) 
@@ -77,9 +77,9 @@ else:
     from .operators import boxes                                                                                                                                                                                                                                                         
     from .operators import copy                                                                                
     from .operators import recoplanar                                                                                
+    from .operators import relocal  
     from .operators import rename                                                                                                                       
-    from .operators import selection                                                                                                                       
-    from .operators import setlocal                                                                                                                       
+    from .operators import selection                                                                                                                                                                                                                                            
     from .operators import spheres                                                                                                                       
     from .operators import tubes   
     from .operators import help                                          
@@ -695,6 +695,17 @@ def draw_recoplanar_item(self, context):
     layout.operator("tp_ops.copy_local_transform", icon_value=button_bloc.icon_id ) 
 
 
+def draw_recoplanar_edit_item(self, context):
+    icons = load_icons()
+
+    layout = self.layout
+
+    layout.separator()    
+
+    button_relocal = icons.get("icon_relocal") 
+    layout.operator("tp_ops.set_new_local", icon_value=button_relocal.icon_id) 
+
+
 
 # REGISTRY #
 import traceback
@@ -710,6 +721,7 @@ def register():
     # TO MENU
     bpy.types.INFO_MT_mesh_add.append(draw_bound_item) 
     bpy.types.VIEW3D_MT_object_specials.append(draw_recoplanar_item) 
+    #bpy.types.VIEW3D_MT_edit_mesh_specials.append(draw_recoplanar_edit_item) 
    
     # PROPS
     bpy.types.WindowManager.bbox_window = bpy.props.PointerProperty(type = Dropdown_BBox_Props)    
@@ -764,6 +776,7 @@ if __name__ == "__main__":
     register()
         
         
+
 
 
 

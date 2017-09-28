@@ -56,6 +56,7 @@ def load_icons():
     mkb_icons.load("icon_boolean_edge", os.path.join(icons_dir, "boolean_edge.png"), 'IMAGE')
     mkb_icons.load("icon_boolean_bridge", os.path.join(icons_dir, "boolean_bridge.png"), 'IMAGE')
     mkb_icons.load("icon_boolean_sym", os.path.join(icons_dir, "boolean_sym.png"), 'IMAGE')
+    mkb_icons.load("icon_boolean_pipe", os.path.join(icons_dir, "boolean_pipe.png"), 'IMAGE')
     mkb_icons.load("icon_boolean_custom", os.path.join(icons_dir, "boolean_custom.png"), 'IMAGE')
     
     mkb_icons.load("icon_boolean_separate", os.path.join(icons_dir, "boolean_separate.png"), 'IMAGE')

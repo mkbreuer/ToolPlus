@@ -95,12 +95,88 @@ name_list = []
 new_list = []
 
 
+
+def set_local_operator(self, context):
+    active = bpy.context.active_object            
+    selected = bpy.context.selected_objects
+
+    n = len(selected)
+    if n == 1:    
+
+        for obj in selected:
+            
+            name_list.append(obj.name)
+
+            # add new dummy
+            bpy.ops.view3d.snap_cursor_to_center()
+            bpy.ops.mesh.primitive_cone_add(radius1=1, radius2=0, depth=2, view_align=False, enter_editmode=False, location=(0, 0, 0))
+
+            bpy.ops.object.editmode_toggle()
+            bpy.ops.mesh.select_all(action='DESELECT')
+            bpy.ops.mesh.select_face_by_sides(type='GREATER')
+            bpy.ops.object.editmode_toggle()
+            
+            bpy.context.object.name = "local_dummy"
+            bpy.context.object.data.name = "local_dummy"
+
+            new_list.append("local_dummy")
+           
+            bpy.ops.object.select_all(action = 'DESELECT') 
+            bpy.data.objects["local_dummy"].select = True    
+
+            # set first in list active
+            bpy.data.objects[obj.name].select = True 
+            bpy.context.scene.objects.active = selected[0]
+                                    
+            # set dummy to selected face
+            objs_to_move = [o for o in context.selected_objects if o != context.active_object]
+            for o in objs_to_move:
+                align_to_active_faces(o, context.active_object)   
+
+            # Set Euler mode
+            bpy.context.object.rotation_mode = 'XYZ'
+         
+            # set second in list active                
+            bpy.context.scene.objects.active = bpy.data.objects["local_dummy"]
+
+
+            active_source = bpy.context.active_object            
+            selected_target = bpy.context.selected_objects
+
+            mat_source = active_source.rotation_euler.to_matrix()
+            mat_source.invert()
+
+            for ob in selected_target:
+                if ob != selected_target:
+                    mat_ob = ob.rotation_euler.to_matrix()
+                    if ob.type == 'MESH':                
+                        mat = mat_source * mat_ob
+                        local_rotate(ob.data, mat)
+                        ob.rotation_euler = active_source.rotation_euler
+
+
+
+            bpy.ops.object.select_all(action = 'DESELECT') 
+            bpy.data.objects["local_dummy"].select = True            
+            bpy.ops.object.delete()
+
+            # set first in list active
+            bpy.data.objects[obj.name].select = True 
+            bpy.context.scene.objects.active = selected[0]
+
+            
+    else:
+        self.report({'INFO'}, 'select only 1 object')
+
+    return
+
+
+
 # OPERATOR SET LOCAL #
 class VIEWD3D_TP_SET_LOCAL(bpy.types.Operator):
     """ set local orientation to 1 selected face """
     bl_idname = "tp_ops.set_new_local"
-    bl_label = "Set Local"
-    bl_context = "objectmode"
+    bl_label = "ReLocal"
     bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
@@ -128,75 +204,27 @@ class VIEWD3D_TP_SET_LOCAL(bpy.types.Operator):
        
         box.separator()   
 
+
     def execute(self, context):
-        active = bpy.context.active_object            
-        selected = bpy.context.selected_objects
 
-        n = len(selected)
-        if n == 1:
-        
-            for obj in selected:
-                name_list.append(obj.name)
-
-                # add new dummy
-                bpy.ops.view3d.snap_cursor_to_center()
-                bpy.ops.mesh.primitive_cone_add(radius1=1, radius2=0, depth=2, view_align=False, enter_editmode=False, location=(0, 0, 0))
-
+        if context.space_data.local_view:
+           # stay in local view           
+            bpy.ops.view3d.localview()                                                       
+            if bpy.context.object.mode == "EDIT":
+                bpy.ops.object.editmode_toggle()                                 
+                set_local_operator(self, context)                        
                 bpy.ops.object.editmode_toggle()
-                bpy.ops.mesh.select_all(action='DESELECT')
-                bpy.ops.mesh.select_face_by_sides(type='GREATER')
-                bpy.ops.object.editmode_toggle()
-                
-                bpy.context.object.name = "local_dummy"
-                bpy.context.object.data.name = "local_dummy"
-
-                new_list.append("local_dummy")
-               
-                bpy.ops.object.select_all(action = 'DESELECT') 
-                bpy.data.objects["local_dummy"].select = True    
-
-                # set first in list active
-                bpy.data.objects[obj.name].select = True 
-                bpy.context.scene.objects.active = selected[0]
-                                        
-                # set dummy to selected face
-                objs_to_move = [o for o in context.selected_objects if o != context.active_object]
-                for o in objs_to_move:
-                    align_to_active_faces(o, context.active_object)   
-
-                # Set Euler mode
-                bpy.context.object.rotation_mode = 'XYZ'
- 
-                # set second in list active                
-                bpy.context.scene.objects.active = bpy.data.objects["local_dummy"]
-
-
-                active_source = bpy.context.active_object            
-                selected_target = bpy.context.selected_objects
-
-                mat_source = active_source.rotation_euler.to_matrix()
-                mat_source.invert()
-
-                for ob in selected_target:
-                    if ob != selected_target:
-                        mat_ob = ob.rotation_euler.to_matrix()
-                        if ob.type == 'MESH':                
-                            mat = mat_source * mat_ob
-                            local_rotate(ob.data, mat)
-                            ob.rotation_euler = active_source.rotation_euler
-
-
-
-                bpy.ops.object.select_all(action = 'DESELECT') 
-                bpy.data.objects["local_dummy"].select = True            
-                bpy.ops.object.delete()
-
-                # set first in list active
-                bpy.data.objects[obj.name].select = True 
-                bpy.context.scene.objects.active = selected[0]
+            else:
+                set_local_operator(self, context)   
+            bpy.ops.view3d.localview()
 
         else:
-            self.report({'INFO'}, 'select only 1 object')
+            if bpy.context.object.mode == "EDIT":
+                bpy.ops.object.editmode_toggle()                                 
+                set_local_operator(self, context)                        
+                bpy.ops.object.editmode_toggle()
+            else:
+                set_local_operator(self, context)   
 
 
         # set widget orientation
@@ -207,13 +235,12 @@ class VIEWD3D_TP_SET_LOCAL(bpy.types.Operator):
         else:
             bpy.context.space_data.transform_orientation = 'GLOBAL'  
             
-
         del name_list[:]
         return {'FINISHED'}
 
 
 
-
+# REGISTRY #
 def register():
     bpy.utils.register_module(__name__)
  

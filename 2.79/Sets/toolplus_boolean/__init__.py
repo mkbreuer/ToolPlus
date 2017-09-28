@@ -20,7 +20,7 @@
 bl_info = {
     "name": "T+ Boolean",
     "author": "Multi Authors (see URL), Marvin.K.Breuer (MKB)",
-    "version": (1, 8, 2),
+    "version": (1, 8, 4),
     "blender": (2, 7, 9),
     "location": "View3D > Tool Shelf [T] or Property Shelf [N] ",
     "description": "Collection of Boolean Tools",

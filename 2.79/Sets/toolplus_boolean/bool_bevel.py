@@ -5,7 +5,7 @@ time_start = False
 bl_info = {
     "name": "Boolean Bevel",
     "author": "Rodinkov Ilya",
-    "version": (0, 0, 8),
+    "version": (0, 0, 9),
     "blender": (2, 75, 0),
     "location": "View3D > Tools > Boolean Bevel > Bevel",
     "description": "Create bevel after boolean",
@@ -102,6 +102,160 @@ class ObjectBooleanBevelBridge(bpy.types.Operator):
         return {'FINISHED'}
 
 
+
+
+class ObjectBooleanBevelPipe(bpy.types.Operator):
+    """Create the pipe on Object"""
+    bl_idname = "object.boolean_bevel_make_pipe"
+    bl_label = "Boolean Bevel Pipe"
+    bl_options = {'REGISTER', 'UNDO', 'PRESET'}
+
+
+    def draw(self, context):
+        layout = self.layout
+
+        layout = self.layout
+
+        col = layout.column(align=True)
+
+        box = col.box().column(align=True)
+        
+        row = box.row(align=True)   
+        row.prop(self, "all_settings")
+
+        box.separator()
+
+        row = box.row(align=True)   
+        row.prop(self, "value_radius", text="Radius")
+        row.prop(self, "sides", text="Side")
+
+        box.separator()
+        
+        row = box.row(align=True)   
+        row.prop(self, "simplify")
+        row.prop(self, "subdivide", text="Subdiv")
+
+        box.separator()
+
+        row = box.row(align=True)   
+        row.prop(self, "repeat", text="Relax")
+        row.prop(self, "relax", text="Factor")
+
+        box.separator()
+
+        if self.all_settings:
+
+            box = col.box().column(1)
+            
+            row = box.row(align=True) 
+            row.prop(self, "sharp")
+            row.prop(self, "sharp_angle")
+
+            box.separator()
+
+            row = box.row(align=True) 
+            row.prop(self, "fix_curve", text="Fix Twist")
+            row.prop(self, "curve_tilt")
+            box.separator()
+
+            row = box.column(align=True) 
+            row.prop(self, "twist_mode")
+            row.prop(self, "interpolation")
+
+            box.separator()
+
+            row = box.row(align=True) 
+            row.prop(self, "vertex_remove")
+            row.prop(self, "smooth")
+  
+            box.separator()
+
+
+    all_settings = bpy.props.BoolProperty(name="Show all settings", default=False)
+
+    value_radius = bpy.props.FloatProperty(name="Pipe Radius", default=0.05, min=0.0001, max=30.0, step=1)
+    sides = bpy.props.IntProperty(name="Pipe Sides", default=8, min=3, max=100)
+
+    relax = bpy.props.EnumProperty(name="Relax Factor",
+                                   items=(("0", "Not Use", "Not Use"),
+                                          ("1", "1", "One"),
+                                          ("3", "3", "Three"),
+                                          ("5", "5", "Five"),
+                                          ("10", "10", "Ten"),
+                                          ("25", "25", "Twenty-five")),
+                                   description="Number of times the loop is relaxed",
+                                   default="5")
+
+    repeat = bpy.props.IntProperty(name="Repeat relax", default=1, min=1, max=1000)
+
+    simplify = bpy.props.FloatProperty(name="Simplify", default=0.0, min=0.0, max=1.0, unit="ROTATION", step=100)
+
+    subdivide = bpy.props.IntProperty(name="Subdivide Patch", default=0, min=0, max=500)
+
+    sharp = bpy.props.BoolProperty(name="Sharp Edge", default=False)
+    sharp_angle = bpy.props.FloatProperty(name="Sharp angle", default=0.523599, min=0.0, max=3.0, unit="ROTATION",
+                                          step=100)
+
+    fix_curve = bpy.props.BoolProperty(name="Fix Curve Twist", default=True)
+    curve_tilt = bpy.props.FloatProperty(name="Mean Tilt", default=45.0, min=-45.0, max=45.0)
+    twist_mode = bpy.props.EnumProperty(name="Twist Mode",
+                                        items=(("MINIMUM", "Minimum", "Use the least twist over the entire curve"),
+                                               ("TANGENT", "Tangent", "Use the tangent to calculate twist")),
+                                        description="The type of tilt calculation for 3D Curves",
+                                        default="MINIMUM")
+
+    smooth = bpy.props.IntProperty(name="Smooth", default=60, min=0, max=500)
+    vertex_remove = bpy.props.FloatProperty(name="Remove Vertex", default=0.00001, min=0.0, max=5.0, step=0.1)
+
+    interpolation = bpy.props.EnumProperty(name="Interpolation",
+                                           items=(("cubic", "Cubic", "Natural cubic spline, smooth results"),
+                                                  ("linear", "Linear", "Vertices are projected on existing edges")),
+                                           description="Algorithm used for interpolation",
+                                           default='cubic')
+
+
+    # DRAW REDO LAST [F6] #
+    def execute(self, context):
+        loop_tools_addon = "mesh_looptools"
+        state = addon_utils.check(loop_tools_addon)
+        if not state[0]:
+            bpy.ops.wm.addon_enable(module=loop_tools_addon)
+        scene = context.scene
+        src_obj = scene.objects.active
+        bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked": False, "mode": 'TRANSLATION'})
+        duplicate = scene.objects.active
+        have_bool = prepare_object(scene, duplicate, False, None, None,
+                                   "False")
+        if have_bool[0]:
+            bpy.ops.object.modifier_apply(apply_as='DATA', modifier=have_bool[1])
+            scene.objects.active = src_obj
+            bpy.ops.object.modifier_remove(modifier=have_bool[1])
+            scene.objects.active = duplicate
+            guide = get_guide(scene, self.simplify, self.subdivide, self.relax, False, self.sharp, self.sharp_angle,
+                              self.interpolation, self.vertex_remove, self.repeat, duplicate, have_bool[2])
+            bpy.ops.object.modifier_apply(apply_as='DATA', modifier=have_bool[1])
+            # bpy.ops.object.select_all(action='DESELECT')
+            # scene.objects.active = src_obj
+            if not guide:
+                self.report({'ERROR'}, "Error on get_guide")
+                return {'CANCELLED'}
+            else:
+                create_curve(self.value_radius, self.sides, self.fix_curve, self.curve_tilt, self.twist_mode, scene,
+                             self.smooth)
+
+            pipe = scene.objects.active
+            pipe.name = src_obj.name + "_PIPE"
+            # bpy.ops.object.select_all(action='DESELECT')
+            # pipe.select = True
+            # bpy.ops.object.convert(target='MESH')
+            bpy.data.objects["BOOLEAN_BEVEL_CURVE_PROFILE"].name = pipe.name + "_PROFILE"
+
+        bpy.ops.object.select_all(action='DESELECT')
+        duplicate.select = True
+        bpy.ops.object.delete(use_global=False)
+
+        clear_objects(scene, pipe)
+        return {'FINISHED'}
 
 
 class ObjectBooleanBevelSymmetrize(bpy.types.Operator):
@@ -273,11 +427,13 @@ class ObjectBooleanBevelRemoveObjects(bpy.types.Operator):
         return {'FINISHED'}
 
 
+
 class ObjectBooleanBevel(bpy.types.Operator):
     """Create the bevel on Object"""
     bl_idname = "object.boolean_bevel"
     bl_label = "Boolean Bevel"
     bl_options = {'REGISTER', 'UNDO', 'PRESET'}
+
 
     # DRAW REDO LAST [F6] #
     def draw(self, context):
@@ -406,6 +562,7 @@ class ObjectBooleanBevel(bpy.types.Operator):
 
 
 
+
     # PROPS #
     interpolation = bpy.props.EnumProperty(name="Interpolation",
                                            items=(("cubic", "Cubic", "Natural cubic spline, smooth results"),
@@ -490,6 +647,7 @@ class ObjectBooleanBevel(bpy.types.Operator):
     # flip_normals = bpy.props.BoolProperty(name="Flip Normals", default=True)
 
     bevel_width = bpy.props.IntProperty(name="Bevel_width", default=98, min=0, max=100)
+
 
     def execute(self, context):
         loop_tools_addon = "mesh_looptools"
@@ -697,6 +855,8 @@ class ObjectBooleanCustomBevel(bpy.types.Operator):
     bl_label = "Boolean Custom Bevel"
     bl_options = {'REGISTER', 'UNDO', 'PRESET'}
 
+
+    # DRAW REDO LAST [F6] #
     def draw(self, context):
 
         layout = self.layout
@@ -787,7 +947,8 @@ class ObjectBooleanCustomBevel(bpy.types.Operator):
     stop_calc = bpy.props.BoolProperty(name="Stop calculations", default=False)
     custom_normals = bpy.props.BoolProperty(name="Custom Normals", default=True)
     bevel_width = bpy.props.IntProperty(name="Bevel_width", default=98, min=0, max=100)
-
+    
+    
     def execute(self, context):
         try:
             state = addon_utils.check("mesh_looptools")
@@ -880,16 +1041,22 @@ class ObjectBooleanBevelCustomEdge(bpy.types.Operator):
 #        split = layout.split()
 #        col = split.column(align=True)
 #        if bpy.context.object:
+#            
 #            if 0 < len(bpy.context.selected_objects) < 2 and bpy.context.object.mode == "OBJECT":
 #                col.operator("object.boolean_bevel", text="Bevel", icon='MOD_BEVEL')
 #                col.operator("object.boolean_bevel_symmetrize", text="Symmetrize", icon='MOD_MIRROR')
+#                col.operator("object.boolean_bevel_make_pipe", text="Make Pipe", icon="MOD_CURVE")
+
 #                if bpy.data.objects.find('BOOLEAN_BEVEL_CURVE') != -1 and bpy.data.objects.find(
 #                        'BOOLEAN_BEVEL_GUIDE') != -1:
 #                    col.operator("object.boolean_custom_bevel", text="Custom Bevel", icon='MOD_BEVEL')
+#            
 #            if bpy.context.object.mode == "EDIT":
 #                col.operator("object.boolean_bevel_custom_edge", text="Custom Edge", icon='EDGESEL')
 #                # col.operator("object.boolean_bevel_bridge", text="Bridge Edge", icon='EDGESEL')
+#        
 #        col.separator()
+#       
 #        col.operator("object.boolean_bevel_remove_objects", text="Remove Objects", icon='X')
 #        if len(bpy.context.selected_objects) > 0 and bpy.context.object.mode == "OBJECT":
 #            col.operator("object.boolean_bevel_apply_modifiers", text="Apply Modifiers", icon='IMPORT')
@@ -1317,6 +1484,7 @@ def register():
     bpy.utils.register_class(ObjectBooleanBevelRemoveModifiers)
     bpy.utils.register_class(ObjectBooleanBevelRemoveObjects)
     bpy.utils.register_class(ObjectBooleanBevelSymmetrize)
+    bpy.utils.register_class(ObjectBooleanBevelPipe)
     # bpy.utils.register_class(ObjectBooleanBevelBridge)
 
 
@@ -1330,6 +1498,7 @@ def unregister():
     bpy.utils.unregister_class(ObjectBooleanBevelRemoveModifiers)
     bpy.utils.register_class(ObjectBooleanBevelRemoveObjects)
     bpy.utils.register_class(ObjectBooleanBevelSymmetrize)
+    bpy.utils.register_class(ObjectBooleanBevelPipe)
     # bpy.utils.unregister_class(ObjectBooleanBevelBridge)
 
 

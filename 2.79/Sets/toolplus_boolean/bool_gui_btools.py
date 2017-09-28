@@ -165,6 +165,10 @@ def draw_bt_brush_panel_layout(self, context, layout):
                 button_boolean_sym = icons.get("icon_boolean_sym")
                 row.operator("object.boolean_bevel_symmetrize", text="SymBevel", icon_value=button_boolean_sym.icon_id)
                
+                button_boolean_pipe = icons.get("icon_boolean_pipe")                       
+                row.operator("object.boolean_bevel_make_pipe", text="BoolPipe", icon_value=button_boolean_pipe.icon_id)
+
+
                 if bpy.data.objects.find('BOOLEAN_BEVEL_CURVE') != -1 and bpy.data.objects.find('BOOLEAN_BEVEL_GUIDE') != -1:
                     button_boolean_custom = icons.get("icon_boolean_custom")
                     row.operator("object.boolean_custom_bevel", text="CustomBevel", icon_value=button_boolean_custom.icon_id)
