@@ -140,7 +140,8 @@ class VIEW3D_TP_Boolean_Menu(bpy.types.Menu):
                         layout.separator()
           
                         layout.operator("object.boolean_bevel_remove_objects", text="Rem.Guides", icon='GHOST_DISABLED')
-                        
+                        layout.operator("object.boolean_bevel_remove_pipes", text="Rem.Pipe", icon='IPO_CIRC')                        
+                     
                         if len(bpy.context.selected_objects) > 0 and bpy.context.object.mode == "OBJECT":
                             
                             layout.operator("object.boolean_bevel_remove_modifiers", text="Rem.Mod", icon='X')

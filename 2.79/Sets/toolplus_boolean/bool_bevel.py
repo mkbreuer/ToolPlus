@@ -5,7 +5,7 @@ time_start = False
 bl_info = {
     "name": "Boolean Bevel",
     "author": "Rodinkov Ilya",
-    "version": (0, 0, 9),
+    "version": (0, 1, 0),
     "blender": (2, 75, 0),
     "location": "View3D > Tools > Boolean Bevel > Bevel",
     "description": "Create bevel after boolean",
@@ -26,6 +26,7 @@ class BooleanBevelPreferences(AddonPreferences):
     def draw(self, context):
         layout = self.layout
         layout.label(text="Instructions:")
+
 
 
 # LOAD MODULE #
@@ -104,13 +105,29 @@ class ObjectBooleanBevelBridge(bpy.types.Operator):
 
 
 
+
+class ObjectBooleanBevelRemovePipes(bpy.types.Operator):
+    """Remove Pipes"""
+    bl_idname = "object.boolean_bevel_remove_pipes"
+    bl_label = "Remove Pipes"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        bpy.ops.object.select_all(action='DESELECT')
+        for i in bpy.data.objects:
+            if i.name.find("_BB_PIPE") != -1:
+                i.select = True
+        bpy.ops.object.delete(use_global=False)
+        return {'FINISHED'}
+
+
 class ObjectBooleanBevelPipe(bpy.types.Operator):
     """Create the pipe on Object"""
     bl_idname = "object.boolean_bevel_make_pipe"
     bl_label = "Boolean Bevel Pipe"
     bl_options = {'REGISTER', 'UNDO', 'PRESET'}
 
-
+    # DRAW REDO LAST [F6] #
     def draw(self, context):
         layout = self.layout
 
@@ -214,26 +231,52 @@ class ObjectBooleanBevelPipe(bpy.types.Operator):
                                            default='cubic')
 
 
-    # DRAW REDO LAST [F6] #
+
     def execute(self, context):
+        custom = False
         loop_tools_addon = "mesh_looptools"
         state = addon_utils.check(loop_tools_addon)
         if not state[0]:
             bpy.ops.wm.addon_enable(module=loop_tools_addon)
+
+        if bpy.data.objects.find('BOOLEAN_BEVEL_GUIDE_CUSTOM') != -1:
+            custom = True
+
         scene = context.scene
         src_obj = scene.objects.active
-        bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked": False, "mode": 'TRANSLATION'})
-        duplicate = scene.objects.active
-        have_bool = prepare_object(scene, duplicate, False, None, None,
-                                   "False")
+
+        if not custom:
+            bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked": False, "mode": 'TRANSLATION'})
+            duplicate = scene.objects.active
+        # have_bool = prepare_object(scene, duplicate, False, None, None,
+        #                            "False")
+
+
+
+        if not custom:
+            have_bool = prepare_object(scene, duplicate, False, None, None,
+                                       "False")
+        else:
+            have_bool = [True, 0, "NoName"]
+
         if have_bool[0]:
-            bpy.ops.object.modifier_apply(apply_as='DATA', modifier=have_bool[1])
+            if not custom:
+                bpy.ops.object.modifier_apply(apply_as='DATA', modifier=have_bool[1])
             scene.objects.active = src_obj
-            bpy.ops.object.modifier_remove(modifier=have_bool[1])
-            scene.objects.active = duplicate
-            guide = get_guide(scene, self.simplify, self.subdivide, self.relax, False, self.sharp, self.sharp_angle,
-                              self.interpolation, self.vertex_remove, self.repeat, duplicate, have_bool[2])
-            bpy.ops.object.modifier_apply(apply_as='DATA', modifier=have_bool[1])
+            if not custom:
+                bpy.ops.object.modifier_remove(modifier=have_bool[1])
+                scene.objects.active = duplicate
+
+                guide = get_guide(scene, self.simplify, self.subdivide, self.relax, custom, self.sharp,
+                                  self.sharp_angle,
+                                  self.interpolation, self.vertex_remove, self.repeat, duplicate, have_bool[2])
+
+            else:
+                guide = get_guide(scene, self.simplify, self.subdivide, self.relax, custom, self.sharp,
+                                  self.sharp_angle,
+                                  self.interpolation, self.vertex_remove, self.repeat, src_obj, have_bool[2])
+            if not custom:
+                bpy.ops.object.modifier_apply(apply_as='DATA', modifier=have_bool[1])
             # bpy.ops.object.select_all(action='DESELECT')
             # scene.objects.active = src_obj
             if not guide:
@@ -244,15 +287,17 @@ class ObjectBooleanBevelPipe(bpy.types.Operator):
                              self.smooth)
 
             pipe = scene.objects.active
-            pipe.name = src_obj.name + "_PIPE"
+            pipe.name = src_obj.name + "_BB_PIPE"
             # bpy.ops.object.select_all(action='DESELECT')
             # pipe.select = True
             # bpy.ops.object.convert(target='MESH')
             bpy.data.objects["BOOLEAN_BEVEL_CURVE_PROFILE"].name = pipe.name + "_PROFILE"
 
         bpy.ops.object.select_all(action='DESELECT')
-        duplicate.select = True
-        bpy.ops.object.delete(use_global=False)
+
+        if not custom:
+            duplicate.select = True
+            bpy.ops.object.delete(use_global=False)
 
         clear_objects(scene, pipe)
         return {'FINISHED'}
@@ -265,14 +310,14 @@ class ObjectBooleanBevelSymmetrize(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     direction = bpy.props.EnumProperty(name="Direction",
-                                   items=(("NEGATIVE_X", "-x to +x", "-x to +x"),
-                                          ("POSITIVE_X", "+x to -x", "+x to -x"),
-                                          ("NEGATIVE_Y", "-y to +y", "-y to +y"),
-                                          ("POSITIVE_Y", "+y to -y", "+y to -y"),
-                                          ("NEGATIVE_Z", "-z to +z", "-z to +z"),
-                                          ("POSITIVE_Z", "+z to -z", "+z to -z")),
-                                   description="",
-                                   default="NEGATIVE_X")
+                                       items=(("NEGATIVE_X", "-x to +x", "-x to +x"),
+                                              ("POSITIVE_X", "+x to -x", "+x to -x"),
+                                              ("NEGATIVE_Y", "-y to +y", "-y to +y"),
+                                              ("POSITIVE_Y", "+y to -y", "+y to -y"),
+                                              ("NEGATIVE_Z", "-z to +z", "-z to +z"),
+                                              ("POSITIVE_Z", "+z to -z", "+z to -z")),
+                                       description="",
+                                       default="NEGATIVE_X")
 
     threshold = bpy.props.FloatProperty(name="Threshold", default=0.0001, min=0, max=1000, step=0.01)
 
@@ -427,13 +472,11 @@ class ObjectBooleanBevelRemoveObjects(bpy.types.Operator):
         return {'FINISHED'}
 
 
-
 class ObjectBooleanBevel(bpy.types.Operator):
     """Create the bevel on Object"""
     bl_idname = "object.boolean_bevel"
     bl_label = "Boolean Bevel"
     bl_options = {'REGISTER', 'UNDO', 'PRESET'}
-
 
     # DRAW REDO LAST [F6] #
     def draw(self, context):
@@ -865,14 +908,13 @@ class ObjectBooleanCustomBevel(bpy.types.Operator):
 
         row = box.row(align=True)
         row.prop(self, "all_settings", text="Enable additional Settings")
-     
-        box.separator()
     
         ###
         box = layout.box()      
-        box.label("Basic Parameters:")
-
-        box.prop(self, "union_path")
+     
+        row = box.row(align=True)       
+        row.label("BoolPath:")
+        row.prop(self, "union_path", text="")
 
         box.separator()
 
@@ -948,6 +990,7 @@ class ObjectBooleanCustomBevel(bpy.types.Operator):
     custom_normals = bpy.props.BoolProperty(name="Custom Normals", default=True)
     bevel_width = bpy.props.IntProperty(name="Bevel_width", default=98, min=0, max=100)
     
+
     
     def execute(self, context):
         try:
@@ -1041,7 +1084,6 @@ class ObjectBooleanBevelCustomEdge(bpy.types.Operator):
 #        split = layout.split()
 #        col = split.column(align=True)
 #        if bpy.context.object:
-#            
 #            if 0 < len(bpy.context.selected_objects) < 2 and bpy.context.object.mode == "OBJECT":
 #                col.operator("object.boolean_bevel", text="Bevel", icon='MOD_BEVEL')
 #                col.operator("object.boolean_bevel_symmetrize", text="Symmetrize", icon='MOD_MIRROR')
@@ -1050,17 +1092,15 @@ class ObjectBooleanBevelCustomEdge(bpy.types.Operator):
 #                if bpy.data.objects.find('BOOLEAN_BEVEL_CURVE') != -1 and bpy.data.objects.find(
 #                        'BOOLEAN_BEVEL_GUIDE') != -1:
 #                    col.operator("object.boolean_custom_bevel", text="Custom Bevel", icon='MOD_BEVEL')
-#            
 #            if bpy.context.object.mode == "EDIT":
 #                col.operator("object.boolean_bevel_custom_edge", text="Custom Edge", icon='EDGESEL')
 #                # col.operator("object.boolean_bevel_bridge", text="Bridge Edge", icon='EDGESEL')
-#        
 #        col.separator()
-#       
 #        col.operator("object.boolean_bevel_remove_objects", text="Remove Objects", icon='X')
 #        if len(bpy.context.selected_objects) > 0 and bpy.context.object.mode == "OBJECT":
 #            col.operator("object.boolean_bevel_apply_modifiers", text="Apply Modifiers", icon='IMPORT')
 #            col.operator("object.boolean_bevel_remove_modifiers", text="Remove Modifiers", icon='X')
+#        col.operator("object.boolean_bevel_remove_pipes", text="Remove Pipes", icon='X')
 
 
 def prepare_object(scene, src_obj, change_subdivide, subdiv_a, subdiv_b, change_operation):
@@ -1485,6 +1525,7 @@ def register():
     bpy.utils.register_class(ObjectBooleanBevelRemoveObjects)
     bpy.utils.register_class(ObjectBooleanBevelSymmetrize)
     bpy.utils.register_class(ObjectBooleanBevelPipe)
+    bpy.utils.register_class(ObjectBooleanBevelRemovePipes)
     # bpy.utils.register_class(ObjectBooleanBevelBridge)
 
 
@@ -1499,6 +1540,7 @@ def unregister():
     bpy.utils.register_class(ObjectBooleanBevelRemoveObjects)
     bpy.utils.register_class(ObjectBooleanBevelSymmetrize)
     bpy.utils.register_class(ObjectBooleanBevelPipe)
+    bpy.utils.register_class(ObjectBooleanBevelRemovePipes)
     # bpy.utils.unregister_class(ObjectBooleanBevelBridge)
 
 

@@ -185,7 +185,8 @@ def draw_bt_brush_panel_layout(self, context, layout):
 
                 row = box.row()            
                 row.operator("object.boolean_bevel_remove_objects", text=" ", icon='GHOST_DISABLED')
-                
+                row.operator("object.boolean_bevel_remove_pipes", text=" ", icon='IPO_CIRC')                
+          
                 if len(bpy.context.selected_objects) > 0 and bpy.context.object.mode == "OBJECT":
                     
                     row.operator("object.boolean_bevel_remove_modifiers", text=" ", icon='X')
