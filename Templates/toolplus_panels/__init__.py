@@ -31,20 +31,18 @@ bl_info = {
 
 
 
-
 # LOAD UI #
-
 from toolplus_panels.toolplus_panels          import (VIEW3D_TP_Template_Panel_TOOLS)
 from toolplus_panels.toolplus_panels          import (VIEW3D_TP_Template_Panel_UI)
 from toolplus_panels.toolplus_panels          import (VIEW3D_TP_Template_Panel_PROPS)
 
-# LOAD ICONS DEF#
+
+# LOAD ICONS #
 from . icons.icons                        import load_icons
 from . icons.icons                        import clear_icons
 
 
 # LOAD OPERATORS #
-
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'toolplus_panels'))
 
@@ -59,7 +57,6 @@ else:
 
 
 # LOAD MODULS #
-
 import bpy
 from bpy import*
 from bpy.props import*
@@ -70,52 +67,39 @@ from bpy.types import AddonPreferences, PropertyGroup
 
 
 # PANEL REGISTRY #
-
-def update_panel_location(self, context):
-
-    try:      
-        bpy.utils.unregister_class(VIEW3D_TP_Template_Panel_UI)       
-        bpy.utils.unregister_class(VIEW3D_TP_Template_Panel_PROPS)       
-        bpy.types.DATA_PT_modifiers.remove(menu_func)    
-        bpy.utils.unregister_class(VIEW3D_TP_Template_Panel_TOOLS)   
-    except:
-        pass
-    
+panels = (VIEW3D_TP_Template_Panel_TOOLS, VIEW3D_TP_Template_Panel_UI, VIEW3D_TP_Template_Panel_PROPS, menu_func)
+def update_panel(self, context):
+    message = "Template: Updating Panel locations has failed"
     try:
-        bpy.utils.unregister_class(VIEW3D_TP_Template_Panel_UI)
-        bpy.utils.unregister_class(VIEW3D_TP_Template_Panel_PROPS)
-        bpy.types.DATA_PT_modifiers.remove(menu_func) 
-    except:
+        for panel in panels:
+            if "bl_rna" in panel.__dict__:
+                bpy.utils.unregister_class(panel)
+
+        if context.user_preferences.addons[__name__].preferences.tab_location == 'tools':            
+            #CATEGORY CHANGE
+            VIEW3D_TP_Template_Panel_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_tab            
+            bpy.utils.register_class(VIEW3D_TP_Template_Panel_TOOLS)
+        
+        if context.user_preferences.addons[__name__].preferences.tab_location == 'ui':
+            bpy.utils.register_class(VIEW3D_TP_Template_Panel_UI)
+
+        if context.user_preferences.addons[__name__].preferences.tab_location == 'props':
+            bpy.utils.register_class(VIEW3D_TP_Template_Panel_PROPS)
+
+        if context.user_preferences.addons[__name__].preferences.tab_location == 'win':
+            bpy.types.DATA_PT_modifiers.prepend(menu_func)
+
+        if context.user_preferences.addons[__name__].preferences.tab_location == 'off':
+            pass
+
+    except Exception as e:
+        print("\n[{}]\n{}\n\nError:\n{}".format(__name__, message, e))
         pass
 
 
-    if context.user_preferences.addons[__name__].preferences.tab_location == 'tools':
-        
-        #CATEGORY CHANGE
-        VIEW3D_TP_Template_Panel_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_tab
-        
-        bpy.utils.register_class(VIEW3D_TP_Template_Panel_TOOLS)
-    
 
-    if context.user_preferences.addons[__name__].preferences.tab_location == 'ui':
-        bpy.utils.register_class(VIEW3D_TP_Template_Panel_UI)
-
-    if context.user_preferences.addons[__name__].preferences.tab_location == 'props':
-        bpy.utils.register_class(VIEW3D_TP_Template_Panel_PROPS)
-
-    if context.user_preferences.addons[__name__].preferences.tab_location == 'win':
-        bpy.types.DATA_PT_modifiers.prepend(menu_func)
-
-    if context.user_preferences.addons[__name__].preferences.tab_location == 'off':
-        pass
-
-
-
-
-# TOOLS REGISTRY #----------------------------------------------------------------------------------------
-
+# TOOLS REGISTRY #
 def update_panel_tools(self, context):
-
 
     # TOOLS ON
 
@@ -143,12 +127,12 @@ def update_panel_tools(self, context):
 
 
 
-# ADDON PREFERENCES #----------------------------------------------------------------------------------------
+# ADDON PREFERENCES #
 
 class TP_Addon_Preferences(AddonPreferences):
     bl_idname = __name__
     
-    #THEME TABS
+    # THEME TABS
     prefs_tabs = bpy.props.EnumProperty(
         items=(('info',       "Info",       "Info"),
                ('toolsets',   "Tools",      "Tools"),
@@ -157,7 +141,7 @@ class TP_Addon_Preferences(AddonPreferences):
          default='info')
 
 
-    #PANEL LOCATION                    
+    # PANEL LOCATION                    
     tab_location = bpy.props.EnumProperty(
         name = 'Panel Location',
         description = 'save user settings and restart blender after switching the panel location',
@@ -169,7 +153,7 @@ class TP_Addon_Preferences(AddonPreferences):
                default='tools', update = update_panel_location)
 
 
-    #TOOLS PROPS
+    # TOOLS PROPS
     tab_panel_custom_a = bpy.props.EnumProperty(name = 'Display Tools', description = 'on / off',
                   items=(('on', 'Custom A on', 'enable tools in panel'), ('off', 'Custom A off', 'disable tools in panel')), default='on', update = update_panel_tools)
 
@@ -181,15 +165,15 @@ class TP_Addon_Preferences(AddonPreferences):
 
 
 
-    #TAB LOCATION BY NAME
+    # NEW LOCATION BY NAME
     tools_category_tab = bpy.props.StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_location)
 
 
-    #PREFERENCE LAYOUT
+    # LAYOUT
     def draw(self, context):
         layout = self.layout        
         
-        #INFO
+        # INFO
         row= layout.row(1)
         row.prop(self, "prefs_tabs", expand=True)
        
@@ -209,7 +193,7 @@ class TP_Addon_Preferences(AddonPreferences):
             row.label(text="Have Fun! :)")
             
 
-        #LOCATION
+        # LOCATION
         if self.prefs_tabs == 'location':
             box = layout.box().column(1) 
             
@@ -231,7 +215,7 @@ class TP_Addon_Preferences(AddonPreferences):
             box.separator()  
 
             
-            #TIP
+            # TIP
             box.separator()  
             
             row = layout.column(1) 
@@ -239,7 +223,7 @@ class TP_Addon_Preferences(AddonPreferences):
 
 
 
-        #TOOLS
+        # TOOLS
         if self.prefs_tabs == 'toolsets':
 
             box = layout.box().column(1)
@@ -255,7 +239,7 @@ class TP_Addon_Preferences(AddonPreferences):
             box.separator()
 
 
-            #TIP
+            # TIP
             box.separator()  
             
             row = layout.column(1) 
@@ -263,7 +247,7 @@ class TP_Addon_Preferences(AddonPreferences):
             row.operator('wm.url_open', text = '!Tip: is key free', icon = 'PLUGIN').url = "https://github.com/Antonioya/blender/tree/master/iskeyfree"
 
 
-        #WEBLINKS
+        # WEBLINKS
         if self.prefs_tabs == 'url':
             row = layout.column_flow(2)
             row.operator('wm.url_open', text = 'GitHub', icon = 'INFO').url = "https://github.com/mkbreuer/ToolPlus-Templates"
@@ -279,7 +263,7 @@ class Dropdown_TP_Template_Props(bpy.types.PropertyGroup):
 
 
 
-#TAB MODIFIER IN PROPERTIES
+# MODIFIER PROPERTIES #  
 def menu_func(self, context):
     layout = self.layout
     
@@ -309,7 +293,7 @@ def menu_func(self, context):
 
 
 
-# REGISTRY
+# REGISTRY #
 import traceback
 
 def register():
@@ -320,15 +304,15 @@ def register():
     update_panel_location(None, bpy.context)
     update_panel_tools(None, bpy.context)
 
-    #PROPERTY GROUPS
     bpy.types.WindowManager.tp_collapse_template = bpy.props.PointerProperty(type = Dropdown_TP_Template_Props)
 
 
 
 def unregister():
-
-    #PROPERTY GROUPS
-    del bpy.types.WindowManager.tp_collapse_template
+    try:
+        del bpy.types.WindowManager.tp_collapse_template
+    except:
+        pass
 
     try: bpy.utils.unregister_module(__name__)
     except: traceback.print_exc()

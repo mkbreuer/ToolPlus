@@ -59,7 +59,7 @@ class VIEW3D_TP_Pivot_Individual(bpy.types.Operator):
 
 
 
-
+# REGISTRY # 
 def register():
     bpy.utils.register_module(__name__)
 

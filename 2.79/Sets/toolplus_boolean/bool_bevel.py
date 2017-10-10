@@ -5,7 +5,7 @@ time_start = False
 bl_info = {
     "name": "Boolean Bevel",
     "author": "Rodinkov Ilya",
-    "version": (0, 1, 0),
+    "version": (0, 1, 1),
     "blender": (2, 75, 0),
     "location": "View3D > Tools > Boolean Bevel > Bevel",
     "description": "Create bevel after boolean",
@@ -26,7 +26,6 @@ class BooleanBevelPreferences(AddonPreferences):
     def draw(self, context):
         layout = self.layout
         layout.label(text="Instructions:")
-
 
 
 # LOAD MODULE #
@@ -104,8 +103,6 @@ class ObjectBooleanBevelBridge(bpy.types.Operator):
 
 
 
-
-
 class ObjectBooleanBevelRemovePipes(bpy.types.Operator):
     """Remove Pipes"""
     bl_idname = "object.boolean_bevel_remove_pipes"
@@ -126,6 +123,7 @@ class ObjectBooleanBevelPipe(bpy.types.Operator):
     bl_idname = "object.boolean_bevel_make_pipe"
     bl_label = "Boolean Bevel Pipe"
     bl_options = {'REGISTER', 'UNDO', 'PRESET'}
+
 
     # DRAW REDO LAST [F6] #
     def draw(self, context):
@@ -229,7 +227,6 @@ class ObjectBooleanBevelPipe(bpy.types.Operator):
                                                   ("linear", "Linear", "Vertices are projected on existing edges")),
                                            description="Algorithm used for interpolation",
                                            default='cubic')
-
 
 
     def execute(self, context):
@@ -770,13 +767,35 @@ class ObjectBooleanBevel(bpy.types.Operator):
                 slice_object = scene.objects.active
                 slice_object.name = src_obj.name + "_SLICE"
                 slice_object.modifiers[len(slice_object.modifiers) - 1].operation = "INTERSECT"
-                bpy.ops.object.modifier_apply(apply_as='DATA', modifier=have_bool[1])
+                slice_name = slice_object.modifiers[len(slice_object.modifiers) - 1].object.name
 
+                slice_object.vertex_groups.clear()
+                # bpy.ops.object.mode_set(mode='EDIT')
+                # bpy.ops.mesh.reveal()
+                # bpy.ops.mesh.select_mode(type='FACE')
+                # bpy.ops.mesh.select_all(action='SELECT')
+                # slice_object.vertex_groups.new(name=src_obj.name)
+                # bpy.ops.object.vertex_group_assign()
+                # # bpy.ops.mesh.select_all(action='DESELECT')
+                # # bpy.ops.mesh.hide(unselected=False)
+                # bpy.ops.object.mode_set(mode='OBJECT')
+
+                bpy.ops.object.modifier_apply(apply_as='DATA', modifier=have_bool[1])
                 bpy.ops.object.mode_set(mode='EDIT')
-                bpy.ops.mesh.select_mode(type='VERT')
+                bpy.ops.mesh.select_mode(type='FACE')
+                bpy.ops.mesh.select_all(action='DESELECT')
+                bpy.ops.mesh.reveal()
+                slice_object.vertex_groups.new(name=src_obj.name)
+                bpy.ops.object.vertex_group_assign()
+                bpy.ops.mesh.select_all(action='INVERT')
+                slice_object.vertex_groups.new(name=slice_name)
+                bpy.ops.object.vertex_group_assign()
+                # return {'FINISHED'}
                 bpy.ops.mesh.select_all(action='SELECT')
                 bpy.ops.mesh.hide(unselected=False)
+
                 bpy.ops.object.mode_set(mode='OBJECT')
+                # return {'FINISHED'}
                 #
                 # if self.custom_normals:
                 #     normals_object.select = True
@@ -898,7 +917,6 @@ class ObjectBooleanCustomBevel(bpy.types.Operator):
     bl_label = "Boolean Custom Bevel"
     bl_options = {'REGISTER', 'UNDO', 'PRESET'}
 
-
     # DRAW REDO LAST [F6] #
     def draw(self, context):
 
@@ -991,7 +1009,6 @@ class ObjectBooleanCustomBevel(bpy.types.Operator):
     bevel_width = bpy.props.IntProperty(name="Bevel_width", default=98, min=0, max=100)
     
 
-    
     def execute(self, context):
         try:
             state = addon_utils.check("mesh_looptools")
@@ -1189,9 +1206,9 @@ def get_guide(scene, simplify, subdivide, relax, custom, sharp, sharp_angle, int
     print("get_guide Start: %.4f sec" % (time.time() - time_start))
     if not custom:
         bpy.ops.object.mode_set(mode='EDIT')
-        bpy.ops.mesh.select_mode(type='FACE')
+        bpy.ops.mesh.select_mode(type='VERT')
         bpy.ops.mesh.select_all(action='SELECT')
-
+        bpy.ops.mesh.select_mode(type='FACE')
         src_obj.vertex_groups.new(name=name + "_")
         bpy.ops.object.vertex_group_assign()
 
@@ -1228,8 +1245,12 @@ def get_guide(scene, simplify, subdivide, relax, custom, sharp, sharp_angle, int
     guide.select = True
     bpy.ops.object.mode_set(mode='EDIT')
     bpy.ops.mesh.select_mode(type='VERT')
+    bpy.ops.mesh.reveal()
     bpy.ops.mesh.select_all(action='SELECT')
+
+    bpy.ops.mesh.remove_doubles()
     print("get_guide Зашли в режим редактирования: %.4f sec" % (time.time() - time_start))
+    # return {'FINISHED'}
     if simplify > 0:
         bpy.ops.mesh.dissolve_limited(angle_limit=simplify)
         print("get_guide упростили: %.4f sec" % (time.time() - time_start))
@@ -1238,9 +1259,14 @@ def get_guide(scene, simplify, subdivide, relax, custom, sharp, sharp_angle, int
         print("get_guide подразделили: %.4f sec" % (time.time() - time_start))
     for i in range(repeat):
         if relax != '0' and not sharp:
+            bpy.ops.mesh.select_all(action='DESELECT')
+            bpy.ops.mesh.looptools_relax(iterations=relax, interpolation=interpolation)
+            # bpy.ops.mesh.select_mode(type='FACE')
+            bpy.ops.mesh.select_all(action='SELECT')
             bpy.ops.mesh.looptools_relax(iterations=relax, interpolation=interpolation)
             print("get_guide сглаживание: %.4f sec" % (time.time() - time_start))
     bpy.ops.mesh.remove_doubles(threshold=vertex_remove, use_unselected=False)
+
     bpy.ops.object.mode_set(mode='OBJECT')
     return guide
 
@@ -1537,10 +1563,10 @@ def unregister():
     bpy.utils.unregister_class(BooleanBevelPreferences)
     bpy.utils.unregister_class(ObjectBooleanBevelApplyModifiers)
     bpy.utils.unregister_class(ObjectBooleanBevelRemoveModifiers)
-    bpy.utils.register_class(ObjectBooleanBevelRemoveObjects)
-    bpy.utils.register_class(ObjectBooleanBevelSymmetrize)
-    bpy.utils.register_class(ObjectBooleanBevelPipe)
-    bpy.utils.register_class(ObjectBooleanBevelRemovePipes)
+    bpy.utils.unregister_class(ObjectBooleanBevelRemoveObjects)
+    bpy.utils.unregister_class(ObjectBooleanBevelSymmetrize)
+    bpy.utils.unregister_class(ObjectBooleanBevelPipe)
+    bpy.utils.unregister_class(ObjectBooleanBevelRemovePipes)
     # bpy.utils.unregister_class(ObjectBooleanBevelBridge)
 
 

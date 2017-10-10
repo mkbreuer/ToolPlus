@@ -11,6 +11,8 @@ from bpy.props import *
 from . icons.icons import load_icons
 
 
+
+
 def draw_panel_layout(self, context, layout):
     
     icons = load_icons()
@@ -96,8 +98,12 @@ def draw_panel_layout(self, context, layout):
        
         box.separator()   
         
+
         
 
+
+EDIT = ["OBJECT", "EDIT_MESH", "EDIT_CURVE", "EDIT_SURFACE", "EDIT_LATTICE", "EDIT_METABALL", "EDIT_TEXT", "EDIT_ARMATURE", "POSE"]
+GEOM = ['MESH', 'CURVE', 'SURFACE', 'META', 'FONT', 'LATTICE', 'ARMATURE', 'POSE', 'LAMP', 'CAMERA', 'EMPTY', 'SPEAKER']
 
 
 # Tools Shelf [T]
@@ -116,7 +122,13 @@ class VIEW3D_TP_Template_Panel_TOOLS(bpy.types.Panel):
         context.vertex_paint_object
         or context.weight_paint_object
         or context.image_paint_object)
-        return isModelingMode
+        obj = context.active_object     
+        if obj:
+            obj_type = obj.type                                                                
+            if obj_type in GEOM:
+                return isModelingMode #and context.mode not in EDIT
+
+
     
     def draw(self, context):
         layout = self.layout.column_flow(1)  
@@ -140,7 +152,11 @@ class VIEW3D_TP_Template_Panel_UI(bpy.types.Panel):
         context.vertex_paint_object
         or context.weight_paint_object
         or context.image_paint_object)
-        return isModelingMode
+        obj = context.active_object     
+        if obj:
+            obj_type = obj.type                                                                
+            if obj_type in GEOM:
+                return isModelingMode #and context.mode not in EDIT
 
     def draw(self, context):
         layout = self.layout.column_flow(1)  
@@ -165,7 +181,11 @@ class VIEW3D_TP_Template_Panel_PROPS(bpy.types.Panel):
         context.vertex_paint_object
         or context.weight_paint_object
         or context.image_paint_object)
-        return isModelingMode
+        obj = context.active_object     
+        if obj:
+            obj_type = obj.type                                                                
+            if obj_type in GEOM:
+                return isModelingMode #and context.mode not in EDIT
 
     def draw(self, context):
         layout = self.layout.column_flow(1)  
