@@ -123,8 +123,10 @@ def draw_curve_edit_panel_layout(self, context, layout):
              row.operator("curve.split",  text="Split")   
              row.operator("curve.trim_tool", text="Trim")                
        
-             row = box.row(1)            
-             row.operator("curve.remove_doubles", text="Remove Doubles")  
+             row = box.row(1)
+             row.operator("curve.remove_doubles", text="Rem. Doubles")  
+             row.operator("tp_ops.curve_copies", text = "Copy")                                      
+
 
              box.separator() 
 
@@ -251,9 +253,11 @@ def draw_curve_edit_panel_layout(self, context, layout):
              
              box = layout.box().column(1)  
             
-             row = box.column(1)
-             row.operator("object.curve_outline", text = "Curve Outline")
+             row = box.row(1)
+             row.operator("tp_ops.curve_copies", text = "Copy")
+             row.operator("object.curve_outline", text = "Outline")
              
+             row = box.column(1)
              vertex = []
              selected = []
              n = 0

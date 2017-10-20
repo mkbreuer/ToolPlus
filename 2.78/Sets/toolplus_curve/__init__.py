@@ -1,6 +1,4 @@
-# ##### BEGIN GPL LICENSE BLOCK #####
-#
-#Copyright (C) 2017  Marvin.K.Breuer (MKB)]
+43# ##### BEGIN GPL LICENSE BLOCK #####
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -24,7 +22,7 @@
 bl_info = {
     "name": "T+ Curves",
     "author": "Marvin.K.Breuer (MKB) / Multiple Addon Authors (see URLs)",
-    "version": (1, 3, 1),
+    "version": (1, 3, 2),
     "blender": (2, 78, 0),
     "location": "View3D > Toolshelf [T] > TAB > Curves",
     "description": "collection of curve object and tools",
@@ -113,6 +111,7 @@ if "bpy" in locals():
     importlib.reload(curve_align)
     importlib.reload(curve_beveltaper)
     importlib.reload(curve_convert)
+    importlib.reload(curve_copies)
     importlib.reload(curve_extend)
     importlib.reload(curve_first_points)
     importlib.reload(curve_material)
@@ -159,6 +158,7 @@ else:
     from . import curve_align
     from . import curve_beveltaper
     from . import curve_convert
+    from . import curve_copies
     from . import curve_extend
     from . import curve_first_points
     from . import curve_material

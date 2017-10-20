@@ -65,34 +65,36 @@ def draw_add_curve_panel_layout(self, context, layout):
             
             box = layout.box().column(1)   
 
-            row = box.row()
+            #row = box.row()
                
             #sub = row.row(1)
             #sub.scale_x = 0.35
             #sub.scale_y = 0.34
             #sub.template_icon_view(context.window_manager , "TP_Curves_Insert_Previews")            
 
-
-            box = row.column(1)
            
             """ Add Curve """
-            subrow = box.row(1)
-            subrow.alignment = 'CENTER'
-            subrow.operator("curve.primitive_bezier_curve_add",icon='CURVE_BEZCURVE',text="")
-            subrow.operator("curve.primitive_bezier_circle_add",icon='CURVE_BEZCIRCLE',text="")
-            subrow.operator("curve.primitive_nurbs_curve_add",icon='CURVE_NCURVE',text="")
-            subrow.operator("curve.primitive_nurbs_circle_add",icon='CURVE_NCIRCLE',text="")
-            subrow.operator("curve.primitive_nurbs_path_add",icon='CURVE_PATH',text="")   
+            row = box.row(1)
+            row.alignment = 'CENTER'               
+            sub = row.row(1)
+            sub.scale_x = 1
+            sub.operator("curve.primitive_bezier_curve_add",icon='CURVE_BEZCURVE',text="")
+            sub.operator("curve.primitive_bezier_circle_add",icon='CURVE_BEZCIRCLE',text="")
+            sub.operator("curve.primitive_nurbs_curve_add",icon='CURVE_NCURVE',text="")
+            sub.operator("curve.primitive_nurbs_circle_add",icon='CURVE_NCIRCLE',text="")
+            sub.operator("curve.primitive_nurbs_path_add",icon='CURVE_PATH',text="")   
 
 
             """ Add Surface """    
-            subrow = box.row(1)
-            subrow.alignment = 'CENTER'
-            subrow.operator("surface.primitive_nurbs_surface_circle_add",icon='SURFACE_NCIRCLE',text="")
-            subrow.operator("surface.primitive_nurbs_surface_surface_add",icon='SURFACE_NSURFACE',text="")
-            subrow.operator("surface.primitive_nurbs_surface_cylinder_add",icon='SURFACE_NCYLINDER',text="")
-            subrow.operator("surface.primitive_nurbs_surface_sphere_add",icon='SURFACE_NSPHERE',text="")
-            subrow.operator("surface.primitive_nurbs_surface_torus_add",icon='SURFACE_NTORUS',text="")
+            row = box.row(1)
+            row.alignment = 'CENTER'               
+            sub = row.row(1)
+            sub.scale_x = 1
+            sub.operator("surface.primitive_nurbs_surface_circle_add",icon='SURFACE_NCIRCLE',text="")
+            sub.operator("surface.primitive_nurbs_surface_surface_add",icon='SURFACE_NSURFACE',text="")
+            sub.operator("surface.primitive_nurbs_surface_cylinder_add",icon='SURFACE_NCYLINDER',text="")
+            sub.operator("surface.primitive_nurbs_surface_sphere_add",icon='SURFACE_NSPHERE',text="")
+            sub.operator("surface.primitive_nurbs_surface_torus_add",icon='SURFACE_NTORUS',text="")
 
       
                                     

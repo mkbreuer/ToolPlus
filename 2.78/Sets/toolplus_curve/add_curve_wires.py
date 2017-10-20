@@ -672,7 +672,11 @@ class Wires(bpy.types.Operator):
     # Poll
     @classmethod
     def poll(cls, context):
-        return context.scene != None
+        if context.active_object and context.active_object.type in {'MESH', 'CURVE'}:
+            return True
+        else:
+            return False
+
 
     # Execute
     def execute(self, context):
@@ -680,8 +684,22 @@ class Wires(bpy.types.Operator):
         #bpy.context.user_preferences.edit.use_global_undo = True
         #bpy.context.user_preferences.edit.use_global_undo = False
 
-        # Run main function.
-        main(context, self)
+        if len(bpy.context.selected_objects) == 2:  
+
+            obj = context.active_object
+            if obj:
+                obj_type = obj.type                
+                if obj.type in {'MESH'}:
+
+                    # Run main function.
+                    main(context, self)
+                else:
+                    msg ="Need 2 selected Meshes!"
+                    self.report( {"INFO"}, msg  )   
+
+        else:
+            msg ="Need 2 selected Meshes!"
+            self.report( {"INFO"}, msg  )            
 
         # Restore pre-operator undo state.
         #bpy.context.user_preferences.edit.use_global_undo = True
@@ -690,8 +708,7 @@ class Wires(bpy.types.Operator):
 
     # Invoke
     def invoke(self, context, event):
-        self.execute(context)
-
+        self.execute(context)            
         return {'FINISHED'}
 
 
