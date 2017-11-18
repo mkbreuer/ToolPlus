@@ -328,19 +328,15 @@ def draw_copy_panel_layout(self, context, layout):
                 row = box.row(1)  
                 if not tp_props.display_optimize_tools:
                     row.prop(tp_props, "display_optimize_tools", text="", icon='TRIA_RIGHT')
-                    row.operator_menu_enum("object.make_links_data", "type", text="Make links data", icon='BLANK1')            
+                    row.operator_menu_enum("object.make_links_data", "type", text="Links Data")
+                    row.operator("tp_ops.make_single",text="Unlinks Data")
                 else:
                     row.prop(tp_props, "display_optimize_tools", text="", icon='TRIA_DOWN')  
-                    row.operator_menu_enum("object.make_links_data", "type", text="Make links data", icon='BLANK1')
+                    row.operator_menu_enum("object.make_links_data", "type", text="Links Data")
+                    row.operator("tp_ops.make_single",text="Unlinks Data")
 
              
                     box = col.box().column(1) 
-               
-                    row = box.row(1)     
-                    row.operator("object.make_links_data","Set", icon="LINKED").type='OBDATA'
-                    row.operator("tp_ops.make_single","Clear", icon="UNLINKED")
-                   
-                    box.separator() 
                    
                     row = box.row(1)                 
                     row.operator("object.select_linked", text="Linked", icon="RESTRICT_SELECT_OFF")   

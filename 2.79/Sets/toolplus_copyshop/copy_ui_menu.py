@@ -16,36 +16,36 @@ class View3D_TP_Copy_Menu(bpy.types.Menu):
                
                 mode_string = context.mode                
                 if mode_string == 'OBJECT':
-                    layout.operator("object.duplicate_move", text="Copy", icon="MOD_BOOLEAN")
-                    layout.operator("object.duplicate_move_linked", text="Link-Copy", icon="CONSTRAINT_DATA")    
+                    layout.operator("object.duplicate_move", text="Dupli Move")
+                    layout.operator("object.duplicate_move_linked", text="Dupli Link")    
                 elif mode_string == 'EDIT_MESH':
-                    layout.operator("mesh.duplicate_move", text="Copy", icon="MOD_BOOLEAN")
+                    layout.operator("mesh.duplicate_move", text="Dupli Move", icon="MOD_BOOLEAN")
                 elif mode_string == 'EDIT_CURVE':
-                    layout.operator("curve.duplicate_move", text="Copy", icon="MOD_BOOLEAN")
+                    layout.operator("curve.duplicate_move", text="Dupli Move", icon="MOD_BOOLEAN")
                 elif mode_string == 'EDIT_SURFACE':
-                    layout.operator("curve.duplicate_move", text="Copy", icon="MOD_BOOLEAN")
+                    layout.operator("curve.duplicate_move", text="Dupli Move", icon="MOD_BOOLEAN")
                 elif mode_string == 'EDIT_METABALL':
-                    layout.operator("mball.duplicate_move", text="Copy", icon="MOD_BOOLEAN")
+                    layout.operator("mball.duplicate_move", text="Dupli Move", icon="MOD_BOOLEAN")
                 elif mode_string == 'EDIT_ARMATURE':
-                    layout.operator("armature.duplicate_move", text="Copy", icon="MOD_BOOLEAN")
+                    layout.operator("armature.duplicate_move", text="Dupli Move", icon="MOD_BOOLEAN")
 
                 layout.separator()
 
-                layout.operator("tp_ops.copy_to_cursor", text="Copy to Cursor", icon="NEXT_KEYFRAME")
 
         mode_string = context.mode                
         if mode_string == 'OBJECT':
                 
-            layout.operator("mft.radialclone", text="Radial Z-Clone", icon="FILE_REFRESH")
-            layout.operator("tp_ops.copy_to_mesh", text="Copy to Mesh",icon="UV_FACESEL")        
+            layout.operator("tp_ops.mft_radialclone_popup", text="Radial Clone")
+            layout.operator("tp_ops.copy_to_mesh", text="Copy to Target")        
             
         
             display_arewo = context.user_preferences.addons[__package__].preferences.tab_menu_arewo
             if display_arewo == 'on':
 
                 layout.separator()
-                                    
-                layout.operator("object.simplearewo", text="ARewO Replicator", icon="FRAME_NEXT") 
+                
+                layout.operator("tp_ops.copy_to_cursor", text="Copy 2 Cursor")                                    
+                layout.operator("object.simplearewo", text="ARewO") 
 
 
             display_array = context.user_preferences.addons[__package__].preferences.tab_menu_array
@@ -53,7 +53,7 @@ class View3D_TP_Copy_Menu(bpy.types.Menu):
 
                 layout.separator()
                 
-                layout.menu("tp_menu.copyshop_array_menu", icon="MOD_ARRAY")
+                layout.menu("tp_menu.copyshop_array_menu")
 
 
             display_array = context.user_preferences.addons[__package__].preferences.tab_menu_optimize
@@ -61,7 +61,7 @@ class View3D_TP_Copy_Menu(bpy.types.Menu):
                 
                 layout.separator()
                 
-                layout.menu("tp_menu.copyshop_optimize_menu", icon="UV_SYNC_SELECT")
+                layout.menu("tp_menu.copyshop_optimize_menu")
 
 
             display_origin = context.user_preferences.addons[__package__].preferences.tab_menu_origin
@@ -69,7 +69,7 @@ class View3D_TP_Copy_Menu(bpy.types.Menu):
 
                 layout.separator()
                 
-                layout.menu("tp_menu.copyshop_origin_menu", icon="LAYER_ACTIVE")
+                layout.menu("tp_menu.copyshop_origin_menu")
                     
 
 
@@ -97,10 +97,10 @@ class View3D_TP_Copy_Optimize_Menu(bpy.types.Menu):
     def draw(self, context):
         layout = self.layout
 
-        layout.operator("object.make_links_data","Set", icon="LINKED").type='OBDATA'
-        layout.operator("tp_ops.make_single","Clear", icon="UNLINKED")                        
-        layout.operator("object.select_linked", text="S-Linked", icon="RESTRICT_SELECT_OFF")   
-        layout.operator("object.join", text="Join all", icon="AUTOMERGE_ON")   
+        layout.operator("object.make_links_data","Links Data").type='OBDATA'
+        layout.operator("tp_ops.make_single","Unlinks Data")                        
+        layout.operator("object.select_linked", text="Sel. Linked")   
+        layout.operator("object.join", text="Join all")   
 
 
 

@@ -19,7 +19,7 @@
 bl_info = {
     "name": "CopyShop",
     "author": "marvin.k.breuer",
-    "version": (1, 4, 0),
+    "version": (1, 4, 1),
     "blender": (2, 7, 9),
     "location": "View3D / Properties",
     "description": "Tools for duplication",
