@@ -73,56 +73,60 @@ from mathutils import *
 # OPERATOR # 
 def draw_operator(self, context):
     
-    if len(bpy.context.selected_objects) > 0:
-        activeObj = bpy.context.scene.objects.active
-        selObjects = bpy.context.selected_objects
+    if context.mode == "EDIT_MESH":
+        pass
+    else:  
+        if len(bpy.context.selected_objects) > 0:
+            activeObj = bpy.context.scene.objects.active
+            selObjects = bpy.context.selected_objects
 
-        activeObjMatrix = activeObj.matrix_world
-
-        bpy.ops.view3d.snap_cursor_to_active()      
-
- 
-        clones_count = self.mft_clonez
-        if self.mft_create_last_clone is False:
-            clones_count = self.mft_clonez - 1
-
-        for i in range(clones_count):
-            bpy.ops.object.duplicate(linked=True, mode='DUMMY')
-            theAxis = None
-
-            if self.mft_radialClonesAxis == 'X':
-                if self.mft_radialClonesAxisType == 'Local':
-                    theAxis = (
-                        activeObjMatrix[0][0], activeObjMatrix[1][0], activeObjMatrix[2][0])
-                else:
-                    theAxis = (1, 0, 0)
-
-            elif self.mft_radialClonesAxis == 'Y':
-                if self.mft_radialClonesAxisType == 'Local':
-                    theAxis = (
-                        activeObjMatrix[0][1], activeObjMatrix[1][1], activeObjMatrix[2][1])
-                else:
-                    theAxis = (0, 1, 0)
-
-            elif self.mft_radialClonesAxis == 'Z':
-                if self.mft_radialClonesAxisType == 'Local':
-                    theAxis = (
-                        activeObjMatrix[0][2], activeObjMatrix[1][2], activeObjMatrix[2][2])
-                else:
-                    theAxis = (0, 0, 1)
-
-            rotateValue = (math.radians(self.mft_radialClonesAngle) / float(self.mft_clonez))
-            bpy.ops.transform.rotate(value=rotateValue, axis=theAxis)
+            activeObjMatrix = activeObj.matrix_world
 
 
-        bpy.ops.object.select_all(action='DESELECT')
+            bpy.ops.view3d.snap_cursor_to_active()      
 
-        for obj in selObjects:
-            obj.select = True
-        selObjects = None
-        bpy.context.scene.objects.active = activeObj
-    else:
-        self.report({'INFO'}, "Select Objects!")
+     
+            clones_count = self.mft_clonez
+            if self.mft_create_last_clone is False:
+                clones_count = self.mft_clonez - 1
+
+            for i in range(clones_count):
+                bpy.ops.object.duplicate(linked=True, mode='DUMMY')
+                theAxis = None
+
+                if self.mft_radialClonesAxis == 'X':
+                    if self.mft_radialClonesAxisType == 'Local':
+                        theAxis = (
+                            activeObjMatrix[0][0], activeObjMatrix[1][0], activeObjMatrix[2][0])
+                    else:
+                        theAxis = (1, 0, 0)
+
+                elif self.mft_radialClonesAxis == 'Y':
+                    if self.mft_radialClonesAxisType == 'Local':
+                        theAxis = (
+                            activeObjMatrix[0][1], activeObjMatrix[1][1], activeObjMatrix[2][1])
+                    else:
+                        theAxis = (0, 1, 0)
+
+                elif self.mft_radialClonesAxis == 'Z':
+                    if self.mft_radialClonesAxisType == 'Local':
+                        theAxis = (
+                            activeObjMatrix[0][2], activeObjMatrix[1][2], activeObjMatrix[2][2])
+                    else:
+                        theAxis = (0, 0, 1)
+
+                rotateValue = (math.radians(self.mft_radialClonesAngle) / float(self.mft_clonez))
+                bpy.ops.transform.rotate(value=rotateValue, axis=theAxis)
+
+
+            bpy.ops.object.select_all(action='DESELECT')
+
+            for obj in selObjects:
+                obj.select = True
+            selObjects = None
+            bpy.context.scene.objects.active = activeObj
+        else:
+            self.report({'INFO'}, "Select Objects!")
 
 
 
@@ -166,11 +170,8 @@ def draw_operator(self, context):
         bpy.ops.object.select_linked(type='OBDATA')
         bpy.ops.object.join()
         
-    for i in range(self.mft_edit):
-        if context.mode == "EDIT_MESH":
-            pass
-        else:          
-            bpy.ops.object.editmode_toggle()
+    for i in range(self.mft_edit):       
+        bpy.ops.object.editmode_toggle()
 
 
 

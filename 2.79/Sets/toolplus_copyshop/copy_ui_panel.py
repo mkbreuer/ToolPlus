@@ -359,7 +359,7 @@ def draw_copy_panel_layout(self, context, layout):
                     props.center = 'BOUNDS'
                     sub.operator("tp_ops.origin_minus_z", text="B", icon="LAYER_USED")
 
-                    box.separator()
+                box.separator()
 
 
 
