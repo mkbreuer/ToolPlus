@@ -17,12 +17,12 @@
 # ##### END GPL LICENSE BLOCK #####
 
 bl_info = {
-    "name": "T+ CopyShop",
-    "author": "MKB",
+    "name": "CopyShop",
+    "author": "marvin.k.breuer",
     "version": (1, 3, 1),
-    "blender": (2, 7, 8),
-    "location": "View3D > Tool Shelf [T] or Property Shelf [N]",
-    "description": "CopyShop Tools",
+    "blender": (2, 7, 9),
+    "location": "View3D / Properties",
+    "description": "Tools for duplication",
     "warning": "",
     "wiki_url": "",
     "tracker_url": "",
@@ -31,7 +31,7 @@ bl_info = {
 
 
 # LOAD UI #
-from .copy_ui_menu     import (View3D_TP_Copy_Menu)
+from .copy_ui_menu      import (View3D_TP_Copy_Menu)
 from .copy_ui_panel     import (VIEW3D_TP_Copy_Panel_UI)
 from .copy_ui_panel     import (VIEW3D_TP_Copy_Panel_TOOLS)
 from .copy_ui_panel     import (VIEW3D_TP_Copy_Panel_PROPS)
@@ -83,34 +83,32 @@ from bpy.types import AddonPreferences, PropertyGroup
 
 
 # UI REGISTRY #
+panels_main = (VIEW3D_TP_Copy_Panel_UI, VIEW3D_TP_Copy_Panel_TOOLS, VIEW3D_TP_Copy_Panel_PROPS)
 
 def update_panel_position(self, context):
+    message = "CopySHop: Updating Panel locations has failed"
     try:
-        bpy.utils.unregister_class(VIEW3D_TP_Copy_Panel_UI)
-        bpy.utils.unregister_class(VIEW3D_TP_Copy_Panel_TOOLS)
-        bpy.utils.unregister_class(VIEW3D_TP_Copy_Panel_PROPS)
-    except:
-        pass
-    
-    try:
-        bpy.utils.unregister_class(VIEW3D_TP_Copy_Panel_UI)
-        bpy.utils.unregister_class(VIEW3D_TP_Copy_Panel_PROPS)
-    except:
-        pass
-    
-    if context.user_preferences.addons[__name__].preferences.tab_location == 'tools':
-        VIEW3D_TP_Copy_Panel_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category
-        bpy.utils.register_class(VIEW3D_TP_Copy_Panel_TOOLS)
-    
-    if context.user_preferences.addons[__name__].preferences.tab_location == 'ui':
-        bpy.utils.register_class(VIEW3D_TP_Copy_Panel_UI)
+        for panel in panels_main:
+            if "bl_rna" in panel.__dict__:
+                bpy.utils.unregister_class(panel)
+  
+        if context.user_preferences.addons[__name__].preferences.tab_location == 'tools':
+         
+            VIEW3D_TP_Copy_Panel_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category
+            bpy.utils.register_class(VIEW3D_TP_Copy_Panel_TOOLS)
+        
+        if context.user_preferences.addons[__name__].preferences.tab_location == 'ui':
+            bpy.utils.register_class(VIEW3D_TP_Copy_Panel_UI)
 
-    if context.user_preferences.addons[__name__].preferences.tab_location == 'props':
-        bpy.utils.register_class(VIEW3D_TP_Copy_Panel_PROPS)
+        if context.user_preferences.addons[__name__].preferences.tab_location == 'props':
+            bpy.utils.register_class(VIEW3D_TP_Copy_Panel_PROPS)
 
-    if context.user_preferences.addons[__name__].preferences.tab_location == 'off':
+        if context.user_preferences.addons[__name__].preferences.tab_location == 'off':  
+            return None
+
+    except Exception as e:
+        print("\n[{}]\n{}\n\nError:\n{}".format(__name__, message, e))
         pass
-
 
 
 
@@ -233,9 +231,6 @@ class TP_Panels_Preferences(AddonPreferences):
     tab_instances = EnumProperty(name = 'Display Tools', description = 'on / off',
                   items=(('on', 'Instances on', 'enable tools in panel'), ('off', 'Instances off', 'disable tools in panel')), default='on', update = update_display_tools)
 
-    tab_dynamics = EnumProperty(name = 'Display Tools', description = 'on / off',
-                  items=(('on', 'Dymanic on', 'enable tools in panel'), ('off', 'Dymanic off', 'disable tools in panel')), default='on', update = update_display_tools)
-
 
     # MENU #
     tab_menu_copy = EnumProperty(name = 'Display Tools', description = 'on / off',
@@ -270,7 +265,7 @@ class TP_Panels_Preferences(AddonPreferences):
             box = layout.box().column(1)
             
             row = box.column(1)   
-            row.label(text="Welcome to T+ CopyShop!")  
+            row.label(text="Welcome to CopyShop!")  
             row.label(text="This addon is for object duplication.")
            
             row.separator()           
@@ -302,7 +297,6 @@ class TP_Panels_Preferences(AddonPreferences):
             row.prop(self, 'tab_array', expand=True)
             row.prop(self, 'tab_advance', expand=True)
             row.prop(self, 'tab_instances', expand=True)
-            row.prop(self, 'tab_dynamics', expand=True)
 
             box.separator() 
             

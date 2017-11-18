@@ -88,10 +88,10 @@ def draw_copy_panel_layout(self, context, layout):
                 row = box.row(1)
                 if tp_props.display_copy_to_faces:
                     row.prop(tp_props, "display_copy_to_faces", text="", icon='TRIA_DOWN')
-                    row.operator("tp_ops.copy_to_mesh_panel", text="Copy Source to Target", icon='BLANK1') 
+                    row.operator("tp_ops.copy_to_mesh_panel", text="      Copy Source to Target") 
                 else:
                     row.prop(tp_props, "display_copy_to_faces", text="", icon='TRIA_RIGHT')
-                    row.operator("tp_ops.copy_to_mesh", text="Copy Source to Target", icon='BLANK1') 
+                    row.operator("tp_ops.copy_to_mesh", text="      Copy Source to Target") 
      
                 if tp_props.display_copy_to_faces:
                     scene = bpy.context.scene
@@ -189,10 +189,10 @@ def draw_copy_panel_layout(self, context, layout):
                         
                         if tp_props.display_dupli:
                             row.prop(tp_props, "display_dupli", text="", icon='TRIA_DOWN')
-                            row.operator("tp_ops.dupli_set_panel", "Dupli 2 Active") 
+                            row.operator("tp_ops.dupli_set_panel", "      Duplication to Active") 
                         else:
                             row.prop(tp_props, "display_dupli", text="", icon='TRIA_RIGHT')
-                            row.operator("tp_ops.dupli_set_panel", "Dupli 2 Active") 
+                            row.operator("tp_ops.dupli_set_panel", "      Duplication to Active") 
 
                         if tp_props.display_dupli:
 
@@ -247,6 +247,123 @@ def draw_copy_panel_layout(self, context, layout):
 
 
 
+            display_advance = context.user_preferences.addons[__package__].preferences.tab_advance
+            if display_advance == 'on':
+
+
+                box = col.box().column(1) 
+                 
+                row = box.row(1)
+                
+                if tp_props.display_toall:
+                    row.prop(tp_props, "display_toall", text="", icon='TRIA_DOWN')
+                    row.menu("VIEW3D_MT_copypopup", text="Copy Attributes", icon='BLANK1') 
+                else:
+                    row.prop(tp_props, "display_toall", text="", icon='TRIA_RIGHT')
+                    row.menu("VIEW3D_MT_copypopup", text="Copy Attributes", icon='BLANK1') 
+                    
+                if tp_props.display_toall:
+                    scene = context.scene
+                  
+                    box = col.box().column(1)
+
+                    row = box.row(1) 
+                    row.alignment = 'CENTER'                
+                    row.label("Material", icon='MATERIAL') 
+
+                    row = box.row(1) 
+                    row.label("copy to:") 
+                                      
+                    row = box.row(1)   
+                    row.operator("scene.to_all", text="Selected").mode = "material, selected"
+                    row.operator("scene.to_all", text="Children").mode = "material, children"
+
+                    box.separator()
+                                    
+                    row = box.row(1) 
+                    row.label("append to:") 
+                                      
+                    row = box.row(1)   
+                    row.operator("scene.to_all", text="Selected").mode = "material, selected, append"
+                    row.operator("scene.to_all", text="Children").mode = "material, children, append"
+
+                    box.separator()
+                 
+                    box = col.box().column(1)
+                        
+                    row = box.row(1) 
+                    row.alignment = 'CENTER'                
+                    row.label("Modifier", icon='MODIFIER') 
+     
+                    row = box.row(1) 
+                    row.label("copy to:") 
+                                      
+                    row = box.row(1)   
+                    row.operator("scene.to_all", text="Selected").mode = "modifier, selected"
+                    row.operator("scene.to_all", text="Children").mode = "modifier, children"
+
+                    box.separator()                
+
+                    row = box.row(1) 
+                    row.label("append to:") 
+                                      
+                    row = box.row(1)   
+                    row.operator("scene.to_all", text="Selected").mode = "modifier, selected, append"
+                    row.operator("scene.to_all", text="Children").mode = "modifier, children, append"
+                    
+                    box.separator()  
+
+                    row = box.row(1)
+                    row.prop(context.scene, "excludeMod")              
+                    
+
+
+            display_instances = context.user_preferences.addons[__package__].preferences.tab_instances
+            if display_instances == 'on':
+                
+                box.separator()      
+
+                box = col.box().column(1) 
+
+                row = box.row(1)  
+                if not tp_props.display_optimize_tools:
+                    row.prop(tp_props, "display_optimize_tools", text="", icon='TRIA_RIGHT')
+                    row.operator_menu_enum("object.make_links_data", "type", text="Make links data", icon='BLANK1')            
+                else:
+                    row.prop(tp_props, "display_optimize_tools", text="", icon='TRIA_DOWN')  
+                    row.operator_menu_enum("object.make_links_data", "type", text="Make links data", icon='BLANK1')
+
+             
+                    box = col.box().column(1) 
+               
+                    row = box.row(1)     
+                    row.operator("object.make_links_data","Set", icon="LINKED").type='OBDATA'
+                    row.operator("tp_ops.make_single","Clear", icon="UNLINKED")
+                   
+                    box.separator() 
+                   
+                    row = box.row(1)                 
+                    row.operator("object.select_linked", text="Linked", icon="RESTRICT_SELECT_OFF")   
+                    row.operator("object.join", text="Join", icon="AUTOMERGE_ON")             
+
+                    box.separator() 
+                   
+                    row = box.row(1)  
+                    row.label("Origin to:")
+                    
+                    sub = row.row(1)
+                    sub.scale_x = 0.3333            
+                    sub.operator("tp_ops.origin_plus_z", text="T", icon="LAYER_USED")  
+                    props = sub.operator("object.origin_set", text="M", icon="LAYER_USED")
+                    props.type = 'ORIGIN_GEOMETRY'
+                    props.center = 'BOUNDS'
+                    sub.operator("tp_ops.origin_minus_z", text="B", icon="LAYER_USED")
+
+                    box.separator()
+
+
+
+
             display_array = context.user_preferences.addons[__package__].preferences.tab_array
             if display_array == 'on':
 
@@ -256,6 +373,8 @@ def draw_copy_panel_layout(self, context, layout):
                 
                 if tp_props.display_array_tools:
                     row.prop(tp_props, "display_array_tools", text="", icon='TRIA_DOWN')
+                    row.label("Modifier & Constraint")
+                
                 else:                                  
                     row.prop(tp_props, "display_array_tools", text="", icon='TRIA_RIGHT')  
                     row.operator("tp_ops.x_array", text="X Array")    
@@ -649,13 +768,7 @@ def draw_copy_panel_layout(self, context, layout):
                         row.prop(tp_props, "display_pfath", text="", icon='TRIA_DOWN')
                     else:
                         row.prop(tp_props, "display_pfath", text="", icon='TRIA_RIGHT')            
-
-                    display_Dynamics = context.user_preferences.addons[__package__].preferences.tab_dynamics
-                    if display_Dynamics == 'on':     
-                        row.operator("object.fpath_array", text="", icon ="ALIGN")                              
-                    else:
-                        pass
-                    
+                
                     row.operator("tp_ops.add_fpath_con", text="Add Follow Path", icon="CONSTRAINT_DATA")          
                     row.operator("tp_ops.add_fpath_curve", text="", icon="CURVE_BEZCIRCLE")
                    
@@ -775,119 +888,6 @@ def draw_copy_panel_layout(self, context, layout):
                 box.separator() 
              
 
-            display_advance = context.user_preferences.addons[__package__].preferences.tab_advance
-            if display_advance == 'on':
-
-
-                box = col.box().column(1) 
-                 
-                row = box.row(1)
-                
-                if tp_props.display_toall:
-                    row.prop(tp_props, "display_toall", text="", icon='TRIA_DOWN')
-                    row.menu("VIEW3D_MT_copypopup", text="Advance Copy") 
-                else:
-                    row.prop(tp_props, "display_toall", text="", icon='TRIA_RIGHT')
-                    row.menu("VIEW3D_MT_copypopup", text="Advance Copy") 
-                    
-                if tp_props.display_toall:
-                    scene = context.scene
-
-                  
-                    box = col.box().column(1)
-
-                    row = box.row(1) 
-                    row.alignment = 'CENTER'                
-                    row.label("Material", icon='MATERIAL') 
-
-                    row = box.row(1) 
-                    row.label("copy to:") 
-                                      
-                    row = box.row(1)   
-                    row.operator("scene.to_all", text="Selected").mode = "material, selected"
-                    row.operator("scene.to_all", text="Children").mode = "material, children"
-
-                    box.separator()
-                                    
-                    row = box.row(1) 
-                    row.label("append to:") 
-                                      
-                    row = box.row(1)   
-                    row.operator("scene.to_all", text="Selected").mode = "material, selected, append"
-                    row.operator("scene.to_all", text="Children").mode = "material, children, append"
-
-                    box.separator()
-                 
-                    box = col.box().column(1)
-                        
-                    row = box.row(1) 
-                    row.alignment = 'CENTER'                
-                    row.label("Modifier", icon='MODIFIER') 
-     
-                    row = box.row(1) 
-                    row.label("copy to:") 
-                                      
-                    row = box.row(1)   
-                    row.operator("scene.to_all", text="Selected").mode = "modifier, selected"
-                    row.operator("scene.to_all", text="Children").mode = "modifier, children"
-
-                    box.separator()                
-
-                    row = box.row(1) 
-                    row.label("append to:") 
-                                      
-                    row = box.row(1)   
-                    row.operator("scene.to_all", text="Selected").mode = "modifier, selected, append"
-                    row.operator("scene.to_all", text="Children").mode = "modifier, children, append"
-                    
-                    box.separator()  
-
-                    row = box.row(1)
-                    row.prop(context.scene, "excludeMod")              
-                    
-
-
-            display_instances = context.user_preferences.addons[__package__].preferences.tab_instances
-            if display_instances == 'on':
-                
-                box.separator()      
-
-                box = col.box().column(1) 
-
-                row = box.row(1)  
-                if not tp_props.display_optimize_tools:
-                    row.prop(tp_props, "display_optimize_tools", text="", icon='TRIA_RIGHT')
-                    row.label("Relation Tools")                
-                else:
-                    row.prop(tp_props, "display_optimize_tools", text="", icon='TRIA_DOWN')  
-                    row.label("Relation Tools")    
-             
-                    box = col.box().column(1) 
-               
-                    row = box.row(1)     
-                    row.operator("object.make_links_data","Set", icon="LINKED").type='OBDATA'
-                    row.operator("tp_ops.make_single","Clear", icon="UNLINKED")
-                   
-                    box.separator() 
-                   
-                    row = box.row(1)                 
-                    row.operator("object.select_linked", text="Linked", icon="RESTRICT_SELECT_OFF")   
-                    row.operator("object.join", text="Join", icon="AUTOMERGE_ON")             
-
-                    box.separator() 
-                   
-                    row = box.row(1)  
-                    row.operator_menu_enum("object.make_links_data", "type","links",  icon="CONSTRAINT")
-                    
-                    sub = row.row(1)
-                    sub.scale_x = 0.3333            
-                    sub.operator("tp_ops.origin_plus_z", text="T", icon="LAYER_USED")  
-                    props = sub.operator("object.origin_set", text="M", icon="LAYER_USED")
-                    props.type = 'ORIGIN_GEOMETRY'
-                    props.center = 'BOUNDS'
-                    sub.operator("tp_ops.origin_minus_z", text="B", icon="LAYER_USED")
-
-                    box.separator()
 
 
         if context.mode == 'EDIT_MESH':
@@ -895,7 +895,7 @@ def draw_copy_panel_layout(self, context, layout):
             box = col.box().column(1)
              
             row = box.column(1)
-            row.operator("mesh.duplicate_move", text="Dupli Move")
+            row.operator("mesh.duplicate_move", text="Dupli Move", icon='BLANK1')
             
             box = col.box().column(1) 
              
