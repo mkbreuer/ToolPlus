@@ -921,8 +921,7 @@ class VIEW3D_TP_Copy_Panel_TOOLS(bpy.types.Panel):
         context.vertex_paint_object
         or context.weight_paint_object
         or context.image_paint_object)   
-        return isModelingMode 
-
+        return context.mode in {'OBJECT','EDIT_MESH'} and isModelingMode
 
     def draw(self, context):
         layout = self.layout.column_flow(1)  
@@ -947,8 +946,7 @@ class VIEW3D_TP_Copy_Panel_UI(bpy.types.Panel):
         context.vertex_paint_object
         or context.weight_paint_object
         or context.image_paint_object) 
-        return isModelingMode 
-
+        return context.mode in {'OBJECT','EDIT_MESH'} and isModelingMode
 
     def draw(self, context):
         layout = self.layout.column_flow(1)  
@@ -974,8 +972,7 @@ class VIEW3D_TP_Copy_Panel_PROPS(bpy.types.Panel):
         context.vertex_paint_object
         or context.weight_paint_object
         or context.image_paint_object) 
-        return isModelingMode 
-
+        return context.mode in {'OBJECT','EDIT_MESH'} and isModelingMode
 
     def draw(self, context):
         layout = self.layout.column_flow(1)  
