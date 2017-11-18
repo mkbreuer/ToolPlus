@@ -34,7 +34,6 @@ def draw_copy_panel_layout(self, context, layout):
 
         col = layout.column(align=True)
 
-
         if context.mode == 'OBJECT':
 
             display_duplicate = context.user_preferences.addons[__package__].preferences.tab_duplicate
@@ -55,8 +54,7 @@ def draw_copy_panel_layout(self, context, layout):
 
                 box = col.box().column(1) 
                  
-                row = box.row(1)          
-                #row.operator("tp_ops.mft_radialclone_popup", text="", icon="FILE_REFRESH")     
+                row = box.row(1)            
                 row.operator("tp_ops.mft_radialclone", text="Radial Clone")
                 row.prop(mft_props, "mft_clonez", text='')       
                
@@ -72,11 +70,13 @@ def draw_copy_panel_layout(self, context, layout):
 
                 box = col.box().column(1) 
                  
-                row = box.row(1)                     
-                #row.operator("tp_ops.copy_to_cursor", text="", icon="NEXT_KEYFRAME")                                            
+                row = box.row(1)                                                       
                 row.operator("tp_ops.copy_to_cursor_panel", text="Copy 2 Cursor")     
                 row.prop(context.scene, "ctc_total", text="")                 
-                                       
+              
+#                row = box.row(1)  
+#                row.operator("object.simplearewo", text="ARewO Replicator")                                        
+               
                 box.separator() 
 
 

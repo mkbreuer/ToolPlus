@@ -19,7 +19,7 @@
 bl_info = {
     "name": "CopyShop",
     "author": "marvin.k.breuer",
-    "version": (1, 3, 1),
+    "version": (1, 4, 0),
     "blender": (2, 7, 9),
     "location": "View3D / Properties",
     "description": "Tools for duplication",
@@ -293,7 +293,6 @@ class TP_Panels_Preferences(AddonPreferences):
             row.prop(self, 'tab_cursor', expand=True)
             row.prop(self, 'tab_copy_to_mesh', expand=True)
             row.prop(self, 'tab_dupli', expand=True)
-            row.prop(self, 'tab_arewo', expand=True)
             row.prop(self, 'tab_array', expand=True)
             row.prop(self, 'tab_advance', expand=True)
             row.prop(self, 'tab_instances', expand=True)
@@ -305,7 +304,7 @@ class TP_Panels_Preferences(AddonPreferences):
             row = box.row()
             row.label(text="Menu Tools")
            
-            row = box.column_flow(3)
+            row = box.column_flow(5)
             row.prop(self, 'tab_menu_copy', expand=True)
             row.prop(self, 'tab_menu_arewo', expand=True)
             row.prop(self, 'tab_menu_array', expand=True)
