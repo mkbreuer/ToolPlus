@@ -42,33 +42,44 @@ from bpy import*
 from bpy.props import *
 from mathutils import Vector, Matrix
 
-
-# OPERATOR #
-
 obj_list = None
 
 def obj_list_cb(self, context):
     VIEWD3D_Copy_To_MeshTarget.obj_list = [(obj.name, obj.name, obj.name) for obj in bpy.data.objects]   
     return VIEWD3D_Copy_To_MeshTarget.obj_list
         
+
+#def sec_axes_list_cb(self, context):
+#    if self.priaxes == 'X':
+#        sec_list = [('Y','Y','Y'), ('Z', 'Z', 'Z')]
+#     
+#    if self.priaxes == 'Y':
+#        sec_list = [('X','X','X'), ('Z', 'Z', 'Z')]
+#        
+#    if self.priaxes == 'Z':
+#        sec_list = [('X','X','X'), ('Y', 'Y', 'Y')]     
+#    return sec_list
+
+
 def sec_axes_list_cb(self, context):
     if self.priaxes == 'X':
-        sec_list = [('Y','Y','Y'), ('Z', 'Z', 'Z')]
+        sec_list = [('X','X','X'), ('Y','Y','Y'), ('Z', 'Z', 'Z')]
      
     if self.priaxes == 'Y':
-        sec_list = [('X','X','X'), ('Z', 'Z', 'Z')]
+        sec_list = [('X','X','X'), ('Y','Y','Y'), ('Z', 'Z', 'Z')]
         
     if self.priaxes == 'Z':
-        sec_list = [('X','X','X'), ('Y', 'Y', 'Y')]     
+        sec_list = [('X','X','X'), ('Y', 'Y', 'Y'), ('Z', 'Z', 'Z')]     
     return sec_list
 
 
+# OPERATOR #
 class VIEWD3D_Copy_To_MeshTarget(bpy.types.Operator):
     """ copy source to selected mesh targets: vertices, edges and faces """
     bl_idname = "tp_ops.copy_to_meshtarget"
     bl_label = "Copy to Mesh Target"
     bl_options = {"REGISTER", "UNDO"}
-        
+
 
     copytype = bpy.props.EnumProperty(items=(('V','','paste to vertices','VERTEXSEL',0),
                                              ('E','','paste to edges','EDGESEL',1),
@@ -361,10 +372,20 @@ def copy_to_from(scene, to_obj, from_obj, copymode, axes, edgescale, scale):
         copy_list = face_copy(scene, to_obj, from_obj,axes)
     return copy_list
   
-axes_dict = {'XY': (1,2,0), 
+#axes_dict = {'XY': (1,2,0), 
+#             'XZ': (2,1,0),
+#             'YX': (0,2,1),
+#             'YZ': (2,0,1),
+#             'ZX': (0,1,2),
+#             'ZY': (1,0,2)}  
+
+axes_dict = {'XX': (1,0,0), 
+             'XY': (1,2,0), 
              'XZ': (2,1,0),
+             'YY': (0,1,0),
              'YX': (0,2,1),
              'YZ': (2,0,1),
+             'ZZ': (0,1,0),
              'ZX': (0,1,2),
              'ZY': (1,0,2)}  
     
@@ -515,12 +536,9 @@ def face_copy(scene, obj, source_obj, axes):
         
 
 
-
-
-
 # PROPERTY GROUP: COPY TO TARGET #
 class ToTarget_Properties(bpy.types.PropertyGroup):
-    
+
 
     copytype = bpy.props.EnumProperty(items=(('V','','paste to vertices','VERTEXSEL',0),
                                              ('E','','paste to edges','EDGESEL',1),
