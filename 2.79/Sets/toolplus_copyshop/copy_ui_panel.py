@@ -109,22 +109,14 @@ def draw_copy_panel_layout(self, context, layout):
                 row = box.row(1)            
                 if tp_props.display_copy_to_faces:
                     row.prop(tp_props, "display_copy_to_faces", text="", icon='TRIA_DOWN')
-                    row.operator("tp_ops.copy_to_meshtarget", text="      Copy to Mesh Target") 
+                    row.operator("tp_ops.copy_to_meshtarget_pl", text="      Copy to Mesh Target") 
                 else:
                     row.prop(tp_props, "display_copy_to_faces", text="", icon='TRIA_RIGHT')
-                    row.operator("tp_ops.copy_to_meshtarget", text="      Copy to Mesh Target") 
+                    row.operator("tp_ops.copy_to_meshtarget_pl", text="      Copy to Mesh Target") 
      
                 if tp_props.display_copy_to_faces:
                     scene = bpy.context.scene
-                    
-                    box = col.box().column(1)
-
-                    row = box.row(1) 
-                    row.alignment == "CENTER"           
-                    row.label("! Output after Editing Popup Properties !") 
-                   
-                    box.separator()                     
-                   
+                                                       
                     box = col.box().column(1)
 
                     row = box.row(1)            
