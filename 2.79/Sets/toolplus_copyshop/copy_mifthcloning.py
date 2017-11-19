@@ -30,8 +30,8 @@
 
 
 # LOAD CACHE #
-from .caches.cache      import  (settings_load)
-from .caches.cache      import  (settings_write)
+from .caches.cache      import  (mft_settings_load)
+from .caches.cache      import  (mft_settings_write)
 
 # LOAD MODULE #
 import bpy
@@ -68,7 +68,6 @@ from mathutils import *
 #       
 #        layout.separator()
 
-# adjusted by MKB
 
 # OPERATOR # 
 def draw_operator(self, context):
@@ -284,13 +283,13 @@ class MFTRadialClone_PopUp(bpy.types.Operator):
 
     # LOAD CUSTOM SETTTINGS #
     def invoke(self, context, event):        
-        settings_load(self)
+        mft_settings_load(self)
         return self.execute(context)
        
     # EXECUTE MAIN OPERATOR #
     def execute(self, context):
 
-        settings_write(self)
+        mft_settings_write(self)
         
         draw_operator(self, context)
             
@@ -347,13 +346,13 @@ class MFTRadialClone(bpy.types.Operator):
 
     # LOAD CUSTOM SETTTINGS #
     def invoke(self, context, event):        
-        settings_load(self)
+        mft_settings_load(self)
         return self.execute(context)
        
     # EXECUTE MAIN OPERATOR #
     def execute(self, context):
 
-        settings_write(self)
+        mft_settings_write(self)
         
         draw_operator(self, context)
                
@@ -410,3 +409,5 @@ def unregister():
 
 if __name__ == "__main__":
     register()
+
+

@@ -1,4 +1,4 @@
-#  ***** BEGIN GPL LICENSE BLOCK *****
+              #  ***** BEGIN GPL LICENSE BLOCK *****
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -28,11 +28,14 @@ bl_info = {
     "category": "Object",
 }
 """
-__status__ = "toolplus version"
-__author__ = "mkbreuer"
-__version__ = "1.0"
-__date__ = "2017"
 
+
+# LOAD CACHE #
+from .caches.cache      import  (tot_settings_load)
+from .caches.cache      import  (tot_settings_write)
+
+
+# LOAD MODULE #
 
 import bpy
 from bpy import*
@@ -40,254 +43,46 @@ from bpy.props import *
 from mathutils import Vector, Matrix
 
 
-
 # OPERATOR #
 
-class VIEWD3D_TP_Copy_to_Mesh_Panel(bpy.types.Operator) :
-    bl_idname = "tp_ops.copy_to_mesh_panel"
-    bl_label = "Copy to Mesh"
+obj_list = None
+
+def obj_list_cb(self, context):
+    VIEWD3D_Copy_To_MeshTarget.obj_list = [(obj.name, obj.name, obj.name) for obj in bpy.data.objects]   
+    return VIEWD3D_Copy_To_MeshTarget.obj_list
+        
+def sec_axes_list_cb(self, context):
+    if self.priaxes == 'X':
+        sec_list = [('Y','Y','Y'), ('Z', 'Z', 'Z')]
+     
+    if self.priaxes == 'Y':
+        sec_list = [('X','X','X'), ('Z', 'Z', 'Z')]
+        
+    if self.priaxes == 'Z':
+        sec_list = [('X','X','X'), ('Y', 'Y', 'Y')]     
+    return sec_list
+
+
+class VIEWD3D_Copy_To_MeshTarget(bpy.types.Operator):
+    bl_idname = "tp_ops.copy_to_meshtarget"
+    bl_label = "Copy to Mesh Target"
     bl_options = {"REGISTER", "UNDO"}
     
-    obj_list = None
-        
-    def obj_list_cb(self, context):
-        return VIEWD3D_TP_Copy_to_Mesh_Panel.obj_list
-            
-    def sec_axes_list_cb(self, context):
-        scene = bpy.context.scene
-        
-        if scene.priaxes == 'X':
-            sec_list = [('Y','Y','Y'), ('Z', 'Z', 'Z')]
-         
-        if scene.priaxes == 'Y':
-            sec_list = [('X','X','X'), ('Z', 'Z', 'Z')]
-            
-        if scene.priaxes == 'Z':
-            sec_list = [('X','X','X'), ('Y', 'Y', 'Y')]     
-        return sec_list
-    
-    bpy.types.Scene.copytype = bpy.props.EnumProperty(items=(('V','','paste to vertices','VERTEXSEL',0),       
-                                             ('E','','paste to edges','EDGESEL',1),
-                                             ('F','','paste to faces','FACESEL',2)),
-                                      description='where to paste to')
-                                                    
-    #bpy.types.Scene.copyfromobject = bpy.props.EnumProperty(items=obj_list_cb, name='Copy from:')
-    copyfromobject = bpy.props.EnumProperty(items=obj_list_cb, name='Copy from:')
-                                                                                      
-    bpy.types.Scene.priaxes = bpy.props.EnumProperty(items=(('X', 'X', 'along X'),
-                                             ('Y', 'Y', 'along Y'),
-                                             ('Z', 'Z', 'along Z')),
-                                             )
-                                             
-    bpy.types.Scene.edgescale = bpy.props.BoolProperty(name='Scale to fill edge?')
-                                                
-    bpy.types.Scene.secaxes = bpy.props.EnumProperty(items=sec_axes_list_cb, name='Secondary Axis')
-    
-    bpy.types.Scene.scale = bpy.props.FloatProperty(default=1.0, min=0.0, name='Scale')
-
-    bpy.types.Scene.pl_set_plus_z = bpy.props.BoolProperty(name="Top",  description="set origin to top", default = False)       
-    bpy.types.Scene.pl_set_center_z = bpy.props.BoolProperty(name="Center",  description="set origin to center", default = False)       
-    bpy.types.Scene.pl_set_minus_z = bpy.props.BoolProperty(name="Bottom",  description="set origin to bottom", default = False)       
-
-    bpy.types.Scene.pl_join = bpy.props.BoolProperty(name="Join Copies",  description="join copies with target", default = False)       
-    bpy.types.Scene.pl_dupli_unlinked = bpy.props.BoolProperty(name="Unlink Copies",  description="unlink copies", default = False)      
-
-    bpy.types.Scene.pl_set_edit_target = bpy.props.BoolProperty(name="Edit Target",  description="jump to target editmode", default = False)   
-    bpy.types.Scene.pl_set_edit_source = bpy.props.BoolProperty(name="Edit Source",  description="jump to source editmode", default = False) 
-           
-    def draw(self, context):
-        layout = self.layout
-        scene = bpy.context.scene
-        
-        box = layout.box().column(1)
-            
-        row = box.row(1)            
-        row.label("Source:")           
-        row.prop(self, 'copyfromobject', text="")           
-
-        return
- 
-    def execute(self, context):
-        scene = bpy.context.scene
-        
-        obj = context.active_object
-   
-        if len(bpy.context.selected_objects) == 2:
-           
-            bpy.context.space_data.pivot_point = 'INDIVIDUAL_ORIGINS'
-
-            bpy.ops.object.mode_set(mode='OBJECT')
-
-            if obj:
-                if obj.type in {'MESH'}:
-
-                    first_obj = bpy.context.active_object
-
-                    obj_a, obj_b = context.selected_objects
-
-                    second_obj = obj_a if obj_b == first_obj else obj_b  
-                        
-                    ### origin to top
-                    for i in range(scene.pl_set_plus_z):
-                        
-                        # active: second
-                        bpy.context.scene.objects.active = bpy.data.objects[second_obj.name]            
-                        bpy.data.objects[second_obj.name].select=True                
-                        
-                        bpy.ops.tp_ops.origin_plus_z()  
-                       
-                        # active: first                
-                        bpy.context.scene.objects.active = bpy.data.objects[first_obj.name] 
-                        bpy.data.objects[first_obj.name].select = True         
-                
-
-                    ### origin to center
-                    for i in range(scene.pl_set_center_z):
-                        
-                        # active: second
-                        bpy.context.scene.objects.active = bpy.data.objects[second_obj.name]            
-                        bpy.data.objects[second_obj.name].select=True                
-
-                        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY') 
-                       
-                        # active: first                    
-                        bpy.context.scene.objects.active = bpy.data.objects[first_obj.name] 
-                        bpy.data.objects[first_obj.name].select = True 
-
-
-                    ### origin to bottom
-                    for i in range(scene.pl_set_minus_z):
-                        
-                        # active: second
-                        bpy.context.scene.objects.active = bpy.data.objects[second_obj.name]            
-                        bpy.data.objects[second_obj.name].select=True                
-
-                        bpy.ops.tp_ops.origin_minus_z()  
-                       
-                        # active: first                    
-                        bpy.context.scene.objects.active = bpy.data.objects[first_obj.name] 
-                        bpy.data.objects[first_obj.name].select = True 
-
-
-                    # active: first   
-                    bpy.data.objects[second_obj.name].select=False                
-
-                    if context.mode == 'EDIT_MESH': 
-
-                        print(self)
-                        self.report({'INFO'}, "! need source & target !")  
-                
-
-
-                    copytoobject = context.active_object.name
-                    axes = scene.priaxes + scene.secaxes
-                    copy_list = copy_to_from(context.scene, 
-                                             bpy.data.objects[copytoobject],
-                                             bpy.data.objects[self.copyfromobject],
-                                             scene.copytype, 
-                                             axes,
-                                             scene.edgescale,
-                                             scene.scale)
-
-
-
-                    for i in range(scene.pl_join):                    
-                        # active: first
-                        bpy.context.scene.objects.active = bpy.data.objects[first_obj.name]
-                        bpy.data.objects[first_obj.name].select=True    
-                        
-                        bpy.ops.object.join()
-                        
-                        bpy.ops.object.editmode_toggle()
-                        bpy.ops.mesh.select_all(action='SELECT')
-                        bpy.ops.mesh.normals_make_consistent()
-                        bpy.ops.object.editmode_toggle()
-
-
-                    for i in range(scene.pl_dupli_unlinked):                                     
-
-                        # active: second
-                        bpy.context.scene.objects.active = bpy.data.objects[second_obj.name]                
-                        bpy.data.objects[second_obj.name].select=True 
-                        
-                        bpy.ops.object.select_linked(type='OBDATA')
-                        bpy.ops.object.make_single_user(type='SELECTED_OBJECTS', object=True, obdata=True)
-
-
-
-                    for i in range(scene.pl_set_edit_source):
-                        
-                        # active: second
-                        bpy.context.scene.objects.active = bpy.data.objects[second_obj.name]                
-                        bpy.data.objects[second_obj.name].select=True
-                                            
-                        bpy.ops.object.mode_set(mode='EDIT')   
-
-                    for i in range(scene.pl_set_edit_target):
-
-                        # active: first
-                        bpy.context.scene.objects.active = bpy.data.objects[first_obj.name]
-                        bpy.data.objects[first_obj.name].select=True                    
-                        
-                        bpy.ops.object.mode_set(mode='EDIT')        
-                        
-                        print(self)
-                        self.report({'INFO'}, "Editmode")      
-
-
-
-
-
-                else:
-                    print(self)
-                    self.report({'INFO'}, "! need source & target !")    
-    
-
-        else:
-            
-            copytoobject = context.active_object.name
-            axes = scene.priaxes + scene.secaxes
-            copy_list = copy_to_from(context.scene, 
-                                     bpy.data.objects[copytoobject],
-                                     bpy.data.objects[self.copyfromobject],
-                                     scene.copytype, 
-                                     axes,
-                                     scene.edgescale,
-                                     scene.scale)
- 
-
-
-        return {"FINISHED"}
-    
-    def invoke(self, context, event):
-        VIEWD3D_TP_Copy_to_Mesh_Panel.obj_list = [(obj.name, obj.name, obj.name) for obj in bpy.data.objects]
-        return context.window_manager.invoke_props_popup(self, event)
-
-
-
-
-# OPERATOR #
-
-class VIEWD3D_Copy2(bpy.types.Operator):
-    bl_idname = "tp_ops.copy_to_mesh"
-    bl_label = "Copy to Mesh"
-    bl_options = {"REGISTER", "UNDO"}
-    
-    obj_list = None
-        
-    def obj_list_cb(self, context):
-        return VIEWD3D_Copy2.obj_list
-            
-    def sec_axes_list_cb(self, context):
-        if self.priaxes == 'X':
-            sec_list = [('Y','Y','Y'), ('Z', 'Z', 'Z')]
-         
-        if self.priaxes == 'Y':
-            sec_list = [('X','X','X'), ('Z', 'Z', 'Z')]
-            
-        if self.priaxes == 'Z':
-            sec_list = [('X','X','X'), ('Y', 'Y', 'Y')]     
-        return sec_list
+#    obj_list = None
+#  
+#    def obj_list_cb(self, context):
+#        return VIEWD3D_Copy_To_MeshTarget.obj_list
+#            
+#    def sec_axes_list_cb(self, context):
+#        if self.priaxes == 'X':
+#            sec_list = [('Y','Y','Y'), ('Z', 'Z', 'Z')]
+#         
+#        if self.priaxes == 'Y':
+#            sec_list = [('X','X','X'), ('Z', 'Z', 'Z')]
+#            
+#        if self.priaxes == 'Z':
+#            sec_list = [('X','X','X'), ('Y', 'Y', 'Y')]     
+#        return sec_list
     
 
     copytype = bpy.props.EnumProperty(items=(('V','','paste to vertices','VERTEXSEL',0),
@@ -320,6 +115,7 @@ class VIEWD3D_Copy2(bpy.types.Operator):
     set_edit_source = bpy.props.BoolProperty(name="Edit Source",  description="jump to source editmode", default = False)   
 
 
+    # DRAW PROPS [F6] # 
     def draw(self, context):
         layout = self.layout
        
@@ -373,13 +169,7 @@ class VIEWD3D_Copy2(bpy.types.Operator):
             if obj:
                 if obj.type in {'MESH'}:        
                     box = layout.box().column(1)
-                     
-                    row = box.row(1)        
-                    row.label("Origin to:")                 
-                    row.prop(self, 'set_plus_z', text="Top")                 
-                    row.prop(self, 'set_center_z', text="Center")                 
-                    row.prop(self, 'set_minus_z', text="Bottom")                 
-                   
+                                                     
                     row = box.row(1)        
                     row.label("Relations:")              
                     row.prop(self, 'dupli_unlinked', text="Unlinked") 
@@ -391,16 +181,31 @@ class VIEWD3D_Copy2(bpy.types.Operator):
                     row.prop(self, 'set_edit_target', text="Target")
                      
                     box.separator()   
+
+                    row = box.row(1)        
+                    row.label("Origin:")                 
+                    row.prop(self, 'set_plus_z', text="Top")                 
+                    row.prop(self, 'set_center_z', text="Center")                 
+                    row.prop(self, 'set_minus_z', text="Bottom")   
+
+                    box.separator()   
                        
             else:
                 pass
 
         return
 
- 
+    # LOAD CUSTOM SETTTINGS #
+    def invoke(self, context, event):               
+        tot_settings_load(self)
+        return self.execute(context)
+        
 
     def execute(self, context):
+
+        tot_settings_write(self)
         
+
         obj = context.active_object
    
         if len(bpy.context.selected_objects) == 2:
@@ -550,9 +355,12 @@ class VIEWD3D_Copy2(bpy.types.Operator):
 
     
     def invoke(self, context, event):
-        VIEWD3D_Copy2.obj_list = [(obj.name, obj.name, obj.name) for obj in bpy.data.objects]
+        VIEWD3D_Copy_To_MeshTarget.obj_list = [(obj.name, obj.name, obj.name) for obj in bpy.data.objects]
         return context.window_manager.invoke_props_popup(self, event)    
     
+
+
+
 
 
 
@@ -722,24 +530,59 @@ def face_copy(scene, obj, source_obj, axes):
         
 
 
+
+
+
+# PROPERTY GROUP: COPY TO TARGET #
+class ToTarget_Properties(bpy.types.PropertyGroup):
+    
+
+    copytype = bpy.props.EnumProperty(items=(('V','','paste to vertices','VERTEXSEL',0),
+                                             ('E','','paste to edges','EDGESEL',1),
+                                             ('F','','paste to faces','FACESEL',2)),
+                                      description='where to paste to')
+                                                    
+    copyfromobject = bpy.props.EnumProperty(items=obj_list_cb, name='Copy from:')
+                                                                                      
+    priaxes = bpy.props.EnumProperty(items=(('X', 'X', 'along X'),
+                                            ('Y', 'Y', 'along Y'),
+                                            ('Z', 'Z', 'along Z')),
+                                            )
+                                             
+    edgescale = bpy.props.BoolProperty(name='Scale to fill edge?')
+                                                
+    secaxes = bpy.props.EnumProperty(items=sec_axes_list_cb, name='Secondary Axis')
+    
+    scale = bpy.props.FloatProperty(default=1.0, min=0.0, name='Scale')
+
+           
+    set_plus_z = bpy.props.BoolProperty(name="Top",  description="set origin to top", default = False)       
+    set_center_z = bpy.props.BoolProperty(name="Center",  description="set origin to center", default = False)   
+    set_minus_z = bpy.props.BoolProperty(name="Bottom",  description="set origin to bottom", default = False)       
+
+    join = bpy.props.BoolProperty(name="Join Copies",  description="join copies with source", default = False)       
+    dupli_unlinked = bpy.props.BoolProperty(name="Unlink Copies",  description="unlink copies", default = False)      
+
+    set_edit_target = bpy.props.BoolProperty(name="Edit Target",  description="jump to target editmode", default = False)   
+    set_edit_source = bpy.props.BoolProperty(name="Edit Source",  description="jump to source editmode", default = False) 
+
+
+
 # REGISTRY #
- 
-#def add_to_menu(self, context) :
-    #self.layout.operator(VIEWD3D_Copy2.bl_idname)
-    #return
 
-def register() :
-    bpy.utils.register_class(VIEWD3D_Copy2)     
-    bpy.utils.register_class(VIEWD3D_TP_Copy_to_Mesh_Panel)     
-    #bpy.types.VIEW3D_MT_object.append(add_to_menu)
-    return
- 
-def unregister() :
-    bpy.utils.unregister_class(VIEWD3D_Copy2)    
-    bpy.utils.unregister_class(VIEWD3D_TP_Copy_to_Mesh_Panel)    
-    #bpy.types.VIEW3D_MT_object.remove(add_to_menu)
-    return
- 
-if __name__ == "__main__" :
+def register():
+    bpy.utils.register_module(__name__)
+
+    # PROPS COPY TO TARGET # 
+    bpy.types.WindowManager.totarget_props = PointerProperty(type = ToTarget_Properties)
+
+def unregister():
+    bpy.utils.unregister_module(__name__)
+
+    # PROPS COPY TO TARGET # 
+    del bpy.types.WindowManager.totarget_props 
+
+if __name__ == "__main__":
     register()
-
+        
+        

@@ -16,8 +16,6 @@
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110 - 1301, USA.
 #
 # ##### END GPL LICENSE BLOCK #####
-#
-# by MKB
 
 
 import bpy
@@ -26,7 +24,10 @@ from bpy.props import *
 from . icons.icons import load_icons
 
 
-def draw_copy_panel_layout(self, context, layout):
+def draw_copy_panel_layout(self, context, layout):       
+        tot_props = context.window_manager.totarget_props          
+        dpl_props = context.window_manager.dupliset_props          
+        toc_props = context.window_manager.tocursor_props          
         mft_props = context.window_manager.mifth_clone_props          
         tp_props = context.window_manager.tp_collapse_copyshop_props
         
@@ -68,16 +69,36 @@ def draw_copy_panel_layout(self, context, layout):
             display_cursor = context.user_preferences.addons[__package__].preferences.tab_cursor
             if display_cursor == 'on':  
 
-                box = col.box().column(1) 
+                box = col.box().column(1)
                  
-                row = box.row(1)                                                       
-                row.operator("tp_ops.copy_to_cursor_panel", text="Copy 2 Cursor")     
-                row.prop(context.scene, "ctc_total", text="")                 
-              
-#                row = box.row(1)  
-#                row.operator("object.simplearewo", text="ARewO Replicator")                                        
-               
+                row = box.row(1)
+                if tp_props.display_copy_to_cursor:
+                    row.prop(tp_props, "display_copy_to_cursor", text="", icon='TRIA_DOWN')                                                  
+                    row.operator("tp_ops.copy_to_cursor_panel", text="Copy 2 Cursor")     
+                    row.prop(toc_props, "total", text="")  
+                else:
+                    row.prop(tp_props, "display_copy_to_cursor", text="", icon='TRIA_RIGHT')                                                    
+                    row.operator("tp_ops.copy_to_cursor_panel", text="Copy 2 Cursor")     
+                    row.prop(toc_props, "total", text="")  
+     
+                if tp_props.display_copy_to_cursor:
+                    scene = bpy.context.scene
+
+                    box = col.box().column(1) 
+                     
+                    row = box.row(1)                              
+                    row.prop(toc_props, "join", text = "Join")                 
+                    row.prop(toc_props, "unlink", text = "Unlink")                 
+                    
+                    box.separator()
+                
+                    box = col.box().column(1) 
+                     
+                    row = box.row(1)                   
+                    row.operator("object.simplearewo", text="ARewO Replicator")                                        
+                   
                 box.separator() 
+
 
 
             display_copy_to_mesh = context.user_preferences.addons[__package__].preferences.tab_copy_to_mesh
@@ -85,25 +106,39 @@ def draw_copy_panel_layout(self, context, layout):
 
                 box = col.box().column(1)
                  
-                row = box.row(1)
+                row = box.row(1)            
                 if tp_props.display_copy_to_faces:
                     row.prop(tp_props, "display_copy_to_faces", text="", icon='TRIA_DOWN')
-                    row.operator("tp_ops.copy_to_mesh_panel", text="      Copy Source to Target") 
+                    row.operator("tp_ops.copy_to_meshtarget", text="      Copy to Mesh Target") 
                 else:
                     row.prop(tp_props, "display_copy_to_faces", text="", icon='TRIA_RIGHT')
-                    row.operator("tp_ops.copy_to_mesh", text="      Copy Source to Target") 
+                    row.operator("tp_ops.copy_to_meshtarget", text="      Copy to Mesh Target") 
      
                 if tp_props.display_copy_to_faces:
                     scene = bpy.context.scene
                     
                     box = col.box().column(1)
-                    
+
+                    row = box.row(1) 
+                    row.alignment == "CENTER"           
+                    row.label("! Output after Editing Popup Properties !") 
+                   
+                    box.separator()                     
+                   
+                    box = col.box().column(1)
+
+                    row = box.row(1)            
+                    row.label("Source:")             
+                    row.prop(tot_props, "copyfromobject", text="")  
+
+                    box.separator()                     
+                   
                     row = box.row(1)            
                     row.label("Target:") 
      
                     sub = row.row(1)
                     sub.scale_x = 1.55               
-                    sub.prop(scene, 'copytype', expand=True)
+                    sub.prop(tot_props, 'copytype', expand=True)
                     
                     box.separator() 
                     
@@ -112,7 +147,7 @@ def draw_copy_panel_layout(self, context, layout):
                    
                     sub1 = row.row(1)
                     sub1.scale_x = 1                    
-                    sub1.prop(scene, 'priaxes', expand=True)
+                    sub1.prop(tot_props, 'priaxes', expand=True)
                     
                     box.separator() 
                                
@@ -121,17 +156,17 @@ def draw_copy_panel_layout(self, context, layout):
       
                     sub2 = row.row(1)
                     sub2.scale_x = 1     
-                    sub2.prop(scene, 'secaxes', expand=True)
+                    sub2.prop(tot_props, 'secaxes', expand=True)
               
                     box.separator()     
               
                     row = box.row(1)                 
-                    if scene.copytype == 'E':
-                        row.prop(scene, 'edgescale')
+                    if tot_props.copytype == 'E':
+                        row.prop(tot_props, 'edgescale')
                         
-                        if scene.edgescale:
+                        if tot_props.edgescale:
                            row = box.row(1) 
-                           row.prop(scene, 'scale')           
+                           row.prop(tot_props, 'scale')           
 
 
                     if len(bpy.context.selected_objects) == 2:
@@ -147,8 +182,8 @@ def draw_copy_panel_layout(self, context, layout):
                         row.label("Origin to:")       
                         
                         row = box.row(1) 
-                        row.prop(context.scene, "pl_set_plus_z")       
-                        row.prop(context.scene, "pl_set_minus_z")  
+                        row.prop(tot_props, "set_plus_z")       
+                        row.prop(tot_props, "set_minus_z")  
                         
                         box.separator() 
                         
@@ -156,8 +191,8 @@ def draw_copy_panel_layout(self, context, layout):
                         row.label("Relations:")
 
                         row = box.row(1)                                           
-                        row.prop(context.scene, "pl_dupli_unlinked", text = "Unlinked")
-                        row.prop(context.scene, "pl_join", text = "Join")
+                        row.prop(tot_props, "dupli_unlinked", text = "Unlinked")
+                        row.prop(tot_props, "join", text = "Join")
 
                         box.separator() 
                         
@@ -165,13 +200,14 @@ def draw_copy_panel_layout(self, context, layout):
                         row.label("Editmode:")     
                         
                         row = box.row(1) 
-                        row.prop(context.scene, "pl_set_edit_target", text = "Target")                           
-                        row.prop(context.scene, "pl_set_edit_source", text = "Source")
+                        row.prop(tot_props, "set_edit_target", text = "Target")                           
+                        row.prop(tot_props, "set_edit_source", text = "Source")
                     
                     else:
                         pass                       
                 
                 box.separator()            
+           
 
 
             display_dupli = context.user_preferences.addons[__package__].preferences.tab_dupli 
@@ -232,14 +268,14 @@ def draw_copy_panel_layout(self, context, layout):
                                 row.prop(context.object, "dupli_group", text="Group")
 
                             row = box.row(1)
-                            row.prop(context.scene, "dupli_align", text="Align")
-                            row.prop(context.scene, "dupli_single", text="Single")
+                            row.prop(dpl_props, "dupli_align", text="Align")
+                            row.prop(dpl_props, "dupli_single", text="Single")
                             
-                            if context.scene.dupli_single == True:
+                            if dpl_props.dupli_single == True:
                                 
                                 row = box.row(1)            
-                                row.prop(context.scene, "dupli_separate", text="Separate")
-                                row.prop(context.scene, "dupli_link", text="As Instance")
+                                row.prop(dpl_props, "dupli_separate", text="Separate")
+                                row.prop(dpl_props, "dupli_link", text="As Instance")
 
 
                         box.separator()  
@@ -257,10 +293,10 @@ def draw_copy_panel_layout(self, context, layout):
                 
                 if tp_props.display_toall:
                     row.prop(tp_props, "display_toall", text="", icon='TRIA_DOWN')
-                    row.menu("VIEW3D_MT_copypopup", text="Copy Attributes", icon='BLANK1') 
+                    row.menu("VIEW3D_MT_copypopup", text="Copy Activ Attributes", icon='BLANK1') 
                 else:
                     row.prop(tp_props, "display_toall", text="", icon='TRIA_RIGHT')
-                    row.menu("VIEW3D_MT_copypopup", text="Copy Attributes", icon='BLANK1') 
+                    row.menu("VIEW3D_MT_copypopup", text="Copy Activ Attributes", icon='BLANK1') 
                     
                 if tp_props.display_toall:
                     scene = context.scene
@@ -318,6 +354,8 @@ def draw_copy_panel_layout(self, context, layout):
                     
 
 
+
+
             display_instances = context.user_preferences.addons[__package__].preferences.tab_instances
             if display_instances == 'on':
                 
@@ -328,18 +366,22 @@ def draw_copy_panel_layout(self, context, layout):
                 row = box.row(1)  
                 if not tp_props.display_optimize_tools:
                     row.prop(tp_props, "display_optimize_tools", text="", icon='TRIA_RIGHT')
-                    row.operator_menu_enum("object.make_links_data", "type", text="Links Data")
-                    row.operator("tp_ops.make_single",text="Unlinks Data")
+
+                    row.operator("object.select_linked", text="L-Select")  
+                    row.operator_menu_enum("object.make_links_data", "type", text="Links ")
+                    row.menu("VIEW3D_MT_make_single_user", text="Unlinks")
+
                 else:
                     row.prop(tp_props, "display_optimize_tools", text="", icon='TRIA_DOWN')  
-                    row.operator_menu_enum("object.make_links_data", "type", text="Links Data")
-                    row.operator("tp_ops.make_single",text="Unlinks Data")
+                    row.operator("object.select_linked", text="L-Select")  
+                    row.operator_menu_enum("object.make_links_data", "type", text="Links ")
+                    row.menu("VIEW3D_MT_make_single_user", text="Unlinks")
 
              
                     box = col.box().column(1) 
                    
                     row = box.row(1)                 
-                    row.operator("object.select_linked", text="Linked", icon="RESTRICT_SELECT_OFF")   
+                    row.operator("object.multi_duplicate", text="Multi Linked", icon="LINKED")   
                     row.operator("object.join", text="Join", icon="AUTOMERGE_ON")             
 
                     box.separator() 
@@ -897,7 +939,7 @@ def draw_copy_panel_layout(self, context, layout):
              
             row = box.row(1)  
             row.operator("tp_ops.copy_to_cursor_panel", text="Copy 2 Cursor")     
-            row.prop(context.scene, "ctc_total", text="")
+            row.prop(toc_props, "total", text="")
                  
             box.separator()   
 

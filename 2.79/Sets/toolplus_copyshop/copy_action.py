@@ -15,18 +15,12 @@
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110 - 1301, USA.
 #
 # ##### END GPL LICENSE BLOCK #####
-#
-# MKB
 
 
+# LOAD MODULS #
 import bpy
-import math, bmesh, mathutils,re
 from bpy import*
 from bpy.props import *
-from bpy.types import Operator, AddonPreferences
-
-from mathutils import Vector
-from math import radians
 
 
 class View3D_TP_X_Array(bpy.types.Operator):
@@ -93,9 +87,6 @@ class View3D_TP_Z_Array(bpy.types.Operator):
             bpy.context.object.modifiers["Array Z"].relative_offset_displace[2] = 1   
                     
         return {'FINISHED'}
-
-
-
 
 
 class View3D_TP_Array_Empty_Add(bpy.types.Operator):
@@ -369,322 +360,6 @@ class View3D_TP_FPath_Unlinked(bpy.types.Operator):
         return {'FINISHED'}  
 
 
-
-class View3D_TP_Copy2Cursor(bpy.types.Operator):
-    """Copy selected object to cursor direction"""
-    bl_idname = "tp_ops.copy_to_cursor"
-    bl_label = "Copy 2 Cursor"
-    bl_options = {'REGISTER', 'UNDO'}
-
-    total = bpy.props.IntProperty(name="Steps", default=2, min=1, max=100)
-    unlink = bpy.props.BoolProperty(name="Unlink Copies", description ="Unlink Copies" , default = False)
-    join = bpy.props.BoolProperty(name="Join Copies", description ="Join Copies" , default = False)
-
-
-    def draw(self, context):
-        layout = self.layout.column(1)
-       
-
-        box = layout.box().column(1)
-        
-        row = box.column(1)        
-        row.prop(self, 'total', text="Steps")
-        
-        if context.mode == 'OBJECT':
-
-            obj = context.active_object     
-            if obj:
-               obj_type = obj.type
-                              
-               if obj_type in {'MESH'}:            
-                    row = box.row(1) 
-                    row.prop(self, 'join', text="Join")
-                    row.label("or")
-                    row.prop(self, 'unlink', text="Unlink")
-
-
-    def execute(self, context):
-        scene = context.scene
-        cursor = scene.cursor_location
-        obj = scene.objects.active
-
-        for i in range(self.total):
-            obj_new = obj.copy()
-            scene.objects.link(obj_new)
-
-            factor = i / self.total
-            obj_new.location = (obj.location * factor) + (cursor * (1.0 - factor))
-
-        if self.join == True:
-            bpy.ops.object.select_linked(type='OBDATA') 
-            bpy.ops.object.join()
-
-        if self.unlink == True: 
-            bpy.ops.object.make_single_user(type='SELECTED_OBJECTS', object=True, obdata=True)
-
-        return {'FINISHED'}
-
-    def invoke(self, context, event):
-        return context.window_manager.invoke_props_popup(self, event)
-
-
-
-class View3D_TP_Copy2Cursor_panel(bpy.types.Operator):
-    """Copy selected object to cursor direction"""
-    bl_idname = "tp_ops.copy_to_cursor_panel"
-    bl_label = "Copy 2 Cursor"
-    bl_options = {'REGISTER', 'UNDO'}
-
-    bpy.types.Scene.ctc_total = bpy.props.IntProperty(name="Steps", default=2, min=1, max=100)
-
-    ctc_unlink = bpy.props.BoolProperty(name="Unlink Copies", description ="Unlink Copies" , default = False)
-    ctc_join = bpy.props.BoolProperty(name="Join Copies", description ="Join Copies" , default = False)
-
-    def draw(self, context):
-        layout = self.layout.column(1)
-
-        box = layout.box().column(1)
-        
-        row = box.column(1)        
-        row.prop(self, 'ctc_join', text="Join")
-        row.label("or")
-        row.prop(self, 'ctc_unlink', text="Unlink")
-
-
-    def execute(self, context):
-        scene = context.scene
-        cursor = scene.cursor_location
-        obj = scene.objects.active
-
-        for i in range(context.scene.ctc_total):
-            obj_new = obj.copy()
-            scene.objects.link(obj_new)
-
-            factor = i / scene.ctc_total
-            obj_new.location = (obj.location * factor) + (cursor * (1.0 - factor))
-
-        if self.ctc_join == True:
-            bpy.ops.object.select_linked(type='OBDATA') 
-            bpy.ops.object.join()
-
-        if self.ctc_unlink == True: 
-            bpy.ops.object.make_single_user(type='SELECTED_OBJECTS', object=True, obdata=True)
-
-        return {'FINISHED'}
-
-
-
-class View3D_TP_Dupli_Set_Panel(bpy.types.Operator):
-    """Duplication on active Object"""
-    bl_idname = "tp_ops.dupli_set_panel"
-    bl_label = "Duplication Set :)"
-    bl_options = {'REGISTER', 'UNDO'}
-    
-    bpy.types.Scene.dupli_align = bpy.props.BoolProperty(name="Align Source",  description="Align Object Location", default=False)       
-    bpy.types.Scene.dupli_single = bpy.props.BoolProperty(name="Make Real",  description="Single Dupli-Instances", default=False)    
-    bpy.types.Scene.dupli_separate = bpy.props.BoolProperty(name="Separate all",  description="Separate Objects", default=False)    
-    bpy.types.Scene.dupli_link = bpy.props.BoolProperty(name="Link separted",  description="Link separated Objects", default=False)    
-
-    def draw(self, context):
-        layout = self.layout.column(1)
-        
-        if len(bpy.context.selected_objects) == 2:   
-
-            box = layout.box().column(1)
-
-            row = box.row(1)         
-            row.prop(context.object, "dupli_type", expand=True)
-
-            box.separator()
-            
-            row = box.row(1)   
-            row.prop(context.scene, 'dupli_align')       
-            row.prop(context.scene, 'dupli_single')
-
-            row = box.row(1)   
-            row.prop(context.scene, 'dupli_separate')        
-            row.prop(context.scene, 'dupli_link')
-            
-            box.separator()
-
-            row = box.row(1)          
-            box.separator()
-            row.scale_x = 0.5        
-            row.operator('wm.operator_defaults', text="Reset", icon ="RECOVER_AUTO")
-
-        else:
-            box = layout.box().column(1)
-
-            row = box.row(1)  
-            row.label("need a source and a target", icon ="INFO")  
-            
-
-    def execute(self, context):
-
-        if len(bpy.context.selected_objects) == 2:
-
-            first_obj = bpy.context.active_object
-
-            obj_a, obj_b = context.selected_objects
-
-            second_obj = obj_a if obj_b == first_obj else obj_b  
-
-            for i in range(context.scene.dupli_align):             
-
-                #copy dimensions to it
-                active = bpy.context.active_object
-                selected = bpy.context.selected_objects
-
-                for obj in selected:                                        
-                    obj.location = active.location
-          
-            bpy.context.scene.objects.active = bpy.data.objects[first_obj.name]            
-            bpy.data.objects[first_obj.name].select=True  
-           
-            bpy.ops.object.parent_set(type='OBJECT', keep_transform=False)              
-
-            for i in range(context.scene.dupli_single):   
-                bpy.context.scene.objects.active = bpy.data.objects[first_obj.name]            
-                bpy.data.objects[first_obj.name].select=True  
-               
-                bpy.ops.object.parent_set(type='OBJECT', keep_transform=False)
-
-                bpy.ops.object.duplicates_make_real()
-                bpy.ops.object.parent_clear(type='CLEAR')
-
-                bpy.data.objects[first_obj.name].select=False                  
-                
-                bpy.context.scene.objects.active = bpy.data.objects[second_obj.name]            
-                bpy.data.objects[second_obj.name].select=True  
-               
-                bpy.ops.object.select_linked(type='OBDATA')
-                bpy.ops.object.join()                
-                
-                for i in range(context.scene.dupli_separate):                
-                    bpy.ops.object.editmode_toggle()
-                    bpy.ops.mesh.select_all(action='SELECT')
-                    bpy.ops.mesh.separate(type='LOOSE')
-                    bpy.ops.object.editmode_toggle()
-
-                    for i in range(context.scene.dupli_link):
-                        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY') 
-                        bpy.ops.object.make_links_data(type='OBDATA')                   
-        else:
-            print(self)
-            self.report({'INFO'}, "need a source and a target")  
-
-        return {'FINISHED'}
-
-
-
-class View3D_TP_DupliSet(bpy.types.Operator):
-    """Duplication on active Object"""
-    bl_idname = "tp_ops.dupli_set"
-    bl_label = "Duplication Set :)"
-    bl_options = {'REGISTER', 'UNDO'}
-    
-    align = bpy.props.BoolProperty(name="Align Source",  description="align selected to active location", default=False)       
-    single = bpy.props.BoolProperty(name="Make Real",  description="single > remove parenting", default=False)    
-    separate = bpy.props.BoolProperty(name="Separate all",  description="separate to single objects", default=False)    
-    link = bpy.props.BoolProperty(name="Link separted",  description="link separated objects", default=False)    
-
-    def draw(self, context):
-        layout = self.layout.column(1)
-        
-        if len(bpy.context.selected_objects) == 2:   
-                 
-            box = layout.box().column(1)
-
-            row = box.row(1)         
-            row.prop(context.object, "dupli_type", expand=True)
-
-            box.separator()
-            
-            row = box.row(1)   
-            row.prop(self, 'align')       
-            row.prop(self, 'single')
-
-            row = box.row(1)   
-            row.prop(self, 'separate')        
-            row.prop(self, 'link')
-            
-            box.separator()
-
-            row = box.row(1)          
-            box.separator()
-            row.scale_x = 0.5        
-            row.operator('wm.operator_defaults', text="Reset", icon ="RECOVER_AUTO")
-
-        else:
-            box = layout.box().column(1)
-
-            row = box.row(1)  
-            row.label("need a source and a target", icon ="INFO")  
-            
-
-    def execute(self, context):
-
-        if len(bpy.context.selected_objects) == 2:
-
-            first_obj = bpy.context.active_object
-
-            obj_a, obj_b = context.selected_objects
-
-            second_obj = obj_a if obj_b == first_obj else obj_b  
-
-            for i in range(self.align):  
-                           
-                #copy dimensions to it
-                active = bpy.context.active_object
-                selected = bpy.context.selected_objects
-
-                for obj in selected:                    
-                    obj.location = active.location
-
-            bpy.context.scene.objects.active = bpy.data.objects[first_obj.name]            
-            bpy.data.objects[first_obj.name].select=True  
-           
-            bpy.ops.object.parent_set(type='OBJECT', keep_transform=False)
-              
-
-            for i in range(self.single):   
-                bpy.context.scene.objects.active = bpy.data.objects[first_obj.name]            
-                bpy.data.objects[first_obj.name].select=True  
-               
-                bpy.ops.object.parent_set(type='OBJECT', keep_transform=False)
-
-                bpy.ops.object.duplicates_make_real()
-                bpy.ops.object.parent_clear(type='CLEAR')
-
-                bpy.data.objects[first_obj.name].select=False                  
-                
-                bpy.context.scene.objects.active = bpy.data.objects[second_obj.name]            
-                bpy.data.objects[second_obj.name].select=True  
-               
-                bpy.ops.object.select_linked(type='OBDATA')
-                bpy.ops.object.join()                
-
-                for i in range(self.separate):                
-                    bpy.ops.object.editmode_toggle()
-                    bpy.ops.mesh.select_all(action='SELECT')
-                    bpy.ops.mesh.separate(type='LOOSE')
-                    bpy.ops.object.editmode_toggle()
-
-                    for i in range(self.link):
-                        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY') 
-                        bpy.ops.object.make_links_data(type='OBDATA')   
-                
-        else:
-            print(self)
-            self.report({'INFO'}, "need a source and a target")  
-
-        return {'FINISHED'}
- 
-    def invoke(self, context, event):
-        return context.window_manager.invoke_props_popup(self, event)
-
-
-
 class View3D_TP_MakeSingle(bpy.types.Operator):
     """Make Single User for all Linked (Object Data)"""
     bl_idname = "tp_ops.make_single"
@@ -694,6 +369,9 @@ class View3D_TP_MakeSingle(bpy.types.Operator):
         bpy.ops.object.select_linked(type='OBDATA')
         bpy.ops.object.make_single_user(type='SELECTED_OBJECTS', object=True, obdata=True)
         return {'FINISHED'}
+
+
+
 
 
 class View3D_TP_Help_Axis_Array(bpy.types.Operator):
@@ -777,15 +455,12 @@ class View3D_TP_Help_Follow_Path(bpy.types.Operator):
 	
 	
 
+# REGISTRY #
 def register():
-
     bpy.utils.register_module(__name__)
 
-
 def unregister():
-
     bpy.utils.unregister_module(__name__)
-
 
 if __name__ == "__main__":
     register()

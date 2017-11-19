@@ -19,7 +19,7 @@
 bl_info = {
     "name": "CopyShop",
     "author": "marvin.k.breuer",
-    "version": (1, 4, 1),
+    "version": (1, 4, 2),
     "blender": (2, 7, 9),
     "location": "View3D / Properties",
     "description": "Tools for duplication",
@@ -38,6 +38,7 @@ from .copy_ui_panel     import (VIEW3D_TP_Copy_Panel_PROPS)
 
 # LOAD PROPS #
 from toolplus_copyshop.copy_mifthcloning    import (MFTCloneProperties)
+from toolplus_copyshop.copy_to_meshtarget    import (ToTarget_Properties)
 
 # LOAD ICONS #
 from . icons.icons                  import load_icons
@@ -53,23 +54,31 @@ if "bpy" in locals():
     import importlib
     importlib.reload(copy_action)
     importlib.reload(copy_attributes)
+    importlib.reload(copy_dupliset)
     importlib.reload(copy_mifthcloning)
+    importlib.reload(copy_multilinked)
     importlib.reload(copy_replicator)
     importlib.reload(copy_fpath)
     importlib.reload(copy_to_all)
+    importlib.reload(copy_to_cursor)
+    importlib.reload(copy_to_meshtarget)
     importlib.reload(copy_origin)
-    importlib.reload(copy_to_mesh)
+
 
 
 else:
     from . import copy_action         
     from . import copy_attributes                          
+    from . import copy_dupliset                          
     from . import copy_mifthcloning              
+    from . import copy_multilinked           
     from . import copy_replicator           
     from . import copy_fpath                 
     from . import copy_to_all       
+    from . import copy_to_cursor       
+    from . import copy_to_meshtarget    
     from . import copy_origin       
-    from . import copy_to_mesh       
+   
     
 
 # LOAD MODULS #
@@ -387,6 +396,7 @@ class TP_Panels_Preferences(AddonPreferences):
             row.operator('wm.url_open', text = 'Follow Path', icon = 'HELP').url = "https://blenderartists.org/forum/showthread.php?325179-Follow-Path-Array"
             row.operator('wm.url_open', text = 'Copy2', icon = 'HELP').url = "https://blenderartists.org/forum/showthread.php?347973-add-on-Copy2-vertices-edges-or-faces"
             row.operator('wm.url_open', text = 'Copy Attributes', icon = 'HELP').url = "http://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/3D_interaction/Copy_Attributes_Menu"
+            row.operator('wm.url_open', text = 'Dupli Multi Linked', icon = 'HELP').url = "https://blenderartists.org/forum/showthread.php?229346-AddOn-Duplicate-Multiple-Linked"
             row.operator('wm.url_open', text = 'BlenderArtist', icon = 'BLENDER').url = "https://blenderartists.org/forum/showthread.php?409893-Addon-T-CopyShop&p=3116714#post3116714"
 
 
@@ -403,6 +413,7 @@ class Dropdown_TP_CopyShop_Props(bpy.types.PropertyGroup):
     display_apply = bpy.props.BoolProperty(name="Open / Close", description="Open / Close", default=False)    
     display_dupli = bpy.props.BoolProperty(name="Open / Close", description="Open / Close", default=False)    
     display_optimize_tools = bpy.props.BoolProperty(name="Open / Close", description="Open / Close", default=False)    
+    display_copy_to_cursor = bpy.props.BoolProperty(name="Open / Close", description="Open / Close", default=False)    
 
 
 
@@ -441,6 +452,23 @@ class MFTCloneProperties(bpy.types.PropertyGroup):
     copy_scale_z = bpy.props.FloatProperty(name="Z", description="set scale value", default=1.00, min=0.00, max=100, options={'SKIP_SAVE'})
 
 
+# PROPERTY GROUP: COPY TO CURSOR #
+class ToCursor_Properties(bpy.types.PropertyGroup):
+    
+    total = bpy.props.IntProperty(name="Steps", default=2, min=1, max=100)
+    unlink = bpy.props.BoolProperty(name="Unlink Copies", description ="Unlink Copies" , default = False)
+    join = bpy.props.BoolProperty(name="Join Copies", description ="Join Copies" , default = False)
+
+
+
+# PROPERTY GROUP: DUPLISET #
+class DupliSet_Properties(bpy.types.PropertyGroup):
+    
+    dupli_align = bpy.props.BoolProperty(name="Align Source",  description="Align Object Location", default=False)       
+    dupli_single = bpy.props.BoolProperty(name="Make Real",  description="Single Dupli-Instances", default=False)    
+    dupli_separate = bpy.props.BoolProperty(name="Separate all",  description="Separate Objects", default=False)    
+    dupli_link = bpy.props.BoolProperty(name="Link separted",  description="Link separated Objects", default=False)   
+
 
 
 # REGISTRY #
@@ -456,9 +484,19 @@ def register():
 
     # PROPS #  
     bpy.types.WindowManager.tp_collapse_copyshop_props = bpy.props.PointerProperty(type = Dropdown_TP_CopyShop_Props)
+    
+    # PROPS TO CURSOR # 
+    bpy.types.WindowManager.tocursor_props = PointerProperty(type = ToCursor_Properties)
+
+    # PROPS DUPLISET # 
+    bpy.types.WindowManager.dupliset_props = PointerProperty(type = DupliSet_Properties)
 
     # PROPS MIFTHTOOLS #
-    bpy.types.WindowManager.mifth_clone_props = PointerProperty(name="Mifth Cloning Variables",type=MFTCloneProperties, description="Mifth Cloning Properties")
+    bpy.types.WindowManager.mifth_clone_props = PointerProperty(type = MFTCloneProperties)
+
+    # PROPS COPY TO TARGET # 
+    bpy.types.WindowManager.totarget_props = PointerProperty(type = ToTarget_Properties)
+
 
 
 def unregister():
@@ -468,13 +506,23 @@ def unregister():
     # PROPS #
     del bpy.types.WindowManager.tp_collapse_copyshop_props 
 
+    # PROPS TO CURSOR # 
+    del bpy.types.WindowManager.tocursor_props
+   
+    # PROPS DUPLISET # 
+    del bpy.types.WindowManager.dupliset_props
+
     # PROPS MIFTHTOOLS #
     del bpy.types.WindowManager.mifth_clone_props      
+
+    # PROPS COPY TO TARGET # 
+    del bpy.types.WindowManager.totarget_props 
 
 if __name__ == "__main__":
     register()
         
         
+
 
 
 
