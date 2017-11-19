@@ -36,7 +36,7 @@ class View3D_TP_Copy_Menu(bpy.types.Menu):
         if mode_string == 'OBJECT':
                 
             layout.operator("tp_ops.mft_radialclone_popup", text="Radial Clone")
-            layout.operator("tp_ops.copy_to_mesh", text="Copy to Target")        
+            layout.operator("tp_ops.copy_to_meshtarget", text="Copy to Target")        
             
         
             display_arewo = context.user_preferences.addons[__package__].preferences.tab_menu_arewo

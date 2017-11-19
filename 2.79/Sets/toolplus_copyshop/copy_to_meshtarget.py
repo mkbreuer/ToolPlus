@@ -64,26 +64,11 @@ def sec_axes_list_cb(self, context):
 
 
 class VIEWD3D_Copy_To_MeshTarget(bpy.types.Operator):
+    """ copy source to selected mesh targets: vertices, edges and faces """
     bl_idname = "tp_ops.copy_to_meshtarget"
     bl_label = "Copy to Mesh Target"
     bl_options = {"REGISTER", "UNDO"}
-    
-#    obj_list = None
-#  
-#    def obj_list_cb(self, context):
-#        return VIEWD3D_Copy_To_MeshTarget.obj_list
-#            
-#    def sec_axes_list_cb(self, context):
-#        if self.priaxes == 'X':
-#            sec_list = [('Y','Y','Y'), ('Z', 'Z', 'Z')]
-#         
-#        if self.priaxes == 'Y':
-#            sec_list = [('X','X','X'), ('Z', 'Z', 'Z')]
-#            
-#        if self.priaxes == 'Z':
-#            sec_list = [('X','X','X'), ('Y', 'Y', 'Y')]     
-#        return sec_list
-    
+        
 
     copytype = bpy.props.EnumProperty(items=(('V','','paste to vertices','VERTEXSEL',0),
                                              ('E','','paste to edges','EDGESEL',1),
