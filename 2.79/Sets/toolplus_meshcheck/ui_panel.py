@@ -580,6 +580,7 @@ class MeshCheckBar:
 
                 row = box.row(1)
                 row.label("Export Path:")
+                row.prop(print_3d, "use_apply_transform", text="", icon='MAN_TRANS')
                 row.prop(print_3d, "use_apply_scale", text="", icon='MAN_SCALE')
                 row.prop(print_3d, "use_export_texture", text="", icon='FILE_IMAGE')
 

@@ -81,6 +81,12 @@ def write_mesh(context, info, report_cb):
         if obj not in context_override["selected_objects"]:
             context_override["selected_objects"].append(obj)
 
+
+    if print_3d.use_apply_transform == True:
+        bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+
+        
+
     export_path = bpy.path.abspath(print_3d.export_path)
 
     # Create name 'export_path/blendname-objname'
@@ -114,7 +120,19 @@ def write_mesh(context, info, report_cb):
         if not loaded_state:
             addon_utils.enable(addon_id, default_set=False)
 
-    if export_format == 'STL':
+    if export_format == 'FBX':
+        addon_ensure("io_scene_fbx")
+        filepath = bpy.path.ensure_ext(filepath, ".fbx")
+        ret = bpy.ops.export_scene.fbx(
+                context_override,
+                filepath=filepath,
+                use_selection=True,
+                use_mesh_modifiers=True,
+                path_mode=path_mode,
+                global_scale=global_scale,
+                )
+
+    elif export_format == 'STL':
         addon_ensure("io_mesh_stl")
         filepath = bpy.path.ensure_ext(filepath, ".stl")
         ret = bpy.ops.export_mesh.stl(

@@ -20,7 +20,7 @@
 bl_info = {
     "name": "MeshCheck",
     "author": "MKB",
-    "version": (0, 1, 0),
+    "version": (0, 1, 1),
     "blender": (2, 7, 9),
     "location": "View3D or Properties",
     "description": "collection of mesh check tools",
@@ -478,7 +478,8 @@ class Print3DSettings_Props(bpy.types.PropertyGroup):
                    ('PLY', "PLY", ""),
                    ('WRL', "VRML2", ""),
                    ('X3D', "X3D", ""),
-                   ('OBJ', "OBJ", "")),
+                   ('OBJ', "OBJ", ""),
+                   ('FBX', "FBX", "")),
             default='OBJ')
     
     use_export_texture = BoolProperty(
@@ -489,6 +490,11 @@ class Print3DSettings_Props(bpy.types.PropertyGroup):
     use_apply_scale = BoolProperty(
             name="Apply Scale",
             description="Apply scene scale setting on export",
+            default=False,
+            )
+    use_apply_transform = BoolProperty(
+            name="Apply Transform",
+            description="Apply scene transform setting on export",
             default=False,
             )
     export_path = StringProperty(
