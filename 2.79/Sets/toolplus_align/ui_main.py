@@ -442,6 +442,130 @@ def draw_align_panel_layout(self, context, layout):
 
             box.separator()   
  
+
+
+            Display_AutoMirror = context.user_preferences.addons[__package__].preferences.tab_automirror
+            if Display_AutoMirror == 'on':
+                
+                auto_mirror_addon = "mesh_auto_mirror" 
+                state = addon_utils.check(auto_mirror_addon)
+                if not state[0]:                         
+                    
+                    box = col.box().column(1) 
+                    
+                    row = box.column(1) 
+                    row.operator("tp_ops.enable_automirror", text="!_Activate AutoMirror_!", icon='BLANK1')    
+                    
+                    box.separator()
+
+                else:  
+                    obj = context.active_object
+                    if obj:
+                        obj_type = obj.type
+                        
+                        if obj.type in {'MESH'}:
+
+
+                            box = col.box().column(1) 
+                          
+                            row = box.row(1)
+                            row.operator("tp_ops.mod_mirror_x", "", icon ="MOD_MIRROR")
+
+                            row.label("AutoMirror")
+
+                            obj = context.active_object
+                            if obj:
+                                mod_list = obj.modifiers
+                                if mod_list:
+                                    row.operator("tp_ops.mods_view","", icon = 'RESTRICT_VIEW_OFF')                                                                            
+                            else:
+                                pass
+
+
+                            row.operator("object.automirror", text="", icon="MOD_WIREFRAME")   
+                            
+                            box.separator() 
+                            
+                            row = box.row(1)                           
+                            row.prop(context.scene.auto_mirror, "orientation", text="")                                                                          
+                            row.prop(context.scene.auto_mirror, "axis", text="")            
+                                                                    
+                            row = box.row(1)
+
+                            if tp_props.display_mirror_auto:            
+                                row.prop(tp_props, "display_mirror_auto", text="Settings", icon="TRIA_DOWN")
+                            else:
+                                row.prop(tp_props, "display_mirror_auto", text="Settings", icon="TRIA_RIGHT") 
+             
+                            row.prop(context.scene.auto_mirror, "threshold", text="Threshold")      
+
+                            box.separator() 
+
+                            if tp_props.display_mirror_auto:    
+                                                  
+                                box = col.box().column(1) 
+                                
+                                row = box.row(1)
+                                row.prop(context.scene.auto_mirror, "toggle_edit", text="Editmode")
+                                row.prop(context.scene.auto_mirror, "cut", text="Cut+Mirror")
+                                
+                                row = box.row(1)
+                                row.prop(context.scene.auto_mirror, "use_clip", text="Use Clip")
+                                row.prop(context.scene.auto_mirror, "show_on_cage", text="Editable")            
+
+                                box.separator() 
+                
+                               
+                            obj = context.active_object
+                            if obj:
+             
+                                mo_types = []            
+                                append = mo_types.append
+
+                                for mo in obj.modifiers:
+                                                                  
+                                    if mo.type == 'MIRROR':
+                                        append(mo.type)
+
+                                        #box.label(mo.name)
+
+                                        row = box.row(1)
+                                        row.prop(mo, "use_x")
+                                        row.prop(mo, "use_y")
+                                        row.prop(mo, "use_z")
+                                        
+                                        row = box.row(1)
+                                        row.prop(mo, "use_mirror_merge", text="Merge")
+                                        row.prop(mo, "use_clip", text="Clipping")
+
+                                        box.separator() 
+                            else:
+                                pass
+
+
+                            obj = context.active_object
+                            if obj:
+                                mod_list = obj.modifiers
+                                if mod_list:
+                                   
+                                    box.separator()                            
+
+                                    row = box.row(1)    
+                                    row.operator("tp_ops.remove_mods_mirror", text="Remove") 
+                                    row.operator("tp_ops.apply_mods_mirror", text="Apply") 
+
+                                    box.separator()                                                                      
+                            else:
+                                pass
+
+                        else:
+                            pass
+                    else:
+                        pass
+                    
+
+
+
       
             box = col.box().column(1)       
                          
@@ -1045,6 +1169,130 @@ def draw_align_panel_layout(self, context, layout):
             row.operator("tp_ops.mirror_over_edge", "Mirror over Edge", icon_value=button_align_mirror_edge.icon_id)    
 
             box.separator() 
+
+
+
+
+            Display_AutoMirror = context.user_preferences.addons[__package__].preferences.tab_automirror
+            if Display_AutoMirror == 'on':
+                
+                auto_mirror_addon = "mesh_auto_mirror" 
+                state = addon_utils.check(auto_mirror_addon)
+                if not state[0]:                         
+                    
+                    box = col.box().column(1) 
+                    
+                    row = box.column(1) 
+                    row.operator("tp_ops.enable_automirror", text="!_Activate AutoMirror_!", icon='BLANK1')    
+                    
+                    box.separator()
+
+                else:  
+                    obj = context.active_object
+                    if obj:
+                        obj_type = obj.type
+                        
+                        if obj.type in {'MESH'}:
+
+
+                            box = col.box().column(1) 
+                          
+                            row = box.row(1)
+                            row.operator("tp_ops.mod_mirror_x", "", icon ="MOD_MIRROR")
+
+                            row.label("AutoMirror")
+
+                            obj = context.active_object
+                            if obj:
+                                mod_list = obj.modifiers
+                                if mod_list:
+                                    row.operator("tp_ops.mods_view","", icon = 'RESTRICT_VIEW_OFF')                                                                            
+                            else:
+                                pass
+
+
+                            row.operator("object.automirror", text="", icon="MOD_WIREFRAME")   
+                            
+                            box.separator() 
+                            
+                            row = box.row(1)                           
+                            row.prop(context.scene.auto_mirror, "orientation", text="")                                                                          
+                            row.prop(context.scene.auto_mirror, "axis", text="")            
+                                                                    
+                            row = box.row(1)
+
+                            if tp_props.display_mirror_auto:            
+                                row.prop(tp_props, "display_mirror_auto", text="Settings", icon="TRIA_DOWN")
+                            else:
+                                row.prop(tp_props, "display_mirror_auto", text="Settings", icon="TRIA_RIGHT") 
+             
+                            row.prop(context.scene.auto_mirror, "threshold", text="Threshold")      
+
+                            box.separator() 
+
+                            if tp_props.display_mirror_auto:    
+                                                  
+                                box = col.box().column(1) 
+                                
+                                row = box.row(1)
+                                row.prop(context.scene.auto_mirror, "toggle_edit", text="Editmode")
+                                row.prop(context.scene.auto_mirror, "cut", text="Cut+Mirror")
+                                
+                                row = box.row(1)
+                                row.prop(context.scene.auto_mirror, "use_clip", text="Use Clip")
+                                row.prop(context.scene.auto_mirror, "show_on_cage", text="Editable")            
+
+                                box.separator() 
+                
+                               
+                            obj = context.active_object
+                            if obj:
+             
+                                mo_types = []            
+                                append = mo_types.append
+
+                                for mo in obj.modifiers:
+                                                                  
+                                    if mo.type == 'MIRROR':
+                                        append(mo.type)
+
+                                        #box.label(mo.name)
+
+                                        row = box.row(1)
+                                        row.prop(mo, "use_x")
+                                        row.prop(mo, "use_y")
+                                        row.prop(mo, "use_z")
+                                        
+                                        row = box.row(1)
+                                        row.prop(mo, "use_mirror_merge", text="Merge")
+                                        row.prop(mo, "use_clip", text="Clipping")
+
+                                        box.separator() 
+                            else:
+                                pass
+
+
+                            obj = context.active_object
+                            if obj:
+                                mod_list = obj.modifiers
+                                if mod_list:
+                                   
+                                    box.separator()                            
+
+                                    row = box.row(1)    
+                                    row.operator("tp_ops.remove_mods_mirror", text="Remove") 
+                                    row.operator("tp_ops.apply_mods_mirror", text="Apply") 
+
+                                    box.separator()                                                                      
+                            else:
+                                pass
+
+                        else:
+                            pass
+                    else:
+                        pass
+                    
+
 
 
 

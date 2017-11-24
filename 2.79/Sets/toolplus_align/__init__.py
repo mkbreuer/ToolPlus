@@ -383,11 +383,13 @@ class TP_Panels_Preferences(AddonPreferences):
     # ADVANCED #
 
     tab_looptools = EnumProperty(name = 'Display Tools', description = 'on / off',
-                  items=(('on', 'Looptools on', 'enable tools in panel'), ('off', 'Looptols off', 'disable tools in panel')), default='on', update = update_display_tools)
+                  items=(('on', 'Looptools on', 'enable tools in panel'), ('off', 'Looptols off', 'disable tools in panel')), default='off', update = update_display_tools)
 
     tab_relax = EnumProperty(name = 'Display Tools', description = 'on / off',
-                  items=(('on', 'Relax on', 'enable tools in panel'), ('off', 'Relax off', 'disable tools in panel')), default='on', update = update_display_tools)
+                  items=(('on', 'Relax on', 'enable tools in panel'), ('off', 'Relax off', 'disable tools in panel')), default='off', update = update_display_tools)
 
+    tab_automirror = EnumProperty(name = 'Display Tools', description = 'on / off',
+                  items=(('on', 'AutoMirror on', 'enable tools in panel'), ('off', 'AutoMirror off', 'disable tools in panel')), default='off', update = update_display_tools)
 
     #----------------------------------------------------------------------------------------
 
@@ -689,6 +691,9 @@ class TP_Panels_Preferences(AddonPreferences):
             row = box.row()
             row.prop(self, 'tab_looptools', expand=True)
             row.prop(self, 'tab_relax', expand=True)
+            row.prop(self, 'tab_automirror', expand=True)
+           
+            box.separator()  
 
 
         # KEYMAP #
@@ -907,6 +912,7 @@ class TP_Panels_Preferences(AddonPreferences):
 class Dropdown_Align_Props(bpy.types.PropertyGroup):
 
     display_align_help = bpy.props.BoolProperty(name = "Help ", description = "open/close help", default = False) 
+    display_mirror_auto = bpy.props.BoolProperty(name="AutoMirror", description="open / close", default=False)
     display_display = bpy.props.BoolProperty(name="Display", description="open / close", default=False)
     display_apply = bpy.props.BoolProperty(name="Apply", description="open / close", default=False)
 

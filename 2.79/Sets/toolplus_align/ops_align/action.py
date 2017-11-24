@@ -44,6 +44,108 @@ class VIEW3D_TP_Looptools(bpy.types.Operator):
 
 
 
+class VIEW3D_TP_AutoMirror(bpy.types.Operator):
+   """enable automirror (save user settings be required for a permant activation)"""
+   bl_label = "AutoMirror"
+   bl_idname = "tp_ops.enable_automirror"
+   bl_options = {'REGISTER', 'UNDO'}
+
+   def execute(self, context):
+        # check for needed addons
+        auto_mirror_addon = "mesh_auto_mirror"
+        state = addon_utils.check(auto_mirror_addon)
+        if not state[0]:
+            bpy.ops.wm.addon_enable(module=auto_mirror_addon)
+            print(self)
+            self.report({'INFO'}, "AutoMirror activated!") 
+
+        return {'FINISHED'}
+
+
+
+class View3D_TP_Apply_Modifier_Mirror(bpy.types.Operator):
+    """apply modifier mirror"""
+    bl_idname = "tp_ops.apply_mods_mirror"
+    bl_label = "Apply Mirror Modifier"
+    bl_options = {'REGISTER', 'UNDO'}
+  
+    def execute(self, context):
+        scene = bpy.context.scene
+        selected = bpy.context.selected_objects 
+       
+        bpy.ops.object.mode_set(mode = 'OBJECT')
+        
+        for obj in selected:
+            
+            for modifier in obj.modifiers:    
+                if (modifier.type == 'MIRROR'):
+                    bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Mirror")
+                    bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Mirror.001")
+                    bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Mirror.002")
+                    bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Mirror.003")
+
+                        
+        return {'FINISHED'}
+
+
+
+class View3D_TP_Apply_Modifier_Mirror_EDM(bpy.types.Operator):
+    """apply modifier mirror"""
+    bl_idname = "tp_ops.apply_mods_mirror_edm"
+    bl_label = "Apply Mirror Modifier"
+    bl_options = {'REGISTER', 'UNDO'}
+  
+    def execute(self, context):
+        scene = bpy.context.scene
+        selected = bpy.context.selected_objects 
+       
+        bpy.ops.object.mode_set(mode = 'OBJECT')
+        
+        for obj in selected:
+            
+            for modifier in obj.modifiers:    
+                if (modifier.type == 'MIRROR'):
+                    bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Mirror")
+                    bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Mirror.001")
+                    bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Mirror.002")
+                    bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Mirror.003")
+
+        bpy.ops.object.mode_set(mode="EDIT")  
+                              
+        return {'FINISHED'}
+
+
+
+class View3D_TP_Remove_Modifier_Mirror(bpy.types.Operator):
+    """remove modifier mirror"""
+    bl_idname = "tp_ops.remove_mods_mirror"
+    bl_label = "Remove Mirror Modifier"
+    bl_options = {'REGISTER', 'UNDO'}
+  
+    def execute(self, context):
+        scene = bpy.context.scene
+        selected = bpy.context.selected_objects 
+        
+        if not(selected):    
+            for obj in bpy.data.objects:        
+                obj = bpy.context.scene.objects.active
+                     
+                for modifier in obj.modifiers: 
+                    if (modifier.type == 'MIRROR'):
+                        obj.modifiers.remove(modifier)
+
+        else:
+            for obj in selected:
+                
+                for modifier in obj.modifiers:    
+                    if (modifier.type == 'MIRROR'):
+                        obj.modifiers.remove(modifier)
+                        
+        return {'FINISHED'}
+
+
+
+
 # REGISTRY #
 def register():
     bpy.utils.register_module(__name__)
