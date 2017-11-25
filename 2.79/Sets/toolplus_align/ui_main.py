@@ -1280,8 +1280,10 @@ def draw_align_panel_layout(self, context, layout):
                                     box.separator()                            
 
                                     row = box.row(1)    
+                                    row.operator("tp_ops.remove_mod", text="", icon='X') 
                                     row.operator("tp_ops.remove_mods_mirror", text="Remove") 
-                                    row.operator("tp_ops.apply_mods_mirror", text="Apply") 
+                                    row.operator("tp_ops.apply_mod", text="", icon='FILE_TICK') 
+                                    row.operator("tp_ops.apply_mods_mirror_edm", text="Apply") 
 
                                     box.separator()                                                                      
                             else:

@@ -19,11 +19,11 @@
 
 bl_info = {
     "name": "Align",
-    "author": "MKB",
+    "author": "marvin.k.breuer (MKB)",
     "version": (0, 2, 0),
     "blender": (2, 7, 9),
-    "location": "Editor 3D Viewport > Tool Shelf [T] / Property Shelf [N] / Header / Menus",
-    "description": "Collection of Align Tools, see TAB URLs for Tools Authors: wiki/downloads",
+    "location": "View 3D / Properties",
+    "description": "collection of object and mesh align tools",
     "warning": "",
     "wiki_url": "",
     "tracker_url": "",
@@ -212,7 +212,7 @@ def update_display_tools(self, context):
         return True
 
     if context.user_preferences.addons[__name__].preferences.tab_display_tools == 'off':
-        pass 
+        return None
 
 
 def update_header_tools(self, context):
@@ -226,7 +226,7 @@ def update_header_tools(self, context):
         return True
 
     if context.user_preferences.addons[__name__].preferences.update_header_tools == 'off':
-        pass 
+        return None
 
 
 
@@ -649,14 +649,19 @@ class TP_Panels_Preferences(AddonPreferences):
             row = box.column(1)   
             row.label(text="Welcome to T+ Align!")  
 
-            row.label(text="This is a collection of align addons from allover.")   
+            row.label(text="This is a collection of object and mesh align tools")   
+            row.label(text="You will find buttons for tool shelf [T] / property Shelf [N] / properties / header line")   
+            row.label(text="choose between pie menu or simple menu: [CTRL+D]")
 
-            row.label(text="There are three ways to execute the tools:")   
-            row.label(text="> use the panel function")   
-            row.label(text="> included menus with hotkeys")   
-            row.label(text="> or add new shortcuts directly to the tools [RMB]")                           
+            row.separator()
             
-            row.label(text="For more information, go to TAB: URLs")   
+            row.label(text="advanced: looptools or automirror can be added to the panel and menus")
+            row.label(text="addon preferences > tools > choose on/off")
+            row.label(text="the buttons appears or a an activation button if they are not active")                        
+            
+            row.separator()
+
+            row.label(text="For more information, go to TAB URLs: authors / wiki / downloads")   
 
             row.label(text="Have Fun! :)")  
 
@@ -902,7 +907,8 @@ class TP_Panels_Preferences(AddonPreferences):
             row.operator('wm.url_open', text = 'Drop to Ground', icon = 'INFO').url = "https://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/Object/Drop_to_ground"
             row.operator('wm.url_open', text = '1D_Scripts', icon = 'INFO').url = "https://blenderartists.org/forum/showthread.php?399882-1D_Scripts-Bargool_1D_tools-main-thread&highlight="
             row.operator('wm.url_open', text = 'NP Station', icon = 'INFO').url = "https://blenderartists.org/forum/showthread.php?418540-AddOn-NP-Station"
-            row.operator('wm.url_open', text = '3D Navigation', icon = 'INFO').url = "http://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/3D_interaction/3D_Navigation"
+            row.operator('wm.url_open', text = 'Smooth Deformation', icon = 'INFO').url = "https://blenderartists.org/forum/showthread.php?439842-Addon-Deformation-smoothing"
+            row.operator('wm.url_open', text = 'Yadoob Scripts', icon = 'INFO').url = "http://blenderlounge.fr/forum/viewtopic.php?f=18&t=1438"
             row.operator('wm.url_open', text = '(LoopTools)', icon = 'INFO').url = "https://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/Modeling/LoopTools"
             row.operator('wm.url_open', text = 'BlenderArtist', icon = 'BLENDER').url = "https://blenderartists.org/forum/showthread.php?409510-Addon-T-Align&p=3114519#post3114519"
 

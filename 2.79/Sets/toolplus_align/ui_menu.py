@@ -628,17 +628,17 @@ class VIEW3D_TP_Align_Menu_LoopTools(bpy.types.Menu):
 
 
         button_align_space = icons.get("icon_align_space")
-        layout.operator("mesh.looptools_space", text="LT Space", icon_value=button_align_space.icon_id)
+        layout.operator("mesh.looptools_space", text="LpT  Space", icon_value=button_align_space.icon_id)
        
         button_align_curve = icons.get("icon_align_curve") 
-        layout.operator("mesh.looptools_curve", text="LT Curve", icon_value=button_align_curve.icon_id)
+        layout.operator("mesh.looptools_curve", text="LpT  Curve", icon_value=button_align_curve.icon_id)
 
         button_align_circle = icons.get("icon_align_circle") 
-        layout.operator("mesh.looptools_circle", text="LT Circle", icon_value=button_align_circle.icon_id)
+        layout.operator("mesh.looptools_circle", text="LpT  Circle", icon_value=button_align_circle.icon_id)
 
         button_align_flatten = icons.get("icon_align_flatten")                
-        layout.operator("mesh.looptools_flatten", text="LT Circle", icon_value=button_align_flatten.icon_id)
-
+        layout.operator("mesh.looptools_flatten", text="LpT  Circle", icon_value=button_align_flatten.icon_id)
+ 
 
 
 
@@ -778,7 +778,7 @@ class VIEW3D_TP_Align_Menu(bpy.types.Menu):
                 loop_tools_addon = "mesh_looptools" 
                 state = addon_utils.check(loop_tools_addon)
                 if not state[0]:                                         
-                    row.operator("tp_ops.enable_looptools", text="!_Activate Looptools_!")                   
+                    layout.operator("tp_ops.enable_looptools", text="!_Activate Looptools_!", icon='BLANK1')                 
                 else:             
                     layout.menu("VIEW3D_TP_Align_Menu_Gstretch", text="GStretch", icon="GREASEPENCIL")   
               
