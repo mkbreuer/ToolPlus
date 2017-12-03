@@ -17,6 +17,7 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
+# LOAD MODULE #
 import bpy, os
 from bpy import *
 from bpy.props import *
@@ -441,7 +442,6 @@ class View3D_TP_Origin_Batch(bpy.types.Operator):
 
 
 # REGISTRY #
-
 def register():
     bpy.utils.register_module(__name__)
      
@@ -450,5 +450,6 @@ def unregister():
  
 if __name__ == "__main__":
     register()
+
 
 

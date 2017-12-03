@@ -19,7 +19,7 @@
 # ***** END GPL LICENCE BLOCK *****
 
 
-
+# LOAD MODULE #
 import bpy, bmesh
 from bpy import *
 from mathutils import Vector 
@@ -81,11 +81,7 @@ class VIEW_TP_Space_VIEW(bpy.types.Operator):
 
 
 
-
-
-
 # REGISTER #
-
 def register():
     bpy.utils.register_module(__name__)
  
@@ -94,6 +90,7 @@ def unregister():
  
 if __name__ == "__main__":
     register()
+
 
 
 

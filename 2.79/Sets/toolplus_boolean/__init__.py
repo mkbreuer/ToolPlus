@@ -20,7 +20,7 @@
 bl_info = {
     "name": "T+ Boolean",
     "author": "Multi Authors (see URL), Marvin.K.Breuer (MKB)",
-    "version": (1, 8, 6),
+    "version": (1, 8, 7),
     "blender": (2, 7, 9),
     "location": "View3D > Tool Shelf [T] or Property Shelf [N] ",
     "description": "Collection of Boolean Tools",
@@ -45,7 +45,6 @@ from toolplus_boolean.bool_gui_btprops    import (VIEW3D_TP_BoolTool_Config_TOOL
 from toolplus_boolean.bool_gui_btprops    import (VIEW3D_TP_BoolTool_Config_UI)
 
 from toolplus_boolean.bool_menu   import (VIEW3D_TP_Boolean_Menu)
-from toolplus_boolean.bool_menu   import (VIEW3D_TP_BoolTool_Brush_Menu)
 
 
 # LOAD PROPS #
@@ -564,6 +563,22 @@ class TP_Panels_Preferences(AddonPreferences):
             col.prop(self, "use_wire", text="Use Wire Instead Of Bbox")
          
             box.separator()
+
+            # TIP #
+            box.separator()
+            
+            row = layout.row(1)             
+            row.label(text="! For key change go to > User Preferences > TAB: Input !", icon ="INFO")
+            sub = row.row(1)
+            sub.scale_x = 0.5      
+            sub.operator('wm.url_open', text = 'Addon Tip: is key free', icon = 'PLUGIN').url = "https://github.com/Antonioya/blender/tree/master/iskeyfree"
+
+            row = layout.column(1) 
+            row.label(text="1 > Change search to key-bindig and insert the hotkey, eg. bool menu: shift t !", icon ="BLANK1")
+            row.label(text="2 > Under 3D View you find the call menu, name: VIEW3D_TP_Boolean_Menu !", icon ="BLANK1")
+            row.label(text="3 > Choose a new key configuration and save user settings !", icon ="BLANK1")
+        
+            box.separator()  
 
 
         #Weblinks

@@ -39,9 +39,95 @@ def isBrush(_obj):
     except:
         return False
 
+
+
+
+# BRUSH MENU #
+class VIEW3D_TP_Brush_Menu(bpy.types.Menu):
+    bl_label = "Brush Tools"
+    bl_idname = "VIEW3D_TP_Brush_Menu"
+
+    def draw(self, context):
+        layout = self.layout
+        layout.operator_context = 'INVOKE_REGION_WIN'
+        
+        icons = load_icons()
+        
+        button_boolean_union_brush = icons.get("icon_boolean_union_brush")
+        layout.operator("tp_ops.tboolean_union", text="BT-Union", icon_value=button_boolean_union_brush.icon_id)            
+        
+        button_boolean_intersect_brush = icons.get("icon_boolean_intersect_brush")
+        layout.operator("tp_ops.tboolean_inters", text="BT-Intersect", icon_value=button_boolean_intersect_brush.icon_id)
+        
+        button_boolean_difference_brush = icons.get("icon_boolean_difference_brush")
+        layout.operator("tp_ops.tboolean_diff", text="BT-Difference", icon_value=button_boolean_difference_brush.icon_id)
+        
+        layout.separator()
+
+        button_boolean_rebool_brush = icons.get("icon_boolean_rebool_brush")
+        layout.operator("tp_ops.tboolean_slice", text="BT-SliceRebool", icon_value=button_boolean_rebool_brush.icon_id)
+
+        layout.operator_context = 'INVOKE_REGION_WIN'
+        button_boolean_draw = icons.get("icon_boolean_draw")
+        layout.operator("tp_ops.draw_polybrush", text="BT-DrawPoly", icon_value=button_boolean_draw.icon_id)
+       
+
+
+# BEVEL MENU #
+class VIEW3D_TP_Bevel_Menu(bpy.types.Menu):
+    bl_label = "Bool Bevel"
+    bl_idname = "VIEW3D_TP_Bevel_Menu"
+
+    def draw(self, context):
+        layout = self.layout
+        layout.operator_context = 'INVOKE_REGION_WIN'
+        
+        icons = load_icons()
+        
+        button_boolean_bevel = icons.get("icon_boolean_bevel")
+        layout.operator("object.boolean_bevel", text="BoolBevel", icon_value=button_boolean_bevel.icon_id)
+
+        button_boolean_sym = icons.get("icon_boolean_sym")
+        layout.operator("object.boolean_bevel_symmetrize", text="SymBevel", icon_value=button_boolean_sym.icon_id)
+
+        button_boolean_pipe = icons.get("icon_boolean_pipe")                       
+        layout.operator("object.boolean_bevel_make_pipe", text="BoolPipe", icon_value=button_boolean_pipe.icon_id)
+
+        if bpy.data.objects.find('BOOLEAN_BEVEL_CURVE') != -1 and bpy.data.objects.find('BOOLEAN_BEVEL_GUIDE') != -1:
+    
+            button_boolean_custom = icons.get("icon_boolean_custom")
+            layout.operator("object.boolean_custom_bevel", text="CustomBevel", icon_value=button_boolean_custom.icon_id)
+    
+
+
+# BEVEL FIX MENU #
+class VIEW3D_TP_Bevel_Fix_Menu(bpy.types.Menu):
+    bl_label = "Delete / Apply"
+    bl_idname = "VIEW3D_TP_Bevel_Fix_Menu"
+
+    def draw(self, context):
+        layout = self.layout
+        layout.operator_context = 'INVOKE_REGION_WIN'
+        
+        icons = load_icons()
+
+        layout.operator("object.boolean_bevel_remove_objects", text="Rem.Guides", icon='GHOST_DISABLED')
+        layout.operator("object.boolean_bevel_remove_pipes", text="Rem.Pipe", icon='IPO_CIRC')                        
+     
+        if len(bpy.context.selected_objects) > 0 and bpy.context.object.mode == "OBJECT":
+            
+            layout.operator("object.boolean_bevel_remove_modifiers", text="Rem.Mod", icon='X')
+            layout.operator("object.boolean_bevel_apply_modifiers", text="Apply.Mod", icon='FILE_TICK')
+
+        layout.separator()        
+       
+        layout.operator("tp_ops.cleanup_boolbevel", text="Finished", icon='PANEL_CLOSE')
+
+
+
 # MAIN MENU #
 class VIEW3D_TP_Boolean_Menu(bpy.types.Menu):
-    bl_label = "BoolMenu"
+    bl_label = "Boolean"
     bl_idname = "VIEW3D_TP_Boolean_Menu"
 
     def draw(self, context):
@@ -52,11 +138,9 @@ class VIEW3D_TP_Boolean_Menu(bpy.types.Menu):
         
         if context.mode == 'OBJECT':
 
-
             display_bool_direct = context.user_preferences.addons[__package__].preferences.tab_bool_direct 
             if display_bool_direct == 'on':
-                
-                
+                               
                 button_boolean_union = icons.get("icon_boolean_union")
                 layout.operator("tp_ops.bool_union_obm_menu", text="Union", icon_value=button_boolean_union.icon_id)
 
@@ -74,79 +158,31 @@ class VIEW3D_TP_Boolean_Menu(bpy.types.Menu):
                 button_boolean_rebool = icons.get("icon_boolean_rebool")
                 layout.operator("tp_ops.bool_rebool_obm_menu", "SliceRebool", icon_value=button_boolean_rebool.icon_id)
  
-                layout.separator()  
- 
+
  
             display_btbool_brush = context.user_preferences.addons[__package__].preferences.tab_btbool_brush 
             if display_btbool_brush == 'on':
                 
+                layout.separator()  
+ 
+                
                 button_boolean_union_brush = icons.get("icon_boolean_union_brush")
-                layout.operator("tp_ops.tboolean_union", text="BT-Union", icon_value=button_boolean_union_brush.icon_id)            
-                
-                
-                display_btbool_brush_simple = context.user_preferences.addons[__package__].preferences.tab_btbool_brush_simple 
-                if display_btbool_brush_simple == 'on':
+                layout.menu("VIEW3D_TP_Brush_Menu", icon_value=button_boolean_union_brush.icon_id)  
 
-                    button_boolean_intersect_brush = icons.get("icon_boolean_intersect_brush")
-                    layout.operator("tp_ops.tboolean_inters", text="BT-Intersect", icon_value=button_boolean_intersect_brush.icon_id)
-                    
-                    button_boolean_difference_brush = icons.get("icon_boolean_difference_brush")
-                    layout.operator("tp_ops.tboolean_diff", text="BT-Difference", icon_value=button_boolean_difference_brush.icon_id)
-                    
-                    layout.separator()
-
-                    button_boolean_rebool_brush = icons.get("icon_boolean_rebool_brush")
-                    layout.operator("tp_ops.tboolean_slice", text="BT-SliceRebool", icon_value=button_boolean_rebool_brush.icon_id)
-
-                    layout.operator_context = 'INVOKE_REGION_WIN'
-                    button_boolean_draw = icons.get("icon_boolean_draw")
-                    layout.operator("tp_ops.draw_polybrush", text="BT-DrawPoly", icon_value=button_boolean_draw.icon_id)
-
-                    
-                    display_brush_config = context.user_preferences.addons[__package__].preferences.tab_btbool_props 
-                    if display_brush_config == 'on':
-
-                        if (isCanvas(context.active_object)) or (isBrush(context.active_object)):
-
-                            layout.menu("tp_menu.bool_brush_menu", icon="CANCEL")
-
-                
                 if (isCanvas(context.active_object)) or (isBrush(context.active_object)):
-                    
-                    layout.separator()
+                  
+                    layout.menu("VIEW3D_TP_BTools_Fix_Menu", icon="PANEL_CLOSE")
 
                     if 0 < len(bpy.context.selected_objects) < 2 and bpy.context.object.mode == "OBJECT":
 
-                        button_boolean_bevel = icons.get("icon_boolean_bevel")
-                        layout.operator("object.boolean_bevel", text="BoolBevel", icon_value=button_boolean_bevel.icon_id)
-
-                        button_boolean_sym = icons.get("icon_boolean_sym")
-                        layout.operator("object.boolean_bevel_symmetrize", text="SymBevel", icon_value=button_boolean_sym.icon_id)
-                
-                        button_boolean_pipe = icons.get("icon_boolean_pipe")                       
-                        layout.operator("object.boolean_bevel_make_pipe", text="BoolPipe", icon_value=button_boolean_pipe.icon_id)
-
-                        if bpy.data.objects.find('BOOLEAN_BEVEL_CURVE') != -1 and bpy.data.objects.find('BOOLEAN_BEVEL_GUIDE') != -1:
-                    
-                            button_boolean_custom = icons.get("icon_boolean_custom")
-                            layout.operator("object.boolean_custom_bevel", text="CustomBevel", icon_value=button_boolean_custom.icon_id)
-                    
-                        layout.operator("tp_ops.cleanup_boolbevel", text="Finished", icon='PANEL_CLOSE')
-
-                  
-                    display_btbool_brush_simple = context.user_preferences.addons[__package__].preferences.tab_btbool_brush_simple_pl 
-                    if display_btbool_brush_simple == 'on':
+                        layout.separator()  
+                        
+                        button_boolean_bevel = icons.get("icon_boolean_bevel")              
+                        layout.menu("VIEW3D_TP_Bevel_Menu", icon_value=button_boolean_bevel.icon_id)                    
+                        
+                        button_boolean_apply = icons.get("icon_boolean_apply")  
+                        layout.menu("VIEW3D_TP_Bevel_Fix_Menu", icon_value=button_boolean_apply.icon_id)
                    
-                        layout.separator()
-          
-                        layout.operator("object.boolean_bevel_remove_objects", text="Rem.Guides", icon='GHOST_DISABLED')
-                        layout.operator("object.boolean_bevel_remove_pipes", text="Rem.Pipe", icon='IPO_CIRC')                        
-                     
-                        if len(bpy.context.selected_objects) > 0 and bpy.context.object.mode == "OBJECT":
-                            
-                            layout.operator("object.boolean_bevel_remove_modifiers", text="Rem.Mod", icon='X')
-                            layout.operator("object.boolean_bevel_apply_modifiers", text="Apply.Mod", icon='FILE_TICK')
-
 
             layout.separator() 
 
@@ -244,9 +280,9 @@ class VIEW3D_TP_Boolean_Menu(bpy.types.Menu):
 
 
 # MENU #
-class VIEW3D_TP_BoolTool_Brush_Menu(bpy.types.Menu):
-    bl_label = "BoolTools"
-    bl_idname = "tp_menu.bool_brush_menu"
+class VIEW3D_TP_BTools_Fix_Menu(bpy.types.Menu):
+    bl_label = "Delete / Apply"
+    bl_idname = "VIEW3D_TP_BTools_Fix_Menu"
     bl_context = "object"
 
     def draw(self, context):

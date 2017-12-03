@@ -17,6 +17,7 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
+# LOAD MODULE #
 import bpy
 from bpy import*
 
@@ -24,7 +25,7 @@ from bpy import*
 ###  Origin to Corners on Top  ###
 ##################################
 
-class View3D_TP_Origin_CubeBack_CornerTop_Minus_XY(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeBack_CornerTop_Minus_XY(bpy.types.Operator):  
     bl_idname = "tp_ops.cubeback_cornertop_minus_xy"  
     bl_label = "Origin to -XY Corner / Top of Cubeback"  
   
@@ -107,7 +108,7 @@ class View3D_TP_Origin_CubeBack_CornerTop_Minus_XY(bpy.types.Operator):
 
 
 
-class View3D_TP_Origin_CubeBack_CornerTop_Plus_XY(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeBack_CornerTop_Plus_XY(bpy.types.Operator):  
     bl_idname = "tp_ops.cubeback_cornertop_plus_xy"  
     bl_label = "Origin to +XY Corner / Top of Cubeback"  
   
@@ -190,7 +191,7 @@ class View3D_TP_Origin_CubeBack_CornerTop_Plus_XY(bpy.types.Operator):
 
 
 
-class View3D_TP_Origin_CubeFront_CornerTop_Minus_XY(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeFront_CornerTop_Minus_XY(bpy.types.Operator):  
     bl_idname = "tp_ops.cubefront_cornertop_minus_xy"  
     bl_label = "Origin to -XY Corner / Top of Cubefront"  
   
@@ -272,7 +273,7 @@ class View3D_TP_Origin_CubeFront_CornerTop_Minus_XY(bpy.types.Operator):
 
 
 
-class View3D_TP_Origin_CubeFront_CornerTop_Plus_XY(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeFront_CornerTop_Plus_XY(bpy.types.Operator):  
     bl_idname = "tp_ops.cubefront_cornertop_plus_xy"  
     bl_label = "Origin to +XY Corner / Top of Cubefront"  
   
@@ -359,7 +360,7 @@ class View3D_TP_Origin_CubeFront_CornerTop_Plus_XY(bpy.types.Operator):
 ###  Origin to Corners on Bottom  ###
 #####################################
 
-class View3D_TP_Origin_CubeFront_CornerBottom_Minus_XY(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeFront_CornerBottom_Minus_XY(bpy.types.Operator):  
     bl_idname = "tp_ops.cubefront_cornerbottom_minus_xy"  
     bl_label = "Origin to -XY Corner / Bottom of CubeFront"  
   
@@ -441,7 +442,7 @@ class View3D_TP_Origin_CubeFront_CornerBottom_Minus_XY(bpy.types.Operator):
 
 
 
-class View3D_TP_Origin_CubeFront_CornerBottom_Plus_XY(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeFront_CornerBottom_Plus_XY(bpy.types.Operator):  
     bl_idname = "tp_ops.cubefront_cornerbottom_plus_xy"  
     bl_label = "Origin to +XY Corner / Bottom of CubeFront"  
   
@@ -524,7 +525,7 @@ class View3D_TP_Origin_CubeFront_CornerBottom_Plus_XY(bpy.types.Operator):
 
 
 
-class View3D_TP_Origin_CubeBack_CornerBottom_Minus_XY(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeBack_CornerBottom_Minus_XY(bpy.types.Operator):  
     bl_idname = "tp_ops.cubeback_cornerbottom_minus_xy"  
     bl_label = "Origin to -XY Corner / Bottom of Cubefront"  
   
@@ -606,7 +607,7 @@ class View3D_TP_Origin_CubeBack_CornerBottom_Minus_XY(bpy.types.Operator):
 
 
 
-class View3D_TP_Origin_CubeBack_CornerBottom_Plus_XY(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeBack_CornerBottom_Plus_XY(bpy.types.Operator):  
     bl_idname = "tp_ops.cubeback_cornerbottom_plus_xy"  
     bl_label = "Origin to +XY Corner / Bottom of Cubefront"  
   
@@ -694,7 +695,7 @@ class View3D_TP_Origin_CubeBack_CornerBottom_Plus_XY(bpy.types.Operator):
 ###############################################
 
 
-class View3D_TP_Origin_CubeBack_EdgeTop_Minus_Y(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeBack_EdgeTop_Minus_Y(bpy.types.Operator):  
     bl_idname = "tp_ops.cubeback_edgetop_minus_y"  
     bl_label = "Origin to -Y Edge / Top of Cubeback"  
   
@@ -774,7 +775,7 @@ class View3D_TP_Origin_CubeBack_EdgeTop_Minus_Y(bpy.types.Operator):
 
 
 
-class View3D_TP_Origin_CubeBack_EdgeTop_Plus_Y(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeBack_EdgeTop_Plus_Y(bpy.types.Operator):  
     bl_idname = "tp_ops.cubeback_edgetop_plus_y"  
     bl_label = "Origin to +Y Edge / Top of Cubeback"  
   
@@ -854,7 +855,7 @@ class View3D_TP_Origin_CubeBack_EdgeTop_Plus_Y(bpy.types.Operator):
 
 
 
-class View3D_TP_Origin_CubeFront_EdgeTop_Minus_X(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeFront_EdgeTop_Minus_X(bpy.types.Operator):  
     bl_idname = "tp_ops.cubefront_edgetop_minus_x"  
     bl_label = "Origin to -X Edge / Top of Cubefront"  
   
@@ -933,7 +934,7 @@ class View3D_TP_Origin_CubeFront_EdgeTop_Minus_X(bpy.types.Operator):
 
 
 
-class View3D_TP_Origin_CubeFront_EdgeTop_Plus_X(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeFront_EdgeTop_Plus_X(bpy.types.Operator):  
     bl_idname = "tp_ops.cubefront_edgetop_plus_x"  
     bl_label = "Origin to +X Edge / Top of Cubefront"  
   
@@ -1019,7 +1020,7 @@ class View3D_TP_Origin_CubeFront_EdgeTop_Plus_X(bpy.types.Operator):
 ##################################################
 
 
-class View3D_TP_Origin_CubeFront_EdgeBottom_Minus_Y(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeFront_EdgeBottom_Minus_Y(bpy.types.Operator):  
     bl_idname = "tp_ops.cubefront_edgebottom_minus_y"  
     bl_label = "Origin to -Y Edge / Bottom of CubeFront"  
   
@@ -1099,7 +1100,7 @@ class View3D_TP_Origin_CubeFront_EdgeBottom_Minus_Y(bpy.types.Operator):
 
 
 
-class View3D_TP_Origin_CubeFront_EdgeBottom_Plus_Y(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeFront_EdgeBottom_Plus_Y(bpy.types.Operator):  
     bl_idname = "tp_ops.cubefront_edgebottom_plus_y"  
     bl_label = "Origin to +Y Edge / Bottom of CubeFront"  
   
@@ -1178,7 +1179,7 @@ class View3D_TP_Origin_CubeFront_EdgeBottom_Plus_Y(bpy.types.Operator):
 
 
 
-class View3D_TP_Origin_CubeFront_EdgeBottom_Minus_X(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeFront_EdgeBottom_Minus_X(bpy.types.Operator):  
     bl_idname = "tp_ops.cubefront_edgebottom_minus_x"  
     bl_label = "Origin to -X Edge / Bottom of Cubefront"  
   
@@ -1258,7 +1259,7 @@ class View3D_TP_Origin_CubeFront_EdgeBottom_Minus_X(bpy.types.Operator):
 
 
 
-class View3D_TP_Origin_CubeFront_EdgeBottom_Plus_X(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeFront_EdgeBottom_Plus_X(bpy.types.Operator):  
     bl_idname = "tp_ops.cubefront_edgebottom_plus_x"  
     bl_label = "Origin to +X Edge / Bottom of Cubefront"  
   
@@ -1343,7 +1344,7 @@ class View3D_TP_Origin_CubeFront_EdgeBottom_Plus_X(bpy.types.Operator):
 ################################################
 
 
-class View3D_TP_Origin_CubeFront_EdgeMiddle_Minus_Y(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeFront_EdgeMiddle_Minus_Y(bpy.types.Operator):  
     bl_idname = "tp_ops.cubefront_edgemiddle_minus_y"  
     bl_label = "Origin to -Y Edge / Middle of CubeFront"  
   
@@ -1423,7 +1424,7 @@ class View3D_TP_Origin_CubeFront_EdgeMiddle_Minus_Y(bpy.types.Operator):
 
 
 
-class View3D_TP_Origin_CubeFront_EdgeMiddle_Plus_Y(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeFront_EdgeMiddle_Plus_Y(bpy.types.Operator):  
     bl_idname = "tp_ops.cubefront_edgemiddle_plus_y"  
     bl_label = "Origin to +Y Edge / Middle of CubeFront"  
   
@@ -1503,7 +1504,7 @@ class View3D_TP_Origin_CubeFront_EdgeMiddle_Plus_Y(bpy.types.Operator):
 
 
 
-class View3D_TP_Origin_CubeFront_EdgeMiddle_Minus_X(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeFront_EdgeMiddle_Minus_X(bpy.types.Operator):  
     bl_idname = "tp_ops.cubefront_edgemiddle_minus_x"  
     bl_label = "Origin to -X Edge / Middle of Cubefront"  
   
@@ -1581,7 +1582,7 @@ class View3D_TP_Origin_CubeFront_EdgeMiddle_Minus_X(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class View3D_TP_Origin_CubeFront_EdgeMiddle_Plus_X(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeFront_EdgeMiddle_Plus_X(bpy.types.Operator):  
     bl_idname = "tp_ops.cubefront_edgemiddle_plus_x"  
     bl_label = "Origin to +X Edge / Middle of Cubefront"  
   
@@ -1664,7 +1665,7 @@ class View3D_TP_Origin_CubeFront_EdgeMiddle_Plus_X(bpy.types.Operator):
 ######################################
 
 
-class View3D_TP_Origin_CubeFront_Side_Minus_Y(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeFront_Side_Minus_Y(bpy.types.Operator):  
     bl_idname = "tp_ops.cubefront_side_minus_y"  
     bl_label = "Origin to -Y Edge / Bottom of CubeFront"  
   
@@ -1719,7 +1720,7 @@ class View3D_TP_Origin_CubeFront_Side_Minus_Y(bpy.types.Operator):
 
 
 
-class View3D_TP_Origin_CubeFront_Side_Plus_Y(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeFront_Side_Plus_Y(bpy.types.Operator):  
     bl_idname = "tp_ops.cubefront_side_plus_y"  
     bl_label = "Origin to +Y Edge / Bottom of CubeFront"  
   
@@ -1773,7 +1774,7 @@ class View3D_TP_Origin_CubeFront_Side_Plus_Y(bpy.types.Operator):
 
 
 
-class View3D_TP_Origin_CubeFront_Side_Minus_X(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeFront_Side_Minus_X(bpy.types.Operator):  
     bl_idname = "tp_ops.cubefront_side_minus_x"  
     bl_label = "Origin to -X Edge / Bottom of Cubefront"  
   
@@ -1830,7 +1831,7 @@ class View3D_TP_Origin_CubeFront_Side_Minus_X(bpy.types.Operator):
 
 
 
-class View3D_TP_Origin_CubeFront_Side_Plus_X(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeFront_Side_Plus_X(bpy.types.Operator):  
     bl_idname = "tp_ops.cubefront_side_plus_x"  
     bl_label = "Origin to +X Edge / Bottom of Cubefront"  
   
@@ -1886,7 +1887,7 @@ class View3D_TP_Origin_CubeFront_Side_Plus_X(bpy.types.Operator):
 
 
 
-class View3D_TP_Origin_CubeFront_Side_Minus_Z(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeFront_Side_Minus_Z(bpy.types.Operator):  
     bl_idname = "tp_ops.cubefront_side_minus_z"  
     bl_label = "Origin to -Z Edge / Bottom of Cubefront"  
   
@@ -1941,7 +1942,7 @@ class View3D_TP_Origin_CubeFront_Side_Minus_Z(bpy.types.Operator):
 
 
 
-class View3D_TP_Origin_CubeFront_Side_Plus_Z(bpy.types.Operator):  
+class VIEW3D_TP_Origin_CubeFront_Side_Plus_Z(bpy.types.Operator):  
     bl_idname = "tp_ops.cubefront_side_plus_z"  
     bl_label = "Origin to +Z Edge / Bottom of Cubefront"  
   
@@ -2005,5 +2006,6 @@ def unregister():
  
 if __name__ == "__main__":
     register()
+
 
 

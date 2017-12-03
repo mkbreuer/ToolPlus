@@ -17,12 +17,13 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
+# LOAD MODULE #
 import bpy
 from bpy import *
 from bpy.props import *
 
 
-class View3D_TP_Origin_EditCenter(bpy.types.Operator):
+class VIEW3D_TP_Origin_EditCenter(bpy.types.Operator):
     '''Set Origin to Center / Editmode'''
     bl_idname = "tp_ops.origin_set_editcenter"
     bl_label = "Origin to Center / Edit"
@@ -45,7 +46,7 @@ class View3D_TP_Origin_EditCenter(bpy.types.Operator):
         return{'FINISHED'}  
     
 
-class View3D_TP_OriginObm(bpy.types.Operator):
+class VIEW3D_TP_OriginObm(bpy.types.Operator):
     """set origin to selected / switch to objectmode"""                 
     bl_idname = "tp_ops.origin_obm"          
     bl_label = "Origin to Selected / Object"                 
@@ -66,7 +67,7 @@ class View3D_TP_OriginObm(bpy.types.Operator):
         return {'FINISHED'}
     
 
-class View3D_TP_OriginEdm(bpy.types.Operator):
+class VIEW3D_TP_OriginEdm(bpy.types.Operator):
     """set origin to selected and stay in editmode"""                 
     bl_idname = "tp_ops.origin_edm"          
     bl_label = "Origin to Selected / Edit"                 
@@ -86,7 +87,7 @@ class View3D_TP_OriginEdm(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class View3D_TP_Origin_Edm_Cursor(bpy.types.Operator):
+class VIEW3D_TP_Origin_Edm_Cursor(bpy.types.Operator):
     """set origin to cursor / stay in editmode"""                 
     bl_idname = "tp_ops.origin_cursor_edm"          
     bl_label = "Origin to Cursor / Edit"                 
@@ -100,7 +101,7 @@ class View3D_TP_Origin_Edm_Cursor(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class View3D_TP_Origin_Obm_Cursor(bpy.types.Operator):
+class VIEW3D_TP_Origin_Obm_Cursor(bpy.types.Operator):
     """set origin to cursor / switch to objectmode"""                 
     bl_idname = "tp_ops.origin_cursor_obm"          
     bl_label = "Origin to Cursor / Object"                 
@@ -116,7 +117,7 @@ class View3D_TP_Origin_Obm_Cursor(bpy.types.Operator):
 
 
 
-class View3D_TP_Origin_Center(bpy.types.Operator):
+class VIEW3D_TP_Origin_Center(bpy.types.Operator):
     '''Set Origin to Center'''
     bl_idname = "tp_ops.origin_set_center"
     bl_label = "Origin to Center"
@@ -138,7 +139,7 @@ class View3D_TP_Origin_Center(bpy.types.Operator):
         return{'FINISHED'}
 
 
-class View3D_TP_Origin_Cursor(bpy.types.Operator):
+class VIEW3D_TP_Origin_Cursor(bpy.types.Operator):
     '''Set Origin to Cursor'''
     bl_idname = "tp_ops.origin_set_cursor"
     bl_label = "Origin to Cursor"
@@ -157,7 +158,7 @@ class View3D_TP_Origin_Cursor(bpy.types.Operator):
         return{'FINISHED'}
 
  
-class View3D_TP_Origin_Volume(bpy.types.Operator):
+class VIEW3D_TP_Origin_Volume(bpy.types.Operator):
     '''Set Origin to Center of Mass'''
     bl_idname = "tp_ops.origin_set_volume"
     bl_label = "Origin to Center of Mass (Volume)"
@@ -170,7 +171,7 @@ class View3D_TP_Origin_Volume(bpy.types.Operator):
         return{'FINISHED'}
 
 
-class View3D_TP_Origin_Mass(bpy.types.Operator):
+class VIEW3D_TP_Origin_Mass(bpy.types.Operator):
     '''Set Origin to Center of Mass'''
     bl_idname = "tp_ops.origin_set_mass"
     bl_label = "Origin to Center of Mass (Surface)"
@@ -183,7 +184,7 @@ class View3D_TP_Origin_Mass(bpy.types.Operator):
         return{'FINISHED'}
 
 
-class View3D_TP_Origin_toMesh(bpy.types.Operator):
+class VIEW3D_TP_Origin_toMesh(bpy.types.Operator):
     '''Set Origin to Mesh'''
     bl_idname = "tp_ops.origin_tomesh"
     bl_label = "Origin to Mesh"
@@ -196,7 +197,7 @@ class View3D_TP_Origin_toMesh(bpy.types.Operator):
         return{'FINISHED'}    
     
     
-class View3D_TP_Origin_Meshto(bpy.types.Operator):
+class VIEW3D_TP_Origin_Meshto(bpy.types.Operator):
     '''Set Mesh to Origin'''
     bl_idname = "tp_ops.origin_meshto"
     bl_label = "Mesh to Origin"
@@ -211,7 +212,6 @@ class View3D_TP_Origin_Meshto(bpy.types.Operator):
 
 
 # REGISTRY #
-
 def register():
     bpy.utils.register_module(__name__)
      
@@ -220,6 +220,7 @@ def unregister():
  
 if __name__ == "__main__":
     register()
+
 
 
 

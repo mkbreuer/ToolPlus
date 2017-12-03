@@ -57,7 +57,7 @@ class TP_Header_Snap_to_Cursor(bpy.types.Menu):
             layout.separator()           
             
             button_cursor_3point_center = icons.get("icon_cursor_3point_center")           
-            layout.operator("mesh.circlecentercursor", text="3point Center", icon_value=button_cursor_3point_center.icon_id)   
+            layout.operator("mesh.circlecentercursor", text="3-Verts Center", icon_value=button_cursor_3point_center.icon_id)   
             
             layout.operator("tp_header.snap_cursor_to_edge_intersection", text="Edges Intersection", icon ="PLUS")     
            

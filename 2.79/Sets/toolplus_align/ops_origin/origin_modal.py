@@ -29,6 +29,7 @@
 #    'tracker_url': 'http://blenderlounge.fr/forum/viewtopic.php?f=18&t=1438'
 #    }
 
+# LOAD MODULE #
 import bpy, bmesh
 from bpy.props import IntProperty, FloatProperty
 
@@ -196,7 +197,6 @@ class BBox_Origin_Modal_Operator(bpy.types.Operator):
 
 
 # REGISTRY #
-
 def register():
     bpy.utils.register_module(__name__)
      
@@ -205,5 +205,6 @@ def unregister():
  
 if __name__ == "__main__":
     register()
+
 
 

@@ -18,30 +18,12 @@
 #
 # ***** END GPL LICENCE BLOCK *****
 
+
+# LOAD MODULE #
 import bpy
 from bpy import *
 from bpy.props import *
 import addon_utils
-
-
-
-class VIEW3D_TP_Looptools(bpy.types.Operator):
-   """enable looptools (save user settings be required for a permant activation)"""
-   bl_label = "Looptools"
-   bl_idname = "tp_ops.enable_looptools"
-   bl_options = {'REGISTER', 'UNDO'}
-
-   def execute(self, context):
-        # check for needed addons
-        loop_tools_addon = "mesh_looptools"
-        state = addon_utils.check(loop_tools_addon)
-        if not state[0]:
-            bpy.ops.wm.addon_enable(module=loop_tools_addon)
-            print(self)
-            self.report({'INFO'}, "LoopTools activated!") 
-
-        return {'FINISHED'}
-
 
 
 class VIEW3D_TP_AutoMirror(bpy.types.Operator):
@@ -63,7 +45,7 @@ class VIEW3D_TP_AutoMirror(bpy.types.Operator):
 
 
 
-class View3D_TP_Apply_Modifier_Mirror(bpy.types.Operator):
+class VIEW3D_TP_Apply_Modifier_Mirror(bpy.types.Operator):
     """apply modifier mirror"""
     bl_idname = "tp_ops.apply_mods_mirror"
     bl_label = "Apply Mirror Modifier"
@@ -89,7 +71,7 @@ class View3D_TP_Apply_Modifier_Mirror(bpy.types.Operator):
 
 
 
-class View3D_TP_Apply_Modifier_Mirror_EDM(bpy.types.Operator):
+class VIEW3D_TP_Apply_Modifier_Mirror_EDM(bpy.types.Operator):
     """apply modifier mirror"""
     bl_idname = "tp_ops.apply_mods_mirror_edm"
     bl_label = "Apply Mirror Modifier"
@@ -116,7 +98,7 @@ class View3D_TP_Apply_Modifier_Mirror_EDM(bpy.types.Operator):
 
 
 
-class View3D_TP_Remove_Modifier_Mirror(bpy.types.Operator):
+class VIEW3D_TP_Remove_Modifier_Mirror(bpy.types.Operator):
     """remove modifier mirror"""
     bl_idname = "tp_ops.remove_mods_mirror"
     bl_label = "Remove Mirror Modifier"
@@ -207,7 +189,7 @@ class Modifier_Remove(bpy.types.Operator):
 
 
        
-class View3D_TP_X_Mod_Mirror(bpy.types.Operator):
+class VIEW3D_TP_X_Mod_Mirror(bpy.types.Operator):
     """Add a x mirror modifier with cage and clipping"""
     bl_idname = "tp_ops.mod_mirror_x"
     bl_label = "Mirror X"
@@ -223,10 +205,8 @@ class View3D_TP_X_Mod_Mirror(bpy.types.Operator):
             
             object.modifier_add(type = "MIRROR")
             
-            for mod in obj.modifiers: 
-               
-                if mod.type == "MIRROR":
-                         
+            for mod in obj.modifiers:                
+                if mod.type == "MIRROR":                         
                     bpy.context.object.modifiers["Mirror"].use_x = True
                     bpy.context.object.modifiers["Mirror"].use_y = False
                     bpy.context.object.modifiers["Mirror"].use_z = False          
@@ -236,7 +216,65 @@ class View3D_TP_X_Mod_Mirror(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class View3D_TP_Modifier_On_Off(bpy.types.Operator):
+
+class VIEW3D_TP_Y_Mod_Mirror(bpy.types.Operator):
+    """Add a Y mirror modifier with cage and clipping"""
+    bl_idname = "tp_ops.mod_mirror_y"
+    bl_label = "Mirror Y"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    def execute(self, context):
+        scene = bpy.context.scene 
+        selected = bpy.context.selected_objects 
+        object = bpy.ops.object 
+
+        for obj in selected: 
+            scene.objects.active = obj 
+            
+            object.modifier_add(type = "MIRROR")            
+
+            for mod in obj.modifiers:                
+                if mod.type == "MIRROR":                         
+                    bpy.context.object.modifiers["Mirror"].use_x = False
+                    bpy.context.object.modifiers["Mirror"].use_y = True
+                    bpy.context.object.modifiers["Mirror"].use_z = False          
+                    bpy.context.object.modifiers["Mirror"].show_on_cage = True
+                    bpy.context.object.modifiers["Mirror"].use_clip = True
+
+        return {'FINISHED'}
+
+
+
+class VIEW3D_TP_Z_Mod_Mirror(bpy.types.Operator):
+    """Add a z mirror modifier with cage and clipping"""
+    bl_idname = "tp_ops.mod_mirror_z"
+    bl_label = "Mirror Z"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    def execute(self, context):
+        scene = bpy.context.scene 
+        selected = bpy.context.selected_objects 
+        object = bpy.ops.object 
+
+        for obj in selected: 
+            scene.objects.active = obj 
+            
+            object.modifier_add(type = "MIRROR")            
+
+            for mod in obj.modifiers:                
+                if mod.type == "MIRROR":                        
+                    bpy.context.object.modifiers["Mirror"].use_x = False
+                    bpy.context.object.modifiers["Mirror"].use_y = False
+                    bpy.context.object.modifiers["Mirror"].use_z = True          
+                    bpy.context.object.modifiers["Mirror"].show_on_cage = True
+                    bpy.context.object.modifiers["Mirror"].use_clip = True
+
+        return {'FINISHED'}
+
+
+
+
+class VIEW3D_TP_Modifier_On_Off(bpy.types.Operator):
     '''view on / off'''
     bl_idname = "tp_ops.mods_view"
     bl_label = "View"
@@ -267,5 +305,6 @@ def unregister():
 
 if __name__ == "__main__":
     register()
+
 
 

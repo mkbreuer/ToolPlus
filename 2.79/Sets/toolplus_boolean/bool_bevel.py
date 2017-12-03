@@ -498,14 +498,13 @@ class ObjectBooleanBevel(bpy.types.Operator):
         box.separator()
 
         row = box.row(align=True)
-        row.prop(self, "bevel_width", text="Width")
         row.prop(self, "value_radius", text="Radius")
-
+        row.prop(self, "bevel_width", text="Width")
         
         row = box.row(align=True)
+        row.prop(self, "fillet_segments", text="Segments") 
         row.prop(self, "fillet_profile", text="Profile")
-        row.prop(self, "fillet_segments", text="Segments")  
-
+ 
         row = box.row(align=True)
         row.prop(self, "change_subdivide", text="Sudivide")           
 

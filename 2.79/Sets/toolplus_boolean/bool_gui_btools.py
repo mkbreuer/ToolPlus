@@ -152,12 +152,17 @@ def draw_bt_brush_panel_layout(self, context, layout):
             button_boolean_draw = icons.get("icon_boolean_draw")
             row.operator("tp_ops.draw_polybrush", text="BT-DrawPoly", icon_value=button_boolean_draw.icon_id)
 
+        box.separator()
 
+        
         if (isCanvas(context.active_object)) or (isBrush(context.active_object)):
         
             if 0 < len(bpy.context.selected_objects) < 2 and bpy.context.object.mode == "OBJECT":
 
-                row.separator()
+
+                box = layout.box().column(1)
+
+                row = box.column(1) 
                 
                 button_boolean_bevel = icons.get("icon_boolean_bevel")
                 row.operator("object.boolean_bevel", text="BoolBevel", icon_value=button_boolean_bevel.icon_id)
@@ -175,8 +180,8 @@ def draw_bt_brush_panel_layout(self, context, layout):
                 
                 row.operator("tp_ops.cleanup_boolbevel", text="FinishBevel", icon='PANEL_CLOSE')
 
-            row.separator()
-            
+                row.separator()
+                
 
             display_btbool_brush_simple = context.user_preferences.addons[__package__].preferences.tab_btbool_brush_simple_pl 
             if display_btbool_brush_simple == 'on':

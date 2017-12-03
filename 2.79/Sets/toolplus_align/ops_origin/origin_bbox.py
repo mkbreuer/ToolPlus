@@ -17,7 +17,7 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
-
+# LOAD MODULE #
 import bpy
 from bpy import *
 from bpy.props import *
@@ -25,7 +25,7 @@ from .. icons.icons import load_icons
 
     
     
-class tp_ops_OriginObm(bpy.types.Operator):
+class VIEW3D_TP_Origin_Obm(bpy.types.Operator):
     """set origin to selected / stay in objectmode"""                 
     bl_idname = "tp_ops.origin_obm"          
     bl_label = "origin to selected / in objectmode"                 
@@ -42,7 +42,7 @@ class tp_ops_OriginObm(bpy.types.Operator):
         return {'FINISHED'}
     
 
-class tp_ops_OriginEdm(bpy.types.Operator):
+class VIEW3D_TP_Origin_Edm(bpy.types.Operator):
     """set origin to selected / stay in editmode"""                 
     bl_idname = "tp_ops.origin_edm"          
     bl_label = "origin to selected in editmode"                 
@@ -59,7 +59,7 @@ class tp_ops_OriginEdm(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class tp_ops_Origin_Edm_Cursor(bpy.types.Operator):
+class VIEW3D_TP_Origin_Edm_Cursor(bpy.types.Operator):
     """set origin to cursor / stay in editmode"""                 
     bl_idname = "tp_ops.origin_cursor_edm"          
     bl_label = "origin to cursor in editmode"                 
@@ -75,7 +75,7 @@ class tp_ops_Origin_Edm_Cursor(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class tp_ops_Origin_Obm_Cursor(bpy.types.Operator):
+class VIEW3D_TP_Origin_Obm_Cursor(bpy.types.Operator):
     """set origin to cursor / stay in objectmode"""                 
     bl_idname = "tp_ops.origin_cursor_obm"          
     bl_label = "origin to cursor in objectmode"                 
@@ -91,7 +91,7 @@ class tp_ops_Origin_Obm_Cursor(bpy.types.Operator):
 
 
 
-class PlaceOrigin(bpy.types.Operator):
+class VIEW3D_TP_Place_Origin(bpy.types.Operator):
     '''Set Origin'''
     bl_idname = "place.origin"
     bl_label = "Set Origin"
@@ -169,7 +169,7 @@ class PlaceOrigin(bpy.types.Operator):
 
 
 
-class BBox_Origin_Back(bpy.types.Operator):
+class VIEW3D_TP_BBox_Origin_Back(bpy.types.Operator):
     """BBox Origin"""
     bl_label = "BBox Origin"
     bl_idname = "tp_ops.bbox_origin_set"               
@@ -525,7 +525,6 @@ class BBox_Origin_Back(bpy.types.Operator):
 
     
 # REGISTER
-  
 def register():
     bpy.utils.register_module(__name__)
      
@@ -534,6 +533,7 @@ def unregister():
  
 if __name__ == "__main__":
     register()
+
 
 
 

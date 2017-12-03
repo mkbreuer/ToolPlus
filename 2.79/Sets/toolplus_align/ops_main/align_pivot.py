@@ -18,6 +18,8 @@
 #
 # ***** END GPL LICENCE BLOCK *****
 
+
+# LOAD MODULE #
 import bpy
 from bpy import *
 from bpy.props import *
@@ -121,17 +123,15 @@ class VIEW3D_TP_Pivot_Individual(bpy.types.Operator):
 
 
 
-
+# REGISTER #
 def register():
-
     bpy.utils.register_module(__name__)
 
 def unregister():
-
     bpy.utils.unregister_module(__name__) 
-
 
 if __name__ == "__main__":
     register()
+
 
 

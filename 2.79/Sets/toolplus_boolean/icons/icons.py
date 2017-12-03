@@ -68,6 +68,8 @@ def load_icons():
     mkb_icons.load("icon_boolean_exclude", os.path.join(icons_dir, "boolean_exclude.png"), 'IMAGE') 
     mkb_icons.load("icon_boolean_facemerge", os.path.join(icons_dir, "boolean_facemerge.png"), 'IMAGE')
 
+    mkb_icons.load("icon_boolean_apply", os.path.join(icons_dir, "boolean_apply.png"), 'IMAGE')
+
     mkb_icons.load("icon_origin_edm", os.path.join(icons_dir, "origin_edm.png"), 'IMAGE')
     mkb_icons.load("icon_origin_obm", os.path.join(icons_dir, "origin_obm.png"), 'IMAGE')
 

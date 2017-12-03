@@ -19,7 +19,7 @@
 # ***** END GPL LICENCE BLOCK *****
 
 
-
+# LOAD MODULE #
 import bpy
 from bpy import*
 from bpy.props import *
@@ -27,74 +27,61 @@ from bpy.types import WindowManager
 
 
 
-class View3D_TP_Display_All_Manipulator(bpy.types.Operator):
+class VIEW3D_TP_Display_All_Manipulator(bpy.types.Operator):
     """Show all Manipulator"""
     bl_idname = "tp_ops.manipulator_all"
     bl_label = "Show all Manipulator"
     bl_options = {'REGISTER', 'UNDO'}
 
-
-    def execute(self, context):
-   
+    def execute(self, context):   
         bpy.context.space_data.transform_manipulators = {'TRANSLATE', 'ROTATE', 'SCALE'}       
-
         return {'FINISHED'}
 
 
-
-class View3D_TP_Display_Move_Manipulator(bpy.types.Operator):
+class VIEW3D_TP_Display_Move_Manipulator(bpy.types.Operator):
     """Show Move Manipulator"""
     bl_idname = "tp_ops.manipulator_move"
     bl_label = "Show Move Manipulator"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-
         bpy.context.space_data.transform_manipulators = {'TRANSLATE'}       
-
         return {'FINISHED'}
 
 
-class View3D_TP_Display_Rotate_Manipulator(bpy.types.Operator):
+class VIEW3D_TP_Display_Rotate_Manipulator(bpy.types.Operator):
     """Show Rotate Manipulator"""
     bl_idname = "tp_ops.manipulator_rota"
     bl_label = "Show Rotate Manipulator"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-
         bpy.context.space_data.transform_manipulators = {'ROTATE'}       
-
         return {'FINISHED'}
 
 
-
-class View3D_TP_Display_Scale_Manipulator(bpy.types.Operator):
+class VIEW3D_TP_Display_Scale_Manipulator(bpy.types.Operator):
     """Show Scale Manipulator"""
     bl_idname = "tp_ops.manipulator_scale"
     bl_label = "Show Scale Manipulator"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-
         bpy.context.space_data.transform_manipulators = {'SCALE'}       
-
         return {'FINISHED'}
 
 
 
-
-def register():
-    
+# REGISTER #
+def register():    
     bpy.utils.register_module(__name__)
 
-def unregister():
-   
+def unregister():   
     bpy.utils.unregister_module(__name__)
-
 
 if __name__ == "__main__":
     register()
     
  
+
 

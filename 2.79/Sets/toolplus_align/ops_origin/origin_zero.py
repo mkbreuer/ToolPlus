@@ -17,12 +17,13 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
+# LOAD MODULE #
 import bpy
 from bpy import *
 from bpy.props import *
 
 
-class View3D_TP_Zero_to_Axis(bpy.types.Operator):
+class VIEW3D_TP_Zero_to_Axis(bpy.types.Operator):
     """Zero Axis"""                 
     bl_idname = "tp_ops.zero_axis"          
     bl_label = "ZeroAxis"                 
@@ -192,7 +193,7 @@ class View3D_TP_Zero_to_Axis(bpy.types.Operator):
 
 
 
-class View3D_TP_Zero_to_Axis_Panel(bpy.types.Operator):
+class VIEW3D_TP_Zero_to_Axis_Panel(bpy.types.Operator):
     """Zero Axis"""                 
     bl_idname = "tp_ops.zero_axis_panel"          
     bl_label = "ZeroAxis"                 
@@ -346,7 +347,7 @@ class View3D_TP_Zero_to_Axis_Panel(bpy.types.Operator):
 
 
 
-class View3D_TP_Zero_X(bpy.types.Operator):
+class VIEW3D_TP_Zero_X(bpy.types.Operator):
     """Zero X Axis"""                 
     bl_idname = "tp_ops.zero_x"          
     bl_label = "ZeroX"                 
@@ -360,7 +361,7 @@ class View3D_TP_Zero_X(bpy.types.Operator):
         return {'FINISHED'} 
 
     
-class View3D_TP_Zero_Y(bpy.types.Operator):
+class VIEW3D_TP_Zero_Y(bpy.types.Operator):
     """Zero Y Axis"""                 
     bl_idname = "tp_ops.zero_y"          
     bl_label = "ZeroY"                 
@@ -374,7 +375,7 @@ class View3D_TP_Zero_Y(bpy.types.Operator):
         return {'FINISHED'} 
 
 
-class View3D_TP_Zero_Z(bpy.types.Operator):
+class VIEW3D_TP_Zero_Z(bpy.types.Operator):
     """Zero Z Axis"""                 
     bl_idname = "tp_ops.zero_z"          
     bl_label = "ZeroZ"                 
@@ -388,7 +389,7 @@ class View3D_TP_Zero_Z(bpy.types.Operator):
         return {'FINISHED'} 
 
 
-class View3D_TP_Zero_Cursor(bpy.types.Operator):
+class VIEW3D_TP_Zero_Cursor(bpy.types.Operator):
     """Zero Cursor"""                 
     bl_idname = "tp_ops.zero_cursor"          
     bl_label = "Zero3DC"                 
@@ -403,7 +404,7 @@ class View3D_TP_Zero_Cursor(bpy.types.Operator):
         return {'FINISHED'} 
 
 
-class View3D_TP_Zero_All_Axis(bpy.types.Operator):
+class VIEW3D_TP_Zero_All_Axis(bpy.types.Operator):
     """Zero all Axis"""                 
     bl_idname = "tp_ops.zero_all_axis"          
     bl_label = "ZeroObj"                 
@@ -420,9 +421,7 @@ class View3D_TP_Zero_All_Axis(bpy.types.Operator):
 
 
 
-
-# REGISTRY #
-
+# REGISTRY 
 def register():
     bpy.utils.register_module(__name__)
      
@@ -431,5 +430,6 @@ def unregister():
  
 if __name__ == "__main__":
     register()
+
 
 

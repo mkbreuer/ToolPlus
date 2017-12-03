@@ -17,12 +17,12 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
+# LOAD MODULE #
 import bpy
 from bpy import*
 
 
-
-class View3D_TP_Mirror_over_Edge(bpy.types.Operator):
+class VIEW3D_TP_Mirror_over_Edge(bpy.types.Operator):
     """mirror over active edge / normal Y axis"""                 
     bl_idname = "tp_ops.mirror_over_edge"          
     bl_label = "mirror over active edge"                  
@@ -41,7 +41,7 @@ class View3D_TP_Mirror_over_Edge(bpy.types.Operator):
        
 #####  Mirror XYZ Local  ##########
 
-class View3D_TP_Mirror4(bpy.types.Operator):
+class VIEW3D_TP_Mirror4(bpy.types.Operator):
     """mirror over X axis / local"""                 
     bl_idname = "tp_ops.mirror4"          
     bl_label = "mirror selected on X axis > local"                  
@@ -54,7 +54,7 @@ class View3D_TP_Mirror4(bpy.types.Operator):
         return {'FINISHED'}
         
 
-class View3D_TP_Mirror5(bpy.types.Operator):
+class VIEW3D_TP_Mirror5(bpy.types.Operator):
     """mirror over Y axis / local"""                
     bl_idname = "tp_ops.mirror5"         
     bl_label = "mirror selected on Y axis > local"                 
@@ -67,7 +67,7 @@ class View3D_TP_Mirror5(bpy.types.Operator):
         return {'FINISHED'}        
 
 
-class View3D_TP_Mirror6(bpy.types.Operator):
+class VIEW3D_TP_Mirror6(bpy.types.Operator):
     """mirror over Z axis / local"""                 
     bl_idname = "tp_ops.mirror6"        
     bl_label = "mirror selected on Z axis > local"                  
@@ -83,7 +83,7 @@ class View3D_TP_Mirror6(bpy.types.Operator):
 
 #####  Mirror XYZ Global  #########
 
-class View3D_TP_Mirror1(bpy.types.Operator):
+class VIEW3D_TP_Mirror1(bpy.types.Operator):
     """mirror over X axis / global"""                 
     bl_idname = "tp_ops.mirror1"          
     bl_label = "mirror selected on X axis"                  
@@ -95,7 +95,7 @@ class View3D_TP_Mirror1(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class View3D_TP_Mirror2(bpy.types.Operator):
+class VIEW3D_TP_Mirror2(bpy.types.Operator):
     """mirror over Y axis / global"""                
     bl_idname = "tp_ops.mirror2"         
     bl_label = "mirror selected on Y axis"                 
@@ -107,7 +107,7 @@ class View3D_TP_Mirror2(bpy.types.Operator):
         return {'FINISHED'}
        
 
-class View3D_TP_Mirror3(bpy.types.Operator):
+class VIEW3D_TP_Mirror3(bpy.types.Operator):
     """mirror over Z axis / global"""                 
     bl_idname = "tp_ops.mirror3"        
     bl_label = "mirror selected on Z axis"                  
@@ -120,15 +120,13 @@ class View3D_TP_Mirror3(bpy.types.Operator):
     
 
 
-
+# REGISTRY #
 def register():
-
     bpy.utils.register_module(__name__)
 
-
 def unregister():
-
     bpy.utils.unregister_module(__name__) 
 
 if __name__ == "__main__":
     register()
+

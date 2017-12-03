@@ -28,48 +28,112 @@ def draw_axis_tools(context, layout):
 
     col = layout.column(align=True)
 
-    box = col.box().row()
+    box = col.box().row()   
     
     row = box.column(1) 
     row.label("Align") 
     row.label("to..") 
     row.label("Axis") 
 
-    if bpy.context.mode == "EDIT_MESH":
-        row.separator() 
-        row.label("Faces") 
-
     row = box.column(1)
 
     button_align_xy = icons.get("icon_align_xy") 
-    row.operator("tp_ops.face_align_xy", "Xy", icon_value=button_align_xy.icon_id)
+    row.operator("tp_ops.align_transform", "Xy", icon_value=button_align_xy.icon_id).tp_axis='axis_xy'
 
     button_align_zx = icons.get("icon_align_zx")
-    row.operator("tp_ops.face_align_xz", "Zx", icon_value=button_align_zx.icon_id)
+    row.operator("tp_ops.align_transform", "Zx", icon_value=button_align_zx.icon_id).tp_axis='axis_zx'
 
     button_align_zy = icons.get("icon_align_zy") 
-    row.operator("tp_ops.face_align_yz", "Zy", icon_value=button_align_zy.icon_id)           
-
-    if bpy.context.mode == "EDIT_MESH":
-        row.separator() 
-        button_align_con_face = icons.get("icon_align_con_face") 
-        row.operator("mesh.rot_con", "SQ", icon_value=button_align_con_face.icon_id)   
+    row.operator("tp_ops.align_transform", "Zy", icon_value=button_align_zy.icon_id).tp_axis='axis_zy'           
 
     row = box.column(1)
 
     button_align_x = icons.get("icon_align_x") 
-    row.operator("tp_ops.align_x", "X", icon_value=button_align_x.icon_id)
+    row.operator("tp_ops.align_transform", "X", icon_value=button_align_x.icon_id).tp_axis='axis_x'
 
     button_align_y = icons.get("icon_align_y") 
-    row.operator("tp_ops.align_y", "Y", icon_value=button_align_y.icon_id)           
+    row.operator("tp_ops.align_transform", "Y", icon_value=button_align_y.icon_id).tp_axis='axis_y'           
 
     button_align_z = icons.get("icon_align_z") 
-    row.operator("tp_ops.align_z", "Z", icon_value=button_align_z.icon_id)
+    row.operator("tp_ops.align_transform", "Z", icon_value=button_align_z.icon_id).tp_axis='axis_z'
 
-    if bpy.context.mode == "EDIT_MESH":
-        row.separator() 
-        button_align_to_normal = icons.get("icon_align_to_normal") 
-        row.operator("tp_ops.align_to_normal", "NL", icon_value=button_align_to_normal.icon_id)    
+    row.separator() 
+
+
+    box = col.box().column(1)               
+    
+    row = box.row(1)   
+
+    button_align_mirror_obm = icons.get("icon_align_mirror_obm")              
+    row.label("Mirror", icon_value=button_align_mirror_obm.icon_id) 
+             
+    sub = row.row(1)
+    sub.scale_x = 0.3                   
+    sub.operator("tp_ops.mirror1",text="X")
+    sub.operator("tp_ops.mirror2",text="Y")
+    sub.operator("tp_ops.mirror3",text="Z")            
+
+    box.separator() 
+
+    row = box.row(1)               
+    row.label("Mody", icon ="MOD_MIRROR")                 
+
+    sub = row.row(1)
+    sub.scale_x = 0.3                               
+    sub.operator("tp_ops.mod_mirror_x",text="X")
+    sub.operator("tp_ops.mod_mirror_y",text="Y")
+    sub.operator("tp_ops.mod_mirror_z",text="Z")      
+
+    box.separator()   
+
+    obj = context.active_object
+    if obj:
+ 
+        mo_types = []            
+        append = mo_types.append
+
+        for mo in obj.modifiers:
+                                          
+            if mo.type == 'MIRROR':
+                append(mo.type)
+
+                #box.label(mo.name)
+
+                row = box.row(1)
+                row.prop(mo, "use_x")
+                row.prop(mo, "use_y")
+                row.prop(mo, "use_z")
+                
+                row = box.row(1)
+                row.prop(mo, "use_clip", text="Clip")
+                row.prop(mo, "use_mirror_merge", text="Merge")               
+                if mo.use_mirror_merge is True:
+                    row.prop(mo, "merge_threshold", text="Limit")
+
+                box.separator() 
+    else:
+        pass
+
+
+    obj = context.active_object
+    if obj:
+        mod_list = obj.modifiers
+        if mod_list:
+           
+            box.separator()                            
+
+            row = box.row()    
+            row.alignment = 'CENTER'                      
+            row.operator("tp_ops.mods_view", text="", icon='RESTRICT_VIEW_OFF') 
+            row.operator("tp_ops.remove_mods_mirror", text="", icon='PANEL_CLOSE') 
+            row.operator("tp_ops.apply_mods_mirror_edm", text="", icon='FILE_TICK') 
+
+            box.separator()                                                                      
+    else:
+        pass
+
+
+
 
 
 
@@ -316,11 +380,22 @@ def draw_align_panel_layout(self, context, layout):
             row.label("Align to...")                  
            
             row = box.row(1)
-            row.operator("object.align_location_all",text=" ", icon='MAN_TRANS')  
-            row.operator("object.align_location_x",text="X")
-            row.operator("object.align_location_y",text="Y")
-            row.operator("object.align_location_z",text="Z")
-        
+            props = row.operator("tp_ops.align_transform",text=" ", icon='MAN_TRANS')   
+            props.tp_axis='axis_xyz'
+            props.tp_transform='LOCATION'
+
+            props = row.operator("tp_ops.align_transform",text="X")
+            props.tp_axis='axis_x'
+            props.tp_transform='LOCATION'
+
+            props = row.operator("tp_ops.align_transform",text="Y")
+            props.tp_axis='axis_y'
+            props.tp_transform='LOCATION' 
+ 
+            props = row.operator("tp_ops.align_transform",text="Z")
+            props.tp_axis='axis_z'
+            props.tp_transform='LOCATION'
+       
             sub = row.row(1)
             sub.scale_x = 2.0    
             sub.operator("object.location_clear", text= " ", icon="X")
@@ -331,10 +406,22 @@ def draw_align_panel_layout(self, context, layout):
             props.scale= False
                          
             row = box.row(1)
-            row.operator("object.align_rotation_all",text=" ", icon='MAN_ROT') 
-            row.operator("object.align_rotation_x",text="X")
-            row.operator("object.align_rotation_y",text="Y")
-            row.operator("object.align_rotation_z",text="Z")
+
+            props = row.operator("tp_ops.align_transform",text=" ", icon='MAN_ROT') 
+            props.tp_axis='axis_xyz'
+            props.tp_transform='ROTATION'
+
+            props = row.operator("tp_ops.align_transform",text="X")
+            props.tp_axis='axis_x'
+            props.tp_transform='ROTATION'
+
+            props = row.operator("tp_ops.align_transform",text="Y")
+            props.tp_axis='axis_y'
+            props.tp_transform='ROTATION'
+
+            props = row.operator("tp_ops.align_transform",text="Z")
+            props.tp_axis='axis_z'
+            props.tp_transform='ROTATION'
             
             sub = row.row(1)
             sub.scale_x = 2.0           
@@ -345,10 +432,21 @@ def draw_align_panel_layout(self, context, layout):
             props.scale= False           
 
             row = box.row(1)
-            row.operator("object.align_objects_scale_all",text=" ", icon='MAN_SCALE')  
-            row.operator("object.align_objects_scale_x",text="X")
-            row.operator("object.align_objects_scale_y",text="Y")
-            row.operator("object.align_objects_scale_z",text="Z")
+            props = row.operator("tp_ops.align_transform",text=" ", icon='MAN_SCALE')  
+            props.tp_axis='axis_xyz'
+            props.tp_transform='SCALE'
+
+            props = row.operator("tp_ops.align_transform",text="X")
+            props.tp_axis='axis_x'
+            props.tp_transform='SCALE'
+
+            props = row.operator("tp_ops.align_transform",text="Y")
+            props.tp_axis='axis_y'
+            props.tp_transform='SCALE'
+
+            props = row.operator("tp_ops.align_transform",text="Z")
+            props.tp_axis='axis_z'
+            props.tp_transform='SCALE'
             
             sub = row.row(1)
             sub.scale_x = 2.0           
@@ -369,7 +467,39 @@ def draw_align_panel_layout(self, context, layout):
             button_origin_align = icons.get("icon_origin_align") 
             row.operator("object.distribute_osc", text="Even", icon_value=button_origin_align.icon_id)           
         
+ 
+            box.separator() 
+            
+            row = box.row(1)                     
+            row.prop(context.space_data, "transform_orientation", text="", icon='MANIPUL')
+            row.operator("transform.create_orientation", text="", icon='ZOOMIN')
+
+            if context.space_data.current_orientation:
+                box.separator() 
+                
+                row = box.row(1)
+                row.prop(context.space_data.current_orientation, "name", text="")
+                row.operator("transform.delete_orientation", text="", icon='X')
+
             box.separator()       
+
+
+
+            box = col.box().column(1)       
+                         
+            row = box.row(1)             
+
+            row.label("Zero to...")  
+            row = box.row()
+            row.prop(context.scene, 'tp_switch_axis', expand=True)      
+
+            row = box.row(1)
+            row.prop(context.scene, 'tp_switch', expand=True)              
+          
+            button_align_zero = icons.get("icon_align_zero") 
+            row.operator("tp_ops.zero_axis_panel", text="Run", icon_value=button_align_zero.icon_id)  
+
+            box.separator()  
 
 
             obj = context.active_object
@@ -388,12 +518,12 @@ def draw_align_panel_layout(self, context, layout):
 
                     button_snap_drop_down = icons.get("icon_snap_drop_down") 
                     row.operator("object.drop_on_active", text="Drop on Active", icon_value=button_snap_drop_down.icon_id) 
-                   
-                    button_snap_offset = icons.get("icon_snap_offset")  
-                    row.operator("view3d.xoffsets_main", "Offset & Rotate", icon_value=button_snap_offset.icon_id)   
 
                     button_snap_abc = icons.get("icon_snap_abc") 
                     row.operator("tp_ops.np_020_point_align", text='ABC Point Align', icon_value=button_snap_abc.icon_id) 
+                   
+                    button_snap_offset = icons.get("icon_snap_offset")  
+                    row.operator("view3d.xoffsets_main", "Xoffset & Xrotate", icon_value=button_snap_offset.icon_id)   
                     
                     box.separator()     
 
@@ -441,7 +571,17 @@ def draw_align_panel_layout(self, context, layout):
             sub.operator("tp_ops.mirror3",text="Z")      
 
             box.separator()   
- 
+
+            row = box.row(1)               
+            row.label("Mody", icon ="MOD_MIRROR")                 
+
+            sub = row.row(1)
+            sub.scale_x = 0.3                               
+            sub.operator("tp_ops.mod_mirror_x",text="X")
+            sub.operator("tp_ops.mod_mirror_y",text="Y")
+            sub.operator("tp_ops.mod_mirror_z",text="Z")      
+
+            box.separator()   
 
 
             Display_AutoMirror = context.user_preferences.addons[__package__].preferences.tab_automirror
@@ -469,8 +609,6 @@ def draw_align_panel_layout(self, context, layout):
                             box = col.box().column(1) 
                           
                             row = box.row(1)
-                            row.operator("tp_ops.mod_mirror_x", "", icon ="MOD_MIRROR")
-
                             row.label("AutoMirror")
 
                             obj = context.active_object
@@ -515,48 +653,6 @@ def draw_align_panel_layout(self, context, layout):
 
                                 box.separator() 
                 
-                               
-                            obj = context.active_object
-                            if obj:
-             
-                                mo_types = []            
-                                append = mo_types.append
-
-                                for mo in obj.modifiers:
-                                                                  
-                                    if mo.type == 'MIRROR':
-                                        append(mo.type)
-
-                                        #box.label(mo.name)
-
-                                        row = box.row(1)
-                                        row.prop(mo, "use_x")
-                                        row.prop(mo, "use_y")
-                                        row.prop(mo, "use_z")
-                                        
-                                        row = box.row(1)
-                                        row.prop(mo, "use_mirror_merge", text="Merge")
-                                        row.prop(mo, "use_clip", text="Clipping")
-
-                                        box.separator() 
-                            else:
-                                pass
-
-
-                            obj = context.active_object
-                            if obj:
-                                mod_list = obj.modifiers
-                                if mod_list:
-                                   
-                                    box.separator()                            
-
-                                    row = box.row(1)    
-                                    row.operator("tp_ops.remove_mods_mirror", text="Remove") 
-                                    row.operator("tp_ops.apply_mods_mirror", text="Apply") 
-
-                                    box.separator()                                                                      
-                            else:
-                                pass
 
                         else:
                             pass
@@ -565,44 +661,52 @@ def draw_align_panel_layout(self, context, layout):
                     
 
 
+            obj = context.active_object
+            if obj:
+ 
+                mo_types = []            
+                append = mo_types.append
+
+                for mo in obj.modifiers:
+                                                  
+                    if mo.type == 'MIRROR':
+                        append(mo.type)
+
+                        #box.label(mo.name)
+
+                        row = box.row(1)
+                        row.prop(mo, "use_x")
+                        row.prop(mo, "use_y")
+                        row.prop(mo, "use_z")
+                        
+                        row = box.row(1)
+                        row.prop(mo, "use_clip", text="Clip")
+                        row.prop(mo, "use_mirror_merge", text="Merge")               
+                        if mo.use_mirror_merge is True:
+                            row.prop(mo, "merge_threshold", text="Limit")
+                        box.separator() 
+            else:
+                pass
+
+
+            obj = context.active_object
+            if obj:
+                mod_list = obj.modifiers
+                if mod_list:
+                   
+                    box.separator()                            
+
+                    row = box.row()  
+                    row.alignment = 'CENTER'                      
+                    row.operator("tp_ops.mods_view", text="", icon='RESTRICT_VIEW_OFF') 
+                    row.operator("tp_ops.remove_mods_mirror", text="", icon='PANEL_CLOSE') 
+                    row.operator("tp_ops.apply_mods_mirror", text="", icon='FILE_TICK') 
+
+                    box.separator()                                                                      
+            else:
+                pass
 
       
-            box = col.box().column(1)       
-                         
-            row = box.row(1)             
-
-            row.label("Zero to...")  
-            row = box.row()
-            row.prop(context.scene, 'tp_switch_axis', expand=True)      
-
-            row = box.row(1)
-            row.prop(context.scene, 'tp_switch', expand=True)              
-          
-            button_align_zero = icons.get("icon_align_zero") 
-            row.operator("tp_ops.zero_axis_panel", text="Run", icon_value=button_align_zero.icon_id)  
-
-            box.separator()  
-
-
- 
-            box = col.box().column(1)  
-
-            row = box.row(1)         
-            row.label(text="Transform Orientation")
-
-            row = box.row(1)         
-            
-            row.prop(context.space_data, "transform_orientation", text="", icon='MANIPUL')
-            row.operator("transform.create_orientation", text="", icon='ZOOMIN')
-
-            if context.space_data.current_orientation:
-                box.separator() 
-                
-                row = box.row(1)
-                row.prop(context.space_data.current_orientation, "name", text="")
-                row.operator("transform.delete_orientation", text="", icon='X')
-
-            box.separator() 
 
 
 
@@ -815,41 +919,78 @@ def draw_align_panel_layout(self, context, layout):
             row = box.column(1)
 
             button_align_xy = icons.get("icon_align_xy") 
-            row.operator("tp_ops.face_align_xy", "Xy", icon_value=button_align_xy.icon_id)
+            row.operator("tp_ops.align_transform", "Xy", icon_value=button_align_xy.icon_id).tp_axis='axis_xy'
 
             button_align_zx = icons.get("icon_align_zx")
-            row.operator("tp_ops.face_align_xz", "Zx", icon_value=button_align_zx.icon_id)
+            row.operator("tp_ops.align_transform", "Zx", icon_value=button_align_zx.icon_id).tp_axis='axis_zx'
 
             button_align_zy = icons.get("icon_align_zy") 
-            row.operator("tp_ops.face_align_yz", "Zy", icon_value=button_align_zy.icon_id)           
+            row.operator("tp_ops.align_transform", "Zy", icon_value=button_align_zy.icon_id).tp_axis='axis_zy'           
 
             row = box.column(1)
 
             button_align_x = icons.get("icon_align_x") 
-            row.operator("tp_ops.align_x", "X", icon_value=button_align_x.icon_id)
+            row.operator("tp_ops.align_transform", "X", icon_value=button_align_x.icon_id).tp_axis='axis_x'
 
             button_align_y = icons.get("icon_align_y") 
-            row.operator("tp_ops.align_y", "Y", icon_value=button_align_y.icon_id)           
+            row.operator("tp_ops.align_transform", "Y", icon_value=button_align_y.icon_id).tp_axis='axis_y'           
 
             button_align_z = icons.get("icon_align_z") 
-            row.operator("tp_ops.align_z", "Z", icon_value=button_align_z.icon_id)
+            row.operator("tp_ops.align_transform", "Z", icon_value=button_align_z.icon_id).tp_axis='axis_z'
 
+            row.separator() 
+            
+
+            box = col.box().column(1)
+            
+            row = box.row(1) 
+            row.operator("mesh.align_operator", text = 'Store Edge').type_op = 1
+            align_op = row.operator("mesh.align_operator", text = 'Align Edges').type_op = 0
+
+            box.separator()      
  
- 
-            if bpy.context.mode == "EDIT_MESH":
-                row.separator() 
+            row = box.row(1) 
+            if tp_props.display_align_help:
+                row.prop(tp_props, "display_align_help", text="", icon='INFO')
+            else:
+                row.prop(tp_props, "display_align_help", text="", icon='INFO')
 
+            row.prop(bpy.context.window_manager.paul_manager, 'align_dist_z', text = 'Superpose')
+            row.prop(bpy.context.window_manager.paul_manager, 'align_lock_z', text = 'lock Z')
 
-            box.separator() 
+            if tp_props.display_align_help:
+
+                box.separator() 
+                              
+                row = box.column(1)         
+                row.label("This Tool need stored edge in the target:")         
+                row.label("1. go into the editmode of the target") 
+                row.label("2. select one edge as active") 
+                row.label("3. and press Store Edge") 
+               
+                row.separator()            
+                
+                row.label("Now go into editmode of the object you want to align") 
+                row.label("1. select all mesh that needs to be align") 
+                row.label("2. select on edge as active") 
+                row.label("3. and press Align Edges")
+                
+                row.separator()            
+                
+                row.label("Superpose: edge jump to edge")                  
+                row.label("lock Z: preserve the z axis")                  
+
+            box.separator()     
+
 
 
             box = col.box().column(1)              
             
             row = box.column(1) 
 
-            button_align_to_normal = icons.get("icon_align_to_normal") 
-            row.operator("tp_ops.align_to_normal", "Normal Align", icon_value=button_align_to_normal.icon_id)    
-
+            button_align_planar = icons.get("icon_align_planar") 
+            row.operator("mesh.face_make_planar", "Planar Faces", icon_value=button_align_planar.icon_id)   
+            
             button_align_con_face = icons.get("icon_align_con_face") 
             row.operator("mesh.rot_con", "Square Rotation", icon_value=button_align_con_face.icon_id)   
 
@@ -1164,13 +1305,26 @@ def draw_align_panel_layout(self, context, layout):
 
             box.separator() 
 
-            row = box.column(1)
-            button_align_mirror_edge = icons.get("icon_align_mirror_edge")          
-            row.operator("tp_ops.mirror_over_edge", "Mirror over Edge", icon_value=button_align_mirror_edge.icon_id)    
+            row = box.row(1)               
+            button_align_mirror_edge = icons.get("icon_align_mirror_edge")   
+            row.label("Turn", icon_value=button_align_mirror_edge.icon_id)    
+           
+            sub = row.row(1)
+            sub.scale_x = 0.9          
+            sub.operator("tp_ops.mirror_over_edge", "Over Edge")
 
             box.separator() 
 
+            row = box.row(1)               
+            row.label("Mody", icon ="MOD_MIRROR")                 
 
+            sub = row.row(1)
+            sub.scale_x = 0.3                               
+            sub.operator("tp_ops.mod_mirror_x",text="X")
+            sub.operator("tp_ops.mod_mirror_y",text="Y")
+            sub.operator("tp_ops.mod_mirror_z",text="Z")      
+
+            box.separator()   
 
 
             Display_AutoMirror = context.user_preferences.addons[__package__].preferences.tab_automirror
@@ -1198,18 +1352,7 @@ def draw_align_panel_layout(self, context, layout):
                             box = col.box().column(1) 
                           
                             row = box.row(1)
-                            row.operator("tp_ops.mod_mirror_x", "", icon ="MOD_MIRROR")
-
                             row.label("AutoMirror")
-
-                            obj = context.active_object
-                            if obj:
-                                mod_list = obj.modifiers
-                                if mod_list:
-                                    row.operator("tp_ops.mods_view","", icon = 'RESTRICT_VIEW_OFF')                                                                            
-                            else:
-                                pass
-
 
                             row.operator("object.automirror", text="", icon="MOD_WIREFRAME")   
                             
@@ -1243,51 +1386,6 @@ def draw_align_panel_layout(self, context, layout):
                                 row.prop(context.scene.auto_mirror, "show_on_cage", text="Editable")            
 
                                 box.separator() 
-                
-                               
-                            obj = context.active_object
-                            if obj:
-             
-                                mo_types = []            
-                                append = mo_types.append
-
-                                for mo in obj.modifiers:
-                                                                  
-                                    if mo.type == 'MIRROR':
-                                        append(mo.type)
-
-                                        #box.label(mo.name)
-
-                                        row = box.row(1)
-                                        row.prop(mo, "use_x")
-                                        row.prop(mo, "use_y")
-                                        row.prop(mo, "use_z")
-                                        
-                                        row = box.row(1)
-                                        row.prop(mo, "use_mirror_merge", text="Merge")
-                                        row.prop(mo, "use_clip", text="Clipping")
-
-                                        box.separator() 
-                            else:
-                                pass
-
-
-                            obj = context.active_object
-                            if obj:
-                                mod_list = obj.modifiers
-                                if mod_list:
-                                   
-                                    box.separator()                            
-
-                                    row = box.row(1)    
-                                    row.operator("tp_ops.remove_mod", text="", icon='X') 
-                                    row.operator("tp_ops.remove_mods_mirror", text="Remove") 
-                                    row.operator("tp_ops.apply_mod", text="", icon='FILE_TICK') 
-                                    row.operator("tp_ops.apply_mods_mirror_edm", text="Apply") 
-
-                                    box.separator()                                                                      
-                            else:
-                                pass
 
                         else:
                             pass
@@ -1297,47 +1395,52 @@ def draw_align_panel_layout(self, context, layout):
 
 
 
-
-            box = col.box().column(1)
-            
-            row = box.row(1) 
-            row.operator("mesh.align_operator", text = 'Store Edge').type_op = 1
-            align_op = row.operator("mesh.align_operator", text = 'Align Edges').type_op = 0
-
-            box.separator()      
+            obj = context.active_object
+            if obj:
  
-            row = box.row(1) 
-            if tp_props.display_align_help:
-                row.prop(tp_props, "display_align_help", text="", icon='INFO')
+                mo_types = []            
+                append = mo_types.append
+
+                for mo in obj.modifiers:
+                                                  
+                    if mo.type == 'MIRROR':
+                        append(mo.type)
+
+                        #box.label(mo.name)
+
+                        row = box.row(1)
+                        row.prop(mo, "use_x")
+                        row.prop(mo, "use_y")
+                        row.prop(mo, "use_z")
+                        
+                        row = box.row(1)
+                        row.prop(mo, "use_clip", text="Clip")
+                        row.prop(mo, "use_mirror_merge", text="Merge")               
+                        if mo.use_mirror_merge is True:
+                            row.prop(mo, "merge_threshold", text="Limit")
+
+                        box.separator() 
             else:
-                row.prop(tp_props, "display_align_help", text="", icon='INFO')
+                pass
 
-            row.prop(bpy.context.window_manager.paul_manager, 'align_dist_z', text = 'Superpose')
-            row.prop(bpy.context.window_manager.paul_manager, 'align_lock_z', text = 'lock Z')
 
-            if tp_props.display_align_help:
+            obj = context.active_object
+            if obj:
+                mod_list = obj.modifiers
+                if mod_list:
+                   
+                    box.separator()                            
 
-                box.separator() 
-                              
-                row = box.column(1)         
-                row.label("This Tool need stored edge in the target:")         
-                row.label("1. go into the editmode of the target") 
-                row.label("2. select one edge as active") 
-                row.label("3. and press Store Edge") 
-               
-                row.separator()            
-                
-                row.label("Now go into editmode of the object you want to align") 
-                row.label("1. select all mesh that needs to be align") 
-                row.label("2. select on edge as active") 
-                row.label("3. and press Align Edges")
-                
-                row.separator()            
-                
-                row.label("Superpose: edge jump to edge")                  
-                row.label("lock Z: preserve the z axis")                  
+                    row = box.row()    
+                    row.alignment = 'CENTER'                      
+                    row.operator("tp_ops.mods_view", text="", icon='RESTRICT_VIEW_OFF') 
+                    row.operator("tp_ops.remove_mods_mirror", text="", icon='PANEL_CLOSE') 
+                    row.operator("tp_ops.apply_mods_mirror_edm", text="", icon='FILE_TICK') 
 
-            box.separator()     
+                    box.separator()                                                                      
+            else:
+                pass
+
 
 
 
@@ -1345,9 +1448,39 @@ def draw_align_panel_layout(self, context, layout):
 
         if context.mode == 'EDIT_LATTICE':
             
+                       
+            col = layout.column(align=True)
+
+            box = col.box().row()   
             
-            
-            draw_axis_tools(context, layout) 
+            row = box.column(1) 
+            row.label("Align") 
+            row.label("to..") 
+            row.label("Axis") 
+
+            row = box.column(1)
+
+            button_align_xy = icons.get("icon_align_xy") 
+            row.operator("tp_ops.align_transform", "Xy", icon_value=button_align_xy.icon_id).tp_axis='axis_xy'
+
+            button_align_zx = icons.get("icon_align_zx")
+            row.operator("tp_ops.align_transform", "Zx", icon_value=button_align_zx.icon_id).tp_axis='axis_zx'
+
+            button_align_zy = icons.get("icon_align_zy") 
+            row.operator("tp_ops.align_transform", "Zy", icon_value=button_align_zy.icon_id).tp_axis='axis_zy'           
+
+            row = box.column(1)
+
+            button_align_x = icons.get("icon_align_x") 
+            row.operator("tp_ops.align_transform", "X", icon_value=button_align_x.icon_id).tp_axis='axis_x'
+
+            button_align_y = icons.get("icon_align_y") 
+            row.operator("tp_ops.align_transform", "Y", icon_value=button_align_y.icon_id).tp_axis='axis_y'           
+
+            button_align_z = icons.get("icon_align_z") 
+            row.operator("tp_ops.align_transform", "Z", icon_value=button_align_z.icon_id).tp_axis='axis_z'
+
+            row.separator() 
 
 
             box = col.box().column(1)   
@@ -1385,21 +1518,6 @@ def draw_align_panel_layout(self, context, layout):
             draw_axis_tools(context, layout)
               
 
-            box = col.box().column(1)               
-            
-            row = box.row(1)   
-
-            button_align_mirror_obm = icons.get("icon_align_mirror_obm")              
-            row.label("Mirror", icon_value=button_align_mirror_obm.icon_id) 
-                     
-            sub = row.row(1)
-            sub.scale_x = 0.3                   
-            sub.operator("tp_ops.mirror1",text="X")
-            sub.operator("tp_ops.mirror2",text="Y")
-            sub.operator("tp_ops.mirror3",text="Z")            
-   
-            box.separator()
-
         if context.mode == 'EDIT_METABALL':    
             
             draw_axis_tools(context, layout)  
@@ -1413,6 +1531,9 @@ def draw_align_panel_layout(self, context, layout):
 
 
 
+EDIT = ["OBJECT", "EDIT_MESH", "EDIT_CURVE", "EDIT_SURFACE", "EDIT_LATTICE", "EDIT_ARMATURE", "POSE"]
+GEOM = ['MESH', 'CURVE', 'SURFACE', 'META', 'FONT', 'LATTICE', 'ARMATURE', 'POSE', 'LAMP', 'CAMERA', 'EMPTY', 'SPEAKER']
+
 
 class VIEW3D_TP_Align_TOOLS(bpy.types.Panel):
     bl_category = "Align"
@@ -1425,12 +1546,16 @@ class VIEW3D_TP_Align_TOOLS(bpy.types.Panel):
     @classmethod
     def poll(cls, context):
         isModelingMode = not (
-        context.sculpt_object or 
+        #context.sculpt_object or 
         context.vertex_paint_object
         or context.weight_paint_object
         or context.image_paint_object)
-        return isModelingMode
-    
+        obj = context.active_object     
+        if obj:
+            obj_type = obj.type                                                                
+            if obj_type in GEOM:
+                return isModelingMode and context.mode in EDIT
+        
     def draw(self, context):
         layout = self.layout.column_flow(1)  
         layout.operator_context = 'INVOKE_REGION_WIN'
@@ -1449,11 +1574,15 @@ class VIEW3D_TP_Align_UI(bpy.types.Panel):
     @classmethod
     def poll(cls, context):
         isModelingMode = not (
-        context.sculpt_object or 
+        #context.sculpt_object or 
         context.vertex_paint_object
         or context.weight_paint_object
         or context.image_paint_object)
-        return isModelingMode
+        obj = context.active_object     
+        if obj:
+            obj_type = obj.type                                                                
+            if obj_type in GEOM:
+                return isModelingMode and context.mode in EDIT
 
     def draw(self, context):
         layout = self.layout.column_flow(1)  
@@ -1475,11 +1604,15 @@ class VIEW3D_TP_Align_PROPS(bpy.types.Panel):
     @classmethod
     def poll(cls, context):
         isModelingMode = not (
-        context.sculpt_object or 
+        #context.sculpt_object or 
         context.vertex_paint_object
         or context.weight_paint_object
         or context.image_paint_object)
-        return isModelingMode
+        obj = context.active_object     
+        if obj:
+            obj_type = obj.type                                                                
+            if obj_type in GEOM:
+                return isModelingMode and context.mode in EDIT
 
     def draw(self, context):
         layout = self.layout.column_flow(1)  

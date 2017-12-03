@@ -9,7 +9,7 @@ import addon_utils
 
 class VIEW3D_TP_Align_PIE(bpy.types.Menu):
     bl_label = "Align"
-    bl_idname = "tp_pie.object_menu"
+    bl_idname = "tp_pie.align_pie_menu"
 
     @classmethod
     def poll(cls, context):
@@ -46,14 +46,13 @@ class VIEW3D_TP_Align_PIE(bpy.types.Menu):
                     button_snap_drop_down = icons.get("icon_snap_drop_down") 
                     row.operator("object.drop_on_active", text=" ", icon_value=button_snap_drop_down.icon_id) 
 
-                    button_snap_offset = icons.get("icon_snap_offset")  
-                    row.operator("view3d.xoffsets_main", " ", icon_value=button_snap_offset.icon_id)   
-
-                    row = box.row(1)  
-
                     button_snap_abc = icons.get("icon_snap_abc") 
                     row.operator("tp_ops.np_020_point_align", text=' ', icon_value=button_snap_abc.icon_id) 
 
+                    row = box.row(1)  
+
+                    button_snap_offset = icons.get("icon_snap_offset")  
+                    row.operator("view3d.xoffsets_main", " ", icon_value=button_snap_offset.icon_id)   
                                         
                 else:
                     button_align_advance = icons.get("icon_align_advance")
@@ -65,24 +64,23 @@ class VIEW3D_TP_Align_PIE(bpy.types.Menu):
             button_align_zero = icons.get("icon_align_zero")                
             row.operator("tp_ops.zero_axis", " ", icon_value=button_align_zero.icon_id)   
 
-
         else:
             
             box.scale_x = 1.4   
             
+           
+            row = box.row(1)            
+         
             if context.mode =="EDIT_MESH":
-            
-                row = box.row(1)
- 
-                button_align_to_normal = icons.get("icon_align_to_normal") 
-                row.operator("tp_ops.align_to_normal", " ", icon_value=button_align_to_normal.icon_id)             
 
+                button_align_planar = icons.get("icon_align_planar") 
+                row.operator("mesh.face_make_planar", " ", icon_value=button_align_planar.icon_id)   
+                        
                 button_snap_offset = icons.get("icon_snap_offset")  
                 row.operator("view3d.xoffsets_main", " ", icon_value=button_snap_offset.icon_id)  
 
-            row = box.row(1)     
-
-            if context.mode =="EDIT_MESH":                
+                row = box.row(1)     
+           
                 button_align_con_face = icons.get("icon_align_con_face") 
                 row.operator("mesh.rot_con", " ", icon_value=button_align_con_face.icon_id)    
        
@@ -123,9 +121,12 @@ class VIEW3D_TP_Align_PIE(bpy.types.Menu):
             box.scale_x = 0.9
                     
             row = box.row(1) 
-            row.operator("object.align_rotation_all",text="Rotate", icon='MAN_ROT') 
+            props = row.operator("tp_ops.align_transform",text="Rotate", icon='MAN_ROT') 
+            props.tp_axis= 'axis_xyz'         
+            props.tp_transform= 'ROTATION'     
 
             row.operator("object.rotation_clear", text="", icon="PANEL_CLOSE")       
+           
             button_align_baply = icons.get("icon_align_baply") 
             props = row.operator("object.transform_apply", text="", icon_value=button_align_baply.icon_id)
             props.location= False
@@ -133,29 +134,43 @@ class VIEW3D_TP_Align_PIE(bpy.types.Menu):
             props.scale= False  
 
             box.separator()
-            
+
             row = box.row(1)
 
             button_align_x = icons.get("icon_align_x") 
-            row.operator("object.align_rotation_x",text="X", icon_value=button_align_x.icon_id)
+            props = row.operator("tp_ops.align_transform", "X", icon_value=button_align_x.icon_id)
+            props.tp_axis= 'axis_x'       
+            props.tp_transform= 'ROTATION'       
 
-            button_align_y = icons.get("icon_align_y")
-            row.operator("object.align_rotation_y",text="Y", icon_value=button_align_y.icon_id)
+            button_align_y = icons.get("icon_align_y")       
+            props = row.operator("tp_ops.align_transform", "Y", icon_value=button_align_y.icon_id)             
+            props.tp_axis= 'axis_y' 
+            props.tp_transform= 'ROTATION' 
 
-            button_align_z = icons.get("icon_align_z")
-            row.operator("object.align_rotation_z",text="Z", icon_value=button_align_z.icon_id)
-
-
+            button_align_z = icons.get("icon_align_z")     
+            props = row.operator("tp_ops.align_transform", "Z", icon_value=button_align_z.icon_id)
+            props.tp_axis= 'axis_z'         
+            props.tp_transform= 'ROTATION'   
+            
             row = box.row(1)
 
             button_align_xy = icons.get("icon_align_xy") 
-            row.operator("tp_ops.align_transform_xy", "Xy", icon_value=button_align_xy.icon_id).tp_axis='tp_rot'
+            props = row.operator("tp_ops.align_transform", "Xy", icon_value=button_align_xy.icon_id)
+            props.tp_axis= 'axis_xy'         
+            props.tp_transform= 'ROTATION'    
 
             button_align_zx = icons.get("icon_align_zx")
-            row.operator("tp_ops.align_transform_zx", "Zx", icon_value=button_align_zx.icon_id).tp_axis='tp_rot'
-
+            props = row.operator("tp_ops.align_transform", "Zx", icon_value=button_align_zx.icon_id)
+            props.tp_axis= 'axis_zx'         
+            props.tp_transform= 'ROTATION'    
+            
             button_align_zy = icons.get("icon_align_zy") 
-            row.operator("tp_ops.align_transform_zy", "Zy", icon_value=button_align_zy.icon_id).tp_axis='tp_rot'
+            props = row.operator("tp_ops.align_transform", "Zy", icon_value=button_align_zy.icon_id)
+            props.tp_axis= 'axis_zy'         
+            props.tp_transform= 'ROTATION'     
+
+      
+        
 
 
         else:
@@ -187,7 +202,6 @@ class VIEW3D_TP_Align_PIE(bpy.types.Menu):
                         
                         row = box.row(1) 
                         row.operator("tp_ops.enable_looptools", text="!_Activate Looptools_!")    
-
 
                     else: 
                         
@@ -245,8 +259,24 @@ class VIEW3D_TP_Align_PIE(bpy.types.Menu):
                         row.operator("remove.gp", text=" ", icon="PANEL_CLOSE")    
 
             else:
-                pass
-            
+
+                if context.mode =="EDIT_CURVE": 
+                    box.scale_x = 0.9
+                    
+                    row = box.row(1) 
+                    row.operator("curve.handle_type_set", text="Auto").type = 'AUTOMATIC'
+                    row.operator("curve.handle_type_set", text="Vector").type = 'VECTOR'          
+                    row.operator("curve.handle_type_set", text="Align").type = 'ALIGNED'
+                    
+                    row = box.row(1)                      
+                    row.operator("curve.switch_direction", text="Route")
+                    row.operator("curve.cyclic_toggle", text="Cyclic")
+                    row.operator("curve.handle_type_set", text="Free").type = 'FREE_ALIGN'  
+             
+                else:
+                    pass
+                
+
 
             
 #B4
@@ -284,7 +314,6 @@ class VIEW3D_TP_Align_PIE(bpy.types.Menu):
 
             button_origin_cursor = icons.get("icon_origin_cursor")
             row.operator("tp_ops.origin_set_cursor", text=" ", icon_value=button_origin_cursor.icon_id)
-
 
             button_origin_mass = icons.get("icon_origin_mass")           
             row.operator("tp_ops.origin_set_mass", text=" ", icon_value=button_origin_mass.icon_id)   
@@ -341,11 +370,6 @@ class VIEW3D_TP_Align_PIE(bpy.types.Menu):
             button_origin_edm = icons.get("icon_origin_edm")            
             row.operator("tp_ops.origin_edm"," ", icon_value=button_origin_edm.icon_id)       
 
-#            button_origin_edm = icons.get("icon_origin_edm")            
-#            row.operator("tp_ops.origin_edm"," ", icon_value=button_origin_edm.icon_id)              
-
-
-
 
 
 
@@ -380,13 +404,12 @@ class VIEW3D_TP_Align_PIE(bpy.types.Menu):
             row = box.row(1)      
            
             button_align_mirror_edge = icons.get("icon_align_mirror_edge")          
-            row.operator("tp_ops.mirror_over_edge", "Mirror over Edge", icon_value=button_align_mirror_edge.icon_id)   
-
+            row.operator("tp_ops.mirror_over_edge", "Mirror over Edge", icon_value=button_align_mirror_edge.icon_id)    
 
         row = box.row(1)                               
         row.operator("tp_ops.mirror1",text="X", icon='ARROW_LEFTRIGHT')
         row.operator("tp_ops.mirror2",text="Y", icon='ARROW_LEFTRIGHT')
-        row.operator("tp_ops.mirror3",text="Z", icon='ARROW_LEFTRIGHT')   
+        row.operator("tp_ops.mirror3",text="Z", icon='ARROW_LEFTRIGHT')     
 
 
         
@@ -399,7 +422,9 @@ class VIEW3D_TP_Align_PIE(bpy.types.Menu):
         if context.mode == "OBJECT":
           
             row = box.row(1)
-            row.operator("object.align_objects_scale_all",text="Scale", icon='MAN_SCALE')    
+            props = row.operator("tp_ops.align_transform",text="Scale", icon='MAN_SCALE')    
+            props.tp_axis= 'axis_xyz'         
+            props.tp_transform= 'SCALE'    
 
             row.operator("object.scale_clear", text="", icon="PANEL_CLOSE")        
             button_align_baply = icons.get("icon_align_baply") 
@@ -407,31 +432,43 @@ class VIEW3D_TP_Align_PIE(bpy.types.Menu):
             props.location= False
             props.rotation= False
             props.scale= True  
-                       
-            box.separator()
 
+            box.separator()
+                       
             row = box.row(1)
 
             button_align_x = icons.get("icon_align_x") 
-            row.operator("object.align_objects_scale_x",text="X", icon_value=button_align_x.icon_id)
+            props = row.operator("tp_ops.align_transform", "X", icon_value=button_align_x.icon_id)
+            props.tp_axis= 'axis_x'       
+            props.tp_transform= 'SCALE'       
 
-            button_align_y = icons.get("icon_align_y")
-            row.operator("object.align_objects_scale_y",text="Y", icon_value=button_align_y.icon_id)
+            button_align_y = icons.get("icon_align_y")       
+            props = row.operator("tp_ops.align_transform", "Y", icon_value=button_align_y.icon_id)             
+            props.tp_axis= 'axis_y' 
+            props.tp_transform= 'SCALE' 
 
-            button_align_z = icons.get("icon_align_z")
-            row.operator("object.align_objects_scale_z",text="Z", icon_value=button_align_z.icon_id)  
-
+            button_align_z = icons.get("icon_align_z")     
+            props = row.operator("tp_ops.align_transform", "Z", icon_value=button_align_z.icon_id)
+            props.tp_axis= 'axis_z'         
+            props.tp_transform= 'SCALE'  
 
             row = box.row(1)
 
             button_align_xy = icons.get("icon_align_xy") 
-            row.operator("tp_ops.align_transform_xy", "Xy", icon_value=button_align_xy.icon_id).tp_axis='tp_scal'
+            props = row.operator("tp_ops.align_transform", "Xy", icon_value=button_align_xy.icon_id)
+            props.tp_axis= 'axis_xy'         
+            props.tp_transform= 'SCALE'    
 
             button_align_zx = icons.get("icon_align_zx")
-            row.operator("tp_ops.align_transform_zx", "Zx", icon_value=button_align_zx.icon_id).tp_axis='tp_scal'
-
+            props = row.operator("tp_ops.align_transform", "Zx", icon_value=button_align_zx.icon_id)
+            props.tp_axis= 'axis_zx'         
+            props.tp_transform= 'SCALE'    
+                     
             button_align_zy = icons.get("icon_align_zy") 
-            row.operator("tp_ops.align_transform_zy", "Zy", icon_value=button_align_zy.icon_id).tp_axis='tp_scal'
+            props = row.operator("tp_ops.align_transform", "Zy", icon_value=button_align_zy.icon_id)
+            props.tp_axis= 'axis_zy'         
+            props.tp_transform= 'SCALE'     
+
         
 
         if context.mode =="EDIT_MESH": 
@@ -445,7 +482,20 @@ class VIEW3D_TP_Align_PIE(bpy.types.Menu):
             row.prop(bpy.context.window_manager.paul_manager, 'align_dist_z', text = 'dist Z')
             row.prop(bpy.context.window_manager.paul_manager, 'align_lock_z', text = 'lock Z')
 
+        
+        if context.mode =="EDIT_CURVE": 
+            box.scale_x = 0.725      
+                  
+            row = box.row(1) 
+            row.operator("curve.spline_type_set", text="CvType")
+            row.operator("curve.normals_make_consistent", text="Recalc")
+            row.operator("curve.smooth", text="Smooth")
 
+            row = box.row(1)  
+            row.operator("transform.transform", text="Shrink").mode = 'CURVE_SHRINKFATTEN'   
+            row.operator("curve.radius_set", text="Radius")
+            row.operator("transform.tilt", text="Tilt")      
+ 
 
 
 #B8
@@ -457,40 +507,53 @@ class VIEW3D_TP_Align_PIE(bpy.types.Menu):
         if context.mode =="OBJECT":
            
             row = box.row(1)
-            row.operator("object.align_location_all",text="Move", icon="MAN_TRANS")
-            
+            props = row.operator("tp_ops.align_transform", text="Move", icon='MAN_TRANS')        
+            props.tp_axis= 'axis_xyz'         
+            props.tp_transform= 'LOCATION'   
+ 
             row.operator("object.location_clear", text="", icon="PANEL_CLOSE")
             button_align_baply = icons.get("icon_align_baply") 
+
             props = row.operator("object.transform_apply", text="", icon_value=button_align_baply.icon_id)
             props.location= True
             props.rotation= False
             props.scale= False
 
             box.separator()
-
-      
-            row = box.row(1)
-
-            button_align_x = icons.get("icon_align_x") 
-            row.operator("object.align_location_x",text="X", icon_value=button_align_x.icon_id)
-
-            button_align_y = icons.get("icon_align_y")
-            row.operator("object.align_location_y",text="Y", icon_value=button_align_y.icon_id)
-
-            button_align_z = icons.get("icon_align_z")
-            row.operator("object.align_location_z",text="Z", icon_value=button_align_z.icon_id)   
-
-
+            
             row = box.row(1)
             
+            button_align_x = icons.get("icon_align_x") 
+            props = row.operator("tp_ops.align_transform", "X", icon_value=button_align_x.icon_id)
+            props.tp_axis= 'axis_x'       
+            props.tp_transform= 'LOCATION'       
+
+            button_align_y = icons.get("icon_align_y")       
+            props = row.operator("tp_ops.align_transform", "Y", icon_value=button_align_y.icon_id)             
+            props.tp_axis= 'axis_y' 
+            props.tp_transform= 'LOCATION' 
+
+            button_align_z = icons.get("icon_align_z")     
+            props = row.operator("tp_ops.align_transform", "Z", icon_value=button_align_z.icon_id)
+            props.tp_axis= 'axis_z'         
+            props.tp_transform= 'LOCATION'   
+     
+            row = box.row(1)
+
             button_align_xy = icons.get("icon_align_xy") 
-            row.operator("tp_ops.align_transform_xy", "Xy", icon_value=button_align_xy.icon_id).tp_axis='tp_loc'
+            props = row.operator("tp_ops.align_transform", "Xy", icon_value=button_align_xy.icon_id)
+            props.tp_axis= 'axis_xy'         
+            props.tp_transform= 'LOCATION'    
 
             button_align_zx = icons.get("icon_align_zx")
-            row.operator("tp_ops.align_transform_zx", "Zx", icon_value=button_align_zx.icon_id).tp_axis='tp_loc'
-
+            props = row.operator("tp_ops.align_transform", "Zx", icon_value=button_align_zx.icon_id)
+            props.tp_axis= 'axis_zx'         
+            props.tp_transform= 'LOCATION'    
+            
             button_align_zy = icons.get("icon_align_zy") 
-            row.operator("tp_ops.align_transform_zy", "Zy", icon_value=button_align_zy.icon_id).tp_axis='tp_loc'
+            props = row.operator("tp_ops.align_transform", "Zy", icon_value=button_align_zy.icon_id)
+            props.tp_axis= 'axis_zy'         
+            props.tp_transform= 'LOCATION'     
 
 
         else:
@@ -498,25 +561,24 @@ class VIEW3D_TP_Align_PIE(bpy.types.Menu):
             row = box.row(1)
 
             button_align_x = icons.get("icon_align_x") 
-            row.operator("tp_ops.align_x",text="X", icon_value=button_align_x.icon_id)
+            row.operator("tp_ops.align_transform", "X", icon_value=button_align_x.icon_id).tp_axis='axis_x'
 
             button_align_y = icons.get("icon_align_y")
-            row.operator("tp_ops.align_y",text="Y", icon_value=button_align_y.icon_id)
+            row.operator("tp_ops.align_transform",text="Y", icon_value=button_align_y.icon_id).tp_axis='axis_y'
 
             button_align_z = icons.get("icon_align_z")
-            row.operator("tp_ops.align_z",text="Z", icon_value=button_align_z.icon_id)   
-
+            row.operator("tp_ops.align_transform",text="Z", icon_value=button_align_z.icon_id).tp_axis='axis_z'   
 
             row = box.row(1)
             
             button_align_xy = icons.get("icon_align_xy") 
-            row.operator("tp_ops.face_align_xy", "Xy", icon_value=button_align_xy.icon_id)
-
-            button_align_zx = icons.get("icon_align_zx")
-            row.operator("tp_ops.face_align_xz", "Zx", icon_value=button_align_zx.icon_id)
+            row.operator("tp_ops.align_transform", "Xy", icon_value=button_align_xy.icon_id).tp_axis='axis_xy'
 
             button_align_zy = icons.get("icon_align_zy") 
-            row.operator("tp_ops.face_align_yz", "Zy", icon_value=button_align_zy.icon_id)
+            row.operator("tp_ops.align_transform", "Zy", icon_value=button_align_zy.icon_id).tp_axis='axis_zy'
+
+            button_align_zx = icons.get("icon_align_zx")
+            row.operator("tp_ops.align_transform", "Zx", icon_value=button_align_zx.icon_id).tp_axis='axis_zx'
 
 
 

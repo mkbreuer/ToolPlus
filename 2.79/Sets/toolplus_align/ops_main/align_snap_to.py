@@ -19,11 +19,10 @@
 # ***** END GPL LICENCE BLOCK *****
 
 
-
+# LOAD MODULE #
 import bpy
 from bpy import*
 from bpy.props import*
-
          
                
 class VIEW3D_TP_ORIENT_AXIS(bpy.types.Operator):
@@ -370,7 +369,6 @@ class VIEW3D_TP_Selected_to_Cursor_Offset(bpy.types.Operator):
 
 
 # REGISTER #
-
 def register():
     bpy.utils.register_module(__name__)
  
@@ -379,6 +377,7 @@ def unregister():
  
 if __name__ == "__main__":
     register()
+
 
 
 

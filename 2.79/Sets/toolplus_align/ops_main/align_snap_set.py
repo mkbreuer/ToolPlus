@@ -19,11 +19,10 @@
 # ***** END GPL LICENCE BLOCK *****
 
 
+# LOAD MODULE #
 import bpy
 from bpy import*
 from bpy.props import*
-
-
 
 
 
@@ -411,6 +410,7 @@ def unregister():
  
 if __name__ == "__main__":
     register()
+
 
 
 

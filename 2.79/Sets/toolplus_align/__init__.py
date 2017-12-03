@@ -20,22 +20,27 @@
 bl_info = {
     "name": "Align",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 0),
+    "version": (0, 2, 1),
     "blender": (2, 7, 9),
-    "location": "View 3D / Properties",
-    "description": "collection of object and mesh align tools",
+    "location": "VIEW 3D, UV Image-, Graph and Node Editor",
+    "description": "align tools collection",
     "warning": "",
     "wiki_url": "",
     "tracker_url": "",
     "category": "ToolPlus"}
 
 
-
+from toolplus_align.ui_normal_translate          import (VIEW3D_TP_Translate_Normal_Menu)
+from toolplus_align.ui_normal_translate          import (VIEW3D_TP_Resize_Normal_Menu)
+from toolplus_align.ui_normal_translate          import (VIEW3D_TP_Rotate_Normal_Menu)
 
 from toolplus_align.ui_menu                      import (VIEW3D_TP_Align_Menu)
 from toolplus_align.ui_menu                      import (VIEW3D_TP_Align_Menu_Graph)
 from toolplus_align.ui_menu                      import (VIEW3D_TP_Align_Menu_UV)
 from toolplus_align.ui_menu                      import (VIEW3D_TP_Align_Menu_Node)
+
+from toolplus_align.ui_menu_relax                import (VIEW3D_TP_Relax_Menu)
+from toolplus_align.ui_menu_origin               import (VIEW3D_TP_Origin_Menu)
 
 from toolplus_align.ui_menu_pie                  import (VIEW3D_TP_Align_PIE)
 
@@ -45,7 +50,7 @@ from toolplus_align.ui_main                      import (VIEW3D_TP_Align_PROPS)
 
 from toolplus_align.ops_origin.origin_batch      import (View3D_TP_Origin_Batch)
 
-from toolplus_align.ops_align.oned_scripts       import (paul_managerProps)
+from toolplus_align.ops_auxiliary.oned_scripts   import (paul_managerProps)
 
 from toolplus_align.np_point_align               import (NPPLRestoreContext)
 
@@ -61,34 +66,30 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'toolplus_align'))
 
 if "bpy" in locals():
     import imp
-    imp.reload(action)
-    imp.reload(oned_scripts)
+    imp.reload(align_action)
+    imp.reload(align_mirror)
+    imp.reload(align_modifier) 
+    imp.reload(align_orientation) 
+    imp.reload(align_pencil)    
+    imp.reload(align_pivot) 
+    imp.reload(align_snap_set)
+    imp.reload(align_snap_to)
+    imp.reload(align_transform) 
+    imp.reload(align_widget)
+
     imp.reload(advanced)
-    imp.reload(by_normal)
+    imp.reload(center_cursor)
     imp.reload(con_rotation)
-    imp.reload(cursor_center)
+    imp.reload(distribute)     
     imp.reload(distribute_obj)
     imp.reload(face_to_face)
-    imp.reload(mirror)
-    imp.reload(pivot)
-    imp.reload(quick_align)
-    imp.reload(setups)
-    imp.reload(simple)
-    imp.reload(simple_transform)
+    imp.reload(oned_scripts)
+    imp.reload(shrinksmooth) 
+    imp.reload(smoothdeform) 
     imp.reload(snap_offset)
-    imp.reload(snap_set)
-    imp.reload(snap_to)
+    imp.reload(straighten) 
     imp.reload(to_ground)
-    imp.reload(transform)
-    imp.reload(vertices) 
     imp.reload(xoffsets) 
-
-    imp.reload(align_distribute) 
-    imp.reload(align_shrinksmooth) 
-    imp.reload(align_smoothdeform) 
-    imp.reload(align_straighten) 
-
-    imp.reload(surface_pencil)    
     
     imp.reload(origin_action)
     imp.reload(origin_batch)
@@ -96,7 +97,6 @@ if "bpy" in locals():
     imp.reload(origin_bbox)
     imp.reload(origin_operators)
     imp.reload(origin_zero)
-
 
     imp.reload(np_point_align)
     imp.reload(np_point_distance)
@@ -111,34 +111,30 @@ if "bpy" in locals():
 
 else:
     
-    from .ops_align import action         
-    from .ops_align import oned_scripts         
-    from .ops_align import advanced                             
-    from .ops_align import by_normal          
-    from .ops_align import con_rotation       
-    from .ops_align import cursor_center         
-    from .ops_align import distribute_obj     
-    from .ops_align import face_to_face                              
-    from .ops_align import mirror             
-    from .ops_align import pivot              
-    from .ops_align import quick_align                 
-    from .ops_align import setups                 
-    from .ops_align import simple             
-    from .ops_align import simple_transform                         
-    from .ops_align import snap_offset         
-    from .ops_align import snap_set         
-    from .ops_align import snap_to               
-    from .ops_align import to_ground           
-    from .ops_align import transform           
-    from .ops_align import vertices                 
-    from .ops_align import xoffsets          
+    from .ops_main import align_action                                  
+    from .ops_main import align_mirror            
+    from .ops_main import align_modifier   
+    from .ops_main import align_orientation   
+    from .ops_main import align_pencil
+    from .ops_main import align_pivot        
+    from .ops_main import align_snap_set         
+    from .ops_main import align_snap_to                
+    from .ops_main import align_transform     
+    from .ops_main import align_widget  
 
-    from .ops_pencil import surface_pencil
-    
-    from .ops_space import align_distribute
-    from .ops_space import align_shrinksmooth
-    from .ops_space import align_smoothdeform
-    from .ops_space import align_straighten
+    from .ops_auxiliary import advanced  
+    from .ops_auxiliary import center_cursor  
+    from .ops_auxiliary import con_rotation  
+    from .ops_auxiliary import distribute
+    from .ops_auxiliary import distribute_obj 
+    from .ops_auxiliary import face_to_face   
+    from .ops_auxiliary import oned_scripts  
+    from .ops_auxiliary import snap_offset 
+    from .ops_auxiliary import shrinksmooth
+    from .ops_auxiliary import smoothdeform
+    from .ops_auxiliary import straighten 
+    from .ops_auxiliary import to_ground                                 
+    from .ops_auxiliary import xoffsets          
 
     from .ops_origin import origin_action                
     from .ops_origin import origin_batch                              
@@ -274,7 +270,7 @@ keymaps_list_pie = [
     {
         'name_view': "3D View",
         'space_type': "VIEW_3D",
-        'prop_name': "tp_pie.object_menu"
+        'prop_name': "tp_pie.align_pie_menu"
     }
 
 ]
@@ -336,6 +332,91 @@ def update_menu(self, context):
         pass
 
 
+addon_keymaps_menu = []
+
+def update_menu_relax(self, context):
+    try:
+        bpy.utils.unregister_class(VIEW3D_TP_Relax_Menu)
+        
+        wm = bpy.context.window_manager
+        for km in addon_keymaps_menu:
+            wm.keyconfigs.addon.keymaps.remove(km)
+        del addon_keymaps_menu[:]
+        
+    except:
+        pass
+    
+    if context.user_preferences.addons[__name__].preferences.tab_menu_view_relax == 'menu':
+     
+        VIEW3D_TP_Relax_Menu.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_menu    
+        bpy.utils.register_class(VIEW3D_TP_Relax_Menu)
+
+        wm = bpy.context.window_manager        
+        km = wm.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')        
+        kmi = km.keymap_items.new('wm.call_menu', 'W', 'PRESS', ctrl=True, shift=True) #,alt=True
+        kmi.properties.name = "tp_menu.relax_base"
+
+    if context.user_preferences.addons[__name__].preferences.tab_menu_view_relax == 'off':
+        pass
+
+
+def update_menu_origin(self, context):
+    try:
+        bpy.utils.unregister_class(VIEW3D_TP_Origin_Menu)
+
+        wm = bpy.context.window_manager
+        for km in addon_keymaps_menu:
+            wm.keyconfigs.addon.keymaps.remove(km)
+        del addon_keymaps_menu[:]
+        
+    except:
+        pass
+    
+    if context.user_preferences.addons[__name__].preferences.tab_menu_view_origin == 'menu':
+     
+        VIEW3D_TP_Origin_Menu.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_menu    
+        bpy.utils.register_class(VIEW3D_TP_Origin_Menu)
+
+        wm = bpy.context.window_manager        
+        km = wm.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')        
+        kmi = km.keymap_items.new('wm.call_menu', 'D', 'PRESS', ctrl=True) #,alt=True, shift=True, 
+        kmi.properties.name = "tp_menu.origin_base"
+
+    if context.user_preferences.addons[__name__].preferences.tab_menu_view_origin == 'off':
+        pass
+
+
+
+
+def update_menu_normal(self, context):
+
+    try:
+        bpy.types.VIEW3D_PT_tools_transform.remove(Draw_VIEW3D_TP_Transform_Normal)
+        bpy.types.VIEW3D_PT_tools_transform_mesh.remove(Draw_VIEW3D_TP_Transform_Normal)
+        bpy.types.VIEW3D_PT_tools_transform_curve.remove(Draw_VIEW3D_TP_Transform_Normal)
+        bpy.types.VIEW3D_PT_tools_transform_surface.remove(Draw_VIEW3D_TP_Transform_Normal)
+        bpy.types.VIEW3D_PT_tools_mballedit.remove(Draw_VIEW3D_TP_Transform_Normal)
+        bpy.types.VIEW3D_PT_tools_armatureedit_transform.remove(Draw_VIEW3D_TP_Transform_Normal)
+        bpy.types.VIEW3D_PT_tools_latticeedit.remove(Draw_VIEW3D_TP_Transform_Normal)
+        bpy.types.VIEW3D_MT_transform_object.remove(Draw_VIEW3D_TP_Transform_Normal)
+        bpy.types.VIEW3D_MT_transform.remove(Draw_VIEW3D_TP_Transform_Normal)
+    except:
+        pass
+    
+    if context.user_preferences.addons[__name__].preferences.tab_menu_normal == 'menu':
+
+        bpy.types.VIEW3D_PT_tools_transform.append(Draw_VIEW3D_TP_Transform_Normal)    
+        bpy.types.VIEW3D_PT_tools_transform_mesh.append(Draw_VIEW3D_TP_Transform_Normal)    
+        bpy.types.VIEW3D_PT_tools_transform_curve.append(Draw_VIEW3D_TP_Transform_Normal)    
+        bpy.types.VIEW3D_PT_tools_transform_surface.append(Draw_VIEW3D_TP_Transform_Normal)    
+        bpy.types.VIEW3D_PT_tools_mballedit.append(Draw_VIEW3D_TP_Transform_Normal)    
+        bpy.types.VIEW3D_PT_tools_armatureedit_transform.append(Draw_VIEW3D_TP_Transform_Normal)    
+        bpy.types.VIEW3D_PT_tools_latticeedit.append(Draw_VIEW3D_TP_Transform_Normal)    
+        bpy.types.VIEW3D_MT_transform_object.prepend(Draw_VIEW3D_TP_Transform_Normal)  
+        bpy.types.VIEW3D_MT_transform.prepend(Draw_VIEW3D_TP_Transform_Normal)  
+
+    if context.user_preferences.addons[__name__].preferences.tab_menu_normal == 'off':
+        pass
 
 
 
@@ -370,13 +451,33 @@ class TP_Panels_Preferences(AddonPreferences):
 
     # MENU PROPS #    
     tab_menu_align = EnumProperty(
-        name = '3d View Menu',
+        name = 'Pie Menu',
         description = 'save user settings and restart blender after switching the panel location',
         items=(('menu', 'Menu on',  'enable menu'),
                ('pie',  'Pie on',   'enable pie menu'),
                ('off',  'Menu off', 'disable menus')),
                default='menu', update = update_menu)
 
+    tab_menu_view_relax = EnumProperty(
+        name = 'Relax Menu',
+        description = 'save user settings and restart blender after switching the panel location',
+        items=(('menu', 'Menu on', 'enable menu'),
+               ('off', 'Menu off', 'disable menu')),
+               default='off', update = update_menu_relax)
+
+    tab_menu_view_origin = EnumProperty(
+        name = 'Origin Menu',
+        description = 'save user settings and restart blender after switching the panel location',
+        items=(('menu', 'Menu on', 'enable menu'),
+               ('off', 'Menu off', 'disable menu')),
+               default='off', update = update_menu_origin)
+               
+    tab_menu_normal = EnumProperty(
+        name = 'Translate Normal Menu',
+        description = 'add normal translate menus to toolshelf [T] > tools > transform',
+        items=(('menu', 'Menu on', 'enable menu'),
+               ('off', 'Menu off', 'disable menu')),
+               default='off', update = update_menu_normal)               
 
     #----------------------------------------------------------------------------------------
     
@@ -649,19 +750,18 @@ class TP_Panels_Preferences(AddonPreferences):
             row = box.column(1)   
             row.label(text="Welcome to T+ Align!")  
 
-            row.label(text="This is a collection of object and mesh align tools")   
-            row.label(text="You will find buttons for tool shelf [T] / property Shelf [N] / properties / header line")   
-            row.label(text="choose between pie menu or simple menu: [CTRL+D]")
-
-            row.separator()
-            
-            row.label(text="advanced: looptools or automirror can be added to the panel and menus")
-            row.label(text="addon preferences > tools > choose on/off")
-            row.label(text="the buttons appears or a an activation button if they are not active")                        
+            row.label(text="This is a collection of align tools for 3D View, UV Image-, Graph and Node Editor")   
+            row.label(text="Location in 3D View: tool shelf [T], property Shelf [N], properties data and header line")   
+            row.label(text="Location in UV Image-, Graph and Node Editor: [CTRL+D]")
             
             row.separator()
-
-            row.label(text="For more information, go to TAB URLs: authors / wiki / downloads")   
+            
+            row.label(text="Advanced: looptools and automirror can be added to the panel and menus.")
+            row.label(text="Go to > addon preferences > tools > choose on or off.")
+            row.label(text="Activation buttons appears if they are not already actively switched.")                        
+            row.label(text="Save user settings for a permant use.")                        
+            
+            row.separator()
 
             row.label(text="Have Fun! :)")  
 
@@ -691,7 +791,7 @@ class TP_Panels_Preferences(AddonPreferences):
           
             box = layout.box().column(1)
             row = box.row()
-            row.label("Panel and Menu:")   
+            row.label("Advance Tools > Panel & Menu):", icon ="COLLAPSEMENU")   
             
             row = box.row()
             row.prop(self, 'tab_looptools', expand=True)
@@ -700,7 +800,27 @@ class TP_Panels_Preferences(AddonPreferences):
            
             box.separator()  
 
+            box = layout.box().column(1)
+             
+            row = box.column(1)  
+            row.label("Normal Translate Menu:", icon ="COLLAPSEMENU") 
+            
+            row.separator()           
+            row.label("Toolshelf [T] > Tools > Transform")
 
+            row = box.row(1)          
+            row.prop(self, 'tab_menu_normal', expand=True)
+            
+            if self.tab_menu_normal == 'off':
+                
+                box.separator() 
+                
+                row = box.row(1) 
+                row.label(text="! durably hidden with next reboot!", icon ="INFO")
+       
+            box.separator()   
+
+   
         # KEYMAP #
         if self.prefs_tabs == 'keymap':
 
@@ -725,10 +845,65 @@ class TP_Panels_Preferences(AddonPreferences):
 
             box.separator()  
             
-            row = layout.column(1) 
-            row.label(text="! for key change go to > User Preferences > TAB: Input !", icon ="INFO")
-            row.operator('wm.url_open', text = '!Tip: is key free', icon = 'PLUGIN').url = "https://github.com/Antonioya/blender/tree/master/iskeyfree"
 
+            # ORIGIN #
+            box = layout.box().column(1)
+             
+            row = box.column(1)  
+            row.label("Origin Menu:", icon ="COLLAPSEMENU") 
+            
+            row.separator()           
+            row.label("Menu: [CTRL+D] ")
+
+            row = box.row(1)          
+            row.prop(self, 'tab_menu_view_origin', expand=True)
+            
+            if self.tab_menu_view_origin == 'off':
+                
+                box.separator() 
+                
+                row = box.row(1) 
+                row.label(text="! durably hidden with next reboot!", icon ="INFO")
+        
+        
+            box.separator()  
+
+          
+            # RELAX #
+            box = layout.box().column(1)
+             
+            row = box.column(1)  
+            row.label("Relax Menu:", icon ="COLLAPSEMENU") 
+            
+            row.separator()           
+            row.label("Menu: [CTRL+SHIFT+W] ")
+
+            row = box.row(1)          
+            row.prop(self, 'tab_menu_view_relax', expand=True)
+            
+            if self.tab_menu_view_relax == 'off':
+                
+                box.separator() 
+                
+                row = box.row(1) 
+                row.label(text="! durably hidden with next reboot!", icon ="INFO")
+
+           
+            # TIP #
+            box.separator()  
+            
+            row = layout.row(1)             
+            row.label(text="! For key change go to > User Preferences > TAB: Input !", icon ="INFO")
+            sub = row.row(1)
+            sub.scale_x = 0.5      
+            sub.operator('wm.url_open', text = 'Addon Tip: is key free', icon = 'PLUGIN').url = "https://github.com/Antonioya/blender/tree/master/iskeyfree"
+
+            row = layout.column(1) 
+            row.label(text="1 > Change search to key-bindig and insert the hotkey, eg. align menu: ctrl d !", icon ="BLANK1")
+            row.label(text="2 > Under 3D View you find the call menu, name: tp_menu.align_main !", icon ="BLANK1")
+            row.label(text="3 > Choose a new key configuration and save user settings !", icon ="BLANK1")
+        
+            box.separator()  
 
 
         # HEADER #
@@ -902,14 +1077,12 @@ class TP_Panels_Preferences(AddonPreferences):
             row.operator('wm.url_open', text = 'Distribute Objects', icon = 'INFO').url = "http://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/3D_interaction/Oscurart_Tools"
             row.operator('wm.url_open', text = 'Align by Faces', icon = 'INFO').url = "https://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/3D_interaction/Align_by_faces"
             row.operator('wm.url_open', text = 'Kjartans Scripts', icon = 'INFO').url = "http://www.kjartantysdal.com/scripts"
-            row.operator('wm.url_open', text = 'Simple Align', icon = 'INFO').url = "https://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/3D%20interaction/Align_Tools"
             row.operator('wm.url_open', text = 'Vertex Tools', icon = 'INFO').url = "http://airplanes3d.net/scripts-254_e.xml"
             row.operator('wm.url_open', text = 'Drop to Ground', icon = 'INFO').url = "https://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/Object/Drop_to_ground"
             row.operator('wm.url_open', text = '1D_Scripts', icon = 'INFO').url = "https://blenderartists.org/forum/showthread.php?399882-1D_Scripts-Bargool_1D_tools-main-thread&highlight="
             row.operator('wm.url_open', text = 'NP Station', icon = 'INFO').url = "https://blenderartists.org/forum/showthread.php?418540-AddOn-NP-Station"
             row.operator('wm.url_open', text = 'Smooth Deformation', icon = 'INFO').url = "https://blenderartists.org/forum/showthread.php?439842-Addon-Deformation-smoothing"
             row.operator('wm.url_open', text = 'Yadoob Scripts', icon = 'INFO').url = "http://blenderlounge.fr/forum/viewtopic.php?f=18&t=1438"
-            row.operator('wm.url_open', text = '(LoopTools)', icon = 'INFO').url = "https://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/Modeling/LoopTools"
             row.operator('wm.url_open', text = 'BlenderArtist', icon = 'BLENDER').url = "https://blenderartists.org/forum/showthread.php?409510-Addon-T-Align&p=3114519#post3114519"
 
 
@@ -931,6 +1104,23 @@ class Dropdown_Align_Props(bpy.types.PropertyGroup):
     display_origin_zero = bpy.props.BoolProperty(name="Zero Axis", description="open / close", default=False)
     display_origin_zero_edm = bpy.props.BoolProperty(name="Zero Axis", description="open / close", default=False)
 
+
+
+def Draw_VIEW3D_TP_Transform_Normal(self,context):
+    layout = self.layout
+    col = layout.column(align=True)
+
+    col.operator("transform.tosphere", text="To Sphere")
+    col.operator("transform.shear", text="Shear")
+    col.operator("transform.bend", text="Bend")
+
+    col.separator() 
+
+    col.menu("tp_ops.translate_normal_menu", text="N-Translate")
+    col.menu("tp_ops.rotate_normal_menu", text="N-Rotate")
+    col.menu("tp_ops.resize_normal_menu", text="N-Scale")
+
+    col.separator()     
 
 
 
@@ -974,15 +1164,19 @@ def register():
 
     try: bpy.utils.register_module(__name__)
     except: traceback.print_exc()
-  
-    update_menu(None, bpy.context)        
+           
     update_panel_position(None, bpy.context)
     update_display_tools(None, bpy.context)
     update_header_tools(None, bpy.context)
-   
+
+    update_menu(None, bpy.context) 
+    update_menu_relax(None, bpy.context)
+    update_menu_origin(None, bpy.context)
+    update_menu_normal(None, bpy.context)
+        
     # ALIGN #
     bpy.types.WindowManager.tp_collapse_align = bpy.props.PointerProperty(type = Dropdown_Align_Props)    
-
+ 
     # 1D SCRIPTS #
     bpy.types.WindowManager.paul_manager = bpy.props.PointerProperty(type = paul_managerProps) 
     bpy.context.window_manager.paul_manager.display_align = False
@@ -1075,6 +1269,7 @@ if __name__ == "__main__":
     register()
         
         
+
 
 
 
