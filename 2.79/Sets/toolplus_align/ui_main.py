@@ -463,6 +463,8 @@ def draw_align_panel_layout(self, context, layout):
             
             button_align_advance = icons.get("icon_align_advance")
             row.operator("tp_origin.align_tools", "Advance", icon_value=button_align_advance.icon_id)    
+
+            row.operator("tp_ops.xy_spread", text="Spread", icon="AXIS_TOP")  
        
             button_origin_align = icons.get("icon_origin_align") 
             row.operator("object.distribute_osc", text="Even", icon_value=button_origin_align.icon_id)           

@@ -20,7 +20,7 @@
 bl_info = {
     "name": "Align",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 1),
+    "version": (0, 2, 2),
     "blender": (2, 7, 9),
     "location": "VIEW 3D, UV Image-, Graph and Node Editor",
     "description": "align tools collection",
@@ -90,6 +90,7 @@ if "bpy" in locals():
     imp.reload(straighten) 
     imp.reload(to_ground)
     imp.reload(xoffsets) 
+    imp.reload(xyspread) 
     
     imp.reload(origin_action)
     imp.reload(origin_batch)
@@ -135,6 +136,7 @@ else:
     from .ops_auxiliary import straighten 
     from .ops_auxiliary import to_ground                                 
     from .ops_auxiliary import xoffsets          
+    from .ops_auxiliary import xyspread          
 
     from .ops_origin import origin_action                
     from .ops_origin import origin_batch                              
@@ -1079,11 +1081,13 @@ class TP_Panels_Preferences(AddonPreferences):
             row.operator('wm.url_open', text = 'Kjartans Scripts', icon = 'INFO').url = "http://www.kjartantysdal.com/scripts"
             row.operator('wm.url_open', text = 'Vertex Tools', icon = 'INFO').url = "http://airplanes3d.net/scripts-254_e.xml"
             row.operator('wm.url_open', text = 'Drop to Ground', icon = 'INFO').url = "https://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/Object/Drop_to_ground"
-            row.operator('wm.url_open', text = '1D_Scripts', icon = 'INFO').url = "https://blenderartists.org/forum/showthread.php?399882-1D_Scripts-Bargool_1D_tools-main-thread&highlight="
+            row.operator('wm.url_open', text = '1D Scripts', icon = 'INFO').url = "https://blenderartists.org/forum/showthread.php?399882-1D_Scripts-Bargool_1D_tools-main-thread&highlight="
             row.operator('wm.url_open', text = 'NP Station', icon = 'INFO').url = "https://blenderartists.org/forum/showthread.php?418540-AddOn-NP-Station"
             row.operator('wm.url_open', text = 'Smooth Deformation', icon = 'INFO').url = "https://blenderartists.org/forum/showthread.php?439842-Addon-Deformation-smoothing"
             row.operator('wm.url_open', text = 'Yadoob Scripts', icon = 'INFO').url = "http://blenderlounge.fr/forum/viewtopic.php?f=18&t=1438"
+            row.operator('wm.url_open', text = 'Nikitron Tools', icon = 'INFO').url = "http://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/Object/Nikitron_tools"
             row.operator('wm.url_open', text = 'BlenderArtist', icon = 'BLENDER').url = "https://blenderartists.org/forum/showthread.php?409510-Addon-T-Align&p=3114519#post3114519"
+            row.operator('wm.url_open', text = 'GitHub', icon = 'BLENDER').url = "https://github.com/mkbreuer/ToolPlus"
 
 
 
