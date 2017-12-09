@@ -26,7 +26,6 @@ from bpy import*
 from bpy.props import *
 
 
-
 # DRAW PROPS [F6] # 
 def draw_props(self, context):
     layout = self.layout.column(1)
@@ -150,7 +149,6 @@ class DupliSet_Properties(bpy.types.PropertyGroup):
 
 
 # REGISTRY #
-
 def register():
     bpy.utils.register_module(__name__)
 

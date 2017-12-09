@@ -146,7 +146,6 @@ class ToCursor_Properties(bpy.types.PropertyGroup):
 
 
 # REGISTRY #
-
 def register():
     bpy.utils.register_module(__name__)
  

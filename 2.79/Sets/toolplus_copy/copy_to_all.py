@@ -16,8 +16,9 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 
-
+# LOAD MODUL #    
 import bpy
+from bpy import *
 from bpy.props import *
 
 """

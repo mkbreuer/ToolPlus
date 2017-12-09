@@ -2,8 +2,8 @@ import bpy
 
 
 class View3D_TP_Copy_Menu(bpy.types.Menu):
-    """CopyShop"""
-    bl_label = "CopyShop"
+    """Copy"""
+    bl_label = "Copy"
     bl_idname = "tp_menu.copyshop_menu"
 
     def draw(self, context):

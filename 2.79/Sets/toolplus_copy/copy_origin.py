@@ -18,7 +18,7 @@
 # ##### END GPL LICENSE BLOCK #####
 #
 
-
+# LOAD MODUL #
 import bpy
 from bpy import*
 from bpy.props import *
@@ -161,18 +161,15 @@ class View3D_TP_Origin_Minus_Z(bpy.types.Operator):
 
 
 
-def register():
+# REGISTRY #        
+def register():    
     bpy.utils.register_module(__name__)
 
-def unregister():
+def unregister():   
     bpy.utils.unregister_module(__name__)
 
 if __name__ == "__main__":
     register()
-
-
-
-
 
 
 

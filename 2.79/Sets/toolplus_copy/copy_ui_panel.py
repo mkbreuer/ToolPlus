@@ -942,7 +942,7 @@ def draw_copy_panel_layout(self, context, layout):
 class VIEW3D_TP_Copy_Panel_TOOLS(bpy.types.Panel):
     bl_category = "Tools"
     bl_idname = "VIEW3D_TP_Copy_Panel_TOOLS"
-    bl_label = "CopyShop"
+    bl_label = "Copy"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
     #bl_context = 'objectmode'
@@ -967,7 +967,7 @@ class VIEW3D_TP_Copy_Panel_TOOLS(bpy.types.Panel):
 
 class VIEW3D_TP_Copy_Panel_UI(bpy.types.Panel):
     bl_idname = "VIEW3D_TP_Copy_Panel_UI"
-    bl_label = "CopyShop"
+    bl_label = "Copy"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     #bl_context = 'objectmode'
@@ -993,7 +993,7 @@ class VIEW3D_TP_Copy_Panel_UI(bpy.types.Panel):
 
 class VIEW3D_TP_Copy_Panel_PROPS(bpy.types.Panel):
     bl_idname = "VIEW3D_TP_Copy_Panel_PROPS"
-    bl_label = "CopyShop"
+    bl_label = "Copy"
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "object" #TAB

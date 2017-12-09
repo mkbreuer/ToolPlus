@@ -17,9 +17,9 @@
 # ##### END GPL LICENSE BLOCK #####
 
 bl_info = {
-    "name": "CopyShop",
-    "author": "marvin.k.breuer",
-    "version": (1, 4, 3),
+    "name": "Copy",
+    "author": "marvin.k.breuer (MKB)",
+    "version": (1, 4, 4),
     "blender": (2, 7, 9),
     "location": "View3D / Properties",
     "description": "Tools for duplication",
@@ -37,8 +37,8 @@ from .copy_ui_panel     import (VIEW3D_TP_Copy_Panel_TOOLS)
 from .copy_ui_panel     import (VIEW3D_TP_Copy_Panel_PROPS)
 
 # LOAD PROPS #
-from toolplus_copyshop.copy_mifthcloning    import (MFTCloneProperties)
-from toolplus_copyshop.copy_to_meshtarget    import (ToTarget_Properties)
+from toolplus_copy.copy_mifthcloning    import (MFTCloneProperties)
+from toolplus_copy.copy_to_meshtarget    import (ToTarget_Properties)
 
 # LOAD ICONS #
 from . icons.icons                  import load_icons
@@ -48,7 +48,7 @@ from . icons.icons                  import clear_icons
 # LOAD OPERATORS #
 
 import sys, os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'toolplus_copyshop'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'toolplus_copy'))
 
 if "bpy" in locals():
     import importlib
@@ -95,7 +95,7 @@ from bpy.types import AddonPreferences, PropertyGroup
 panels_main = (VIEW3D_TP_Copy_Panel_UI, VIEW3D_TP_Copy_Panel_TOOLS, VIEW3D_TP_Copy_Panel_PROPS)
 
 def update_panel_position(self, context):
-    message = "CopySHop: Updating Panel locations has failed"
+    message = "CopyShop: Updating Panel locations has failed"
     try:
         for panel in panels_main:
             if "bl_rna" in panel.__dict__:
@@ -259,7 +259,7 @@ class TP_Panels_Preferences(AddonPreferences):
 
 
     tools_category = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position)
-    tools_category_menu = bpy.props.BoolProperty(name = "CopyShop Menu", description = "enable or disable menu", default=True, update = update_menu)
+    tools_category_menu = bpy.props.BoolProperty(name = "Copy Menu", description = "enable or disable menu", default=True, update = update_menu)
 
 
     def draw(self, context):
@@ -334,7 +334,7 @@ class TP_Panels_Preferences(AddonPreferences):
             box = layout.box().column(1)
              
             row = box.row(1) 
-            row.label("Location CopyShop:")
+            row.label("Location Copy:")
             
             row = box.row(1)
             row.prop(self, 'tab_location', expand=True)

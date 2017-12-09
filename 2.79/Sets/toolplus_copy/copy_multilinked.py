@@ -11,7 +11,12 @@
 #    "tracker_url": "",
 #    "category": "Object"}
 
+
+# LOAD MODUL #    
 import bpy
+from bpy import *
+from bpy.props import *
+ 
 
 def duplicateObject(context, numCopies, transVec, doParent):
     activeObj = context.active_object
@@ -62,17 +67,13 @@ class multiDuplicate(bpy.types.Operator):
     def invoke(self, context, event):
        return self.execute(context)
 
-#def menu_draw(self, context):
-#   self.layout.operator_context = 'INVOKE_REGION_WIN'
-#   self.layout.operator(multiDuplicate.bl_idname, "Duplicate Multiple Linked")
- 
-def register():
+
+# REGISTRY #        
+def register():    
     bpy.utils.register_module(__name__)
-#   bpy.types.VIEW3D_MT_object.append(menu_draw)
- 
-def unregister():
-#   bpy.types.VIEW3D_MT_object.remove(menu_draw)
+
+def unregister():   
     bpy.utils.unregister_module(__name__)
- 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     register()

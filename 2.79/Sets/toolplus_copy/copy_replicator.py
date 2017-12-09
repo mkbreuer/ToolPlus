@@ -18,8 +18,12 @@
 #
 # ***** END GPL LICENCE BLOCK *****
   
+# LOAD MODUL #    
 import bpy
 import math
+from bpy import *
+from bpy.props import *
+
 
 # bl_info is a dictionary containing addon meta-data such as the title, version and author to be displayed in the user preferences addon list.
 #bl_info = {
