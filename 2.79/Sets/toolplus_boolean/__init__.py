@@ -18,9 +18,9 @@
 
 
 bl_info = {
-    "name": "T+ Boolean",
-    "author": "Multi Authors (see URL), Marvin.K.Breuer (MKB)",
-    "version": (1, 8, 7),
+    "name": "Boolean",
+    "author": "marvin.k.breuer (MKB)",
+    "version": (1, 8, 8),
     "blender": (2, 7, 9),
     "location": "View3D > Tool Shelf [T] or Property Shelf [N] ",
     "description": "Collection of Boolean Tools",
@@ -32,23 +32,27 @@ bl_info = {
 
 
 # LOAD UI #
-from toolplus_boolean.bool_gui_main    import (VIEW3D_TP_Edit_Boolean_Panel_TOOLS)
-from toolplus_boolean.bool_gui_main    import (VIEW3D_TP_Edit_Boolean_Panel_UI)
+from toolplus_boolean.bool_gui_main         import (VIEW3D_TP_Edit_Boolean_Panel_TOOLS)
+from toolplus_boolean.bool_gui_main         import (VIEW3D_TP_Edit_Boolean_Panel_UI)
 
-from toolplus_boolean.bool_gui_btools    import (VIEW3D_TP_BoolTool_Brush_TOOLS)
-from toolplus_boolean.bool_gui_btools    import (VIEW3D_TP_BoolTool_Brush_UI)
+from toolplus_boolean.bool_gui_btools       import (VIEW3D_TP_BoolTool_Brush_TOOLS)
+from toolplus_boolean.bool_gui_btools       import (VIEW3D_TP_BoolTool_Brush_UI)
 
-from toolplus_boolean.bool_gui_btprops    import (VIEW3D_TP_BoolTool_BViewer_TOOLS)
-from toolplus_boolean.bool_gui_btprops    import (VIEW3D_TP_BoolTool_BViewer_UI)
+from toolplus_boolean.bool_gui_btprops      import (VIEW3D_TP_BoolTool_BViewer_TOOLS)
+from toolplus_boolean.bool_gui_btprops      import (VIEW3D_TP_BoolTool_BViewer_UI)
 
-from toolplus_boolean.bool_gui_btprops    import (VIEW3D_TP_BoolTool_Config_TOOLS)
-from toolplus_boolean.bool_gui_btprops    import (VIEW3D_TP_BoolTool_Config_UI)
+from toolplus_boolean.bool_gui_btprops      import (VIEW3D_TP_BoolTool_Config_TOOLS)
+from toolplus_boolean.bool_gui_btprops      import (VIEW3D_TP_BoolTool_Config_UI)
 
-from toolplus_boolean.bool_menu   import (VIEW3D_TP_Boolean_Menu)
+from toolplus_boolean.bool_menu             import (VIEW3D_TP_Boolean_Menu)
+
+from toolplus_boolean.bool_multi            import (VIEW3D_TP_MultiBool_Panel_TOOLS)
+from toolplus_boolean.bool_multi            import (VIEW3D_TP_MultiBool_Panel_UI)
 
 
 # LOAD PROPS #
 from toolplus_boolean.bool_carver         import (CarverPrefs)
+from toolplus_boolean.bool_multi          import (VIEW3D_TP_Multi_Bool_Props)
 
 
 # LOAD ICONS #
@@ -68,6 +72,7 @@ if "bpy" in locals():
     imp.reload(bool_boolean2d)
     imp.reload(bool_booltools3)
     imp.reload(bool_carver)
+    imp.reload(bool_multi)
 
 else:
     from . import bool_action         
@@ -75,9 +80,10 @@ else:
     from . import bool_boolean2d         
     from . import bool_booltools3                                   
     from . import bool_carver                                   
+    from . import bool_multi                                   
 
     
-# LOAD MODULS #     
+# LOAD MODULS #   
 import bpy
 from bpy import*
 from bpy.props import* 
@@ -166,6 +172,29 @@ def update_panel_position_props(self, context):
         pass
 
 
+panels_mb = (VIEW3D_TP_MultiBool_Panel_UI, VIEW3D_TP_MultiBool_Panel_TOOLS)
+
+def update_panel_position_multi(self, context):
+    message = "T+ MultiBool: Updating Panel locations has failed"
+    try:
+        for panel in panels_bt:
+            if "bl_rna" in panel.__dict__:
+                bpy.utils.unregister_class(panel)
+   
+        if context.user_preferences.addons[__name__].preferences.tab_location_multi == 'tools':
+         
+            VIEW3D_TP_MultiBool_Panel_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_multi
+            bpy.utils.register_class(VIEW3D_TP_MultiBool_Panel_TOOLS)
+        
+        if context.user_preferences.addons[__name__].preferences.tab_location_multi == 'ui':
+            bpy.utils.register_class(VIEW3D_TP_MultiBool_Panel_UI)
+        
+        if context.user_preferences.addons[__name__].preferences.tab_location_multi == 'off':
+            return None
+
+    except Exception as e:
+        print("\n[{}]\n{}\n\nError:\n{}".format(__name__, message, e))
+        pass
 
 
 # TOOLS REGISTRY #
@@ -265,6 +294,15 @@ class TP_Panels_Preferences(AddonPreferences):
                ('off', 'Off Shelf', 'enable or disable panel in the shelf')),
                default='off', update = update_panel_position_props)
 
+    tab_location_multi = EnumProperty(
+        name = 'Panel Location',
+        description = 'save user settings and restart blender after switching the panel location',
+        items=(('tools', 'Tool Shelf', 'place panel in the tool shelf [T]'),
+               ('ui', 'Property Shelf', 'place panel in the property shelf [N]'),
+               ('off', 'Off Shelf', 'enable or disable panel in the shelf')),
+               default='off', update = update_panel_position_multi)
+
+
     tab_menu_view = EnumProperty(
         name = '3d View Menu',
         description = 'save user settings and restart blender after switching the panel location',
@@ -307,6 +345,7 @@ class TP_Panels_Preferences(AddonPreferences):
     tools_category_main = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position)
     tools_category_brush = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position_brush)
     tools_category_props = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position_props)
+    tools_category_multi = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position_props)
 
     fast_transform = bpy.props.BoolProperty(name="Fast Transformations", default=False, update=UpdateBoolTool_Pref, description="Replace the Transform HotKeys (G,R,S) for a custom version that can optimize the visualization of Brushes")
     make_vertex_groups = bpy.props.BoolProperty(name="Make Vertex Groups", default=False, description="When Apply a Brush to de Object it will create a new vertex group of the new faces" )
@@ -328,7 +367,7 @@ class TP_Panels_Preferences(AddonPreferences):
 
             row = layout.column()
             row.label(text="This is a collection of different boolean addons.")
-            row.label(text="BoolTron / BoolTools / Bevel after Boolean / 2D Union")
+            row.label(text="BoolTron / BoolTools / Bevel after Boolean / 2D Union / MultiBool")
             row.label(text="It allows you to boolean directly or with booltool brushes and bevel it after.")
             row.label(text="You can enabel and disable all Panel separatly or choose between toolshelf [T] or property shelf [N].")
             row.label(text="For a faster workflow reduced the tools in menu or panel or activate the NUMPAD HotKeys.")
@@ -385,7 +424,6 @@ class TP_Panels_Preferences(AddonPreferences):
             row = box.row(1)            
             row.label(text="Panel Tools: Boolean BT")
             row.prop(self, 'tab_btbool_brush_simple_pl', expand=True)         
-
 
             box.separator()  
             box.separator()  
@@ -449,6 +487,24 @@ class TP_Panels_Preferences(AddonPreferences):
                 row = box.row(1)                
                 row.prop(self, "tools_category_props")
                 
+            box.separator()                
+
+           
+            box = layout.box().column(1)
+             
+            row = box.row(1)  
+            row.label("Location MultiBool: ")
+            
+            row= box.row(1)
+            row.prop(self, 'tab_location_multi', expand=True)
+                       
+            if self.tab_location_multi == 'tools':
+                
+                box.separator()
+                
+                row = box.row(1)                
+                row.prop(self, "tools_category_multi")
+
 
             box.separator()
 
@@ -457,6 +513,7 @@ class TP_Panels_Preferences(AddonPreferences):
 
             box.separator() 
             
+
 
         #Keys
         if self.prefs_tabs == 'keys':
@@ -593,6 +650,7 @@ class TP_Panels_Preferences(AddonPreferences):
             # column 2
             row.operator('wm.url_open', text = '2D Union', icon = 'INFO').url = "https://blenderartists.org/forum/showthread.php?338703-Addon-Boolean-2D-Union"
             row.operator('wm.url_open', text = 'Bevel after Boolean', icon = 'INFO').url = "https://blenderartists.org/forum/showthread.php?434699-Bevel-after-Boolean"
+            row.operator('wm.url_open', text = 'Multi Machine', icon = 'INFO').url = "https://blenderartists.org/forum/showthread.php?442162-AddOn-MultiMachine-repeat-a-pattern-of-boolena-diff-or-unions"
             row.operator('wm.url_open', text = 'GitHub', icon = 'RECOVER_LAST').url = "https://github.com/mkbreuer/ToolPlus"
 
 
@@ -656,10 +714,9 @@ def register():
     # booltool: Scene variables
     bpy.types.Scene.BoolHide = bpy.props.BoolProperty(default=False, description='Hide boolean objects', update=update_BoolHide)
 
-
     try: bpy.utils.register_module(__name__)
     except: traceback.print_exc()
-        
+
     # direct bool: create the hotkey for objectmode and editmode
     bool_direct_keys = context.user_preferences.addons[__name__].preferences.tab_direct_keys
     if bool_direct_keys == 'on':
@@ -706,6 +763,9 @@ def register():
     update_panel_position_brush(None, bpy.context)
     update_panel_position_props(None, bpy.context)
 
+    # multibool  
+    bpy.types.WindowManager.tp_props_multibool = bpy.props.PointerProperty(type = VIEW3D_TP_Multi_Bool_Props)
+
 
 
 def unregister():
@@ -719,6 +779,9 @@ def unregister():
 
     # booltool
     del bpy.types.Scene.BoolHide
+
+    # multibool  
+    del bpy.types.WindowManager.tp_props_multibool
 
     try: bpy.utils.unregister_module(__name__)
     except: traceback.print_exc()
