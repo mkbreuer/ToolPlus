@@ -358,61 +358,61 @@ class draw_boolean_layout:
 
 
         # MULTI BOOLEAN #
-        if scene.tp_bool == "tp_03": 
+            if scene.tp_bool == "tp_03": 
 
-            tp_props = context.window_manager.tp_props_multibool 
+                tp_props = context.window_manager.tp_props_multibool 
 
-            box = layout.box().column(1) 
-           
-            row = box.column(1)
-            row.prop_search(tp_props, "Target", bpy.data, "objects",icon="TRIA_DOWN")
-            row.prop_search(tp_props, "Tool", bpy.data, "objects",icon="TRIA_DOWN")
-            
-            row.separator()         
-           
-            row.prop(tp_props, "MMAction", text="Action")      
-            row.prop(tp_props, "MMMove", text="Move")      
+                box = layout.box().column(1) 
+               
+                row = box.column(1)
+                row.prop_search(tp_props, "Target", bpy.data, "objects",icon="TRIA_DOWN")
+                row.prop_search(tp_props, "Tool", bpy.data, "objects",icon="TRIA_DOWN")
+                
+                row.separator()         
+               
+                row.prop(tp_props, "MMAction", text="Action")      
+                row.prop(tp_props, "MMMove", text="Move")      
 
-            row.separator() 
-            
-            row.prop(tp_props, "MMToolXVal", text="X")
-            row.prop(tp_props, "MMToolYVal", text="Y")
-            row.prop(tp_props, "MMToolZVal", text="Z")
-           
-            row.separator() 
+                row.separator() 
+                
+                row.prop(tp_props, "MMToolXVal", text="X")
+                row.prop(tp_props, "MMToolYVal", text="Y")
+                row.prop(tp_props, "MMToolZVal", text="Z")
+               
+                row.separator() 
 
-            row.prop(tp_props, "NumSteps", text="Num. Steps")
-            row.prop(tp_props, "StartSteps", text="Start at Step")
+                row.prop(tp_props, "NumSteps", text="Num. Steps")
+                row.prop(tp_props, "StartSteps", text="Start at Step")
 
-            box.separator() 
-            
-            box = layout.box().column(1) 
-           
-            row = box.column(1)
-            row.prop(tp_props, "MMPreStep", text="Pre-Move")
-            
-            row.separator()         
-            
-            row.prop(tp_props, "MMPreStepXVal", text="X")
-            row.prop(tp_props, "MMPreStepYVal", text="Y")
-            row.prop(tp_props, "MMPreStepZVal", text="Z")
-            
-            box.separator() 
+                box.separator() 
+                
+                box = layout.box().column(1) 
+               
+                row = box.column(1)
+                row.prop(tp_props, "MMPreStep", text="Pre-Move")
+                
+                row.separator()         
+                
+                row.prop(tp_props, "MMPreStepXVal", text="X")
+                row.prop(tp_props, "MMPreStepYVal", text="Y")
+                row.prop(tp_props, "MMPreStepZVal", text="Z")
+                
+                box.separator() 
 
-            box = layout.box().column(1) 
-           
-            row = box.column(1)
-            row.prop(tp_props, "RepeaterCnt", text="Repeat")
-            row.separator() 
-            row.prop(tp_props, "ReturnToLoc", text="ReturnToLoc")
+                box = layout.box().column(1) 
+               
+                row = box.column(1)
+                row.prop(tp_props, "RepeaterCnt", text="Repeat")
+                row.separator() 
+                row.prop(tp_props, "ReturnToLoc", text="ReturnToLoc")
 
-            row.separator() 
-            
-            row = box.row(1)        
-            row.operator("reset.exec", text="Reset")       
-            row.operator("tool.exec", text="Execute")
-          
-            box.separator() 
+                row.separator() 
+                
+                row = box.row(1)        
+                row.operator("reset.exec", text="Reset")       
+                row.operator("tool.exec", text="Execute")
+              
+                box.separator() 
 
 
 
