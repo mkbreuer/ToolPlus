@@ -53,6 +53,8 @@ def isCanvas(_obj):
     try:
         if _obj["BoolToolRoot"]:
             return True
+        else:
+            print("Not possible!")
     except:
         return False
 
@@ -235,6 +237,7 @@ def Remove(context, thisObj_name, Prop):
                         cyclesVis.shadow = True;
                         cyclesVis.transmission = True;
 
+                    
         if Prop == "CANVAS":
             for mod in actObj.modifiers:
                 if ("BTool_" in mod.name):
@@ -265,7 +268,7 @@ def EnableThisBrush(context, set):
                     if ("BTool_" in mod.name):
                         if mod.object == bpy.context.active_object:
                             canvas = obj
-
+            
     for mod in canvas.modifiers:
         if ("BTool_" in mod.name):
             if mod.object == bpy.context.active_object:
@@ -784,7 +787,7 @@ class BTool_Remove(Operator):
     def poll(cls, context):
         return context.active_object is not None
 
-    def execute(self, context):
+    def execute(self, context):       
         Remove(context, self.thisObj, self.Prop)
         return {'FINISHED'}
 
@@ -827,7 +830,7 @@ class BTool_BrushToMesh(Operator):
 
 
 
-# ------------------- Class List ------------------------------------------------
+# Class List #
 classes = (
 
     Direct_Union,
@@ -851,8 +854,8 @@ classes = (
     BTool_FastTransform,
 
 )
-# ------------------- REGISTER ------------------------------------------------
 
+# REGISTER #
 
 def register():
     for cls in classes:

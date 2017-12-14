@@ -38,6 +38,7 @@ def load_icons():
     mkb_icons.load("icon_axis_xyz_planes", os.path.join(icons_dir, "axis_xyz_planes.png"), 'IMAGE')
     mkb_icons.load("icon_axis_y", os.path.join(icons_dir, "axis_y.png"), 'IMAGE')
     mkb_icons.load("icon_axis_z", os.path.join(icons_dir, "axis_z.png"), 'IMAGE')
+    mkb_icons.load("icon_axis_n", os.path.join(icons_dir, "axis_n.png"), 'IMAGE')
 
     mkb_icons.load("icon_boolean_carver", os.path.join(icons_dir, "boolean_carver.png"), 'IMAGE')
 

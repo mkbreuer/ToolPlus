@@ -141,7 +141,7 @@ class mmtoolButton(bpy.types.Operator):
     """Make Multi Diff or Union""" 
     bl_idname = "tool.exec"
     bl_label = "Make Diff or Union"
-    bl_options = {'REGISTER', 'UNDO'} 
+    bl_options = {'REGISTER', 'UNDO','PRESET'} 
 
     bpSP = bpy.props.StringProperty()    
     Target = bpy.props.StringProperty()

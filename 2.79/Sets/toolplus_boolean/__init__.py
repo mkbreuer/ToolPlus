@@ -20,7 +20,7 @@
 bl_info = {
     "name": "Boolean",
     "author": "marvin.k.breuer (MKB)",
-    "version": (1, 8, 8),
+    "version": (1, 8, 9),
     "blender": (2, 7, 9),
     "location": "View3D > Tool Shelf [T] or Property Shelf [N] ",
     "description": "Collection of Boolean Tools",
@@ -41,8 +41,8 @@ from toolplus_boolean.bool_gui_btools       import (VIEW3D_TP_BoolTool_Brush_UI)
 from toolplus_boolean.bool_gui_btprops      import (VIEW3D_TP_BoolTool_BViewer_TOOLS)
 from toolplus_boolean.bool_gui_btprops      import (VIEW3D_TP_BoolTool_BViewer_UI)
 
-from toolplus_boolean.bool_gui_btprops      import (VIEW3D_TP_BoolTool_Config_TOOLS)
-from toolplus_boolean.bool_gui_btprops      import (VIEW3D_TP_BoolTool_Config_UI)
+#from toolplus_boolean.bool_gui_btprops      import (VIEW3D_TP_BoolTool_Config_TOOLS)
+#from toolplus_boolean.bool_gui_btprops      import (VIEW3D_TP_BoolTool_Config_UI)
 
 from toolplus_boolean.bool_menu             import (VIEW3D_TP_Boolean_Menu)
 
@@ -68,19 +68,23 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'toolplus_boolean'
 if "bpy" in locals():
     import imp
     imp.reload(bool_action)
+    imp.reload(bool_autowire)
     imp.reload(bool_bevel)
     imp.reload(bool_boolean2d)
     imp.reload(bool_booltools3)
     imp.reload(bool_carver)
     imp.reload(bool_multi)
+    imp.reload(bool_planefit)
 
 else:
     from . import bool_action         
+    from . import bool_autowire        
     from . import bool_bevel        
     from . import bool_boolean2d         
     from . import bool_booltools3                                   
     from . import bool_carver                                   
     from . import bool_multi                                   
+    from . import bool_planefit                                   
 
     
 # LOAD MODULS #   
@@ -94,7 +98,6 @@ from bpy.types import AddonPreferences, PropertyGroup
 panels_main = (VIEW3D_TP_Edit_Boolean_Panel_UI, VIEW3D_TP_Edit_Boolean_Panel_TOOLS)
 
 def update_panel_position(self, context):
-    message = "T+ Boolean: Updating Panel locations has failed"
     try:
         for panel in panels_main:
             if "bl_rna" in panel.__dict__:
@@ -111,8 +114,7 @@ def update_panel_position(self, context):
         if context.user_preferences.addons[__name__].preferences.tab_location_main == 'off':  
             return None
 
-    except Exception as e:
-        print("\n[{}]\n{}\n\nError:\n{}".format(__name__, message, e))
+    except:
         pass
 
 
@@ -120,7 +122,7 @@ def update_panel_position(self, context):
 panels_bt = (VIEW3D_TP_BoolTool_Brush_UI, VIEW3D_TP_BoolTool_Brush_TOOLS)
 
 def update_panel_position_brush(self, context):
-    message = "T+ Boolean Brush: Updating Panel locations has failed"
+
     try:
         for panel in panels_bt:
             if "bl_rna" in panel.__dict__:
@@ -137,16 +139,15 @@ def update_panel_position_brush(self, context):
         if context.user_preferences.addons[__name__].preferences.tab_location_brush == 'off':
             return None
 
-    except Exception as e:
-        print("\n[{}]\n{}\n\nError:\n{}".format(__name__, message, e))
+    except:
         pass
 
 
 
-panels_vw = (VIEW3D_TP_BoolTool_BViewer_UI, VIEW3D_TP_BoolTool_BViewer_TOOLS, VIEW3D_TP_BoolTool_Config_UI, VIEW3D_TP_BoolTool_Config_TOOLS)
+panels_vw = (VIEW3D_TP_BoolTool_BViewer_UI, VIEW3D_TP_BoolTool_BViewer_TOOLS)#, VIEW3D_TP_BoolTool_Config_UI, VIEW3D_TP_BoolTool_Config_TOOLS)
 
 def update_panel_position_props(self, context):
-    message = "T+ Boolean Viewer: Updating Panel locations has failed"
+
     try:
         for panel in panels_vw:
             if "bl_rna" in panel.__dict__:
@@ -155,29 +156,26 @@ def update_panel_position_props(self, context):
         if context.user_preferences.addons[__name__].preferences.tab_location_props == 'tools':
          
             VIEW3D_TP_BoolTool_BViewer_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_props
-            VIEW3D_TP_BoolTool_Config_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_props
+            #VIEW3D_TP_BoolTool_Config_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_props
         
             bpy.utils.register_class(VIEW3D_TP_BoolTool_BViewer_TOOLS)
-            bpy.utils.register_class(VIEW3D_TP_BoolTool_Config_TOOLS)
+            #bpy.utils.register_class(VIEW3D_TP_BoolTool_Config_TOOLS)
         
         if context.user_preferences.addons[__name__].preferences.tab_location_props == 'ui':
             bpy.utils.register_class(VIEW3D_TP_BoolTool_BViewer_UI)
-            bpy.utils.register_class(VIEW3D_TP_BoolTool_Config_UI)
+            #bpy.utils.register_class(VIEW3D_TP_BoolTool_Config_UI)
         
         if context.user_preferences.addons[__name__].preferences.tab_location_props == 'off':
             return None
 
-    except Exception as e:
-        print("\n[{}]\n{}\n\nError:\n{}".format(__name__, message, e))
+    except:
         pass
 
 
 panels_mb = (VIEW3D_TP_MultiBool_Panel_UI, VIEW3D_TP_MultiBool_Panel_TOOLS)
-
 def update_panel_position_multi(self, context):
-    message = "T+ MultiBool: Updating Panel locations has failed"
     try:
-        for panel in panels_bt:
+        for panel in panels_mb:
             if "bl_rna" in panel.__dict__:
                 bpy.utils.unregister_class(panel)
    
@@ -192,11 +190,11 @@ def update_panel_position_multi(self, context):
         if context.user_preferences.addons[__name__].preferences.tab_location_multi == 'off':
             return None
 
-    except Exception as e:
-        print("\n[{}]\n{}\n\nError:\n{}".format(__name__, message, e))
+    except:
         pass
 
-
+    
+    
 # TOOLS REGISTRY #
 def update_tools(self, context):
 
@@ -284,7 +282,7 @@ class TP_Panels_Preferences(AddonPreferences):
         items=(('tools', 'Tool Shelf', 'place panel in the tool shelf [T]'),
                ('ui', 'Property Shelf', 'place panel in the property shelf [N]'),
                ('off', 'Off Shelf', 'enable or disable panel in the shelf')),
-               default='tools', update = update_panel_position_brush)
+               default='off', update = update_panel_position_brush)
 
     tab_location_props = EnumProperty(
         name = 'Panel Location',
@@ -345,7 +343,7 @@ class TP_Panels_Preferences(AddonPreferences):
     tools_category_main = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position)
     tools_category_brush = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position_brush)
     tools_category_props = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position_props)
-    tools_category_multi = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position_props)
+    tools_category_multi = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position_multi)
 
     fast_transform = bpy.props.BoolProperty(name="Fast Transformations", default=False, update=UpdateBoolTool_Pref, description="Replace the Transform HotKeys (G,R,S) for a custom version that can optimize the visualization of Brushes")
     make_vertex_groups = bpy.props.BoolProperty(name="Make Vertex Groups", default=False, description="When Apply a Brush to de Object it will create a new vertex group of the new faces" )
@@ -645,6 +643,7 @@ class TP_Panels_Preferences(AddonPreferences):
             # column 1
             row.operator('wm.url_open', text = 'Booltron', icon = 'INFO').url = "https://github.com/mrachinskiy/blender-addon-booltron"
             row.operator('wm.url_open', text = 'BoolTools', icon = 'INFO').url = "https://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/Object/BoolTool"
+            row.operator('wm.url_open', text = 'PlaneFit', icon = 'INFO').url = "http://blog.michelanders.nl/2017/12/planefit-blender-add-on-to-fit-plane.html"
             row.operator('wm.url_open', text = 'Thread', icon = 'BLENDER').url = "https://blenderartists.org/forum/showthread.php?410098-Addon-T-Boolean&p=3118012#post3118012"
 
             # column 2
@@ -654,6 +653,11 @@ class TP_Panels_Preferences(AddonPreferences):
             row.operator('wm.url_open', text = 'GitHub', icon = 'RECOVER_LAST').url = "https://github.com/mkbreuer/ToolPlus"
 
 
+
+class Display_Tools_Props(bpy.types.PropertyGroup):
+
+    WT_handler_enable = BoolProperty(default=False)
+    WT_handler_previous_object = StringProperty(default="")
 
 
 # BOOLTOOL: Hide boolean objects #
@@ -699,6 +703,22 @@ def UnRegisterFastT():
     addon_keymapsFastT.clear()
 
 
+def menu_func(self, context):       
+
+    icons = load_icons()
+
+    button_axis_xyz_planes = icons.get("icon_axis_xyz_planes")
+    self.layout.menu("tp_menu.intersetion_planes", text ="Planes", icon_value=button_axis_xyz_planes.icon_id)   
+
+
+# This allows you to right click on a button and link to the manual
+def add_object_manual_map():
+    url_manual_prefix = "https://github.com/mkbreuer/ToolPlus/"
+    url_manual_mapping = (
+        ("bpy.ops.tp_ops.bool_union", "/blob/master/2.79/Sets/toolplus_visuals/toolplus_visual.png"),
+        )
+    return url_manual_prefix, url_manual_mapping
+
 # REGISTRY #
 import traceback
 
@@ -713,10 +733,20 @@ def register():
 
     # booltool: Scene variables
     bpy.types.Scene.BoolHide = bpy.props.BoolProperty(default=False, description='Hide boolean objects', update=update_BoolHide)
-
+       
     try: bpy.utils.register_module(__name__)
     except: traceback.print_exc()
 
+    bpy.types.INFO_MT_mesh_add.append(menu_func)
+    bpy.utils.register_manual_map(add_object_manual_map)
+
+    # PROPS #  
+    bpy.types.Scene.display_props = bpy.props.PointerProperty(type=Display_Tools_Props)
+ 
+    # multibool  
+    bpy.types.WindowManager.tp_props_multibool = bpy.props.PointerProperty(type = VIEW3D_TP_Multi_Bool_Props)
+
+       
     # direct bool: create the hotkey for objectmode and editmode
     bool_direct_keys = context.user_preferences.addons[__name__].preferences.tab_direct_keys
     if bool_direct_keys == 'on':
@@ -762,13 +792,17 @@ def register():
     update_panel_position(None, bpy.context)
     update_panel_position_brush(None, bpy.context)
     update_panel_position_props(None, bpy.context)
-
-    # multibool  
-    bpy.types.WindowManager.tp_props_multibool = bpy.props.PointerProperty(type = VIEW3D_TP_Multi_Bool_Props)
+    update_panel_position_multi(None, bpy.context)
 
 
 
 def unregister():
+
+    bpy.types.INFO_MT_mesh_add.remove(menu_func)
+    bpy.utils.unregister_manual_map(add_object_manual_map)
+ 
+    # PROPS #  
+    del bpy.types.Scene.display_props 
 
     # carver
     del bpy.types.Scene.DepthCursor
@@ -792,6 +826,7 @@ def unregister():
     for km in addon_keymaps:
         wm.keyconfigs.addon.keymaps.remove(km)
     del addon_keymaps[:]
+
 
 
 if __name__ == "__main__":
