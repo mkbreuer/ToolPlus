@@ -19,7 +19,7 @@
 
 #bl_info = {
 #    "name": "Multi_Machine_v3",
-#    "author": "DS",
+#    "author": "DSchwant",
 #    "version": (0,0,1),
 #    "description": "Res.Does boolean differences or unions on an target using an object (tool) in a parameter driven pattern (rotate or slide).",
 #    "location": "View3D > Tool Shelf > MultiMachine",
