@@ -75,9 +75,11 @@ def draw_bt_config_panel_layout(context, layout):
             if obj:
                 active_wire = obj.show_wire 
                 if active_wire == True:
-                    row.operator("tp_ops.wt_selection_handler_toggle", "", icon = 'SOLID')              
+                    button_wire_off = icons.get("icon_wire_off")
+                    row.operator("tp_ops.wt_selection_handler_toggle", "", icon_value=button_wire_off.icon_id)              
                 else:                       
-                    row.operator("tp_ops.wt_selection_handler_toggle", "", icon = 'MESH_UVSPHERE')
+                    button_wire_on = icons.get("icon_wire_on")
+                    row.operator("tp_ops.wt_selection_handler_toggle", "", icon_value=button_wire_on.icon_id)
             
             row.prop(context.scene, 'BoolHide', text="", icon="VISIBLE_IPO_ON")
          
@@ -85,6 +87,7 @@ def draw_bt_config_panel_layout(context, layout):
             Rem = row.operator("btool.remove", icon="PANEL_CLOSE", text="Remove All")
             Rem.thisObj = ""
             Rem.Prop = "CANVAS"
+            
             
             button_boolean_apply = icons.get("icon_boolean_apply")
             row.operator("btool.to_mesh", text="Apply All", icon_value=button_boolean_apply.icon_id)
@@ -115,9 +118,11 @@ def draw_bt_config_panel_layout(context, layout):
             if obj:
                 active_wire = obj.show_wire 
                 if active_wire == True:
-                    row.operator("tp_ops.wt_selection_handler_toggle", "", icon = 'SOLID')              
+                    button_wire_off = icons.get("icon_wire_off")
+                    row.operator("tp_ops.wt_selection_handler_toggle", "", icon_value=button_wire_off.icon_id)              
                 else:                       
-                    row.operator("tp_ops.wt_selection_handler_toggle", "", icon = 'MESH_UVSPHERE')
+                    button_wire_on = icons.get("icon_wire_on")
+                    row.operator("tp_ops.wt_selection_handler_toggle", "", icon_value=button_wire_on.icon_id)
 
 
             icon = ""
@@ -507,24 +512,24 @@ class draw_boolean_layout:
 
 
 
-        # BRUSH BOOLEAN #
-        if scene.tp_bool_edm == "tp_02": 
+            # BRUSH BOOLEAN #
+            if scene.tp_bool_edm == "tp_02": 
 
-            box = layout.box().column(1)
+                box = layout.box().column(1)
 
-            row = box.column(1) 
-            
-            button_boolean_bridge = icons.get("icon_boolean_bridge")
-            row.operator("mesh.edges_select_sharp", text="SharpEdges", icon_value=button_boolean_bridge.icon_id)    
+                row = box.column(1) 
+                
+                button_boolean_bridge = icons.get("icon_boolean_bridge")
+                row.operator("mesh.edges_select_sharp", text="SharpEdges", icon_value=button_boolean_bridge.icon_id)    
 
-            button_boolean_edge = icons.get("icon_boolean_edge")
-            row.operator("object.boolean_bevel_custom_edge", text="CustomEdges", icon_value=button_boolean_edge.icon_id)
-        
-            row.operator("object.boolean_bevel_remove_objects", text="Remove Guides", icon='GHOST_DISABLED')        
+                button_boolean_edge = icons.get("icon_boolean_edge")
+                row.operator("object.boolean_bevel_custom_edge", text="CustomEdges", icon_value=button_boolean_edge.icon_id)
             
-            #button_boolean_bridge = icons.get("icon_boolean_bridge")
-            #row.operator("object.boolean_bevel_bridge", text="Bridge Edge", icon_value=button_boolean_bridge.icon_id)
-            
+                row.operator("object.boolean_bevel_remove_objects", text="Remove Guides", icon='GHOST_DISABLED')        
+                
+                #button_boolean_bridge = icons.get("icon_boolean_bridge")
+                #row.operator("object.boolean_bevel_bridge", text="Bridge Edge", icon_value=button_boolean_bridge.icon_id)
+                
 
 
 

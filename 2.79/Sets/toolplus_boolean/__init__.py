@@ -20,7 +20,7 @@
 bl_info = {
     "name": "Boolean",
     "author": "marvin.k.breuer (MKB)",
-    "version": (1, 8, 9),
+    "version": (1, 9, 0),
     "blender": (2, 7, 9),
     "location": "View3D > Tool Shelf [T] or Property Shelf [N] ",
     "description": "Collection of Boolean Tools",
@@ -290,7 +290,7 @@ class TP_Panels_Preferences(AddonPreferences):
         items=(('tools', 'Tool Shelf', 'place panel in the tool shelf [T]'),
                ('ui', 'Property Shelf', 'place panel in the property shelf [N]'),
                ('off', 'Off Shelf', 'enable or disable panel in the shelf')),
-               default='off', update = update_panel_position_props)
+               default='tools', update = update_panel_position_props)
 
     tab_location_multi = EnumProperty(
         name = 'Panel Location',
@@ -300,13 +300,13 @@ class TP_Panels_Preferences(AddonPreferences):
                ('off', 'Off Shelf', 'enable or disable panel in the shelf')),
                default='off', update = update_panel_position_multi)
 
-
     tab_menu_view = EnumProperty(
         name = '3d View Menu',
         description = 'save user settings and restart blender after switching the panel location',
         items=(('menu', 'Menu on', 'enable menu for 3d view'),
                ('off', 'Menu off', 'enable or disable menu for 3d view')),
                default='menu', update = update_menu)
+
 
 
     tab_bool_direct = EnumProperty(name = 'Display Tools', description = 'on / off',
@@ -336,19 +336,22 @@ class TP_Panels_Preferences(AddonPreferences):
     tab_brush_keys = EnumProperty(name = 'Display Tools', description = 'on / off',
                   items=(('on', 'HotKeys on', 'enable tools'), ('off', 'HotKeys off', 'disable tools')), default='on', update = update_tools)
 
+    tab_to_menu = EnumProperty(name = 'Display Tools', description = 'on / off',
+                  items=(('on', 'Add to Add Menu', 'enable'), ('off', 'Remove from Add Menu', 'disable')), default='on', update = update_tools)
+
 
 
     tools_category_menu = bpy.props.BoolProperty(name = "Boolean Menu", description = "enable or disable menu", default=True, update = update_menu)
     
-    tools_category_main = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position)
+    tools_category_main  = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position)
     tools_category_brush = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position_brush)
     tools_category_props = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position_props)
     tools_category_multi = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position_multi)
 
-    fast_transform = bpy.props.BoolProperty(name="Fast Transformations", default=False, update=UpdateBoolTool_Pref, description="Replace the Transform HotKeys (G,R,S) for a custom version that can optimize the visualization of Brushes")
+    fast_transform     = bpy.props.BoolProperty(name="Fast Transformations", default=False, update=UpdateBoolTool_Pref, description="Replace the Transform HotKeys (G,R,S) for a custom version that can optimize the visualization of Brushes")
     make_vertex_groups = bpy.props.BoolProperty(name="Make Vertex Groups", default=False, description="When Apply a Brush to de Object it will create a new vertex group of the new faces" )
-    make_boundary = bpy.props.BoolProperty(name="Make Boundary", default=False, description="When Apply a Brush to de Object it will create a new vertex group of the bondary boolean area")
-    use_wire = bpy.props.BoolProperty(name="Use Bmesh", default=False, description="Use The Wireframe Instead Of Boolean")
+    make_boundary      = bpy.props.BoolProperty(name="Make Boundary", default=False, description="When Apply a Brush to de Object it will create a new vertex group of the bondary boolean area")
+    use_wire           = bpy.props.BoolProperty(name="Use Bmesh", default=False, description="Use The Wireframe Instead Of Boolean")
 
 
     def draw(self, context):
@@ -374,6 +377,15 @@ class TP_Panels_Preferences(AddonPreferences):
 
         #Tools
         if self.prefs_tabs == 'toolset':
+
+            box = layout.box().column(1)
+
+            row = box.row(1)
+            row.label(text="Menu Axis Plane:")
+            row.prop(self, 'tab_to_menu', expand=True)   
+
+            box.separator() 
+            box.separator() 
 
             box = layout.box().column(1)
            
@@ -405,6 +417,8 @@ class TP_Panels_Preferences(AddonPreferences):
             box.separator()  
             box.separator()  
 
+            box = layout.box().column(1)
+
             row = box.row(1)
             row.label(text="Panel & Menu Tools:")
             row.prop(self, 'tab_optimize', expand=True) 
@@ -412,12 +426,16 @@ class TP_Panels_Preferences(AddonPreferences):
             box.separator()    
             box.separator()    
                             
+            box = layout.box().column(1)
+
             row = box.row(1)
             row.label(text="Menu Tools:")
             row.prop(self, 'tab_btbool_brush_simple', expand=True)   
 
             box.separator()  
             box.separator()  
+
+            box = layout.box().column(1)
 
             row = box.row(1)            
             row.label(text="Panel Tools: Boolean BT")
@@ -435,6 +453,7 @@ class TP_Panels_Preferences(AddonPreferences):
         #Location
         if self.prefs_tabs == 'location':
             
+           
             box = layout.box().column(1)
              
             row = box.row(1)  
@@ -503,9 +522,11 @@ class TP_Panels_Preferences(AddonPreferences):
                 row = box.row(1)                
                 row.prop(self, "tools_category_multi")
 
-
             box.separator()
 
+
+            box.separator() 
+          
             row = layout.row()
             row.label(text="! save user settings for permant location change !", icon ="INFO")
 
@@ -615,7 +636,7 @@ class TP_Panels_Preferences(AddonPreferences):
             col.separator()
                        
             col.prop(self, "fast_transform")
-            col.prop(self, "use_wire", text="Use Wire Instead Of Bbox")
+            col.prop(self, "use_wire", text="Use Wire instead Of BoundBox")
          
             box.separator()
 
@@ -624,14 +645,19 @@ class TP_Panels_Preferences(AddonPreferences):
             
             row = layout.row(1)             
             row.label(text="! For key change go to > User Preferences > TAB: Input !", icon ="INFO")
-            sub = row.row(1)
-            sub.scale_x = 0.5      
-            sub.operator('wm.url_open', text = 'Addon Tip: is key free', icon = 'PLUGIN').url = "https://github.com/Antonioya/blender/tree/master/iskeyfree"
 
             row = layout.column(1) 
             row.label(text="1 > Change search to key-bindig and insert the hotkey, eg. bool menu: shift t !", icon ="BLANK1")
             row.label(text="2 > Under 3D View you find the call menu, name: VIEW3D_TP_Boolean_Menu !", icon ="BLANK1")
             row.label(text="3 > Choose a new key configuration and save user settings !", icon ="BLANK1")
+        
+            box.separator()  
+                        
+            row = layout.row(1)   
+            sub = row.row(1)
+            sub.scale_x = 0.5      
+            sub.operator('wm.url_open', text = 'Is Key Free Addon', icon = 'PLUGIN').url = "https://github.com/Antonioya/blender/tree/master/iskeyfree"
+            row.label(" ", icon ="BLANK1") 
         
             box.separator()  
 
@@ -706,18 +732,47 @@ def UnRegisterFastT():
 def menu_func(self, context):       
 
     icons = load_icons()
+    
+    display_menu = context.user_preferences.addons[__package__].preferences.tab_to_menu
+    if display_menu == 'on':  
 
-    button_axis_xyz_planes = icons.get("icon_axis_xyz_planes")
-    self.layout.menu("tp_menu.intersetion_planes", text ="Planes", icon_value=button_axis_xyz_planes.icon_id)   
+        if context.mode == 'EDIT_MESH':
+            
+            button_axis_xyz_planes = icons.get("icon_axis_xyz_planes")
+            self.layout.menu("tp_menu.intersetion_planes", text ="Planes", icon_value=button_axis_xyz_planes.icon_id)   
+
+            self.layout.separator()
 
 
-# This allows you to right click on a button and link to the manual
-def add_object_manual_map():
-    url_manual_prefix = "https://github.com/mkbreuer/ToolPlus/"
+# RIGHT CLICK BUTTON TO ONLINE MANUAL
+def add_default_manual_map():
+    url_manual_prefix = "https://docs.blender.org/manual/en/dev/modeling"
     url_manual_mapping = (
-        ("bpy.ops.tp_ops.bool_union", "/blob/master/2.79/Sets/toolplus_visuals/toolplus_visual.png"),
+        ("bpy.ops.tp_ops.bool_union"        , "/modifiers/generate/booleans.html"),
+        ("bpy.ops.tp_ops.bool_intersect"    , "/modifiers/generate/booleans.html"),
+        ("bpy.ops.tp_ops.bool_difference"   , "/modifiers/generate/booleans.html"),
+        ("bpy.ops.mesh.intersect"           , "/meshes/editing/faces.html"),
+        ("bpy.ops.mesh.intersect"           , "/meshes/editing/faces.html"),
         )
     return url_manual_prefix, url_manual_mapping
+
+def add_bt_manual_map():
+    url_manual_prefix = "https://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts"
+    url_manual_mapping = (
+        ("bpy.ops.tp_ops.tboolean_union"    , "/Object/BoolTool"),
+        ("bpy.ops.tp_ops.tboolean_inters"   , "/Object/BoolTool"),
+        ("bpy.ops.tp_ops.tboolean_diff"     , "/Object/BoolTool"),
+        ("bpy.ops.tp_ops.tboolean_slice"    , "/Object/BoolTool"),
+        ("bpy.ops.tp_ops.draw_polybrush"    , "/Object/BoolTool"),
+        
+        ("bpy.ops.btool.direct_union"       , "/Object/BoolTool"),
+        ("bpy.ops.btool.direct_intersect"   , "/Object/BoolTool"),
+        ("bpy.ops.btool.direct_difference"  , "/Object/BoolTool"),
+        ("bpy.ops.btool.direct_subtract"    , "/Object/BoolTool"),
+        ("bpy.ops.btool.direct_slice"       , "/Object/BoolTool"),
+        )
+    return url_manual_prefix, url_manual_mapping
+
 
 # REGISTRY #
 import traceback
@@ -737,8 +792,9 @@ def register():
     try: bpy.utils.register_module(__name__)
     except: traceback.print_exc()
 
-    bpy.types.INFO_MT_mesh_add.append(menu_func)
-    bpy.utils.register_manual_map(add_object_manual_map)
+    bpy.types.INFO_MT_mesh_add.prepend(menu_func)
+    bpy.utils.register_manual_map(add_default_manual_map)
+    bpy.utils.register_manual_map(add_bt_manual_map)
 
     # PROPS #  
     bpy.types.Scene.display_props = bpy.props.PointerProperty(type=Display_Tools_Props)
@@ -799,7 +855,8 @@ def register():
 def unregister():
 
     bpy.types.INFO_MT_mesh_add.remove(menu_func)
-    bpy.utils.unregister_manual_map(add_object_manual_map)
+    bpy.utils.unregister_manual_map(add_default_manual_map)
+    bpy.utils.unregister_manual_map(add_bt_manual_map)
  
     # PROPS #  
     del bpy.types.Scene.display_props 

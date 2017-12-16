@@ -430,8 +430,9 @@ class View3D_TP_Plane_X(bpy.types.Operator):
                 box.separator()
 
 
-            if  self.xpl_depth > 0: 
-
+            if  self.xpl_depth == 0: 
+                pass
+            else:
                 box.separator()
 
                 box = col.box().column(1)              
@@ -498,8 +499,9 @@ class View3D_TP_Plane_X(bpy.types.Operator):
 
             
             # booleans
-            if  self.xpl_depth > 0: 
-
+            if  self.xpl_depth == 0: 
+                pass
+            else:
                 if self.pl_bool == "pl_none":
                     pass
 

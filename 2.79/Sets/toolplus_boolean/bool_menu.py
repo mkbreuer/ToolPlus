@@ -186,6 +186,18 @@ class VIEW3D_TP_Boolean_Menu(bpy.types.Menu):
 
             layout.separator() 
 
+            obj = context.active_object
+            if obj:
+                active_wire = obj.show_wire 
+                if active_wire == True:
+                    button_wire_off = icons.get("icon_wire_off")
+                    layout.operator("tp_ops.wt_selection_handler_toggle", "WireToggle", icon_value=button_wire_off.icon_id)              
+                else:                       
+                    button_wire_on = icons.get("icon_wire_on")
+                    layout.operator("tp_ops.wt_selection_handler_toggle", "WireToggle", icon_value=button_wire_on.icon_id)
+           
+                layout.separator() 
+
             button_boolean_carver = icons.get("icon_boolean_carver")
             layout.operator("object.carver", text="3d Carver", icon_value=button_boolean_carver.icon_id)
 
@@ -254,6 +266,19 @@ class VIEW3D_TP_Boolean_Menu(bpy.types.Menu):
                 layout.separator()          
 
 
+
+            obj = context.active_object
+            if obj:
+                active_wire = obj.show_wire 
+                if active_wire == True:
+                    button_wire_off = icons.get("icon_wire_off")
+                    layout.operator("tp_ops.wt_selection_handler_toggle", "WireToggle", icon_value=button_wire_off.icon_id)              
+                else:                       
+                    button_wire_on = icons.get("icon_wire_on")
+                    layout.operator("tp_ops.wt_selection_handler_toggle", "WireToggle", icon_value=button_wire_on.icon_id)
+           
+                layout.separator() 
+           
             button_boolean_facemerge = icons.get("icon_boolean_facemerge")
             layout.operator("tp_ops.boolean_2d_union_edm_menu", text= "2d Union", icon_value=button_boolean_facemerge.icon_id)      
 

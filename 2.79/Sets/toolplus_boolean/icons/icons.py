@@ -77,6 +77,9 @@ def load_icons():
     mkb_icons.load("icon_remove_double", os.path.join(icons_dir, "remove_double.png"), 'IMAGE')
 
     mkb_icons.load("icon_select_link", os.path.join(icons_dir, "select_link.png"), 'IMAGE')
+
+    mkb_icons.load("icon_wire_on", os.path.join(icons_dir, "wire_on.png"), 'IMAGE')
+    mkb_icons.load("icon_wire_off", os.path.join(icons_dir, "wire_off.png"), 'IMAGE')
     
     toolplus_icon_collections["main"] = mkb_icons
     toolplus_icons_loaded = True
