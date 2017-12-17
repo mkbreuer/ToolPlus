@@ -21,6 +21,8 @@ class VIEW3D_TP_Apply_Mirror_Modifier(bpy.types.Operator):
         is_select, is_mod = False, False
         message_a = ""
 
+        #scene = bpy.context.scenes
+        
 
         if bpy.context.mode == 'OBJECT':       
 
@@ -99,6 +101,131 @@ class VIEW3D_TP_Remove_Modifier_Mirror(bpy.types.Operator):
                         obj.modifiers.remove(modifier)
                         
         return {'FINISHED'}
+
+
+class VIEW3D_TP_Render_On_Off(bpy.types.Operator):
+    '''render on / off'''
+    bl_idname = "tp_ops.mods_render"
+    bl_label = "Render"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+
+        is_apply = True
+        message_a = ""
+
+        for mod in context.active_object.modifiers:
+            if (mod.show_render):
+                is_apply = False
+                break
+        for obj in context.selected_objects:
+            for mod in obj.modifiers:
+                mod.show_render = is_apply
+
+        if is_apply:
+            message_a = "All Render ON"
+        else:
+            message_a = "All Render OFF"
+
+        self.report(type={"INFO"}, message=message_a)
+                    
+        return {'FINISHED'}
+        
+        
+
+class VIEW3D_TP_Modifier_On_Off(bpy.types.Operator):
+    '''view on / off'''
+    bl_idname = "tp_ops.mods_view"
+    bl_label = "View"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+
+        is_apply = True
+        message_a = ""
+
+        for mod in context.active_object.modifiers:
+            if (mod.show_viewport):
+                is_apply = False
+                break
+        for obj in context.selected_objects:
+            for mod in obj.modifiers:
+                mod.show_viewport = is_apply
+
+        if is_apply:
+            message_a = "All View ON"
+        else:
+            message_a = "All View OFF"
+
+        self.report(type={"INFO"}, message=message_a)
+
+                    
+        return {'FINISHED'}
+    
+
+
+class VIEW3D_TP_Edit_On_Off(bpy.types.Operator):
+    '''edit on / off'''
+    bl_idname = "tp_ops.mods_edit"
+    bl_label = "Edit"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+
+        is_apply = True
+        message_a = ""
+
+        for mod in context.active_object.modifiers:
+            if (mod.show_in_editmode):
+                is_apply = False
+                break
+        for obj in context.selected_objects:
+            for mod in obj.modifiers:
+                mod.show_in_editmode = is_apply
+
+        if is_apply:
+            message_a = "All Edit ON"
+        else:
+            message_a = "All Edit OFF"
+
+        self.report(type={"INFO"}, message=message_a)
+
+                    
+        return {'FINISHED'}
+        
+
+
+class VIEW3D_TP_Cage_On_Off(bpy.types.Operator):
+    '''cage  on / off'''
+    bl_idname = "tp_ops.mods_cage"
+    bl_label = "Cage"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+
+        is_apply = True
+        message_a = ""
+
+        for mod in context.active_object.modifiers:
+            if (mod.show_on_cage):
+                is_apply = False
+                break
+        for obj in context.selected_objects:
+            for mod in obj.modifiers:
+                mod.show_on_cage = is_apply
+
+        if is_apply:
+            message_a = "All Cage ON"
+        else:
+            message_a = "All Cage OFF"
+
+        self.report(type={"INFO"}, message=message_a)
+
+                    
+        return {'FINISHED'}
+    
+    
+
 
 
     

@@ -17,6 +17,9 @@
 # ##### END GPL LICENSE BLOCK #####
 #
 
+
+from toolplus_display.ops_select.select_meshlint import *
+
 # LOAD MODUL #
 import bpy
 from bpy import *
@@ -59,7 +62,7 @@ class draw_display_compact_panel_layout:
         tp_props = context.window_manager.tp_props_display       
         tp_fly = context.scene.display_props       
        
-        icons = load_icons()
+        icons = load_icons()       
   
         wm = context.window_manager 
         view = context.space_data
@@ -82,37 +85,37 @@ class draw_display_compact_panel_layout:
                row.alignment = "CENTER"
                               
                if obj_type in {'MESH'}:                                   
-                   row.label("MESH") 
+                   row.label("MESH", icon="MESH_CUBE") 
                                       
                if obj_type in {'LATTICE'}:                                     
-                   row.label("LATTICE") 
+                   row.label("LATTICE", icon="MOD_LATTICE") 
 
                if obj_type in {'CURVE'}:                                       
-                   row.label("CURVE")               
+                   row.label("CURVE", icon="CURVE_BEZCURVE")               
                    
                if obj_type in {'SURFACE'}:                                       
-                   row.label("SURFACE")                 
+                   row.label("SURFACE", icon="SURFACE_NSURFACE")                 
                    
                if obj_type in {'META'}:                                      
-                   row.label("MBall")                 
+                   row.label("MBall", icon="META_BALL")                 
                    
                if obj_type in {'FONT'}:                                       
-                   row.label("FONT")  
+                   row.label("FONT", icon="FONT_DATA")  
                                                   
                if obj_type in {'ARMATURE'}:                                        
-                   row.label("ARMATURE") 
+                   row.label("ARMATURE", icon="ARMATURE_DATA") 
 
                if obj_type in {'EMPTY'}:
-                   row.label("EMPTY") 
+                   row.label("EMPTY", icon="OUTLINER_OB_EMPTY") 
 
                if obj_type in {'CAMERA'}:
-                  row.label("CAMERA") 
+                  row.label("CAMERA", icon="CAMERA_DATA") 
 
                if obj_type in {'LAMP'}:
-                   row.label("LAMP") 
+                   row.label("LAMP", icon="LAMP_DATA") 
 
                if obj_type in {'SPEAKER'}:
-                   row.label("SPEAKER") 
+                   row.label("SPEAKER", icon="SPEAKER") 
 
 
         Display_Pivot = context.user_preferences.addons[__package__].preferences.tab_pivot
@@ -145,10 +148,13 @@ class draw_display_compact_panel_layout:
                 row.prop(tp_props, "display_world", text="", icon="WORLD")                
                 row.label("Shade")
 
-                row.prop(context.space_data, "show_only_render", text="", icon ="RESTRICT_RENDER_OFF")    
-                row.operator("tp_ops.toggle_silhouette", text="", icon ="MATCAP_08")               
-                row.prop(context.space_data, "use_matcap", text="", icon ="MATCAP_01") 
-                row.prop(context.space_data.fx_settings, "use_ssao", text="", icon="GROUP")
+                display_icons = context.user_preferences.addons[__package__].preferences.tab_icons
+                if display_icons == 'on':   
+
+                    row.prop(context.space_data, "show_only_render", text="", icon ="RESTRICT_RENDER_OFF")    
+                    row.operator("tp_ops.toggle_silhouette", text="", icon ="MATCAP_08")               
+                    row.prop(context.space_data, "use_matcap", text="", icon ="MATCAP_01") 
+                    row.prop(context.space_data.fx_settings, "use_ssao", text="", icon="BRUSH_LAYER")
 
    
             if tp_props.display_world:                                                  
@@ -326,10 +332,13 @@ class draw_display_compact_panel_layout:
                 row.prop(tp_props, "display_view", text="", icon="VIEW3D")                
                 row.label("Screen")
                
-                row.operator("wm.window_fullscreen_toggle", text = "", icon = "FULLSCREEN_ENTER")                
-                row.operator("screen.screen_full_area", text = "", icon = "GO_LEFT")   
-                row.operator("wm.window_duplicate", text="", icon = "SCREEN_BACK")
-                row.operator("screen.region_quadview", text="", icon = "SPLITSCREEN")
+                display_icons = context.user_preferences.addons[__package__].preferences.tab_icons
+                if display_icons == 'on':   
+
+                    row.operator("wm.window_fullscreen_toggle", text = "", icon = "FULLSCREEN_ENTER")                
+                    row.operator("screen.screen_full_area", text = "", icon = "GO_LEFT")   
+                    row.operator("wm.window_duplicate", text="", icon = "SCREEN_BACK")
+                    row.operator("screen.region_quadview", text="", icon = "SPLITSCREEN")
 
 
             if tp_props.display_view:  
@@ -586,6 +595,496 @@ class draw_display_compact_panel_layout:
                         box.separator() 
 
 
+
+        Display_Selection = context.user_preferences.addons[__package__].preferences.tab_selection
+        if Display_Selection == 'on':                                         
+
+            box = layout.box().column(1)
+            
+            row = box.row(1)
+            if tp_props.display_selection:            
+                row.prop(tp_props, "display_selection", text="", icon="BORDER_RECT")
+                row.label("Selection")
+            else:
+                row.prop(tp_props, "display_selection", text="", icon="BORDER_RECT")                
+                row.label("Selection")
+               
+               
+                display_icons = context.user_preferences.addons[__package__].preferences.tab_icons
+                if display_icons == 'on':    
+                              
+                    if context.mode == 'OBJECT':   
+                        
+                        row.operator("object.select_grouped", text="", icon="GROUP")                      
+                        row.operator("object.select_linked", text="", icon="LINKED")             
+
+                        row.operator("object.select_pattern", text="", icon="OUTLINER_DATA_FONT")  
+                        row.operator("object.select_by_type", text="", icon="OOPS")  
+                            
+                    
+                    elif context.mode == 'EDIT_MESH':
+
+                        row.operator("mesh.select_mode", text="", icon='VERTEXSEL').type = 'VERT'
+                        row.operator("mesh.select_mode", text="", icon='EDGESEL').type = 'EDGE'
+                        row.operator("mesh.select_mode", text="", icon='FACESEL').type = 'FACE'  
+                        row.menu("VIEW3D_TP_MultiMode", text="", icon="UV_SYNC_SELECT") 
+
+                    
+                    else:
+                        row.operator("view3d.select_circle", text="", icon="BORDER_LASSO")  
+                        row.operator("view3d.select_border", text="", icon="BORDER_RECT")                       
+                                
+                
+                
+            if tp_props.display_selection:            
+               
+                if context.mode == 'OBJECT':
+
+                    box.separator() 
+
+                    row = box.row(1)
+
+                    row = box.row(1)
+                    sub = row.row()
+                    sub.scale_x = 0.3
+                    sub.operator("object.select_more",text="+")
+                    sub.operator("object.select_all",text="All").action = 'TOGGLE'
+                    sub.operator("object.select_less",text="-")   
+
+                    box.separator() 
+             
+                    row = box.row(1)         
+                    row.operator("object.select_by_layer", text="All by Layer")
+                    row.operator("tp_ops.cycle_selected", text="CycleThrough")                       
+                    
+                    row = box.row(1)
+                    sub = row.row(1)
+                    sub.scale_x = 0.5
+                    sub.operator("view3d.view_selected"," ", icon = "ZOOM_SELECTED" )
+                    sub.operator("view3d.view_all"," ", icon = "ZOOM_OUT" )  
+                    row.operator("object.select_linked", text="Get Active").type='OBDATA'
+
+                    box.separator() 
+
+                    row = box.row(1)    
+                    row.operator("object.select_mirror", text="Mirror") 
+                    row.operator("object.select_all", text="Inverse").action = 'INVERT'
+
+                    row = box.row(1)              
+                    row.operator("object.select_random", text="Random")
+                    row.operator("object.select_camera", text="Camera")            
+
+                    box.separator() 
+
+                    row = box.row(1) 
+                    row.operator("object.select_linked", text="Linked", icon="CONSTRAINT") 
+                    row.operator("object.select_grouped", text="Group", icon="GROUP")        
+                
+                    row = box.row(1) 
+                    row.operator("object.select_by_type", text="Type", icon="OOPS")        
+                    row.operator("object.select_pattern", text="Name", icon="OUTLINER_DATA_FONT")  
+
+                    box.separator() 
+
+#                    box = layout.box().column(1)                                      
+
+#                    row = box.row(1)
+#                    row.operator("tp_ops.unfreeze_selected", text = "UnFreeze All", icon = "RESTRICT_SELECT_OFF")
+#                    row.operator("tp_ops.freeze_selected", text = "Freeze", icon = "FREEZE")
+
+#                    row = box.row(1)   
+#                    row.operator("object.mesh_all", text= " ", icon="OBJECT_DATAMODE")
+#                    row.operator("object.lamp_all",text=" ", icon="LAMP")
+#                    row.operator("object.curve_all",text=" ", icon="OUTLINER_OB_CURVE")
+#                    row.operator("object.bone_all",text=" ", icon="BONE_DATA")
+#                    row.operator("object.particles_all", text=" ", icon="MOD_PARTICLES")
+#                    row.operator("object.camera_all", text=" ", icon="OUTLINER_DATA_CAMERA")
+
+#                    box.separator() 
+
+
+
+                if context.mode == 'EDIT_MESH':
+                    
+                    box.separator()                           
+                  
+                    row = box.row(1)
+                    row.operator("mesh.select_mode", text="", icon='VERTEXSEL').type = 'VERT'
+                    row.operator("mesh.select_mode", text="", icon='EDGESEL').type = 'EDGE'
+                    row.operator("mesh.select_mode", text="", icon='FACESEL').type = 'FACE'  
+                    row.menu("VIEW3D_TP_MultiMode", text="", icon="UV_SYNC_SELECT") 
+
+                    box.separator()                           
+                    
+                    row = box.row(1)
+                    sub = row.row()
+                    sub.scale_x = 0.3
+                    sub.operator("mesh.select_more",text="+")
+                    sub.operator("mesh.select_all",text="All")
+                    sub.operator("mesh.select_less",text="-")   
+              
+                    box.separator()         
+                
+                    row = box.row(1)
+                    row.operator("mesh.select_similar",text="Similar")              
+                    row.operator("mesh.select_similar_region", text="Regions") 
+
+                    row = box.row(1)
+                    row.operator("mesh.select_mirror", text="Mirror")             
+                    row.operator("mesh.select_all", text="Inverse").action = 'INVERT'
+                                  
+                    box = layout.box().column(1)
+                     
+                    row = box.row(1)
+                    row.operator("mesh.loop_multi_select", text="Edge Loops").ring = False
+                    row.operator("mesh.loop_multi_select", text="Edge Rings").ring = True              
+
+                    row = box.row(1)
+                    row.operator("mesh.grow_loop","Grow")
+                    row.operator("mesh.shrink_loop","Shrink")
+                     
+                    row = box.row(1)
+                    row.operator("mesh.path_select_ring","RingPath")
+                    row.operator("mesh.extend_loop","Extend")
+
+                    row = box.row(1)
+                    row.operator("mesh.region_to_loop", "Inner-Loops")   
+                    row.operator("mesh.loop_to_region", "Boundary-Loop")
+
+
+                    box = layout.box().column(1)
+                     
+                    row = box.row(1)
+                    row.operator("mesh.shortest_path_select", text="Shortest") 
+                    row.operator("mesh.faces_select_linked_flat", text="FaceLink")
+
+                    row = box.row(1)             
+                    row.operator("mesh.select_loose",text="Loose")
+                    row.operator("mesh.select_linked",text="Linked")             
+
+                    row = box.row(1)
+                    row.operator("mesh.select_axis", text="GetAxis")             
+                    row.operator("mesh.select_face_by_sides",text="Nside")   
+             
+                    row = box.row(1)             
+                    row.operator("mesh.edges_select_sharp", text="Sharp")
+                    row.operator("mesh.select_nth", "Checker") 
+                     
+                    row = box.row(1)
+                    row.operator("mesh.select_ungrouped", text="Ungrouped Verts")
+                    row.operator("mesh.select_random", text="Random") 
+
+
+                    box = layout.box().column(1)
+
+                    row = box.row(1)
+                    if context.scene.tool_settings.mesh_select_mode[2] is False:
+                        row.operator("mesh.select_non_manifold", text="Non Manifold")      
+                    row.operator("mesh.select_interior_faces", text="Interior Faces")
+                     
+                    box = layout.box().column(1)         
+
+                    row = box.row(1)
+                    row.operator('meshlint.select', text='Select MeshLint', icon='EDIT')
+               
+                    row = box.row(1)      
+                    if tp_props.display_meshlint:
+                        row.prop(tp_props, "display_meshlint", text="Settings", icon='TRIA_DOWN')
+                    else:
+                        row.prop(tp_props, "display_meshlint", text="Settings", icon='TRIA_RIGHT')
+                  
+                    if MeshLintVitalizer.is_live:
+                        live_label = 'Pause!'
+                        play_pause = 'PAUSE'
+                    else:
+                        live_label = 'Live!'
+                        play_pause = 'PLAY'
+                    
+                    row.operator('meshlint.live_toggle', text=live_label, icon=play_pause)
+
+
+                    if tp_props.display_meshlint:
+                        
+                        box = layout.box().column(1)                   
+                        
+                        row = box.column(1)
+
+                        for lint in MeshLintAnalyzer.CHECKS:
+                            prop_name = lint['check_prop']
+                            is_enabled = getattr(context.scene, prop_name)
+                            label = 'Check ' + lint['label']
+                            row.prop(context.scene, prop_name, text=label)
+
+
+                    box = layout.box().column(1)         
+
+                    row = box.column(1)
+                    active = context.active_object
+
+                    if not has_active_mesh(context):
+                        return
+
+                    total_problems = 0
+
+                    for lint in MeshLintAnalyzer.CHECKS:
+                        count = lint['count']
+                        
+                        if count in (TBD_STR, N_A_STR):
+                            label = str(count) + ' ' + lint['label']
+                            reward = 'SOLO_OFF'
+                        elif 0 == count:
+                            label = 'No %s!' % lint['label']
+                            reward = 'SOLO_ON'
+                        else:
+                            total_problems += count
+                            label = str(count) + 'x ' + lint['label']
+                            label = depluralize(count=count, string=label)
+                            reward = 'ERROR'
+                 
+                        row.label(text=label, icon=reward)
+                 
+                    #name_crits = MeshLintControl.build_object_criticisms(bpy.context.selected_objects, total_problems)
+                   
+                    #for crit in name_crits:
+                        #row.label(crit)
+
+                    box.separator()
+
+                    box = layout.box().column(1)
+
+                    row = box.row(1)
+                    row.operator("mesh.sort_elements", text="Mesh Sort Elements")
+                    sub = row.row(1)
+                    sub.scale_x = 0.5
+                    sub.operator("addongen.mesh_order_research_operator", text = "MeshLoop").type = "MeshLoop"
+                  
+                    row = box.row(1)
+                    row.operator("addongen.mesh_order_research_operator", text = "VertOrder").type = "Vertices"
+                    row.operator("addongen.mesh_order_research_operator", text = "EdgeOrder").type = "Edges"
+                    row.operator("addongen.mesh_order_research_operator", text = "PolyOrder").type = "Polygons"
+
+                    box.separator() 
+
+
+
+                if context.mode == 'EDIT_CURVE':
+                    
+                     box.separator() 
+
+                     row = box.row(1)
+                     sub = row.row()
+                     sub.scale_x = 0.3
+                     sub.operator("curve.select_more",text="+")
+                     sub.operator("curve.select_all",text="All").action = 'TOGGLE'  
+                     sub.operator("curve.select_less",text="-")   
+
+                     box.separator()
+
+                     row = box.row(1) 
+                     row.operator("curve.select_all", text="Inverse").action = 'INVERT'
+                     row.menu("VIEW3D_MT_edit_curve_showhide",  icon = "VISIBLE_IPO_ON") 
+
+                     row = box.row(1) 
+                     row.operator("curve.select_random", text="Random") 
+                     row.operator("curve.select_similar", text="Similar") 
+
+                     row = box.row(1)
+                     row.operator("curve.select_linked", text="Linked")             
+                     row.operator("curve.select_nth", text="Checker")
+                    
+                     box.separator()
+                     
+                     row = box.row(1) 
+                     row.operator("curve.de_select_first", text="First")
+                     row.operator("curve.de_select_last", text="Last")
+                    
+                     row = box.row(1)             
+                     row.operator("curve.select_next", text="Next")
+                     row.operator("curve.select_previous", text="Previous")
+
+                     box.separator() 
+
+
+
+                if context.mode == 'EDIT_SURFACE':
+
+                     box.separator() 
+
+                     row = box.row(1)
+                     sub = row.row()
+                     sub.scale_x = 0.3
+                     sub.operator("curve.select_more",text="+")
+                     sub.operator("curve.select_all",text="All").action = 'TOGGLE'
+                     sub.operator("curve.select_less",text="-")   
+
+                     box.separator()
+
+                     row = box.row(1) 
+                     row.operator("curve.select_all", text="Inverse").action = 'INVERT'
+                     row.menu("VIEW3D_MT_edit_curve_showhide",  icon = "VISIBLE_IPO_ON") 
+
+                     row = box.row(1) 
+                     row.operator("curve.select_random", text="Random") 
+                     row.operator("curve.select_similar", text="Similar") 
+
+                     row = box.row(1)
+                     row.operator("curve.select_linked", text="Linked")             
+                     row.operator("curve.select_nth", text="Checker")
+
+                     box.separator()
+                     
+                     row = box.row(1) 
+                     row.operator("curve.select_row", text="Control Point Row") 
+                
+
+
+                if context.mode == 'EDIT_LATTICE':
+                    
+                     box = layout.box().column(1)
+                   
+                     row = box.row(1) 
+                     row.operator("lattice.select_all", text="All").action = 'TOGGLE'
+                     row.operator("lattice.select_all", text="Inverse").action = 'INVERT'
+
+                     row = box.row(1)
+                     row.operator("lattice.select_random", text="Random") 
+                     row.operator("lattice.select_mirror", text="Mirror") 
+
+                     box.separator()
+
+                     row = box.row(1)
+                     row.operator("lattice.select_ungrouped", text="Select Ungrouped")             
+
+
+
+                if context.mode == 'EDIT_METABALL':        
+                    
+                     box.separator() 
+                   
+                     row = box.row(1) 
+                     row.operator("mball.select_all", text="All").action = 'TOGGLE'
+
+                     box.separator()
+                     
+                     row = box.row(1)
+                     row.operator("mball.select_random_metaelems", text="Random") 
+                     row.operator("mball.select_all", text="Inverse").action = 'INVERT'
+
+                     row = box.row(1)
+                     row.operator("mball.select_similar", text="Type").type='TYPE'
+                     row.operator("mball.select_similar", text="Radius").type='RADIUS' 
+                
+                     box.separator()
+                     row = box.row(1)
+                     row.operator("mball.select_similar", text="Stiffness").type='STIFFNESS'   
+                     row.operator("mball.select_similar", text="Rotation").type='ROTATION'    
+                     
+
+
+                if context.mode == 'EDIT_ARMATURE':          
+                        
+                     box.separator() 
+
+                     row = box.row(1)
+                     sub = row.row()
+                     sub.scale_x = 0.3
+                     sub.operator("armature.select_more",text="+")
+                     sub.operator("armature.select_all",text="All").action = 'TOGGLE'
+                     sub.operator("armature.select_less",text="-")   
+
+                     box.separator()
+
+                     row = box.row(1) 
+                     row.operator("armature.select_mirror", text="Mirror").extend = False
+                     row.operator("armature.select_all", text="Inverse").action = 'INVERT'            
+                    
+                     row = box.row(1)   
+                     row.operator("armature.select_hierarchy", text="Parent").direction = 'PARENT'
+                     row.operator("armature.select_hierarchy", text="Child").direction = 'CHILD'
+
+                     row = box.row(1)     
+                     props = row.operator("armature.select_hierarchy", text="Extend Parent")
+                     props.extend = True
+                     props.direction = 'PARENT'
+
+                     props = row.operator("armature.select_hierarchy", text="Extend Child")
+                     props.extend = True
+                     props.direction = 'CHILD'
+
+                     box.separator()
+
+                     row = box.row(1)                           
+                     row.operator_menu_enum("armature.select_similar", "type", text="Similar")
+                     row.operator("object.select_pattern", text="Pattern...")
+
+
+
+                if context.mode == 'POSE':    
+
+                     box.separator() 
+
+                     row = box.row(1)
+                     sub = row.row()
+                     sub.scale_x = 0.3
+                     sub.operator("pose.select_hierarchy",text="+").direction = 'CHILD'
+                     sub.operator("pose.select_all",text="All").action = 'TOGGLE'
+                     sub.operator("pose.select_hierarchy",text="-").direction = 'PARENT'   
+
+                     box.separator()
+
+                     row = box.row(1)      
+                     row.operator("pose.select_mirror", text="Flip Active")
+                     row.operator("pose.select_all", text="Inverse").action = 'INVERT'
+             
+                     row = box.row(1)            
+                     row.operator("pose.select_constraint_target", text="Constraint Target")
+                     row.operator("pose.select_linked", text="Linked")
+
+                     row = box.row(1)
+                     row.operator("pose.select_hierarchy", text="Parent").direction = 'PARENT'
+                     row.operator("pose.select_hierarchy", text="Child").direction = 'CHILD'
+
+                     row = box.row(1)
+                     props = row.operator("pose.select_hierarchy", text="Extend Parent")
+                     props.extend = True
+                     props.direction = 'PARENT'
+                    
+                     props = row.operator("pose.select_hierarchy", text="Extend Child")
+                     props.extend = True
+                     props.direction = 'CHILD'
+                        
+                     box.separator()
+
+                     row = box.row(1) 
+                     row.operator_menu_enum("pose.select_grouped", "type", text="Grouped...")
+                     row.operator("object.select_pattern", text="Pattern...")
+
+
+
+                if  context.mode == 'PARTICLE':
+              
+                     box.separator() 
+
+                     row = box.row(1)
+                     sub = row.row()
+                     sub.scale_x = 0.3
+                     sub.operator("particle.select_more",text="+")
+                     sub.operator("particle.select_all",text="All").action = 'TOGGLE'
+                     sub.operator("particle.select_less",text="-") 
+
+                     box.separator()
+
+                     row = box.row(1)   
+                     row.operator("particle.select_linked", text="Linked", icon = "LINKED") 
+                     row.operator("particle.select_all", text="Inverse").action = 'INVERT'
+
+                     row = box.row(1)  
+                     row.operator("particle.select_tips", text = "Tips", icon = "IPO_EASE_OUT")  
+                     row.operator("particle.select_roots", text = "Roots")
+
+
+
+
         Display_Restrict = context.user_preferences.addons[__package__].preferences.tab_restrict
         if Display_Restrict == 'on':                                         
 
@@ -593,21 +1092,30 @@ class draw_display_compact_panel_layout:
             
             row = box.row(1)
             if tp_props.display_restrict:            
-                row.prop(tp_props, "display_restrict", text="", icon="BORDER_RECT")
+                row.prop(tp_props, "display_restrict", text="", icon="LOCKED")
                 row.label("Restrict")
             else:
-                row.prop(tp_props, "display_restrict", text="", icon="BORDER_RECT")                
+                row.prop(tp_props, "display_restrict", text="", icon="LOCKED")                
                 row.label("Restrict")
 
-                button_restrictor = icons.get("icon_restrictor")     
-                row.menu("RestrictorSelection", text="", icon_value=button_restrictor.icon_id)     
-                obj = context.active_object
-                if obj:
-                    row.prop(context.object, "hide_select", text="", icon = "RESTRICT_SELECT_OFF")
-                    row.prop(context.object, "hide_render", text="", icon = "RESTRICT_RENDER_OFF")
-                else:
-                    pass
-                row.menu("VIEW3D_MT_object_showhide", "", icon = "VISIBLE_IPO_ON")   
+                display_icons = context.user_preferences.addons[__package__].preferences.tab_icons
+                if display_icons == 'on':   
+
+                    button_restrictor = icons.get("icon_restrictor")     
+                    row.menu("RestrictorSelection", text="", icon_value=button_restrictor.icon_id)     
+                    obj = context.active_object
+                    if obj:
+                        hide_select = obj.hide_select 
+                        if hide_select == True:                    
+                            row.prop(context.object, "hide_select", text="", icon = "LOCKED")
+                        else:
+                            row.prop(context.object, "hide_select", text="", icon = "UNLOCKED")
+
+                        row.prop(context.object, "hide_render", text="", icon = "RESTRICT_RENDER_OFF")
+                    else:
+                        pass
+                    row.menu("VIEW3D_MT_object_showhide", "", icon = "VISIBLE_IPO_ON")   
+
 
             if tp_props.display_restrict:            
                
@@ -657,43 +1165,47 @@ class draw_display_compact_panel_layout:
                 row.prop(tp_props, "display_display", text="", icon="ZOOM_SELECTED")                
                 row.label("Display")
 
-                obj = context.active_object     
-                if obj:
-                    obj_type = obj.type
-                                                                          
-                    if obj_type in {'ARMATURE', 'POSE','LAMP', 'CAMERA', 'EMPTY', 'FORCE', 'SPEAKER'}: 
- 
-                        row.prop(context.object, "show_bounds", text="", icon='SNAP_PEEL_OBJECT')                     
-                        row.prop(context.object, "show_x_ray", text="", icon ="META_CUBE")
- 
-                    else:
-                                       
-                        obj = context.object
-                        if obj:               
-                            if obj.draw_type == 'WIRE':
-                                row.operator("tp_ops.draw_solid", text="", icon='GHOST_DISABLED')     
-                            else:
-                                row.operator("tp_ops.draw_wire", text="", icon='GHOST_ENABLED')        
-                        else:
-                            row.label("", icon="BLANK1")  
-                        
-                        if obj:
-                            active_wire = obj.show_wire 
-                            if active_wire == True:
-                                row.operator("tp_ops.edge_wire_off", "", icon = 'MESH_PLANE')              
-                            else:                       
-                                row.operator("tp_ops.edge_wire_on", "", icon = 'MESH_GRID')
-                        else:
-                            row.label("", icon="BLANK1")  
+             
+                display_icons = context.user_preferences.addons[__package__].preferences.tab_icons
+                if display_icons == 'on':   
 
-                        if obj:                  
+                    obj = context.active_object     
+                    if obj:
+                        obj_type = obj.type
+                                                                              
+                        if obj_type in {'ARMATURE', 'POSE','LAMP', 'CAMERA', 'EMPTY', 'FORCE', 'SPEAKER'}: 
+     
+                            row.prop(context.object, "show_bounds", text="", icon='SNAP_PEEL_OBJECT')                     
                             row.prop(context.object, "show_x_ray", text="", icon ="META_CUBE")
-
-                            obj_type = obj.type                    
-                            if obj_type in {'MESH'}:   
-                                row.prop(context.space_data, "show_backface_culling", text="", icon ="MOD_LATTICE")         
+     
                         else:
-                            pass
+                                           
+                            obj = context.object
+                            if obj:               
+                                if obj.draw_type == 'WIRE':
+                                    row.operator("tp_ops.draw_solid", text="", icon='GHOST_DISABLED')     
+                                else:
+                                    row.operator("tp_ops.draw_wire", text="", icon='GHOST_ENABLED')        
+                            else:
+                                row.label("", icon="BLANK1")  
+                            
+                            if obj:
+                                active_wire = obj.show_wire 
+                                if active_wire == True:
+                                    row.operator("tp_ops.edge_wire_off", "", icon = 'MESH_PLANE')              
+                                else:                       
+                                    row.operator("tp_ops.edge_wire_on", "", icon = 'MESH_GRID')
+                            else:
+                                row.label("", icon="BLANK1")  
+
+                            if obj:                  
+                                row.prop(context.object, "show_x_ray", text="", icon ="META_CUBE")
+
+                                obj_type = obj.type                    
+                                if obj_type in {'MESH'}:   
+                                    row.prop(context.space_data, "show_backface_culling", text="", icon ="MOD_LATTICE")         
+                            else:
+                                pass
 
 
             if tp_props.display_display: 
@@ -921,34 +1433,38 @@ class draw_display_compact_panel_layout:
                         row.prop(tp_props, "display_shade", text="", icon="MOD_EDGESPLIT")                
                         row.label("Smooth")
                           
-                        obj = context.active_object     
-                        if obj:
-                           obj_type = obj.type
-                                          
-                           if obj and obj_type in {'MESH'}:
-                               
-                               row.prop(context.active_object.data, "use_auto_smooth", text="",icon="AUTO")
 
-                       
-                        if context.mode == 'EDIT_MESH':          
-
-                            row.operator("mesh.faces_shade_flat", text="", icon="MESH_CIRCLE") 
-                            row.operator("mesh.faces_shade_smooth", text="", icon="SMOOTH")  
-                            row.operator("mesh.normals_make_consistent", text="", icon="SNAP_NORMAL")  
+                        display_icons = context.user_preferences.addons[__package__].preferences.tab_icons
+                        if display_icons == 'on':   
                         
-                        if context.mode == 'OBJECT':             
-              
-                            row.operator("object.shade_flat", text="", icon="MESH_CIRCLE")
-                            row.operator("object.shade_smooth", text="", icon="SMOOTH")  
-                            row.operator("tp_ops.rec_normals", text="", icon="SNAP_NORMAL") 
+                            obj = context.active_object     
+                            if obj:
+                               obj_type = obj.type
+                                              
+                               if obj and obj_type in {'MESH'}:
+                                   
+                                   row.prop(context.active_object.data, "use_auto_smooth", text="",icon="AUTO")
 
+                           
+                            if context.mode == 'EDIT_MESH':          
 
-                        if context.mode == 'EDIT_CURVE':
+                                row.operator("mesh.faces_shade_flat", text="", icon="MESH_CIRCLE") 
+                                row.operator("mesh.faces_shade_smooth", text="", icon="SMOOTH")  
+                                row.operator("mesh.normals_make_consistent", text="", icon="SNAP_NORMAL")  
                             
-                            row.operator("tp_ops.curve_shade", text="", icon="MESH_CIRCLE").shade_mode='flat'
-                            row.operator("tp_ops.curve_shade", text="", icon="SMOOTH").shade_mode='smooth'  
-                            row.operator("curve.normals_make_consistent",text="", icon='SNAP_NORMAL')     
-                    
+                            if context.mode == 'OBJECT':             
+                  
+                                row.operator("object.shade_flat", text="", icon="MESH_CIRCLE")
+                                row.operator("object.shade_smooth", text="", icon="SMOOTH")  
+                                row.operator("tp_ops.rec_normals", text="", icon="SNAP_NORMAL") 
+
+
+                            if context.mode == 'EDIT_CURVE':
+                                
+                                row.operator("tp_ops.curve_shade", text="", icon="MESH_CIRCLE").shade_mode='flat'
+                                row.operator("tp_ops.curve_shade", text="", icon="SMOOTH").shade_mode='smooth'  
+                                row.operator("curve.normals_make_consistent",text="", icon='SNAP_NORMAL')     
+                        
                  
                     if tp_props.display_shade: 
                     
@@ -1082,27 +1598,30 @@ class draw_display_compact_panel_layout:
                         row.prop(tp_props, "display_material", text="", icon="MATERIAL_DATA")                
                         row.label("Material")
                     
-                        row.operator("tp_ops.material_one","", icon="ZOOMIN")   
-                      
-                        if bpy.context.scene.render.engine == 'CYCLES':
-                            if len(context.object.material_slots) > 0:                            
-                                sub = row.row(1)
-                                sub.scale_x = 0.35 
-                                sub.prop(context.window_manager, 'col_mat_surface') 
-                                #sub.prop(context.object.active_material, "diffuse_color", text="")  
+                        display_icons = context.user_preferences.addons[__package__].preferences.tab_icons
+                        if display_icons == 'on':   
+
+                            row.operator("tp_ops.material_one","", icon="ZOOMIN")   
+                          
+                            if bpy.context.scene.render.engine == 'CYCLES':
+                                if len(context.object.material_slots) > 0:                            
+                                    sub = row.row(1)
+                                    sub.scale_x = 0.35 
+                                    sub.prop(context.window_manager, 'col_mat_surface') 
+                                    #sub.prop(context.object.active_material, "diffuse_color", text="")  
+                                else:
+                                    pass   
+                         
                             else:
-                                pass   
-                     
-                        else:
-                            
-                            obj = context.active_object
-                            if obj:                   
-                                sub = row.row(1)
-                                sub.scale_x = 0.35 
-                                sub.prop(context.window_manager, 'col_mat_surface')                   
-                            else:
-                                pass          
-                        row.menu("tp_ops.material_list", text="", icon="COLLAPSEMENU")
+                                
+                                obj = context.active_object
+                                if obj:                   
+                                    sub = row.row(1)
+                                    sub.scale_x = 0.35 
+                                    sub.prop(context.window_manager, 'col_mat_surface')                   
+                                else:
+                                    pass          
+                            row.menu("tp_ops.material_list", text="", icon="COLLAPSEMENU")
 
 
                     if tp_props.display_material: 
@@ -1194,20 +1713,23 @@ class draw_display_compact_panel_layout:
                         row.prop(tp_props, "display_modifier", text="", icon="MODIFIER")                
                         row.label("Modifier")
                     
+                        
+                        display_icons = context.user_preferences.addons[__package__].preferences.tab_icons
+                        if display_icons == 'on':   
          
                         
-                        if context.mode == 'OBJECT':
-                        
-                            row.operator("tp_ops.mods_render","", icon = 'RESTRICT_RENDER_OFF') 
-                            row.operator("tp_ops.mods_view","", icon = 'RESTRICT_VIEW_OFF')                                                                       
-                        
-                        if context.active_object.mode == 'EDIT':
-                        
-                            row.operator("tp_ops.mods_edit","", icon='EDITMODE_HLT')                                                    
-                            row.operator("tp_ops.mods_cage","", icon='OUTLINER_OB_MESH')                  
-                        
-                        row.operator("tp_ops.remove_mod", text="", icon='X') 
-                        row.operator("tp_ops.apply_mod", text="", icon='FILE_TICK')  
+                            if context.mode == 'OBJECT':
+                            
+                                row.operator("tp_ops.mods_render","", icon = 'RESTRICT_RENDER_OFF') 
+                                row.operator("tp_ops.mods_view","", icon = 'RESTRICT_VIEW_OFF')                                                                       
+                            
+                            if context.active_object.mode == 'EDIT':
+                            
+                                row.operator("tp_ops.mods_edit","", icon='EDITMODE_HLT')                                                    
+                                row.operator("tp_ops.mods_cage","", icon='OUTLINER_OB_MESH')                  
+                            
+                            row.operator("tp_ops.remove_mod", text="", icon='X') 
+                            row.operator("tp_ops.apply_mod", text="", icon='FILE_TICK')  
 
 
                     if tp_props.display_modifier: 
@@ -1304,7 +1826,7 @@ class draw_display_compact_panel_layout:
                         row.operator("tp_ops.subsurf_3")
                         row.operator("tp_ops.subsurf_4")
                         row.operator("tp_ops.subsurf_5")
-                        #row.operator("tp_ops.subsurf_6")
+                        row.operator("tp_ops.subsurf_6")
 
 
                         
@@ -1346,75 +1868,51 @@ class draw_display_compact_panel_layout:
                                 
                                 row = box.row(1)
 
-                                if tp_props.display_dim:            
-                                    row.prop(tp_props, "display_dim", text="", icon="MAN_SCALE")            
-                                    row.label("CopyDim") 
-                                
+                                row.prop(context.scene, "tp_autocut", text="", icon ="MOD_WIREFRAME")               
+                                row.label("MirrorCut") 
+                                                   
+                                row.prop(context.scene, "tp_mirror", text="", icon ="MOD_MIRROR")   
+                                if bpy.context.scene.tp_mirror == True:
+                                    row.prop(context.scene, "tp_apply", text="", icon ="FILE_TICK")                     
                                 else:
-                                    row.prop(tp_props, "display_dim", text="", icon="MOD_WIREFRAME")                
-                                    row.label("MirrorCut") 
-                                                       
-                                    row.prop(context.scene, "tp_mirror", text="", icon ="MOD_MIRROR")   
-                                    if bpy.context.scene.tp_mirror == True:
-                                        row.prop(context.scene, "tp_apply", text="", icon ="FILE_TICK")                     
-                                    else:
-                                        pass
-                                    row.prop(context.scene, "tp_sculpt", text="", icon ="SCULPTMODE_HLT")   
-                                    row.prop(context.scene, "tp_edit", text="", icon ="EDIT")            
-                                                
+                                    pass
+                                row.prop(context.scene, "tp_sculpt", text="", icon ="SCULPTMODE_HLT")   
+                                row.prop(context.scene, "tp_edit", text="", icon ="EDIT")            
 
-                                if tp_props.display_dim:  
-                                
-                                    box.separator()  
-                                   
-                                    row = box.row(1)
-                                    row.operator("tp_ops.copy_dimension_axis", text = "x > y").tp_axis='tp_x_y'
-                                    row.operator("tp_ops.copy_dimension_axis", text = "y > x").tp_axis='tp_y_x'
-                                    row.operator("tp_ops.copy_dimension_axis", text = "z > x").tp_axis='tp_z_x'            
+                                box.separator()                    
+                                                   
+                                row = box.row(1)         
+                                row.operator("tp_ops.mods_positiv_x_symcut", text="+X")
+                                row.operator("tp_ops.mods_positiv_y_symcut", text="+Y")
+                                row.operator("tp_ops.mods_positiv_z_symcut", text="+Z")
 
-                                    row = box.row(1)           
-                                    row.operator("tp_ops.copy_dimension_axis", text = "x > z").tp_axis='tp_x_z'
-                                    row.operator("tp_ops.copy_dimension_axis", text = "y > z").tp_axis='tp_y_z'
-                                    row.operator("tp_ops.copy_dimension_axis", text = "z > y").tp_axis='tp_z_y'
-
-                                    box.separator()                 
-
-                                else:
-                                    
-                                    box.separator()                    
-                                                       
-                                    row = box.row(1)         
-                                    row.operator("tp_ops.mods_positiv_x_symcut", text="+X")
-                                    row.operator("tp_ops.mods_positiv_y_symcut", text="+Y")
-                                    row.operator("tp_ops.mods_positiv_z_symcut", text="+Z")
-
-                                    row = box.row(1)             
-                                    row.operator("tp_ops.mods_negativ_x_symcut", text="-- X")
-                                    row.operator("tp_ops.mods_negativ_y_symcut", text="-- Y")
-                                    row.operator("tp_ops.mods_negativ_z_symcut", text="-- Z")
-                                 
-                                    box.separator() 
-
-                                    row = box.row(1)             
-                                    row.operator("tp_ops.mods_negativ_xy_symcut", text="+Xy")
-                                    row.operator("tp_ops.mods_negativ_xz_symcut", text="+Xz")
-                                    row.operator("tp_ops.mods_negativ_yz_symcut", text="+Yz")
-
-                                    row = box.row(1)             
-                                    row.operator("tp_ops.mods_positiv_xy_symcut", text="-- Xy")
-                                    row.operator("tp_ops.mods_positiv_xz_symcut", text="-- Xz")
-                                    row.operator("tp_ops.mods_positiv_yz_symcut", text="-- Yz")
+                                row = box.row(1)             
+                                row.operator("tp_ops.mods_negativ_x_symcut", text="-- X")
+                                row.operator("tp_ops.mods_negativ_y_symcut", text="-- Y")
+                                row.operator("tp_ops.mods_negativ_z_symcut", text="-- Z")
                              
-                                    box.separator()  
-                              
-                                    row = box.row(1)             
-                                    row.operator("tp_ops.mods_positiv_xyz_symcut", text="+XYZ")          
-                                    row.operator("tp_ops.mods_negativ_xyz_symcut", text="-XYZ")
-                     
-                                    if context.mode == 'EDIT_MESH':
-                                        row.operator("tp_ops.normal_symcut", text="Normal")
-                                   
-                                    box.separator() 
+                                box.separator() 
+
+                                row = box.row(1)             
+                                row.operator("tp_ops.mods_negativ_xy_symcut", text="+Xy")
+                                row.operator("tp_ops.mods_negativ_xz_symcut", text="+Xz")
+                                row.operator("tp_ops.mods_negativ_yz_symcut", text="+Yz")
+
+                                row = box.row(1)             
+                                row.operator("tp_ops.mods_positiv_xy_symcut", text="-- Xy")
+                                row.operator("tp_ops.mods_positiv_xz_symcut", text="-- Xz")
+                                row.operator("tp_ops.mods_positiv_yz_symcut", text="-- Yz")
+                         
+                                box.separator()  
+                          
+                                row = box.row(1)             
+                                row.operator("tp_ops.mods_positiv_xyz_symcut", text="+XYZ")          
+                                row.operator("tp_ops.mods_negativ_xyz_symcut", text="-XYZ")
+                 
+                                if context.mode == 'EDIT_MESH':
+                                    row.operator("tp_ops.normal_symcut", text="Normal")
+                               
+                                box.separator() 
 
                     
                                 obj = context.active_object
@@ -1726,19 +2224,20 @@ class draw_display_compact_panel_layout:
             box.separator()   
 
 
+
 # LOAD UI: PANEL #
 
 class VIEW3D_TP_Display_Compact_Panel_TOOLS(bpy.types.Panel, draw_display_compact_panel_layout):
     bl_category = "T+"
     bl_idname = "VIEW3D_TP_Display_Compact_Panel_TOOLS"
-    bl_label = "T+Display"
+    bl_label = "Display"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
     bl_options = {'DEFAULT_CLOSED'}
 
 class VIEW3D_TP_Display_Compact_Panel_UI(bpy.types.Panel, draw_display_compact_panel_layout):
     bl_idname = "VIEW3D_TP_Display_Compact_Panel_UI"
-    bl_label = "T+Display"
+    bl_label = "Display"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_options = {'DEFAULT_CLOSED'}

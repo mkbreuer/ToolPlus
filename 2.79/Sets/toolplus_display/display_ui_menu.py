@@ -17,24 +17,30 @@
 # ##### END GPL LICENSE BLOCK #####
 #
 
-# LOAD MODUL #    
+
+# LOAD MODUL #   
+ 
 import bpy
 from bpy import *
 from bpy.props import *
 from . icons.icons import load_icons    
 
+
+
 class VIEW3D_TP_Display_OSD_MENU(bpy.types.Menu):
-    bl_label = "T+Display"
+    bl_label = "Display"
     bl_idname = "tp_menu.display_osd"
     
     def draw(self, context):
         layout = self.layout                         
+        
+        layout.operator_context = 'INVOKE_REGION_WIN'
                  
         layout.prop(bpy.context.space_data, 'viewport_shade', text="")
         layout.menu("VIEW3D_TP_Shade_Menu", icon = "WORLD")                 
         layout.menu("VIEW3D_TP_Screen_Menu", icon = "VIEW3D")                 
-        layout.menu("VIEW3D_TP_Restrict_Menu", icon = "BORDER_RECT")         
-#        layout.menu("VIEW3D_TP_Delete_Menu", icon = "X")         
+        layout.menu("VIEW3D_TP_Selection_Menu", icon = "BORDER_RECT") 
+        layout.menu("VIEW3D_TP_Restrict_Menu", icon = "LOCKED")                 
         layout.menu("VIEW3D_TP_Display_Menu", icon = "ZOOM_SELECTED")         
         layout.menu("VIEW3D_TP_Smooth_Menu", icon = "MOD_EDGESPLIT")         
         layout.menu("VIEW3D_TP_Material_Menu", icon = "MATERIAL_DATA")         
@@ -48,6 +54,9 @@ class VIEW3D_TP_Display_OSD_MENU(bpy.types.Menu):
             layout.menu("VIEW3D_TP_Measure_Menu", icon = "ALIGN")  
             
         layout.operator("view3d.ruler", icon = "NOCURVE")
+
+
+
 
 
 class VIEW3D_TP_Delete_Menu(bpy.types.Menu):
@@ -1026,7 +1035,7 @@ class VIEW3D_TP_Flymode_Menu(bpy.types.Menu):
 
 
 
-class VIEW3D_TP_Display_Mesh_MENU(bpy.types.Menu):
+class VIEW3D_TP_Display_Mesh_Menu(bpy.types.Menu):
     bl_label = "Display"
     bl_idname = "tp_menu.display_mesh"
 
@@ -1085,18 +1094,358 @@ class VIEW3D_TP_Display_Mesh_MENU(bpy.types.Menu):
         
 
 
+class VIEW3D_TP_MultiMode(bpy.types.Menu):
+    bl_label = "Multi Select"
+    bl_label = "VIEW3D_TP_MultiMode"
+    
+    def draw(self, context):
+        layout = self.layout
+        layout.operator_context = 'INVOKE_REGION_WIN'
+
+        prop = layout.operator("wm.context_set_value", text="Vertex Select", icon='VERTEXSEL')
+        prop.value = "(True, False, False)"
+        prop.data_path = "tool_settings.mesh_select_mode"
+
+        prop = layout.operator("wm.context_set_value", text="Edge Select", icon='EDGESEL')
+        prop.value = "(False, True, False)"
+        prop.data_path = "tool_settings.mesh_select_mode"
+
+        prop = layout.operator("wm.context_set_value", text="Face Select", icon='FACESEL')
+        prop.value = "(False, False, True)"
+        prop.data_path = "tool_settings.mesh_select_mode"
+        
+        layout.separator()
+
+        prop = layout.operator("wm.context_set_value", text="Vertex & Edge Select", icon='EDITMODE_HLT')
+        prop.value = "(True, True, False)"
+        prop.data_path = "tool_settings.mesh_select_mode"
+
+        prop = layout.operator("wm.context_set_value", text="Vertex & Face Select", icon='ORTHO')
+        prop.value = "(True, False, True)"
+        prop.data_path = "tool_settings.mesh_select_mode"
+
+        prop = layout.operator("wm.context_set_value", text="Edge & Face Select", icon='SNAP_FACE')
+        prop.value = "(False, True, True)"
+        prop.data_path = "tool_settings.mesh_select_mode"
+        layout.separator()
+
+        prop = layout.operator("wm.context_set_value", text="Vertex & Edge & Face Select", icon='SNAP_VOLUME')
+        prop.value = "(True, True, True)"
+        prop.data_path = "tool_settings.mesh_select_mode"
 
 
 
 
 
 
+def draw_layout_select(self, context):
+    layout = self.layout
+    
+    icons = load_icons() 
+
+    layout.operator_context = 'INVOKE_REGION_WIN'
+
+    if context.mode == 'OBJECT':
+
+        layout.operator("object.select_all", text = "GetAll", icon = "RESTRICT_SELECT_OFF").action='SELECT'
+        layout.operator("object.select_all", text = "Deselect").action='DESELECT'
+        layout.operator("object.select_all", text = "Invert").action='INVERT'
+
+        layout.separator()
+
+        layout.operator("object.select_linked", text="Linked", icon = "LINKED") 
+        layout.operator("object.select_grouped", text="Group")        
+        layout.operator("object.select_by_type", text="Type")        
+
+        layout.separator()
+
+        layout.operator("object.select_by_layer", text="Layer", icon = "SEQ_SEQUENCER")
+        layout.operator("object.select_pattern", text="Name")
+        layout.operator("object.select_camera", text="Camera")
+
+        layout.separator()
+
+        layout.operator("object.select_random", text="Random", icon = "RNDCURVE")            
+        layout.operator("object.select_all", text="Inverse").action = 'INVERT'
+        layout.operator("object.select_mirror", text="Mirror")
+
+        layout.separator() 
+        layout.operator("tp_ops.unfreeze_selected", text = "Freeze", icon = "FREEZE")
+        layout.operator("tp_ops.freeze_selected", text = "Unfreeze")             
+        layout.menu("tp_menu.freezeall", text = "FreezeType")             
+       
+        layout.separator()
+
+        layout.operator("object.select_more", text="More", icon="ZOOMIN") 
+        layout.operator("object.select_less", text="Less", icon="ZOOMOUT")
+
+
+
+    if context.mode == 'EDIT_MESH':
+
+        layout.operator("mesh.select_all",text="GetAll", icon = "UV_SYNC_SELECT").action='SELECT'   
+        layout.operator("mesh.select_all", text = "Deselect").action='DESELECT'
+        layout.operator("mesh.select_all", text = "Invert").action='INVERT'
+  
+        layout.separator()
+
+        layout.operator("mesh.select_linked",text="Linked", icon = "LINKED")        
+        layout.operator("mesh.select_similar",text="Similar")                         
+
+        layout.separator()
+                    
+        layout.operator("mesh.select_face_by_sides",text="By Side", icon = "SNAP_FACE")
+        layout.operator("mesh.select_axis", text="Active Side")
+        layout.operator("mesh.faces_select_linked_flat", text="Linked Faces")
+
+        layout.separator()
+        
+        layout.operator("mesh.select_loose",text="Loose", icon="STICKY_UVS_DISABLE")
+        if context.scene.tool_settings.mesh_select_mode[2] is False:
+            layout.operator("mesh.select_non_manifold", text="Non Manifold")  
+        layout.operator("mesh.select_interior_faces", text="Interior Faces")                            
+       
+        layout.separator()
+
+        layout.operator("mesh.edges_select_sharp", text="Sharp", icon="SNAP_EDGE")                          
+        layout.operator("mesh.select_random", text="Random")
+        layout.operator("mesh.select_nth")                            
+
+        layout.separator()
+                        
+        layout.operator("mesh.loop_multi_select",text="Edge Loop", icon="ZOOMOUT").ring=False         
+        layout.operator("mesh.loop_multi_select",text="Edge Ring", icon="COLLAPSEMENU").ring=True
+
+        layout.separator()
+
+        layout.operator("mesh.region_to_loop", text = "Edge Boundry Loop")
+        layout.operator("mesh.loop_to_region", text = "Edge Loop Inner-Region")
+
+        layout.separator()
+
+        layout.operator('meshlint.select', text='Select MeshLint', icon='EDIT')         
+
+        layout.separator()
+
+        layout.operator("mesh.select_more", text="More", icon="ZOOMIN") 
+        layout.operator("mesh.select_less", text="Less", icon="ZOOMOUT")
+
+
+
+    if context.mode == 'EDIT_CURVE':
+        
+        layout.operator("curve.select_all", text = "GetAll", icon = "RESTRICT_SELECT_OFF").action='SELECT'
+        layout.operator("curve.select_all", text = "Deselect").action='DESELECT'
+        layout.operator("curve.select_all", text = "Invert").action='INVERT'           
+    
+        layout.separator()
+        
+        layout.operator("curve.select_linked", text="Linked", icon = "LINKED") 
+        layout.operator("curve.select_nth",text="Nth Selected") 
+        layout.operator("curve.select_random") 
+        
+        layout.separator()
+
+        layout.operator("curve.de_select_first", text = "Select First", icon = "TRIA_UP") 
+        layout.operator("curve.de_select_last", text = "Select Last", icon = "TRIA_DOWN") 
+
+        layout.separator()
+                    
+        layout.operator("curve.select_next", icon = "TRIA_RIGHT") 
+        layout.operator("curve.select_previous", icon = "TRIA_LEFT") 
+
+        layout.separator()
+
+        layout.operator("curve.select_more", text="More", icon="ZOOMIN") 
+        layout.operator("curve.select_less", text="Less", icon="ZOOMOUT")
+
+
+
+    if context.mode == 'EDIT_SURFACE':
+        
+        layout.operator("curve.select_all", text = "GetAll", icon = "RESTRICT_SELECT_OFF").action='SELECT'
+        layout.operator("curve.select_all", text = "Deselect").action='DESELECT'
+        layout.operator("curve.select_all", text = "Invert").action='INVERT'       
+       
+        layout.separator()
+                    
+        layout.operator("curve.select_linked", text="Linked", icon = "LINKED") 
+        layout.operator("curve.select_nth",text="Nth Selected") 
+        layout.operator("curve.select_random") 
+        
+        layout.separator()
+
+        layout.operator("curve.select_more", text="More", icon="ZOOMIN") 
+        layout.operator("curve.select_less", text="Less", icon="ZOOMOUT")
+
+
+    if context.mode == 'EDIT_METABALL':
+        
+        layout.operator("mball.select_all", text = "GetAll", icon = "RESTRICT_SELECT_OFF").action='SELECT'
+        layout.operator("mball.select_all", text = "Deselect").action='DESELECT'
+        layout.operator("mball.select_all", text = "Invert").action='INVERT'
+
+        layout.separator()
+                    
+        layout.operator_menu_enum("mball.select_similar", "type", text="Similar") 
+        layout.operator("mball.select_random_metaelems") 
+
+
+    if context.mode == 'EDIT_LATTICE':
+        
+        layout.operator("lattice.select_all", text = "GetAll", icon = "RESTRICT_SELECT_OFF").action='SELECT'
+        layout.operator("lattice.select_all", text = "Deselect").action='DESELECT'
+        layout.operator("lattice.select_all", text="Inverse").action = 'INVERT'
+
+        layout.separator()
+                               
+        layout.operator("lattice.select_mirror", text="Mirror", icon = "ARROW_LEFTRIGHT")
+        layout.operator("lattice.select_random") 
+
+        layout.separator()
+
+        layout.menu("vgroupmenu", icon="GROUP_VERTEX")               
+        layout.separator()
+
+        layout.operator("lattice.select_ungrouped", text="Ungrouped Verts")
+        
+        
+
+    if  context.mode == 'PARTICLE':
+
+        layout.operator("particle.select_all", text = "GetAll", icon="RESTRICT_SELECT_OFF").action = 'SELECT'
+        layout.operator("particle.select_all", text = "Deselect").action = 'DESELECT'
+        layout.operator("particle.select_all", text="Inverse").action = 'INVERT'
+        
+        layout.separator()
+       
+        layout.operator("particle.select_linked", text="Linked", icon = "LINKED")
+        layout.operator("particle.select_tips", text = "Tips", icon = "IPO_EASE_OUT")  
+        layout.operator("particle.select_roots", text = "Roots")
+
+        layout.separator()
+
+        layout.operator("particle.select_more", text="More", icon="ZOOMIN")
+        layout.operator("particle.select_less", text="Less", icon="ZOOMOUT")
+  
+
+
+    if context.mode == 'EDIT_ARMATURE':
+
+        arm = context.active_object.data 
+
+      
+        layout.operator("armature.select_all", text = "GetAll", icon = "RESTRICT_SELECT_OFF").action='TOGGLE'
+        layout.operator("armature.select_all", text = "Deselect").action = 'DESELECT'
+        layout.operator("armature.select_all", text="Inverse").action = 'INVERT'
+       
+        layout.separator()
+               
+        layout.operator("armature.select_mirror", text="Mirror", icon = "ARROW_LEFTRIGHT").extend = False
+
+        layout.separator()
+        
+        layout.operator("armature.select_hierarchy", text="Parent", icon="BONE_DATA").direction = 'PARENT'
+ 
+        props = layout.operator("armature.select_hierarchy", text="Extend Parent")
+        props.extend = True
+        props.direction = 'PARENT'
+                    
+        layout.operator("armature.select_hierarchy", text="Child", icon="CONSTRAINT_BONE").direction = 'CHILD'
+
+        props = layout.operator("armature.select_hierarchy", text="Extend Child")
+        props.extend = True
+        props.direction = 'CHILD'
+
+        layout.separator()  
+
+        layout.operator_menu_enum("armature.select_similar", "type", text="Similar")
+        layout.operator("object.select_pattern", text="Select Pattern...")
+        
+        layout.separator()
+
+        layout.operator("armature.select_more", text="More", icon="ZOOMIN")
+        layout.operator("armature.select_less", text="Less", icon="ZOOMOUT")
+        
+                    
+
+    if context.mode == 'POSE':
+
+        arm = context.active_object.data   
+    
+        layout.operator("pose.select_all", text = "GetAll", icon = "RESTRICT_SELECT_OFF").action='TOGGLE'
+        layout.operator("pose.select_all", text = "Deselect").action = 'DESELECT'
+        layout.operator("pose.select_all", text="Inverse").action = 'INVERT'
+        
+        layout.separator()
+                   
+        layout.operator("pose.select_mirror", text="Flip Active", icon = "ARROW_LEFTRIGHT")
+    
+        layout.separator()
+
+        layout.operator("pose.select_constraint_target", text="Constraint Target", icon ="LINK_AREA")
+        layout.operator("pose.select_linked", text="CONSTRAINT_BONE", icon="CONSTRAINT") 
+
+        layout.separator()
+
+        layout.operator("pose.select_hierarchy", text="Parent", icon ="BONE_DATA").direction = 'PARENT'
+        props = layout.operator("pose.select_hierarchy", text="Extend Parent")
+        props.extend = True
+        props.direction = 'PARENT'
+        
+        layout.separator()
+                                
+        layout.operator("pose.select_hierarchy", text="Child", icon ="CONSTRAINT_BONE").direction = 'CHILD'
+
+        props = layout.operator("pose.select_hierarchy", text="Extend Child")
+        props.extend = True
+        props.direction = 'CHILD'
+
+        layout.separator()
+
+        layout.operator_menu_enum("pose.select_grouped", "type", text="Grouped", icon ="GROUP_BONE")
+        layout.operator("object.select_pattern", text="Select Pattern...")
 
 
 
 
+class VIEW3D_TP_Selection_Menu(bpy.types.Menu):
+    bl_label = "Select"
+    bl_idname = "VIEW3D_TP_Selection_Menu"   
+
+    def draw(self, context):
+        layout = self.layout
+        
+        icons = load_icons() 
+
+        layout.operator_context = 'INVOKE_REGION_WIN'
+       
+        draw_layout_select(self, context)
+    
+
+class VIEW3D_TP_Selection_Menu_Main(bpy.types.Menu):
+    bl_label = "Select"
+    bl_idname = "VIEW3D_TP_Selection_Menu_Main"   
+   
+    def draw(self, context):
+        layout = self.layout
+        
+        icons = load_icons() 
+
+        layout.operator_context = 'INVOKE_REGION_WIN'
+       
+        draw_layout_select(self, context)
 
 
 
 
+# REGISTRY #        
+def register():    
+    bpy.utils.register_module(__name__)
+
+def unregister():   
+    bpy.utils.unregister_module(__name__)
+
+if __name__ == "__main__":
+    register()
 

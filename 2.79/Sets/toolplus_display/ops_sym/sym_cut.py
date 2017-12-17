@@ -12,6 +12,7 @@ from mathutils import Vector
 
     
 bpy.types.Scene.tp_edit = bpy.props.BoolProperty(name="EditToggle", description="switch to or stay in editmode", default=False)   
+bpy.types.Scene.tp_autocut = bpy.props.BoolProperty(name="Autocut", description="enable autocut", default=True)    
 bpy.types.Scene.tp_mirror = bpy.props.BoolProperty(name="Add MirrorModifier", description="add mirror modifier", default=False)    
 bpy.types.Scene.tp_apply = bpy.props.BoolProperty(name="Apply MirrorModifier", description="apply mirror modifier", default=False)  
 bpy.types.Scene.tp_sculpt = bpy.props.BoolProperty(name="SculptToggle", description="switch to or stay in sculptmode", default=False)  
@@ -38,7 +39,7 @@ class View3D_TP_Align_Vertices(bpy.types.Operator):
 
         x2,y2,z2 = bpy.context.scene.cursor_location
 
-        bpy.context.scene.cursor_location[0],bpy.context.scene.cursor_location[1],bpy.context.scene.cursor_location[2]  = 0,0,0
+        bpy.context.scene.cursor_location[0],bpy.context.scene.cursor_location[1],bpy.context.scene.cursor_location[2] = 0,0,0
 
         #vertices coordinate to local 0 
         for vert in bpy.context.object.data.vertices:
@@ -138,12 +139,13 @@ def sym_editmode(context):
 def sym_apply_mod(context):
 
     if bpy.context.scene.tp_apply == True:
-        bpy.ops.tp_ops.apply_mod()
+        bpy.ops.tp_ops.apply_mod_mirror()
     else:
         pass
 
+
 def sym_add_mod(context):
-    
+        
     is_mirror = False
     
     for mode in bpy.context.object.modifiers :
@@ -177,10 +179,12 @@ class VIEW3D_TP_Negativ_X_symcut(bpy.types.Operator):
 
         if context.mode == 'EDIT_MESH':            
             bpy.ops.object.editmode_toggle() 
-          
+
+        
         bpy.context.scene.symcut_axis = 'x'
         bpy.context.scene.sym_orientation = 'positive'
-        bpy.ops.tp_ops.symcut()
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()
 
         sym_editmode(context)
 
@@ -216,7 +220,8 @@ class VIEW3D_TP_Positiv_X_symcut(bpy.types.Operator):
           
         bpy.context.scene.symcut_axis = 'x'
         bpy.context.scene.sym_orientation = 'negative'
-        bpy.ops.tp_ops.symcut()
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()
 
         sym_editmode(context)
 
@@ -252,7 +257,8 @@ class VIEW3D_TP_Negativ_Y_symcut(bpy.types.Operator):
           
         bpy.context.scene.symcut_axis = 'y'
         bpy.context.scene.sym_orientation = 'positive'
-        bpy.ops.tp_ops.symcut()
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()
 
         sym_editmode(context)
 
@@ -288,7 +294,8 @@ class VIEW3D_TP_Positiv_Y_symcut(bpy.types.Operator):
           
         bpy.context.scene.symcut_axis = 'y'
         bpy.context.scene.sym_orientation = 'negative'
-        bpy.ops.tp_ops.symcut()
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()
 
         sym_editmode(context)
 
@@ -325,7 +332,8 @@ class VIEW3D_TP_Negativ_Z_symcut(bpy.types.Operator):
           
         bpy.context.scene.symcut_axis = 'z'
         bpy.context.scene.sym_orientation = 'positive'
-        bpy.ops.tp_ops.symcut()
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()
 
         sym_editmode(context)
 
@@ -361,7 +369,8 @@ class VIEW3D_TP_Positiv_Z_symcut(bpy.types.Operator):
             
         bpy.context.scene.symcut_axis = 'z'
         bpy.context.scene.sym_orientation = 'negative'
-        bpy.ops.tp_ops.symcut()
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()
 
         sym_editmode(context)
 
@@ -401,11 +410,13 @@ class VIEW3D_TP_Positiv_XY_symcut(bpy.types.Operator):
             
         bpy.context.scene.symcut_axis = 'x'
         bpy.context.scene.sym_orientation = 'negative'
-        bpy.ops.tp_ops.symcut()
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()
 
         bpy.context.scene.symcut_axis = 'y'
         bpy.context.scene.sym_orientation = 'negative'
-        bpy.ops.tp_ops.symcut()
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()
 
         sym_editmode(context)
 
@@ -441,11 +452,13 @@ class VIEW3D_TP_Negativ_XY_symcut(bpy.types.Operator):
             
         bpy.context.scene.symcut_axis = 'x'
         bpy.context.scene.sym_orientation = 'positive'
-        bpy.ops.tp_ops.symcut()
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()
 
         bpy.context.scene.symcut_axis = 'y'
         bpy.context.scene.sym_orientation = 'positive'
-        bpy.ops.tp_ops.symcut()
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()
 
         sym_editmode(context)
 
@@ -483,11 +496,13 @@ class VIEW3D_TP_Positiv_XZ_symcut(bpy.types.Operator):
             
         bpy.context.scene.symcut_axis = 'x'
         bpy.context.scene.sym_orientation = 'positive'
-        bpy.ops.tp_ops.symcut()
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()
 
         bpy.context.scene.symcut_axis = 'z'
         bpy.context.scene.sym_orientation = 'positive'
-        bpy.ops.tp_ops.symcut()
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()
 
         sym_editmode(context)
 
@@ -525,11 +540,13 @@ class VIEW3D_TP_Negativ_XZ_symcut(bpy.types.Operator):
             
         bpy.context.scene.symcut_axis = 'x'
         bpy.context.scene.sym_orientation = 'negative'
-        bpy.ops.tp_ops.symcut()     
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()   
         
         bpy.context.scene.symcut_axis = 'z'
         bpy.context.scene.sym_orientation = 'negative'
-        bpy.ops.tp_ops.symcut()
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()
 
         sym_editmode(context)
 
@@ -566,11 +583,13 @@ class VIEW3D_TP_Positiv_YZ_symcut(bpy.types.Operator):
 
         bpy.context.scene.symcut_axis = 'y'
         bpy.context.scene.sym_orientation = 'positive'
-        bpy.ops.tp_ops.symcut()            
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()          
         
         bpy.context.scene.symcut_axis = 'z'
         bpy.context.scene.sym_orientation = 'positive'
-        bpy.ops.tp_ops.symcut()
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()
 
         sym_editmode(context)
 
@@ -607,11 +626,13 @@ class VIEW3D_TP_Negativ_YZ_symcut(bpy.types.Operator):
 
         bpy.context.scene.symcut_axis = 'y'
         bpy.context.scene.sym_orientation = 'negative'
-        bpy.ops.tp_ops.symcut()            
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()         
         
         bpy.context.scene.symcut_axis = 'z'
         bpy.context.scene.sym_orientation = 'negative'
-        bpy.ops.tp_ops.symcut()
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()
 
         sym_editmode(context)
 
@@ -648,15 +669,18 @@ class VIEW3D_TP_Positiv_XYZ_symcut(bpy.types.Operator):
             
         bpy.context.scene.symcut_axis = 'x'
         bpy.context.scene.sym_orientation = 'positive'
-        bpy.ops.tp_ops.symcut()
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()
 
         bpy.context.scene.symcut_axis = 'y'
         bpy.context.scene.sym_orientation = 'positive'
-        bpy.ops.tp_ops.symcut()            
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()          
         
         bpy.context.scene.symcut_axis = 'z'
         bpy.context.scene.sym_orientation = 'positive'
-        bpy.ops.tp_ops.symcut()
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()
 
         sym_editmode(context)
 
@@ -693,15 +717,18 @@ class VIEW3D_TP_Negativ_XYZ_symcut(bpy.types.Operator):
             
         bpy.context.scene.symcut_axis = 'x'
         bpy.context.scene.sym_orientation = 'negative'
-        bpy.ops.tp_ops.symcut()
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()
 
         bpy.context.scene.symcut_axis = 'y'
         bpy.context.scene.sym_orientation = 'negative'
-        bpy.ops.tp_ops.symcut()            
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()         
         
         bpy.context.scene.symcut_axis = 'z'
         bpy.context.scene.sym_orientation = 'negative'
-        bpy.ops.tp_ops.symcut()
+        if bpy.context.scene.tp_autocut == True:  
+            bpy.ops.tp_ops.symcut()
 
         sym_editmode(context)
 

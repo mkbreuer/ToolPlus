@@ -226,7 +226,7 @@ class VIEW3D_TP_Visual_Wire_Material(bpy.types.Operator):
             mat.specular_intensity = 0
             mat.use_transparency = True
             mat.type = 'WIRE'
-            mat.offset_z = 1 #0.05 F6props?
+            mat.offset_z = 0.05
         else: mat = bpy.data.materials.get('material_wire')
         mat.diffuse_color = wm.col_material_wire
 

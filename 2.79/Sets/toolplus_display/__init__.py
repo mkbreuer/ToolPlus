@@ -22,7 +22,7 @@
 bl_info = {
     "name": "Display",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 1, 1),
+    "version": (0, 1, 2),
     "blender": (2, 7, 9),
     "location": "VIEW 3D",
     "description": "alternate and advanced display tools",
@@ -36,6 +36,9 @@ bl_info = {
 # LOAD UI #
 
 from toolplus_display.display_ui_menu       import (VIEW3D_TP_Display_OSD_MENU)
+from toolplus_display.display_ui_menu       import (VIEW3D_TP_Selection_Menu)
+from toolplus_display.display_ui_menu       import (VIEW3D_TP_Selection_Menu_Main)
+from toolplus_display.display_ui_menu       import (VIEW3D_TP_MultiMode)
 
 from toolplus_display.display_ui_compact    import (VIEW3D_TP_Display_Compact_Panel_TOOLS)
 from toolplus_display.display_ui_compact    import (VIEW3D_TP_Display_Compact_Panel_UI)
@@ -67,6 +70,11 @@ from toolplus_display.display_ui_smooth     import (VIEW3D_TP_Smooth_Panel_UI)
 from toolplus_display.display_ui_uvs        import (VIEW3D_TP_UVS_Panel_TOOLS)
 from toolplus_display.display_ui_uvs        import (VIEW3D_TP_UVS_Panel_UI)
 
+from toolplus_display.display_ui_select     import (VIEW3D_TP_Select_Panel_TOOLS)
+from toolplus_display.display_ui_select     import (VIEW3D_TP_Select_Panel_UI)
+
+
+
 
 # LOAD ICONS #
 from . icons.icons                  import load_icons
@@ -96,6 +104,14 @@ if "bpy" in locals():
     imp.reload(selection)
     imp.reload(silhouette)
     imp.reload(snapset)
+
+    imp.reload(select_action)
+    imp.reload(select_ktools)
+    imp.reload(select_meshlint)
+    imp.reload(select_meshorder)
+    imp.reload(select_sorting)
+    imp.reload(select_topokit2)
+    imp.reload(select_vismaya)
 
     imp.reload(uv_equalize)
     imp.reload(uv_hardedges)
@@ -138,6 +154,14 @@ else:
     from .ops_visuals import selection                          
     from .ops_visuals import silhouette                          
     from .ops_visuals import snapset                          
+
+    from .ops_select import select_action                 
+    from .ops_select import select_ktools         
+    from .ops_select import select_meshlint         
+    from .ops_select import select_meshorder            
+    from .ops_select import select_sorting                            
+    from .ops_select import select_topokit2                
+    from .ops_select import select_vismaya  
 
     from .ops_uv import uv_equalize               
     from .ops_uv import uv_hardedges               
@@ -300,6 +324,31 @@ def update_panel_location_normals(self, context):
     if context.user_preferences.addons[__name__].preferences.tab_location_normals == 'off':
         pass
 
+
+# UI SELECT #
+def update_panel_location_select(self, context):
+    try:
+        bpy.utils.unregister_class(VIEW3D_TP_Select_Panel_UI)     
+        bpy.utils.unregister_class(VIEW3D_TP_Select_Panel_TOOLS)
+   
+    except:
+        pass
+    
+    try:
+        bpy.utils.unregister_class(VIEW3D_TP_Select_Panel_UI)
+    except:
+        pass
+    
+    if context.user_preferences.addons[__name__].preferences.tab_location_select == 'tools':
+        
+        VIEW3D_TP_Select_Panel_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_select       
+        bpy.utils.register_class(VIEW3D_TP_Select_Panel_TOOLS)
+    
+    if context.user_preferences.addons[__name__].preferences.tab_location_select == 'ui':
+        bpy.utils.register_class(VIEW3D_TP_Select_Panel_UI)
+  
+    if context.user_preferences.addons[__name__].preferences.tab_location_select == 'off':
+        pass
 
 
 # UI SCREEN #
@@ -486,6 +535,36 @@ def update_display_menu(self, context):
         pass
 
 
+def update_menu_select(self, context):
+    try:
+        bpy.utils.unregister_class(VIEW3D_TP_Selection_Menu_Main)
+                
+        # remove keymaps when add-on is deactivated
+        wm = bpy.context.window_manager
+        for km in addon_keymaps_menu:
+            wm.keyconfigs.addon.keymaps.remove(km)
+        del addon_keymaps_menu[:]
+        
+    except:
+        pass
+    
+    if context.user_preferences.addons[__name__].preferences.tab_menu_select == 'menu':
+     
+        VIEW3D_TP_Selection_Menu.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_menu_select
+    
+        bpy.utils.register_class(VIEW3D_TP_Selection_Menu_Main)
+    
+        # Keymapping 
+        wm = bpy.context.window_manager        
+        km = wm.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')        
+        kmi = km.keymap_items.new('wm.call_menu', 'Q', 'PRESS', alt=True)
+        kmi.properties.name = "VIEW3D_TP_Selection_Menu_Main"
+
+
+    if context.user_preferences.addons[__name__].preferences.tab_menu_select == 'off':
+        pass
+
+
 
 # ADDON PREFERENCES #
 
@@ -544,6 +623,14 @@ class TP_Panels_Preferences(AddonPreferences):
                ('off', 'Off', 'on or off for panel in the shelfs')),
                default='off', update = update_panel_location_normals)
 
+    tab_location_select = EnumProperty(
+        name = 'Panel Location',
+        description = 'location switch',
+        items=(('tools', 'Tool Shelf', 'place panel in the tool shelf [T]'),
+               ('ui', 'Property Shelf', 'place panel in the property shelf [N]'),
+               ('off', 'Off', 'on or off for panel in the shelfs')),
+               default='off', update = update_panel_location_select)
+
     tab_location_screen = EnumProperty(
         name = 'Panel Location',
         description = 'location switch',
@@ -587,16 +674,26 @@ class TP_Panels_Preferences(AddonPreferences):
 
     #TAB Menu
     tab_menu_osd = EnumProperty(
-        name = '3d View Menu',
-        description = 'location switch',
+        name = '3d View Menu: Display',
+        description = '',
         items=(('menu', 'Menu on', 'enable menu for 3d view'),
                ('off', 'Menu off', 'enable or disable menu for 3d view')),
                default='menu', update = update_display_menu)
-  
+
+    tab_menu_select = EnumProperty(
+        name = '3d View Menu: Selection',
+        description = '',
+        items=(('menu', 'Menu on', 'enable menu for 3d view'),
+               ('off', 'Menu off', 'enable or disable menu for 3d view')),
+               default='off', update = update_menu_select)  
+
 
     #TAB Tools Compact
     tab_title = EnumProperty(name = 'Display Tools', description = 'on / off',
                   items=(('on', 'Title on', 'enable tools in panel'), ('off', 'Title off', 'disable tools in panel')), default='on', update = update_display_tools)
+
+    tab_icons = EnumProperty(name = 'Display Tools', description = 'on / off',
+                  items=(('on', 'Icons on', 'enable tools in panel'), ('off', 'Icons off', 'disable tools in panel')), default='on', update = update_display_tools)
 
     tab_pivot = EnumProperty(name = 'Display Tools', description = 'on / off',
                   items=(('on', 'Pivot on', 'enable tools in panel'), ('off', 'Pivot off', 'disable tools in panel')), default='on', update = update_display_tools)
@@ -609,6 +706,9 @@ class TP_Panels_Preferences(AddonPreferences):
 
     tab_restrict = EnumProperty(name = 'Display Tools', description = 'on / off',
                   items=(('on', 'Restrict on', 'enable tools in panel'), ('off', 'Restrict off', 'disable tools in panel')), default='on', update = update_display_tools)
+
+    tab_selection = EnumProperty(name = 'Display Tools', description = 'on / off',
+                  items=(('on', 'Selection on', 'enable tools in panel'), ('off', 'Selection off', 'disable tools in panel')), default='on', update = update_display_tools)
 
     tab_delete = EnumProperty(name = 'Display Tools', description = 'on / off',
                   items=(('on', 'Delete on', 'enable tools in panel'), ('off', 'Delete off', 'disable tools in panel')), default='on', update = update_display_tools)
@@ -634,16 +734,19 @@ class TP_Panels_Preferences(AddonPreferences):
     tools_category_delete = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_location_delete)
     tools_category_display = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_location_delete)
     tools_category_modifier = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_location_modifier)
+    tools_category_select = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_location_select)
     tools_category_normals = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'Shading / UVs', update = update_panel_location_normals)
-    tools_category_screen = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'View', update = update_panel_location_shade)
-    tools_category_shade = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'View', update = update_panel_location_shade)
+    tools_category_screen = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'Screen', update = update_panel_location_shade)
+    tools_category_shade = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'Shade', update = update_panel_location_shade)
     tools_category_sharpen = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'Shading / UVs', update = update_panel_location_sharpen)
     tools_category_smooth = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'Shading / UVs', update = update_panel_location_smooth)
     tools_category_uvs = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'Shading / UVs', update = update_panel_location_uvs)
 
     #TAB Menu
     tools_category_menu = bpy.props.BoolProperty(name = "Display Menu", description = "enable or disable menu", default=True, update = update_display_menu)
+    tools_category_menu_select = bpy.props.BoolProperty(name = "Select Menu", description = "enable or disable menu", default = False, update = update_menu_select)
  
+
     # DRAW PREFERENCES #
     def draw(self, context):
         layout = self.layout
@@ -786,6 +889,26 @@ class TP_Panels_Preferences(AddonPreferences):
             box = col.box().column(1)
              
             row = box.row(1) 
+            row.label("Location: Select")
+            
+            row = box.row(1)
+            row.prop(self, 'tab_location_select', expand=True)
+            
+            box.separator()
+
+            row = box.row(1)            
+            if self.tab_location_select == 'tools':
+                
+                box.separator() 
+                
+                row.prop(self, "tools_category_select")
+
+            box.separator()
+            
+
+            box = col.box().column(1)
+             
+            row = box.row(1) 
             row.label("Location: Screen")
             
             row = box.row(1)
@@ -871,7 +994,7 @@ class TP_Panels_Preferences(AddonPreferences):
             box = layout.box().column(1)
              
             row = box.column(1)  
-            row.label("Menu:[CTRL+SHIFT+SPACE]", icon ="COLLAPSEMENU") 
+            row.label("Menu Display:[CTRL+SHIFT+SPACE]", icon ="COLLAPSEMENU") 
        
             row.separator()                         
 
@@ -886,6 +1009,26 @@ class TP_Panels_Preferences(AddonPreferences):
                 row.label(text="! menu hidden with next restart durably!", icon ="INFO")
 
             box.separator() 
+           
+            box.separator() 
+           
+            row = box.column(1)  
+            row.label("Menu Select:[ALT+Q]", icon ="COLLAPSEMENU") 
+       
+            row.separator()                         
+
+            row = box.row(1)          
+            row.prop(self, 'tab_menu_select', expand=True)
+            
+            if self.tab_menu_select == 'off':
+                
+                box.separator() 
+                
+                row = box.row(1) 
+                row.label(text="! menu hidden with next restart durably!", icon ="INFO")
+
+            box.separator() 
+
 
 
             # TIP #
@@ -914,10 +1057,12 @@ class TP_Panels_Preferences(AddonPreferences):
             
             row = box.column_flow(4)
             row.prop(self, 'tab_title', expand=True)         
+            row.prop(self, 'tab_icons', expand=True)         
             row.prop(self, 'tab_pivot', expand=True)         
             row.prop(self, 'tab_world', expand=True)
             row.prop(self, 'tab_view', expand=True)
             row.prop(self, 'tab_restrict', expand=True)
+            row.prop(self, 'tab_selection', expand=True)
             row.prop(self, 'tab_display', expand=True)
             row.prop(self, 'tab_shade', expand=True)
             row.prop(self, 'tab_material', expand=True)
@@ -972,6 +1117,7 @@ class Dropdown_TP_Display_Props(bpy.types.PropertyGroup):
     display_dim = bpy.props.BoolProperty(name="Open / Close", description="Open / Close", default=False)    
     display_delete = bpy.props.BoolProperty(name="Open / Close", description="Open / Close", default=False)    
     display_simplify = bpy.props.BoolProperty(name="Open / Close", description="Open / Close", default=False)    
+    display_selection = bpy.props.BoolProperty(name="Open / Close", description="Open / Close", default=False)    
 
     mat_mode = bpy.props.StringProperty(default="")
     index_count_sw = bpy.props.IntProperty(name="Slot",  description="set material index", min=0, max=100, default=0)     
@@ -990,6 +1136,9 @@ class Dropdown_TP_Display_Props(bpy.types.PropertyGroup):
     DelayTime = IntProperty(default=30, min=0, max=500, soft_min=10, soft_max=250, description="Delay time to return to normal viewportmode after move your mouse cursor")
     DelayTimeGlobal = IntProperty(default=30, min=1, max=500, soft_min=10, soft_max=250, description="Delay time to return to normal viewportmode after move your mouse cursor")
     EditActive = BoolProperty(default=True, description="Activate for fast navigate in edit mode too")
+
+    display_meshlint = bpy.props.BoolProperty(name = "Open/Close", description = "open / close", default = False)
+
 
 
 class Display_Tools_Props(bpy.types.PropertyGroup):
@@ -1047,19 +1196,23 @@ def register():
     bpy.types.Scene.orphan_props = bpy.props.PointerProperty(type=Orphan_Tools_Props)
     bpy.types.Scene.cpuv_props = cpuv_properties.CPUVProperties()
        
-    update_display_tools(None, bpy.context)
-    update_display_menu(None, bpy.context)
 
     update_panel_location_compact(None, bpy.context)
     update_panel_location_delete(None, bpy.context)
     update_panel_location_display(None, bpy.context)
     update_panel_location_modifier(None, bpy.context)
     update_panel_location_normals(None, bpy.context)
+    update_panel_location_select(None, bpy.context)
     update_panel_location_screen(None, bpy.context)
     update_panel_location_shade(None, bpy.context)
     update_panel_location_sharpen(None, bpy.context)
     update_panel_location_smooth(None, bpy.context)
     update_panel_location_uvs(None, bpy.context)
+
+    update_display_tools(None, bpy.context)
+    update_display_menu(None, bpy.context)
+    update_menu_select(None, bpy.context)
+
 
 
 def unregister():
