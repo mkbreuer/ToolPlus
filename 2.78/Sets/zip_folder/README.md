@@ -2,11 +2,15 @@
 
  ####  Zip for direct installation
 
+* follow a zip link 
+ 
+* press download or right click on RAW: "Save target..."
+
 * run blender
 
 * open the user preferences under [CTRL+ALT+U] or under files...
 
-* go to tab addons and press "Install from File..." at the bottom.
+* go to tab: 'addons' and press "Install from File..." at the bottom.
 
 * activate the addon and choose settings in the addon preferences
 
