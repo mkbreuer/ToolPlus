@@ -650,16 +650,13 @@ class TP_Panels_Preferences(AddonPreferences):
             row.label(text="1 > Change search to key-bindig and insert the hotkey, eg. bool menu: shift t !", icon ="BLANK1")
             row.label(text="2 > Under 3D View you find the call menu, name: VIEW3D_TP_Boolean_Menu !", icon ="BLANK1")
             row.label(text="3 > Choose a new key configuration and save user settings !", icon ="BLANK1")
+
+            row.separator() 
+            
+            row.label(text="(4) > Use the 'is key free' addon under User Interface to finde a free shortcut !", icon ="BLANK1")
         
             box.separator()  
-                        
-            row = layout.row(1)   
-            sub = row.row(1)
-            sub.scale_x = 0.5      
-            sub.operator('wm.url_open', text = 'Is Key Free Addon', icon = 'PLUGIN').url = "https://github.com/Antonioya/blender/tree/master/iskeyfree"
-            row.label(" ", icon ="BLANK1") 
-        
-            box.separator()  
+
 
 
         #Weblinks

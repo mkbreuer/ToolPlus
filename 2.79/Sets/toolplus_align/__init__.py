@@ -889,23 +889,27 @@ class TP_Panels_Preferences(AddonPreferences):
                 
                 row = box.row(1) 
                 row.label(text="! durably hidden with next reboot!", icon ="INFO")
-
+    
+            box.separator()  
            
             # TIP #
             box.separator()  
+
             
             row = layout.row(1)             
             row.label(text="! For key change go to > User Preferences > TAB: Input !", icon ="INFO")
-            sub = row.row(1)
-            sub.scale_x = 0.5      
-            sub.operator('wm.url_open', text = 'Addon Tip: is key free', icon = 'PLUGIN').url = "https://github.com/Antonioya/blender/tree/master/iskeyfree"
 
             row = layout.column(1) 
             row.label(text="1 > Change search to key-bindig and insert the hotkey, eg. align menu: ctrl d !", icon ="BLANK1")
             row.label(text="2 > Under 3D View you find the call menu, name: tp_menu.align_main !", icon ="BLANK1")
             row.label(text="3 > Choose a new key configuration and save user settings !", icon ="BLANK1")
+
+            row.separator() 
+            
+            row.label(text="(4) > Use the 'is key free' addon under User Interface to finde a free shortcut !", icon ="BLANK1")
         
             box.separator()  
+
 
 
         # HEADER #

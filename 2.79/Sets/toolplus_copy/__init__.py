@@ -165,7 +165,7 @@ def update_menu(self, context):
         km = wm.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')
 
         kmi = km.keymap_items.new('wm.call_menu', 'Q', 'PRESS', shift=True, alt=True) #,ctrl=True 
-        kmi.properties.name = 'tp_menu.copyshop_menu'
+        kmi.properties.name = 'View3D_TP_Copy_Menu'
 
     if context.user_preferences.addons[__name__].preferences.tab_menu_view == 'off':
         pass
@@ -375,13 +375,22 @@ class TP_Panels_Preferences(AddonPreferences):
 
             box.separator() 
              
-            row.operator('wm.url_open', text = '!Tip: is key free', icon = 'PLUGIN').url = "https://github.com/Antonioya/blender/tree/master/iskeyfree"
-
-
-            box.separator() 
+            # TIP #
+            box.separator()
             
-            row = layout.row(1) 
-            row.label(text="! if needed change keys durably in TAB Input !", icon ="INFO")
+            row = layout.row(1)             
+            row.label(text="! For key change go to > User Preferences > TAB: Input !", icon ="INFO")
+
+            row = layout.column(1) 
+            row.label(text="1 > Change search to key-bindig and insert the hotkey: alt shift q", icon ="BLANK1")
+            row.label(text="2 > Under 3D View you find the call menu, name: View3D_TP_Copy_Menu !", icon ="BLANK1")
+            row.label(text="3 > Choose a new key configuration and save user settings !", icon ="BLANK1")
+
+            row.separator() 
+            
+            row.label(text="(4) > Use the 'is key free' addon under User Interface to finde a free shortcut !", icon ="BLANK1")
+        
+            box.separator()  
 
 
         # WEBLINKS #
