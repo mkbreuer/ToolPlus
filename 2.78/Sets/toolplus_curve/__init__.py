@@ -22,7 +22,7 @@
 bl_info = {
     "name": "T+ Curves",
     "author": "Marvin.K.Breuer (MKB) / Multiple Addon Authors (see URLs)",
-    "version": (1, 3, 2),
+    "version": (1, 3, 3),
     "blender": (2, 78, 0),
     "location": "View3D > Toolshelf [T] > TAB > Curves",
     "description": "collection of curve object and tools",

@@ -184,33 +184,49 @@ class OBJECT_OT_draw_fillet(bpy.types.Operator):
     bl_idname = "dynamic.normalize"
     bl_label = "Draw Normalized"
     bl_description = "see vertices resolution on bezier curve / hide in render"
-    bl_options = {'REGISTER', 'UNDO'}
+    #bl_options = {'REGISTER', 'UNDO'}
     
     # i understand that a lot of these ifs are redundant, scheduled for
     # deletion. is 'RELEASE' redundant for keys?
    
+#    def modal(self, context, event):
+#        context.area.tag_redraw()
+#        return {'PASS_THROUGH'}
+    
+
     def modal(self, context, event):
         context.area.tag_redraw()
+
+        if event.type in {'ESC'}: 
+            bpy.types.SpaceView3D.draw_handler_remove(self._handle_diamonds, 'WINDOW')
+            return {'CANCELLED'}
+
         return {'PASS_THROUGH'}
-    
+
+
+
     def invoke(self, context, event):
 
         if context.area.type == 'VIEW_3D':
-            context.area.tag_redraw()
-            context.window_manager.modal_handler_add(self)
+            #context.area.tag_redraw()
+            #context.window_manager.modal_handler_add(self)
                     
+            # the arguments we pass the the callback
+            args = (self, context)
+
             # Add the region OpenGL drawing callback
             # draw in view space with 'POST_VIEW' and 'PRE_VIEW'
-            self.handle = bpy.types.SpaceView3D.draw_handler_add(draw_callback_px, (OBJECT_OT_draw_fillet, context), 'WINDOW', 'POST_PIXEL')
+            self._handle_diamonds = bpy.types.SpaceView3D.draw_handler_add(draw_callback_px, args, 'WINDOW', 'POST_PIXEL')
             
             # To store the handle, the class should be used rather than the class instance (you may use self.__class__),
             # so we can access the variable from outside, e.g. to remove the drawback on unregister()
 
+            context.window_manager.modal_handler_add(self)
             return {'RUNNING_MODAL'}
         else:
             self.report({'WARNING'}, 
             "View3D not found, cannot run operator")
-            context.area.tag_redraw()            
+            #context.area.tag_redraw()            
             return {'CANCELLED'}
     
 
@@ -245,13 +261,13 @@ class UIPanel(bpy.types.Panel):
 
 def register():
 
-
-    bpy.utils.register_module(__name__)
+    bpy.utils.register_class(OBJECT_OT_draw_fillet)
+    #bpy.utils.register_module(__name__)
 
 def unregister():
-    bpy.types.SpaceView3D.draw_handler_remove(OBJECT_OT_draw_fillet.handle, 'WINDOW')   
   
-    bpy.utils.unregister_module(__name__)
+    bpy.utils.unregister_class(OBJECT_OT_draw_fillet)
+    #bpy.utils.unregister_module(__name__)
 
  
 if __name__ == "__main__":
