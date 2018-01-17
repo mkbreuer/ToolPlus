@@ -30,6 +30,8 @@ Install Instruction
 
 * for fast installation you can use a zip from the specific zip folder.
 
+* [Zip folder 2.78](https://github.com/mkbreuer/ToolPlus/tree/master/2.78/Sets/zip_folder)  or  [Zip Folder 2.79](https://github.com/mkbreuer/ToolPlus/tree/master/2.79/Sets/zip)  
+
 * for a single pyhton script is no zip required, just add it to blender text editor 
 
 * be sure it have a bpy import, import of data types and his own registry and an press run 
