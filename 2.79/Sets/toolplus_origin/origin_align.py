@@ -63,11 +63,7 @@ def align_function(subject, active_too, consistent, self_or_active, loc_x, loc_y
                 ok = True                
                 for p in me.vertices:
                     co_list.append((obj_mtx * p.co))    
-#            elif obj.type == 'CURVE' and len(me.splines) > 0:
-#                ok = True                
-#                for s in me.splines:
-#                    for p in s.bezier_points:
-#                        co_list.append((obj_mtx * p.co))
+
             elif obj.type == 'SURFACE' and len(me.splines) > 0:
                 ok = True                
                 for s in me.splines:
@@ -85,11 +81,7 @@ def align_function(subject, active_too, consistent, self_or_active, loc_x, loc_y
                 ok = True                
                 for p in me.vertices:
                     co_list.append(p.co)    
-#            elif obj.type == 'CURVE' and len(me.splines) > 0:
-#                ok = True                
-#                for s in me.splines:
-#                    for p in s.bezier_points:
-#                        co_list.append(p.co)
+
             elif o.type == 'SURFACE' and len(me.splines) > 0:
                 ok = True                
                 for s in me.splines:
@@ -650,23 +642,18 @@ class AlignTools(bpy.types.Operator):
     def invoke(self, context, event):
         return context.window_manager.invoke_props_popup(self, event)  
 
-"""    
+
+## REGISTRY # 
 #def menu_func(self, context):
+#    self.layout.operator("tp_origin.align_tools", text="Align Objects")
 
-    #self.layout.operator("tp_origin.align_tools", text="Align Objects")
+#def register():
+#    bpy.utils.register_class(AlignTools)
+#	bpy.types.VIEW3D_MT_object_specials.prepend(menu_func)
 
-def register():
-    bpy.utils.register_class(AlignTools)
-	#bpy.types.VIEW3D_MT_object_specials.prepend(menu_func)
+#def unregister():
+#    bpy.utils.unregister_class(AlignTools)
+#    bpy.types.VIEW3D_MT_object_specials.remove(menu_func)
 
-
-def unregister():
-    bpy.utils.unregister_class(AlignTools)
-    #bpy.types.VIEW3D_MT_object_specials.remove(menu_func)
-
-"""
-    
-    
-    
-
-
+#if __name__ == "__main__":
+#    register()

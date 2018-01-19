@@ -23,7 +23,7 @@
 bl_info = {
     "name": "T+ Origin",
     "author": "Marvin.K.Breuer (MKB)",
-    "version": (0, 1, 5),
+    "version": (0, 1, 6),
     "blender": (2, 7, 9),
     "location": "View3D > Tool Shelf [T] or Property Shelf [N] or Menu",
     "description": "Origin Tools Collection",
@@ -43,6 +43,7 @@ from toolplus_origin.origin_batch   import (View3D_TP_Origin_Batch)
 # LOAD CUSTOM ICONS #
 from . icons.icons                  import load_icons
 from . icons.icons                  import clear_icons
+
 
 # LOAD OPERATORS #
 import sys, os
@@ -162,9 +163,9 @@ class TP_Panels_Preferences(AddonPreferences):
             row = box.column(1)   
             row.label(text="Welcome to T+ Origin Collection!")  
             row.label(text="The addon set allows you to:") 
-            row.label(text="1. set your origin to center, cursor or selected")   
-            row.label(text="2. or to a point on the object bounding box")   
-            row.label(text="3. or zero the origin to an 3d view axis")      
+            row.label(text="1. set the origin to center, cursor, active or selected geometry")   
+            row.label(text="2. to place the origin to a point on the object bounding box")   
+            row.label(text="3. or zero the origin to one of the 3d view axis")      
             row.label(text="Have Fun! :)")         
 
 
@@ -227,13 +228,8 @@ class TP_Panels_Preferences(AddonPreferences):
 
             if self.tab_menu_view == 'off':
                 row = box.row(1) 
-                row.label(text="! menu hidden with next reboot durably!", icon ="INFO")
+                row.label(text="! The menu hidden with next reboot durably!", icon ="INFO")
 
-            else:      
-                row = box.row(1) 
-                row.operator("tp_ops.keymap_origin", text = 'Open KeyMap (Text Editor)')
-                row.operator('wm.url_open', text = 'Type of Events (WEB)').url = "https://lh3.googleusercontent.com/zfNKbUKpnvLTPADu4btQI_adXhkR9iPiSyy31ZvP89YNK6YSiLf4iVC3lpzN76DTdEdHHIZqZK6qM2OYRSAeFRlIof5xHC0wLQtOaCwYEKi43A6W9KGkGAwnlNGqUugQdleEHTMLZnL67u4m6kU1KTKlFASfyDuFCCvdyGGaa5-gZ9kib1AiJ_2exgWvRh1yM86PehsJH65Zp0r6x5zhqZpLI1IS9K-zlyvaKg_WgYuVMzvsd3JrB2BAo-BIZGX9MFA8t-CC3qVtTLXH8WAkHo9IyA1u7GnlCM5p9wffwpu1NhCsZTuQwPnn0BGmOCD0tPCm_LJSJSDyCtkfBXvK_hdsQ3XM0Jcttl1oHJKYqbPoIjHMaLl7pNGmwMhcjlgPqXMq01Eln0wm6NHbJyTe5WMBN7FaB0WEaot7V9TsFxACRJzD2dJu-zP7xJ_vw6sMlYcXLf962SkzRShIMTJiBzSxui5sRJ1uKPCehcdP4E3pEc1tIFO1dQZTSwrLf9luz1S79zCflUCgJFWa8GfN4KGWG09mO4jUBJIdtobsDeM_NPyvraz6Lq4OTz90zgQQ1cxTzQ49MzYcIesnrw7TE2Ilr7UTkOpuoxL4rPw=w696-h1278-no"
-                
               
             # TIP #
             box.separator()
@@ -252,10 +248,27 @@ class TP_Panels_Preferences(AddonPreferences):
         
             box.separator()  
 
+            row = layout.row(1)             
+            row.label(text="! Other way to change the default key is to edit the keymap script !", icon ="INFO")
+             
+            row = layout.row(1) 
+            row.operator("tp_ops.keymap_origin", text = 'Open KeyMap (Text Editor)')
+            row.operator('wm.url_open', text = 'Type of Events (WEB)').url = "https://lh3.googleusercontent.com/zfNKbUKpnvLTPADu4btQI_adXhkR9iPiSyy31ZvP89YNK6YSiLf4iVC3lpzN76DTdEdHHIZqZK6qM2OYRSAeFRlIof5xHC0wLQtOaCwYEKi43A6W9KGkGAwnlNGqUugQdleEHTMLZnL67u4m6kU1KTKlFASfyDuFCCvdyGGaa5-gZ9kib1AiJ_2exgWvRh1yM86PehsJH65Zp0r6x5zhqZpLI1IS9K-zlyvaKg_WgYuVMzvsd3JrB2BAo-BIZGX9MFA8t-CC3qVtTLXH8WAkHo9IyA1u7GnlCM5p9wffwpu1NhCsZTuQwPnn0BGmOCD0tPCm_LJSJSDyCtkfBXvK_hdsQ3XM0Jcttl1oHJKYqbPoIjHMaLl7pNGmwMhcjlgPqXMq01Eln0wm6NHbJyTe5WMBN7FaB0WEaot7V9TsFxACRJzD2dJu-zP7xJ_vw6sMlYcXLf962SkzRShIMTJiBzSxui5sRJ1uKPCehcdP4E3pEc1tIFO1dQZTSwrLf9luz1S79zCflUCgJFWa8GfN4KGWG09mO4jUBJIdtobsDeM_NPyvraz6Lq4OTz90zgQQ1cxTzQ49MzYcIesnrw7TE2Ilr7UTkOpuoxL4rPw=w696-h1278-no"
+            
+            box.separator()  
+            
 
         # WEB #
         if self.prefs_tabs == 'url':
-            row = layout.row()
+            
+            box = layout.box().column(1)
+            
+            row = box.column(1)   
+            row.label(text="The list of auxiliary addons that a belong to this collection:")      
+
+            row.separator() 
+                                    
+            row = box.row()
             row.operator('wm.url_open', text = 'Distribute', icon = 'HELP').url = "http://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/3D_interaction/Oscurart_Tools"
             row.operator('wm.url_open', text = 'Modal Origin', icon = 'HELP').url = "http://blenderlounge.fr/forum/viewtopic.php?f=18&t=1438"
             row.operator('wm.url_open', text = 'Advance Align', icon = 'HELP').url = "https://blenderartists.org/forum/showthread.php?256114-Add-on-Advanced-align-tools"

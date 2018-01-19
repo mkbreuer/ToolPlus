@@ -44,9 +44,7 @@ def update_menu(self, context):
         pass
     
     if context.user_preferences.addons[__package__].preferences.tab_menu_view == 'menu':
-     
-        #VIEW3D_TP_Origin_Menu.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_menu
-    
+
         bpy.utils.register_class(VIEW3D_TP_Origin_Menu)
     
         # Keymapping 
@@ -54,7 +52,10 @@ def update_menu(self, context):
         
         km = wm.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')
         
-        kmi = km.keymap_items.new('wm.call_menu', 'D', 'PRESS', ctrl=True) #,alt=True, shift=True, 
+                                                
+        kmi = km.keymap_items.new('wm.call_menu', 'D', 'PRESS', ctrl=True) #add here your new key event
+        #kmi = km.keymap_items.new('wm.call_menu', 'A', 'PRESS', ctrl=True, alt=True, shift=True) #example
+       
         kmi.properties.name = "tp_menu.origin_base"
 
 

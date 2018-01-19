@@ -22,6 +22,7 @@
 
 # t+ version 01
 
+
 # LOAD MODUL #
 import math
 import bpy
@@ -128,8 +129,6 @@ class View3D_TP_Origin_to_CCC(bpy.types.Operator):
                 bpy.ops.object.origin_set(type='ORIGIN_CURSOR')        
                 bpy.ops.object.editmode_toggle()
 
-
-
             else:            
                 print(self)
                 self.report({'INFO'}, 'Need 3 Verts!')  
@@ -144,7 +143,9 @@ class View3D_TP_Origin_to_CCC(bpy.types.Operator):
 # REGISTRY #        
 def register():    
     bpy.utils.register_module(__name__)
+
 def unregister():   
     bpy.utils.unregister_module(__name__)
+
 if __name__ == "__main__":
     register()

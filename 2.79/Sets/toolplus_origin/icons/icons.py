@@ -21,6 +21,7 @@ def load_icons():
 
     mkb_icons.load("icon_origin_active", os.path.join(icons_dir, "origin_active.png"), 'IMAGE')
     mkb_icons.load("icon_origin_align", os.path.join(icons_dir, "origin_align.png"), 'IMAGE')
+    mkb_icons.load("icon_origin_apply", os.path.join(icons_dir, "origin_apply.png"), 'IMAGE')
     mkb_icons.load("icon_origin_bbox", os.path.join(icons_dir, "origin_bbox.png"), 'IMAGE')
     mkb_icons.load("icon_origin_bottom", os.path.join(icons_dir, "origin_bottom.png"), 'IMAGE')
     mkb_icons.load("icon_origin_ccc", os.path.join(icons_dir, "origin_ccc.png"), 'IMAGE')

@@ -99,16 +99,16 @@ class draw_origin_panel_layout:
             if tp_props.display_origin_bbox:                     
                 
                 button_origin_bbox = icons.get("icon_origin_bbox")            
-                row.prop(tp_props, "display_origin_bbox", text="", icon_value=button_origin_bbox.icon_id)                     
+                row.prop(tp_props, "display_origin_bbox", text="X-BBox", icon_value=button_origin_bbox.icon_id)                     
                
-                row.operator("object.bbox_origin_modal_ops", text="   BBoxOrigin")
+                row.operator("object.bbox_origin_modal_ops", text="1-BBox")
           
             else:
                
                 button_origin_bbox = icons.get("icon_origin_bbox")                
-                row.prop(tp_props, "display_origin_bbox", text="", icon_value=button_origin_bbox.icon_id)
+                row.prop(tp_props, "display_origin_bbox", text="X-BBox", icon_value=button_origin_bbox.icon_id)
                 
-                row.operator("object.bbox_origin_modal_ops", text="   BBoxOrigin")
+                row.operator("object.bbox_origin_modal_ops", text="1-BBox")
                             
             if bpy.context.object.type == 'MESH':
                 
@@ -255,15 +255,17 @@ class draw_origin_panel_layout:
             if tp_props.display_origin_zero: 
 
                 box.separator()   
+
+                row = box.row(1)
+                row.prop(context.scene, 'tp_switch_axis', expand=True)
                 
                 row = box.row(1)
                 row.prop(context.scene, 'tp_switch', expand=True)
 
-                row = box.row()
-                row.prop(context.scene, 'tp_switch_axis', expand=True)
-                
-                row = box.row()
-                row.operator("tp_ops.zero_axis_panel", "Execute  ZeroAxis", icon="BLANK1")  
+                sub = row.row(1)
+                sub.scale_x = 0.95         
+                button_origin_apply = icons.get("icon_origin_apply")  
+                sub.operator("tp_ops.zero_axis_panel", "RUN")#, icon_value=button_origin_apply.icon_id)  
 
 
             box.separator()    
@@ -319,10 +321,10 @@ class draw_origin_panel_layout:
                 
                 if tp_props.display_origin_editbox:                     
                     button_origin_bbox = icons.get("icon_origin_bbox")            
-                    row.prop(tp_props, "display_origin_editbox", text="BBoxOrigin", icon_value=button_origin_bbox.icon_id)                     
+                    row.prop(tp_props, "display_origin_editbox", text="X-BBox", icon_value=button_origin_bbox.icon_id)                     
                 else:
                     button_origin_bbox = icons.get("icon_origin_bbox")                
-                    row.prop(tp_props, "display_origin_editbox", text="BBoxOrigin", icon_value=button_origin_bbox.icon_id)
+                    row.prop(tp_props, "display_origin_editbox", text="X-BBox", icon_value=button_origin_bbox.icon_id)
                     
                 if tp_props.display_origin_editbox:        
 
@@ -470,13 +472,15 @@ class draw_origin_panel_layout:
                 box.separator()   
 
                 row = box.row(1)
-                row.prop(context.scene, 'tp_switch', expand=True)
-
-                row = box.row()
                 row.prop(context.scene, 'tp_switch_axis', expand=True)       
             
-                row = box.row()
-                row.operator("tp_ops.zero_axis_panel", "Execute  ZeroAxis", icon="BLANK1")  
+                row = box.row(1)
+                row.prop(context.scene, 'tp_switch', expand=True)
+                
+                sub = row.row(1)
+                sub.scale_x = 0.95         
+                button_origin_apply = icons.get("icon_origin_apply")  
+                sub.operator("tp_ops.zero_axis_panel", "RUN")#, icon_value=button_origin_apply.icon_id)  
 
             box.separator()
 

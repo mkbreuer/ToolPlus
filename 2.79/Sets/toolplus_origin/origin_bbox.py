@@ -27,7 +27,6 @@ from bpy.props import *
 from . icons.icons import load_icons
 
 
-
 class VIEW3D_TP_BBox_Origin_Back(bpy.types.Operator):
     """BBox Origin"""
     bl_label = "BBox Origin"

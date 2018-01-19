@@ -450,8 +450,7 @@ class View3D_TP_Origin_Batch(bpy.types.Operator):
         box.separator()   
 
 
-    def execute(self, context):
-   
+    def execute(self, context):   
         return {'FINISHED'}
 
     def check(self, context):

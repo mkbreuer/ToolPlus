@@ -37,7 +37,9 @@ import bpy
 from bpy import *
 
 
-## ------------------------------------ SELECTION --------------------------------------
+
+## SELECTION ======================  
+ 
 bpy.selection_osc=[]
 
 def select_osc():
@@ -76,8 +78,8 @@ class OscSelection(bpy.types.Header):
         row.label("Sels: "+str(len(bpy.selection_osc)))
         """  
 
-##=============== DISTRIBUTE ======================    
 
+## DISTRIBUTE ======================    
 
 def ObjectDistributeOscurart (self, X, Y, Z):
     if len(bpy.selection_osc[:]) > 1:
