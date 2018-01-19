@@ -82,7 +82,8 @@ class draw_origin_panel_layout:
             button_origin_mass = icons.get("icon_origin_mass")           
             row.operator("tp_ops.origin_set_mass", text="Center of Mass", icon_value=button_origin_mass.icon_id)
 
-
+            box.separator()
+            
             Display_Dynamics = context.user_preferences.addons[__package__].preferences.tab_display_tools
             if Display_Dynamics == 'on':       
                 box = col.box().column(1)                         
