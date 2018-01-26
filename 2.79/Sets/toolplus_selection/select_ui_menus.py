@@ -85,16 +85,16 @@ class VIEW3D_TP_Select_Menu(bpy.types.Menu):
 
             layout.separator()
 
-            layout.operator("object.select_linked", text="Linked", icon = "LINKED") 
-            layout.operator("object.select_grouped", text="Group")        
-            layout.operator("object.select_by_type", text="Type")        
+            layout.operator_menu_enum("object.select_linked", "type", text="Linked", icon = "LINKED")    
+            layout.operator_menu_enum("object.select_grouped", "type", text="Grouped")
+            layout.operator_menu_enum("object.select_by_type", "type", text="byType")        
 
             layout.separator()
 
             layout.operator("object.select_by_layer", text="Layer", icon = "SEQ_SEQUENCER")
-            layout.operator("object.select_pattern", text="Name")
             layout.operator("object.select_camera", text="Camera")
-
+            layout.operator("object.select_pattern", text="Pattern")
+       
             layout.separator()
 
             layout.operator("object.select_random", text="Random", icon = "RNDCURVE")            
@@ -118,11 +118,12 @@ class VIEW3D_TP_Select_Menu(bpy.types.Menu):
             layout.operator("mesh.select_all",text="GetAll", icon = "UV_SYNC_SELECT").action='SELECT'   
             layout.operator("mesh.select_all", text = "Deselect").action='DESELECT'
             layout.operator("mesh.select_all", text = "Invert").action='INVERT'
-      
+            layout.menu("VIEW3D_TP_MultiMode", text="Multi")       
+            
             layout.separator()
 
-            layout.operator("mesh.select_linked",text="Linked", icon = "LINKED")        
-            layout.operator("mesh.select_similar",text="Similar")                         
+            layout.operator("mesh.select_linked",text="Linked", icon = "LINKED")                            
+            layout.menu("VIEW3D_MT_edit_mesh_select_similar",text="Similar")                         
 
             layout.separator()
                         
@@ -155,7 +156,7 @@ class VIEW3D_TP_Select_Menu(bpy.types.Menu):
 
             layout.separator()
 
-            layout.operator('meshlint.select', text='Select MeshLint', icon='EDIT')         
+            layout.operator('tp_meshlint.select', text='Select MeshLint', icon='EDIT')         
 
             layout.separator()
 
@@ -236,9 +237,6 @@ class VIEW3D_TP_Select_Menu(bpy.types.Menu):
             layout.operator("lattice.select_mirror", text="Mirror", icon = "ARROW_LEFTRIGHT")
             layout.operator("lattice.select_random") 
 
-            layout.separator()
-
-            layout.menu("vgroupmenu", icon="GROUP_VERTEX")               
             layout.separator()
 
             layout.operator("lattice.select_ungrouped", text="Ungrouped Verts")

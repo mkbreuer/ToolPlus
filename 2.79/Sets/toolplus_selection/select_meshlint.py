@@ -91,7 +91,7 @@ try:
         return obj and 'MESH' == obj.type
 
 
-    class MeshLintAnalyzer:
+    class TP_MeshLintAnalyzer:
         CHECKS = []
 
         def __init__(self):
@@ -103,7 +103,7 @@ try:
         def find_problems(self):
             analysis = []
             self.num_problems_found = 0
-            for lint in MeshLintAnalyzer.CHECKS:
+            for lint in TP_MeshLintAnalyzer.CHECKS:
                 sym = lint['symbol']
                 should_check = getattr(bpy.context.scene, lint['check_prop'])
                 if not should_check:
@@ -247,9 +247,9 @@ try:
         for lint in CHECKS:
             sym = lint['symbol']
             lint['count'] = TBD_STR
-            prop = 'meshlint_check_' + sym
+            prop = 'tp_meshlint_check_' + sym
             lint['check_prop'] = prop
-            'meshlint_check_' + sym
+            'tp_meshlint_check_' + sym
             setattr(
                 bpy.types.Scene,
                 prop,
@@ -260,10 +260,10 @@ try:
 
     @bpy.app.handlers.persistent
     def global_repeated_check(dummy):
-        MeshLintContinuousChecker.check()
+        TP_MeshLintContinuousChecker.check()
 
 
-    class MeshLintContinuousChecker():
+    class TP_MeshLintContinuousChecker():
         current_message = ''
         time_complained = 0
         previous_topology_counts = None
@@ -273,7 +273,7 @@ try:
         def check(cls):
             if not is_edit_mode():
                 return
-            analyzer = MeshLintAnalyzer()
+            analyzer = TP_MeshLintAnalyzer()
             now_counts = analyzer.topology_counts()
             previous_topology_counts = \
                 cls.previous_topology_counts
@@ -285,7 +285,7 @@ try:
             if None is previous_topology_counts \
                     or now_counts != previous_topology_counts:
                 if not previous_data_name == now_name:
-                    before = MeshLintAnalyzer.none_analysis()
+                    before = TP_MeshLintAnalyzer.none_analysis()
                 analysis = analyzer.find_problems()
                 diff_msg = cls.diff_analyses(
                     cls.previous_analysis, analysis)
@@ -302,11 +302,11 @@ try:
         @classmethod
         def diff_analyses(cls, before, after):
             if None is before:
-                before = MeshLintAnalyzer.none_analysis()
+                before = TP_MeshLintAnalyzer.none_analysis()
             report_strings = []
             dict_before = cls.make_labels_dict(before)
             dict_now = cls.make_labels_dict(after)
-            for check in MeshLintAnalyzer.CHECKS:
+            for check in TP_MeshLintAnalyzer.CHECKS:
                 check_name = check['label']
                 if not check_name in dict_now.keys():
                     continue
@@ -351,9 +351,9 @@ try:
                     area.header_text_set('MeshLint: ' + message)
 
 
-    class MeshLintVitalizer(bpy.types.Operator):
+    class TP_MeshLintVitalizer(bpy.types.Operator):
         """Toggles the real-time execution of the checks (Edit Mode only)"""
-        bl_idname = 'meshlint.live_toggle'
+        bl_idname = 'tp_meshlint.live_toggle'
         bl_label = 'MeshLint Live Toggle'
 
         is_live = False
@@ -363,12 +363,12 @@ try:
             return has_active_mesh(context) and is_edit_mode()
 
         def execute(self, context):
-            if MeshLintVitalizer.is_live:
+            if TP_MeshLintVitalizer.is_live:
                 bpy.app.handlers.scene_update_post.remove(global_repeated_check)
-                MeshLintVitalizer.is_live = False
+                TP_MeshLintVitalizer.is_live = False
             else:
                 bpy.app.handlers.scene_update_post.append(global_repeated_check)
-                MeshLintVitalizer.is_live = True
+                TP_MeshLintVitalizer.is_live = True
             return {'FINISHED'}
 
 
@@ -376,9 +376,9 @@ try:
         bpy.context.scene.objects.active = obj
 
 
-    class MeshLintObjectLooper:
+    class TP_MeshLintObjectLooper:
         def examine_active_object(self):
-            analyzer = MeshLintAnalyzer()
+            analyzer = TP_MeshLintAnalyzer()
             analyzer.enable_anything_select_mode()
             self.select_none()
             analysis = analyzer.find_problems()
@@ -411,9 +411,9 @@ try:
         def select_none(self):
             bpy.ops.mesh.select_all(action='DESELECT')
 
-    class MeshLintSelector(MeshLintObjectLooper, bpy.types.Operator):
+    class TP_MeshLintSelector(TP_MeshLintObjectLooper, bpy.types.Operator):
         """Uncheck boxes below to prevent those checks from running"""
-        bl_idname = 'meshlint.select'
+        bl_idname = 'tp_meshlint.select'
         bl_label = 'MeshLint Select'
         bl_options = {'REGISTER', 'UNDO'}
 
@@ -438,9 +438,9 @@ try:
 
     
 
-    class MeshLintObjectDeselector(MeshLintObjectLooper, bpy.types.Operator):
+    class TP_MeshLintObjectDeselector(TP_MeshLintObjectLooper, bpy.types.Operator):
         """Mesh Check Table is under Properties > Object Data"""
-        bl_idname = 'meshlint.objects_deselect'
+        bl_idname = 'tp_meshlint.objects_deselect'
         bl_label = 'MeshLint Objects Deselect'
         bl_options = {'REGISTER', 'UNDO'}
 
@@ -459,19 +459,11 @@ try:
                 if not obj in self.troubled_meshes:
                     obj.select = False
 
-    class MeshLintControl(bpy.types.Panel):
-        bl_category = "Options"
-        bl_idname = "VIEW3D_TP_Meshlint_Panel"
-        bl_label = "Mesh Lint"
-        bl_space_type = 'VIEW_3D'
-        bl_region_type = 'TOOLS'
-        #bl_region_type = 'UI'
-        #bl_options = {'DEFAULT_CLOSED'}
-
-        #bl_space_type = 'PROPERTIES'
-        #bl_region_type = 'WINDOW'
-        #bl_context = 'data'
-        #bl_label = SUBPANEL_LABEL
+    class View_3D_TP_MeshLintControl(bpy.types.Panel):
+        bl_space_type = 'PROPERTIES'
+        bl_region_type = 'WINDOW'
+        bl_context = 'data'
+        bl_label = SUBPANEL_LABEL
 
         @classmethod
         def poll(cls, context):
@@ -488,40 +480,47 @@ try:
             box = layout.box().column(1)         
 
             row = box.row(1)
-            row.operator('meshlint.select', text='Select Lint', icon='EDITMODE_HLT')
+            row.operator('tp_meshlint.select', text='Select Lint', icon='EDITMODE_HLT')
 
-            row = box.row(1)
-            if MeshLintVitalizer.is_live:
-                live_label = 'Pause Checking...'
+            if TP_MeshLintVitalizer.is_live:
+                live_label = 'Pause!'
                 play_pause = 'PAUSE'
             else:
-                live_label = 'Continuous Check!'
+                live_label = 'Live!'
                 play_pause = 'PLAY'
             
-            row.operator('meshlint.live_toggle', text=live_label, icon=play_pause)
-         
-            row = box.row(1)            
-            row.operator('meshlint.objects_deselect', text='Deselect all Lint-Free', icon='UV_ISLANDSEL')
+            row.operator('tp_meshlint.live_toggle', text=live_label, icon=play_pause)
 
-      
+
         def add_toggle_buttons(self, layout, context):
 
-            tp = context.window_manager.meshlint_window
+            tp_props = context.window_manager.tp_props_select 
             
             row = layout.row(1)
             
-            if tp.display_meshlint_toggle:
-                row.prop(tp, "display_meshlint_toggle", text="Toggle Options", icon='TRIA_DOWN')
+            if tp_props.display_meshlint_toggle:
+                row.prop(tp_props, "display_meshlint_toggle", text="", icon='TRIA_DOWN')
+                row.prop(tp_props, "display_meshlint_toggle", text="Settings", icon='BLANK1')
             else:
-                row.prop(tp, "display_meshlint_toggle", text="Toggle Options", icon='TRIA_RIGHT')
+                row.prop(tp_props, "display_meshlint_toggle", text="", icon='TRIA_RIGHT')
+                row.prop(tp_props, "display_meshlint_toggle", text="Settings", icon='BLANK1')
+
+            
+            if tp_props.display_check_toggle:
+                row.prop(tp_props, "display_check_toggle", text="Output", icon='BLANK1')
+                row.prop(tp_props, "display_check_toggle", text="", icon='TRIA_DOWN')
+            else:
+                row.prop(tp_props, "display_check_toggle", text="Output", icon='BLANK1')
+                row.prop(tp_props, "display_check_toggle", text="", icon='TRIA_LEFT')
+
           
-            if tp.display_meshlint_toggle:
+            if tp_props.display_meshlint_toggle:
                 
                 box = layout.box().column(1)                   
                 
                 row = box.column(1)
 
-                for lint in MeshLintAnalyzer.CHECKS:
+                for lint in TP_MeshLintAnalyzer.CHECKS:
                     prop_name = lint['check_prop']
                     is_enabled = getattr(context.scene, prop_name)
                     label = 'Check ' + lint['label']
@@ -529,39 +528,46 @@ try:
                 
 
         def add_criticism(self, layout, context):
-           
-            box = layout.box().column(1)         
 
-            row = box.column(1)
+            tp_props = context.window_manager.tp_props_select 
+            
+            row = layout.row(1)
 
-            active = context.active_object
+          
+            if tp_props.display_check_toggle:
+                           
+                box = layout.box().column(1)         
 
-            if not has_active_mesh(context):
-                return
+                row = box.column(1)
 
-            total_problems = 0
+                active = context.active_object
 
-            for lint in MeshLintAnalyzer.CHECKS:
-                count = lint['count']
-                
-                if count in (TBD_STR, N_A_STR):
-                    label = str(count) + ' ' + lint['label']
-                    reward = 'SOLO_OFF'
-                elif 0 == count:
-                    label = 'No %s!' % lint['label']
-                    reward = 'SOLO_ON'
-                else:
-                    total_problems += count
-                    label = str(count) + 'x ' + lint['label']
-                    label = depluralize(count=count, string=label)
-                    reward = 'ERROR'
-         
-                row.label(text=label, icon=reward)
-         
-            name_crits = MeshLintControl.build_object_criticisms(bpy.context.selected_objects, total_problems)
-           
-            for crit in name_crits:
-                row.label(crit)
+                if not has_active_mesh(context):
+                    return
+
+                total_problems = 0
+
+                for lint in TP_MeshLintAnalyzer.CHECKS:
+                    count = lint['count']
+                    
+                    if count in (TBD_STR, N_A_STR):
+                        label = str(count) + ' ' + lint['label']
+                        reward = 'SOLO_OFF'
+                    elif 0 == count:
+                        label = 'No %s!' % lint['label']
+                        reward = 'SOLO_ON'
+                    else:
+                        total_problems += count
+                        label = str(count) + 'x ' + lint['label']
+                        label = depluralize(count=count, string=label)
+                        reward = 'ERROR'
+             
+                    row.label(text=label, icon=reward)
+             
+                name_crits = TP_MeshLintControl.build_object_criticisms(bpy.context.selected_objects, total_problems)
+               
+                for crit in name_crits:
+                    row.label(crit)
 
 
         
@@ -577,10 +583,10 @@ try:
                 criticisms.append('...%s "%s" %s.' % (
                     conjunction, obj.name, crit))
             for obj in objects:
-                if MeshLintControl.has_unapplied_scale(obj.scale):
+                if TP_MeshLintControl.has_unapplied_scale(obj.scale):
                     add_crit('has an unapplied scale')
                     already_complained = True
-                if MeshLintControl.is_bad_name(obj.name):
+                if TP_MeshLintControl.is_bad_name(obj.name):
                     add_crit('is not a great name')
                     already_complained = True
             return criticisms
@@ -638,20 +644,20 @@ try:
             def test_scale_application(self):
                 for bad in [ [0,0,0], [1,2,3], [1,1,1.1] ]:
                     self.assertEqual(
-                        True, MeshLintControl.has_unapplied_scale(bad),
+                        True, TP_MeshLintControl.has_unapplied_scale(bad),
                         "Unapplied scale: %s" % bad)
                 self.assertEqual(
-                    False, MeshLintControl.has_unapplied_scale([1,1,1]),
+                    False, TP_MeshLintControl.has_unapplied_scale([1,1,1]),
                     "Applied scale (1,1,1)")
 
             def test_bad_names(self):
                 for bad in [ 'Cube', 'Cube.001', 'Sphere.123' ]:
                     self.assertEqual(
-                        True, MeshLintControl.is_bad_name(bad),
+                        True, TP_MeshLintControl.is_bad_name(bad),
                         "Bad name: %s" % bad)
                 for ok in [ 'Whatever', 'NumbersOkToo.001' ]:
                     self.assertEqual(
-                        False, MeshLintControl.is_bad_name(ok),
+                        False, TP_MeshLintControl.is_bad_name(ok),
                         "OK name: %s" % ok)
 
 
@@ -674,7 +680,7 @@ try:
                         'Label Two': {
                             'edges': [], 'verts': [5], 'faces': [3] }
                     },
-                    MeshLintContinuousChecker.make_labels_dict(
+                    TP_MeshLintContinuousChecker.make_labels_dict(
                         [
                             { 'lint': { 'label': 'Label One' },
                                 'edges': [1,2], 'verts': [], 'faces': [] },
@@ -684,19 +690,19 @@ try:
                     'Conversion of incoming analysis into label-keyed dict')
                 self.assertEqual(
                     {},
-                    MeshLintContinuousChecker.make_labels_dict(None),
+                    TP_MeshLintContinuousChecker.make_labels_dict(None),
                     'Handles "None" OK.')
 
             def test_comparison(self):
                 self.assertEqual(
                     None,
-                    MeshLintContinuousChecker.diff_analyses(
-                        MeshLintAnalyzer.none_analysis(),
-                        MeshLintAnalyzer.none_analysis()),
+                    TP_MeshLintContinuousChecker.diff_analyses(
+                        TP_MeshLintAnalyzer.none_analysis(),
+                        TP_MeshLintAnalyzer.none_analysis()),
                     'Two none_analysis()s')
                 self.assertEqual(
                     'Found Tris: 4 verts',
-                    MeshLintContinuousChecker.diff_analyses(
+                    TP_MeshLintContinuousChecker.diff_analyses(
                         None,
                         [
                             {
@@ -710,7 +716,7 @@ try:
                 self.assertEqual(
                     'Found Tris: 2 edges, ' +\
                         'Nonmanifold Elements: 4 verts, 1 face',
-                    MeshLintContinuousChecker.diff_analyses(
+                    TP_MeshLintContinuousChecker.diff_analyses(
                         [
                             { 'lint': { 'label': 'Tris' },
                               'verts': [], 'edges': [1,4], 'faces': [], },
@@ -732,7 +738,7 @@ try:
                 self.assertEqual(
                     'Found Tris: 1 vert, Ngons: 2 faces, ' +
                       'Nonmanifold Elements: 2 edges',
-                    MeshLintContinuousChecker.diff_analyses(
+                    TP_MeshLintContinuousChecker.diff_analyses(
                         [
                             { 'lint': { 'label': '6+-edge Poles' },
                               'verts': [], 'edges': [2,3], 'faces': [], },
@@ -758,7 +764,7 @@ try:
 
         class TestUI(unittest.TestCase):
             def test_complaints(self):
-                f = MeshLintControl.build_object_criticisms
+                f = TP_MeshLintControl.build_object_criticisms
                 self.assertEqual([], f([], 0), 'Nothing selected')
                 self.assertEqual(
                     [],
