@@ -221,7 +221,7 @@ class TP_Panels_Preferences(AddonPreferences):
                 row = box.column(1)             
                 row.label(text="! To use the delete menu > go to TAB: Input !", icon ="INFO")
                 row.label(text="! Change search to key-bindig and insert the hotkey: [x] !", icon ="BLANK1")
-                row.label(text="! now disable all the delete menus you not want to use !", icon ="BLANK1")
+                row.label(text="! now disable all the delete menus you want to replace !", icon ="BLANK1")
                 row.label(text="! recommended: object, editmode and maybe curvemode, etc. !", icon ="BLANK1")
 
                 
