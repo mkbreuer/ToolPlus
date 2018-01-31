@@ -21,7 +21,7 @@
 
 
 # LOAD MODUL #    
-import bpy
+import bpy, bmesh 
 from bpy import *
 from bpy.props import *
 
@@ -90,33 +90,78 @@ class VIEW3D_TP_Visual_Delete_Materials(bpy.types.Operator):
 
 
 
-class VIEW3D_TP_Dissolve_LoopsA(bpy.types.Operator):
-    """Dissolve Loops / Sel. Edge = Ring > Checker Deselect > Loop > Dissolve"""
-    bl_idname = "mesh.dissolve_loops_a"
-    bl_label = "Rem.Loops+0"
+class VIEW3D_TP_Ring_Dissolve(bpy.types.Operator):
+    """select edge ring > checker deselect > select loop > dissolve"""
+    bl_idname = "tp_ops.dissolve_ring"
+    bl_label = "Ring Dissolve"
+    bl_options = {'REGISTER', 'UNDO'}
 
-    def execute(self, context):
+    loop = bpy.props.BoolProperty(name="Ring or Loop",  description="select ring or edge loop", default=True, options={'SKIP_SAVE'})    
+    checker = bpy.props.IntProperty(name="Nth Checker",  description="deselect every nth selected", min=1, max=50, default=1) 
+    offset = bpy.props.IntProperty(name="Offset Nth",  description="offset nth", min=0, max=50, default=0) 
+    grow = bpy.props.IntProperty(name="Grow Loop", description="How much to grow selection", default= 0, min=0, soft_max=50)   
+
+    def draw(self, context):
+        layout = self.layout   
         
-        bpy.ops.mesh.loop_multi_select(ring=True)  
-        bpy.ops.mesh.select_nth()
-        bpy.ops.mesh.loop_multi_select(ring=False)
-        bpy.ops.mesh.delete_edgeloop()
+        col = layout.column(1)   
+        box = col.box().column(1)   
 
-        return {'FINISHED'}
+        row = box.column(1)                
+        row.prop(self,'loop', text="Ring or Loop")     
+        row.prop(self,'checker', text="Nth Checker")     
+        row.prop(self,'offset', text="Offset Nth")     
+        row.prop(self,'grow', text="Grow Loop")     
 
+        box.separator() 
 
-class VIEW3D_TP_Dissolve_LoopsB(bpy.types.Operator):
-    """Dissolve Loops / Sel. Edges = Checker Deselect > Loop > Dissolve"""
-    bl_idname = "mesh.dissolve_loops_b"
-    bl_label = "Rem.Loops+1"
 
     def execute(self, context):
+
+        #check for mesh selections
+        object = context.object
+        object.update_from_editmode()
+
+        mesh_bm = bmesh.from_edit_mesh(object.data)
+
+        selected_faces = [f for f in mesh_bm.faces if f.select]
+        selected_edges = [e for e in mesh_bm.edges if e.select]
+        selected_verts = [v for v in mesh_bm.verts if v.select]
+
+        # check wich select mode is active  
+        if tuple(bpy.context.scene.tool_settings.mesh_select_mode) == (False, False, True): 
+            # check verts selection value  
+            self.report({'WARNING'}, "Only EdgeMode!")
+            return {'CANCELLED'}
+              
+        if tuple(bpy.context.scene.tool_settings.mesh_select_mode) == (True, False, False): 
+            self.report({'WARNING'}, "Only EdgeMode!")
+            return {'CANCELLED'}
+
       
-        bpy.ops.mesh.select_nth()
-        bpy.ops.mesh.loop_multi_select(ring=False)
-        bpy.ops.mesh.delete_edgeloop()
+        if tuple(bpy.context.scene.tool_settings.mesh_select_mode) == (False, True, False):   
+            # to be sure that only edge are selectable
+            #bpy.ops.mesh.select_mode(type="EDGE") 
+         
+            if len(selected_edges) == 1:   
+               
+                bpy.ops.mesh.loop_multi_select(ring=self.loop)  
+                bpy.ops.mesh.select_nth(nth=self.checker, skip=1, offset=self.offset)
+                
+                # used ktools loop grow
+                bpy.ops.tp_ops.grow_loop_for_dissolve(grow=self.grow)
+
+                #bpy.ops.mesh.loop_multi_select(ring=False)                
+                bpy.ops.mesh.delete_edgeloop()
+
+            else:
+                self.report({'WARNING'}, "Select only 1 Edge!")
+                return {'CANCELLED'}
+
 
         return {'FINISHED'}
+
+
 
 
 class VIEW3D_TP_GRP_Purge(bpy.types.Operator):

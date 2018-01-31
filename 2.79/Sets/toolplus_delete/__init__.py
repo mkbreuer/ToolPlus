@@ -23,7 +23,7 @@
 bl_info = {
     "name": "T+ Delete",
     "author": "Marvin.K.Breuer (MKB)",
-    "version": (0, 1, 0),
+    "version": (0, 1, 1),
     "blender": (2, 7, 9),
     "location": "View3D > Tool Shelf [T] or Property Shelf [N] or Menu",
     "description": "collection of delete tools",
@@ -221,7 +221,7 @@ class TP_Panels_Preferences(AddonPreferences):
                 row = box.column(1)             
                 row.label(text="! To use the delete menu > go to TAB: Input !", icon ="INFO")
                 row.label(text="! Change search to key-bindig and insert the hotkey: [x] !", icon ="BLANK1")
-                row.label(text="! now disable all the delete menus you want to replace !", icon ="BLANK1")
+                row.label(text="! now disable all the delete menus you not want to use !", icon ="BLANK1")
                 row.label(text="! recommended: object, editmode and maybe curvemode, etc. !", icon ="BLANK1")
 
                 
@@ -266,11 +266,9 @@ class TP_Panels_Preferences(AddonPreferences):
             row.separator() 
                                     
             row = box.row()
-            row.operator('wm.url_open', text = 'Distribute', icon = 'HELP').url = "http://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/3D_interaction/Oscurart_Tools"
-            row.operator('wm.url_open', text = 'Modal Origin', icon = 'HELP').url = "http://blenderlounge.fr/forum/viewtopic.php?f=18&t=1438"
-            row.operator('wm.url_open', text = 'Advance Align', icon = 'HELP').url = "https://blenderartists.org/forum/showthread.php?256114-Add-on-Advanced-align-tools"
-            row.operator('wm.url_open', text = 'Mesh TinyCad', icon = 'HELP').url = "https://github.com/zeffii/mesh_tiny_cad"
-            row.operator('wm.url_open', text = 'Thread', icon = 'BLENDER').url = "https://blenderartists.org/forum/showthread.php?410351-Addon-T-Origin&p=3119318#post3119318"
+            row.operator('wm.url_open', text = 'Orphan Slayer', icon = 'HELP').url = "https://blenderartists.org/forum/showthread.php?233096-Orphan-Slayer-Clears-Scenes-and-Removes-Unused-Objects"
+            row.operator('wm.url_open', text = 'KTools', icon = 'PACKAGE').url = "http://www.kjartantysdal.com/scripts/"
+            row.operator('wm.url_open', text = 'Thread', icon = 'BLENDER').url = "https://blenderartists.org/forum/showthread.php?444866-Addon-T-Delete&p=3280268#post3280268"
 
 
 # PROPERTIES # 

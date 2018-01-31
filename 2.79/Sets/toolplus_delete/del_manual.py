@@ -31,7 +31,7 @@ def VIEW3D_TP_Delete_Manual():
         ("bpy.ops.tp_ops.remove_all_material"        , "/TP-Delete"),
         ("bpy.ops.tp_ops.delete_data_obs"            , "/TP-Delete"),
         ("bpy.ops.tp_ops.build_corner"               , "/TP-Delete"),
-        ("bpy.ops.tp_ops.path_collapse_select_ring"  , "/TP-Delete"),
+        ("bpy.ops.tp_ops.dissolve_ring"              , "/TP-Delete"),
         )
     return url_manual_prefix, url_manual_mapping
 
