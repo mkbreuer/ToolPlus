@@ -23,9 +23,9 @@
 bl_info = {
     "name": "T+ Delete",
     "author": "Marvin.K.Breuer (MKB)",
-    "version": (0, 1, 1),
+    "version": (0, 1, 2),
     "blender": (2, 7, 9),
-    "location": "View3D > Tool Shelf [T] or Property Shelf [N] or Menu",
+    "location": "View3D > Panel: Delete",
     "description": "collection of delete tools",
     "warning": "",
     "wiki_url": "",
@@ -54,15 +54,17 @@ if "bpy" in locals():
     import imp
     imp.reload(del_action)
     imp.reload(del_all_scenes)
+    imp.reload(del_build_corner)
     imp.reload(del_clear_all)
-    imp.reload(del_ktools)
+    imp.reload(del_edgering)
     imp.reload(del_orphan)
 
 else:
     from . import del_action                
     from . import del_all_scenes                 
+    from . import del_build_corner                 
     from . import del_clear_all                 
-    from . import del_ktools                 
+    from . import del_edgering                 
     from . import del_orphan                 
      
 
@@ -99,15 +101,21 @@ def update_panel_position(self, context):
         bpy.utils.register_class(VIEW3D_TP_Delete_Panel_UI)
   
 
-# TOOLS TOGGLE # 
+# REGISTRY TOOLS #
 def update_tools(self, context):
 
+    try:
+        return True
+    except:
+        pass
+
     if context.user_preferences.addons[__name__].preferences.tab_display_tools == 'on':
-        return
+        return True
 
     if context.user_preferences.addons[__name__].preferences.tab_display_tools == 'off':
-        pass
+        return None  
     
+
 
 # ADDON PREFERNECES #
 class TP_Panels_Preferences(AddonPreferences):
@@ -136,7 +144,8 @@ class TP_Panels_Preferences(AddonPreferences):
                ('off', 'Menu off', 'enable or disable menu for 3d view')),
                default='menu', update = update_menu)
 
-    tab_display_tools = EnumProperty(name = 'History Tools',  description = 'on / off', items=(('on', 'History on', 'enable tools in panel'),  ('off', 'History off', 'disable tools in panel')), default='off', update = update_tools)
+    tab_history = EnumProperty(name = 'History Tools',  description = 'on / off', items=(('on', 'History on', 'enable tools in panel'),  ('off', 'History off', 'disable tools in panel')), default='off', update = update_tools)   
+    tab_showhide = EnumProperty(name = 'Show/Hide Tools',  description = 'on / off', items=(('on', 'Show/Hide on', 'enable tools in menu'),  ('off', 'Show/Hide off', 'disable tools in menu')), default='off', update = update_tools)
 
     tools_category = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position)
 
@@ -164,7 +173,10 @@ class TP_Panels_Preferences(AddonPreferences):
             box = layout.box().column(1)
 
             row = box.row()
-            row.prop(self, 'tab_display_tools', expand=True)
+            row.prop(self, 'tab_history', expand=True)
+
+            row = box.row()
+            row.prop(self, 'tab_showhide', expand=True)
 
             row = layout.row()
             row.label(text="! save user settings for permant on/off !", icon ="INFO")
@@ -221,9 +233,8 @@ class TP_Panels_Preferences(AddonPreferences):
                 row = box.column(1)             
                 row.label(text="! To use the delete menu > go to TAB: Input !", icon ="INFO")
                 row.label(text="! Change search to key-bindig and insert the hotkey: [x] !", icon ="BLANK1")
-                row.label(text="! now disable all the delete menus you not want to use !", icon ="BLANK1")
-                row.label(text="! recommended: object, editmode and maybe curvemode, etc. !", icon ="BLANK1")
-
+                row.label(text="! Now disable all the delete menus you want to replace !", icon ="BLANK1")
+                row.label(text="! Example for editmode: Call menu (VIEW3D_MT_edit_mesh_delete) ", icon ="BLANK1")
                 
             box.separator()               
           
@@ -232,16 +243,16 @@ class TP_Panels_Preferences(AddonPreferences):
             box.separator()
             
             row = layout.row(1)             
-            row.label(text="! For key change you can go also to > User Preferences > TAB: Input !", icon ="INFO")
+            row.label(text="! For default key change > go to > User Preferences > TAB: Input !", icon ="INFO")
 
             row = layout.column(1) 
-            row.label(text="1 > Change search to key-bindig and insert the hotkey, eg. bool menu: alt q", icon ="BLANK1")
+            row.label(text="1 > Change search to key-bindig and insert the hotkey: x", icon ="BLANK1")
             row.label(text="2 > Under 3D View you find the call menu, name: VIEW3D_TP_Delete_Menu !", icon ="BLANK1")
             row.label(text="3 > Choose a new key configuration and save user settings !", icon ="BLANK1")
 
             row.separator() 
             
-            row.label(text="(4) > Use the 'is key free' addon under User Interface to finde a free shortcut !", icon ="BLANK1")
+            row.label(text="(4) > You can use the 'is key free' addon under User Interface to finde a free shortcut !", icon ="BLANK1")
         
             box.separator()  
 
@@ -274,8 +285,8 @@ class TP_Panels_Preferences(AddonPreferences):
 # PROPERTIES # 
 class Dropdown_Delete_ToolProps(bpy.types.PropertyGroup):
 
-    display_del_bbox = bpy.props.BoolProperty(name="Origin BBox", description="open / close", default=False)
-    display_del_zero = bpy.props.BoolProperty(name="Zero Axis", description="open / close", default=False)
+    display_custom = bpy.props.BoolProperty(name="Custom", description="open / close", default=False)
+
 
 
 # ORPHAN #    

@@ -269,7 +269,7 @@ class draw_delete_panel_layout:
         box.separator()   
 
         
-        display_history = context.user_preferences.addons[__package__].preferences.tab_display_tools
+        display_history = context.user_preferences.addons[__package__].preferences.tab_history
         if display_history == 'on': 
             
               

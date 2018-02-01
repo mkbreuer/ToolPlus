@@ -75,9 +75,12 @@ class VIEW3D_TP_Delete_Menu(bpy.types.Menu):
       
         if context.mode == 'OBJECT':
 
-            layout.menu("VIEW3D_MT_object_showhide", text = "Show Hide", icon = "RESTRICT_VIEW_OFF") 
-                           
-            layout.separator()             
+            display_showhide = context.user_preferences.addons[__package__].preferences.tab_showhide
+            if display_showhide == 'on': 
+                
+                layout.menu("VIEW3D_MT_object_showhide", text = "Show Hide", icon = "RESTRICT_VIEW_OFF") 
+                               
+                layout.separator()             
 
             layout.operator("object.delete")                
 
@@ -108,11 +111,14 @@ class VIEW3D_TP_Delete_Menu(bpy.types.Menu):
 
         if context.mode == 'EDIT_MESH':
 
-          
-            layout.menu("VIEW3D_MT_edit_mesh_showhide", text="Show / Hide", icon = "RESTRICT_VIEW_OFF") 
+            display_showhide = context.user_preferences.addons[__package__].preferences.tab_showhide
+            if display_showhide == 'on':    
+                       
+                layout.menu("VIEW3D_MT_edit_mesh_showhide", text="Show / Hide", icon = "RESTRICT_VIEW_OFF") 
+                
+                layout.separator() 
             
-            layout.separator() 
-            
+
             layout.operator("mesh.delete", "Vertices", icon="SNAP_VERTEX").type="VERT"
             layout.operator("mesh.dissolve_verts")
             layout.operator("mesh.remove_doubles")
@@ -166,9 +172,12 @@ class VIEW3D_TP_Delete_Menu(bpy.types.Menu):
             layout.operator("curve.delete", "Vertices", icon="PARTICLE_TIP").type="VERT"
             layout.operator("curve.delete", "Segment", icon="IPO_EASE_IN_OUT").type="SEGMENT"
 
-            layout.separator() 
-                        
-            layout.menu("VIEW3D_MT_edit_curve_showhide", text = "Show / Hide", icon = "RESTRICT_VIEW_OFF")           
+            display_showhide = context.user_preferences.addons[__package__].preferences.tab_showhide
+            if display_showhide == 'on':  
+
+                layout.separator() 
+                            
+                layout.menu("VIEW3D_MT_edit_curve_showhide", text = "Show / Hide", icon = "RESTRICT_VIEW_OFF")           
              
 
         if context.mode == 'EDIT_SURFACE':
@@ -176,18 +185,24 @@ class VIEW3D_TP_Delete_Menu(bpy.types.Menu):
             layout.operator("curve.delete", "Vertices", icon="PARTICLE_TIP").type="VERT"
             layout.operator("curve.delete", "Segments", icon="IPO_EASE_IN_OUT").type="SEGMENT"
 
-            layout.separator() 
-                        
-            layout.menu("VIEW3D_MT_edit_curve_showhide", text = "Show / Hide", icon = "RESTRICT_VIEW_OFF") 
+            display_showhide = context.user_preferences.addons[__package__].preferences.tab_showhide
+            if display_showhide == 'on':  
+
+                layout.separator() 
+                            
+                layout.menu("VIEW3D_MT_edit_curve_showhide", text = "Show / Hide", icon = "RESTRICT_VIEW_OFF") 
                               
 
         if context.mode == 'EDIT_METABALL':
            
             layout.operator("mball.delete_metaelems", icon="META_BALL")
 
-            layout.separator() 
-            
-            layout.menu("VIEW3D_MT_edit_meta_showhide", text = "Show / Hide", icon = "RESTRICT_VIEW_OFF")  
+            display_showhide = context.user_preferences.addons[__package__].preferences.tab_showhide
+            if display_showhide == 'on':  
+
+                layout.separator() 
+                
+                layout.menu("VIEW3D_MT_edit_meta_showhide", text = "Show / Hide", icon = "RESTRICT_VIEW_OFF")  
 
   
         if  context.mode == 'PARTICLE':
@@ -198,9 +213,12 @@ class VIEW3D_TP_Delete_Menu(bpy.types.Menu):
 
             layout.operator("particle.remove_doubles")
             
-            layout.separator()
+            display_showhide = context.user_preferences.addons[__package__].preferences.tab_showhide
+            if display_showhide == 'on':  
 
-            layout.menu("VIEW3D_MT_particle_showhide", text = "Show / Hide", icon = "RESTRICT_VIEW_OFF")                        
+                layout.separator()
+
+                layout.menu("VIEW3D_MT_particle_showhide", text = "Show / Hide", icon = "RESTRICT_VIEW_OFF")                        
 
     
         if context.mode == 'SCULPT':
@@ -236,12 +254,15 @@ class VIEW3D_TP_Delete_Menu(bpy.types.Menu):
             layout.menu("clearparent", text="Clear Parenting")
             layout.operator("pose.constraints_clear", text="Clear Constraint")            
 
-            layout.separator()
-              
-            layout.menu("VIEW3D_MT_pose_showhide", text = "Show / Hide", icon = "RESTRICT_VIEW_OFF")  
+            display_showhide = context.user_preferences.addons[__package__].preferences.tab_showhide
+            if display_showhide == 'on':  
+
+                layout.separator()
+                  
+                layout.menu("VIEW3D_MT_pose_showhide", text = "Show / Hide", icon = "RESTRICT_VIEW_OFF")  
 
            
-        display_history = context.user_preferences.addons[__package__].preferences.tab_display_tools
+        display_history = context.user_preferences.addons[__package__].preferences.tab_history
         if display_history == 'on':   
             draw_delete_history_tools(context, layout)        
 

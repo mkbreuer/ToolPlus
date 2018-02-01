@@ -1,4 +1,25 @@
+# ##### BEGIN GPL LICENSE BLOCK #####
+#
+#  This program is free software; you can redistribute it and / or
+#  modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; either version 2
+#  of the License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software Foundation,
+#  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110 - 1301, USA.
+#
+# ##### END GPL LICENSE BLOCK #####
+#
+
+# LOAD MODUL #    
 import bpy
+
 
 #bl_info = {
 #    "name": "Delete From All Scenes",
@@ -11,26 +32,10 @@ import bpy
 #    "warning": "", # used for warning icon and text in addons panel
 #    "category": "Object"}
 
-## interface ##
-
-"""
-class DeleteFromAllScenesPanel(bpy.types.Panel) :
-    #bl_space_type = "VIEW_3D"
-    #bl_region_type = "TOOLS"
-    #bl_context = "objectmode"
-    bl_label = "Delete From All Scenes"
-
-    def draw(self, context) :
-        TheCol = self.layout.column(align = True)
-        TheCol.operator("object.delete_from_all_scenes", text = "Delete From All Scenes")
-# end interface class
-"""
-
 
 ## operator ##
-
 class DeleteFromAllScenes(bpy.types.Operator):
-    bl_idname = "object.delete_from_all_scenes"
+    bl_idname = "tp_ops.delete_from_all_scenes"
     bl_label = "Delete Object From All Scenes"
     bl_options = {"UNDO"}
     
@@ -46,14 +51,13 @@ class DeleteFromAllScenes(bpy.types.Operator):
     # end invoke
 # end operator class
 
-def register():
-	bpy.utils.register_class(DeleteFromAllScenes)
-	#bpy.utils.register_class(DeleteFromAllScenesPanel)
-def unregister():
-	bpy.utils.register_class(DeleteFromAllScenes)
-	#bpy.utils.register_class(DeleteFromAllScenesPanel)
+
+# REGISTRY #        
+def register():    
+    bpy.utils.register_module(__name__)
+
+def unregister():   
+    bpy.utils.unregister_module(__name__)
 
 if __name__ == "__main__":
     register()
-
-
