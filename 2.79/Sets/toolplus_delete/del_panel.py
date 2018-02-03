@@ -150,7 +150,7 @@ class draw_delete_panel_layout:
             row.separator() 
 
             row.operator("mesh.delete_loose", icon = "GROUP_VERTEX")
-            row.operator("tp_ops.dissolve_ring", text="Ring Dissolve", icon = "BLANK1")
+            row.operator("tp_ops.dissolve_edge_loops", text="Ring Dissolve", icon = "BLANK1")
             row.operator("mesh.edge_collapse", icon = "BLANK1")  
 
             row.separator()

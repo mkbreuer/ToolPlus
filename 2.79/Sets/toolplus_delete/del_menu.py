@@ -144,7 +144,7 @@ class VIEW3D_TP_Delete_Menu(bpy.types.Menu):
             layout.separator() 
 
             layout.operator("mesh.delete_loose", icon = "GROUP_VERTEX")
-            layout.operator("tp_ops.dissolve_ring", text="Ring Dissolve")
+            layout.operator("tp_ops.dissolve_edge_loops", text="Ring Dissolve")
             layout.operator("mesh.edge_collapse")  
 
             layout.separator()

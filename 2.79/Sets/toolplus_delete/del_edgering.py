@@ -45,10 +45,11 @@ class VIEW3D_TP_EdgeRing_Dissolve(bpy.types.Operator):
     bl_label = "EdgeRing Dissolve"
     bl_options = {'REGISTER', 'UNDO'}
 
-    loop = bpy.props.BoolProperty(name="Ring or Loop",  description="select ring or edge loop", default=True, options={'SKIP_SAVE'})    
-    checker = bpy.props.IntProperty(name="Nth Checker",  description="deselect every nth selected", min=1, max=50, default=1) 
-    offset = bpy.props.IntProperty(name="Offset Nth",  description="offset nth", min=0, max=50, default=0) 
-    grow = bpy.props.IntProperty(name="Grow Loop", description="How much to grow selection", default= 0, min=0, soft_max=50)   
+    loop = bpy.props.BoolProperty(name="Ring or Loop",  description="ring or edge loop for 1 selected edge", default=True, options={'SKIP_SAVE'})    
+    checker = bpy.props.IntProperty(name="Nth Checker",  description="deselect every nth selection", min=1, max=50, default=1) 
+    skip = bpy.props.IntProperty(name="Nth Skip",  description="skip nth selection", min=0, max=50, default=0) 
+    offset = bpy.props.IntProperty(name="Nth Offset",  description="offset nth selection", min=0, max=50, default=0) 
+    grow = bpy.props.IntProperty(name="Grow Loop", description="grow loop selection", default= 0, min=0, soft_max=50)   
 
     def draw(self, context):
         layout = self.layout   
@@ -59,8 +60,9 @@ class VIEW3D_TP_EdgeRing_Dissolve(bpy.types.Operator):
         row = box.column(1)                
         row.prop(self,'loop', text="Ring or Loop")     
         row.prop(self,'checker', text="Nth Checker")     
-        row.prop(self,'offset', text="Offset Nth")     
-        row.prop(self,'grow', text="Grow Loop")     
+        row.prop(self,'skip', text="Nth Skip")     
+        row.prop(self,'offset', text="Nth Offset")     
+        row.prop(self,'grow', text="Grow Loop")      
 
         box.separator() 
 
@@ -105,11 +107,12 @@ class VIEW3D_TP_EdgeRing_Dissolve(bpy.types.Operator):
                 self.report({'WARNING'}, "Select only 1-2 Edges!")
                 return {'CANCELLED'}
 
-
-            bpy.ops.mesh.select_nth(nth=self.checker, skip=1, offset=self.offset)
+            bpy.ops.mesh.select_nth(nth=self.checker, skip=self.skip, offset=self.offset)
             
             # used ktools loop grow
             bpy.ops.tp_ops.grow_loop_for_dissolve(grow=self.grow)
+            
+            bpy.ops.tp_ops.shrink_loop_for_dissolve(shrink=1)
 
             #bpy.ops.mesh.loop_multi_select(ring=False)                
             bpy.ops.mesh.delete_edgeloop()
@@ -340,6 +343,73 @@ class VIEW3D_TP_Path_Select_Ring_for_dissolve(bpy.types.Operator):
 
 
 
+class VIEW3D_TP_Shrink_Loop_for_dissolve(bpy.types.Operator):
+        #'author': "Kjartan Tysdal (ktools)"
+        #'wiki_url': 'http://www.kjartantysdal.com/scripts'
+        """Shrink the selected loop """          
+        bl_idname = "tp_ops.shrink_loop_for_dissolve"              
+        bl_label = "Shrink Loop"                 
+        bl_options = {'REGISTER', 'UNDO'} 
+
+        shrink = IntProperty(name="Shrink Selection", description="How much to shrink selection", default= 1, min=1, soft_max=15)
+        
+        def execute(self, context):
+                
+            sel_mode = bpy.context.tool_settings.mesh_select_mode[:]
+            shrink = self.shrink
+            
+            for x in range(shrink):
+                me = bpy.context.object.data
+                bm = bmesh.from_edit_mesh(me)
+
+                sel = []
+                edge_dic = {}
+                vert_list = []
+                end_verts = []
+
+                # Store edges and verts in dictionary
+                for e in bm.edges:
+                    if e.select:
+                        sel.append(e.index)
+                        
+                        # Populate vert_list
+                        vert_list.append(e.verts[0].index)
+                        vert_list.append(e.verts[1].index)
+                        
+                        # Store dictionary
+                        edge_dic[e.index] = [e.verts[0].index, e.verts[1].index]
+
+                # Store end verts
+                for v in vert_list:
+                    if vert_list.count(v) == 1:
+                        end_verts.append(v)
+                        
+                # Check verts in dictionary
+                for key, value in edge_dic.items():
+                    if value[0] in end_verts:
+                        sel.remove(key)
+                        continue
+                    if value[1] in end_verts:
+                        sel.remove(key)
+
+
+                bmesh.update_edit_mesh(me, True, False)
+
+                # Select the resulting edges
+                bpy.ops.mesh.select_all(action='DESELECT')
+
+                bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+                mesh = bpy.context.active_object.data.edges
+                for e in sel:
+                    mesh[e].select = True
+                bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+                
+            
+            return {'FINISHED'}
+
+
+
+
 
 
 # TO MENU #
@@ -354,6 +424,7 @@ def draw_menu_func(self, context):
 def register():    
     bpy.utils.register_class(VIEW3D_TP_EdgeRing_Dissolve)
     bpy.utils.register_class(VIEW3D_TP_Grow_Loop_for_dissolve)
+    bpy.utils.register_class(VIEW3D_TP_Shrink_Loop_for_dissolve)
     bpy.utils.register_class(VIEW3D_TP_Path_Select_Ring_for_dissolve)
 
     bpy.types.VIEW3D_MT_edit_mesh_delete.append(draw_menu_func)
@@ -362,6 +433,7 @@ def register():
 def unregister():   
     bpy.utils.unregister_class(VIEW3D_TP_EdgeRing_Dissolve)
     bpy.utils.unregister_class(VIEW3D_TP_Grow_Loop_for_dissolve)
+    bpy.utils.unregister_class(VIEW3D_TP_Shrink_Loop_for_dissolve)
     bpy.utils.unregister_class(VIEW3D_TP_Path_Select_Ring_for_dissolve)
 
     bpy.types.VIEW3D_MT_edit_mesh_delete.remove(draw_menu_func)

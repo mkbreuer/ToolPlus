@@ -1,5 +1,7 @@
 # ##### BEGIN GPL LICENSE BLOCK #####
 #
+# (C) 2017 MKB
+#
 #  This program is free software; you can redistribute it and / or
 #  modify it under the terms of the GNU General Public License
 #  as published by the Free Software Foundation; either version 2
@@ -15,6 +17,7 @@
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110 - 1301, USA.
 #
 # ##### END GPL LICENSE BLOCK #####
+#
 
 
 # LOAD MODULS #
@@ -23,6 +26,21 @@ from bpy import*
 from bpy.props import *
 
 
+from os.path import dirname
+from . import copy_keymap
+
+class View3D_TP_KeyMap(bpy.types.Operator):
+    bl_idname = "tp_ops.keymap_copy"
+    bl_label = "Open KeyMap (Text Editor)"
+    bl_description = "open keymap file in the text editor"
+
+    def execute(self, context):
+        path = copy_keymap.__file__
+        bpy.data.texts.load(path)
+        return {"FINISHED"}
+    
+
+    
 class View3D_TP_X_Array(bpy.types.Operator):
     bl_label = 'X Array'
     bl_idname = 'tp_ops.x_array'

@@ -23,7 +23,7 @@
 bl_info = {
     "name": "T+ Delete",
     "author": "Marvin.K.Breuer (MKB)",
-    "version": (0, 1, 2),
+    "version": (0, 1, 3),
     "blender": (2, 7, 9),
     "location": "View3D > Panel: Delete",
     "description": "collection of delete tools",
@@ -163,7 +163,6 @@ class TP_Panels_Preferences(AddonPreferences):
             row = box.column(1)   
             row.label(text="Welcome to T+ Delete!")  
             row.label(text="The addon includes all default and some advanced delete tools.") 
-
             row.label(text="Have Fun! :)")         
 
 
@@ -234,7 +233,8 @@ class TP_Panels_Preferences(AddonPreferences):
                 row.label(text="! To use the delete menu > go to TAB: Input !", icon ="INFO")
                 row.label(text="! Change search to key-bindig and insert the hotkey: [x] !", icon ="BLANK1")
                 row.label(text="! Now disable all the delete menus you want to replace !", icon ="BLANK1")
-                row.label(text="! Example for editmode: Call menu (VIEW3D_MT_edit_mesh_delete) ", icon ="BLANK1")
+                row.label(text="! Example for editmode: disable Call Menu (VIEW3D_MT_edit_mesh_delete) ", icon ="BLANK1")
+                row.label(text="! It replace now only the delete menu in editmode with one from this addon ", icon ="BLANK1")
                 
             box.separator()               
           
@@ -280,6 +280,7 @@ class TP_Panels_Preferences(AddonPreferences):
             row.operator('wm.url_open', text = 'Orphan Slayer', icon = 'HELP').url = "https://blenderartists.org/forum/showthread.php?233096-Orphan-Slayer-Clears-Scenes-and-Removes-Unused-Objects"
             row.operator('wm.url_open', text = 'KTools', icon = 'PACKAGE').url = "http://www.kjartantysdal.com/scripts/"
             row.operator('wm.url_open', text = 'Thread', icon = 'BLENDER').url = "https://blenderartists.org/forum/showthread.php?444866-Addon-T-Delete&p=3280268#post3280268"
+
 
 
 # PROPERTIES # 

@@ -15,10 +15,11 @@ def load_icons():
 
     icons_dir = os.path.join(os.path.dirname(__file__))
 
-    mkb_icons.load("icon_image1", os.path.join(icons_dir, "icon_image1.png"), 'IMAGE')
-    mkb_icons.load("icon_image2", os.path.join(icons_dir, "icon_image2.png"), 'IMAGE')
+    mkb_icons.load("icon_align_zero", os.path.join(icons_dir, "align_zero.png"), 'IMAGE')
+    
+    mkb_icons.load("icon_fun", os.path.join(icons_dir, "fun.png"), 'IMAGE')
 
-   
+    
     toolplus_icon_collections["main"] = mkb_icons
     toolplus_icons_loaded = True
 

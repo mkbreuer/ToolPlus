@@ -17,18 +17,20 @@
 # ##### END GPL LICENSE BLOCK #####
 
 bl_info = {
-    "name": "Copy",
+    "name": "T+ Copy",
     "author": "marvin.k.breuer (MKB)",
-    "version": (1, 4, 4),
+    "version": (0, 1, 5),
     "blender": (2, 7, 9),
-    "location": "View3D / Properties",
-    "description": "Tools for duplication",
+    "location": "View3D > Panel: Copy",
+    "description": "collection of duplication tools",
     "warning": "",
     "wiki_url": "",
     "tracker_url": "",
     "category": "ToolPlus"}
 
 
+# LOAD MANUAL #
+from toolplus_copy.copy_manual  import (VIEW3D_TP_Copy_Manual)
 
 # LOAD UI #
 from .copy_ui_menu      import (View3D_TP_Copy_Menu)
@@ -37,7 +39,7 @@ from .copy_ui_panel     import (VIEW3D_TP_Copy_Panel_TOOLS)
 from .copy_ui_panel     import (VIEW3D_TP_Copy_Panel_PROPS)
 
 # LOAD PROPS #
-from toolplus_copy.copy_mifthcloning    import (MFTCloneProperties)
+from toolplus_copy.copy_mifthcloning     import (MFTCloneProperties)
 from toolplus_copy.copy_to_meshtarget    import (ToTarget_Properties)
 
 # LOAD ICONS #
@@ -86,6 +88,7 @@ else:
 import bpy
 from bpy import *
 from bpy.props import* 
+from toolplus_copy.copy_keymap  import*
 
 import bpy.utils.previews
 from bpy.types import AddonPreferences, PropertyGroup
@@ -136,40 +139,6 @@ def update_display_tools(self, context):
     if context.user_preferences.addons[__name__].preferences.tab_display_tools == 'off':
         pass 
 
-
-
-# MENUS REGISTRY #
-
-addon_keymaps_menu = []
-
-def update_menu(self, context):
-    try:
-        bpy.utils.unregister_class(View3D_TP_Copy_Menu)
-        
-        # KEYMAP #
-        wm = bpy.context.window_manager
-        for km in addon_keymaps_menu:
-            wm.keyconfigs.addon.keymaps.remove(km)
-        del addon_keymaps_menu[:]
-        
-    except:
-        pass
-    
-    if context.user_preferences.addons[__name__].preferences.tab_menu_view == 'menu':
-     
-        View3D_TP_Copy_Menu.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_menu
-    
-        bpy.utils.register_class(View3D_TP_Copy_Menu)
-    
-        wm = bpy.context.window_manager
-        km = wm.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')
-
-        kmi = km.keymap_items.new('wm.call_menu', 'Q', 'PRESS', shift=True, alt=True) #,ctrl=True 
-        kmi.properties.name = 'View3D_TP_Copy_Menu'
-
-    if context.user_preferences.addons[__name__].preferences.tab_menu_view == 'off':
-        pass
-    
 
 
 # ADDON PREFERENCES #
@@ -275,13 +244,7 @@ class TP_Panels_Preferences(AddonPreferences):
             
             row = box.column(1)   
             row.label(text="Welcome to CopyShop!")  
-            row.label(text="This addon is for object duplication.")
-           
-            row.separator()           
-           
-            row.label(text="The Panels are adaptable can be place in the toolshelf [T] or property shelf [N]")
-            row.label(text="Or placed to Properties: 'Object' TAB")
-            row.label(text="A included Menu have ALT+SHIFT+Q as shortcut")
+            row.label(text="This addon is a collection of duplication tools")
            
             row.separator()        
                         
@@ -373,30 +336,42 @@ class TP_Panels_Preferences(AddonPreferences):
                 row = box.row(1) 
                 row.label(text="! menu hidden with next reboot durably!", icon ="INFO")
 
-            box.separator() 
-             
             # TIP #
             box.separator()
             
             row = layout.row(1)             
-            row.label(text="! For key change go to > User Preferences > TAB: Input !", icon ="INFO")
+            row.label(text="! For default key change > go to > User Preferences > TAB: Input !", icon ="INFO")
 
             row = layout.column(1) 
             row.label(text="1 > Change search to key-bindig and insert the hotkey: alt shift q", icon ="BLANK1")
-            row.label(text="2 > Under 3D View you find the call menu, name: View3D_TP_Copy_Menu !", icon ="BLANK1")
+            row.label(text="2 > Under 3D View you find the call menu, name: VIEW3D_TP_Copy_Menu !", icon ="BLANK1")
             row.label(text="3 > Choose a new key configuration and save user settings !", icon ="BLANK1")
 
             row.separator() 
             
-            row.label(text="(4) > Use the 'is key free' addon under User Interface to finde a free shortcut !", icon ="BLANK1")
+            row.label(text="(4) > You can use the 'is key free' addon under User Interface to finde a free shortcut !", icon ="BLANK1")
         
             box.separator()  
 
+            row = layout.row(1)             
+            row.label(text="! Other way to change the default key is to edit the keymap script !", icon ="INFO")
+             
+            row = layout.row(1) 
+            row.operator("tp_ops.keymap_copy", text = 'Open KeyMap (Text Editor)')
+            row.operator('wm.url_open', text = 'Type of Events (WEB)').url = "https://lh3.googleusercontent.com/zfNKbUKpnvLTPADu4btQI_adXhkR9iPiSyy31ZvP89YNK6YSiLf4iVC3lpzN76DTdEdHHIZqZK6qM2OYRSAeFRlIof5xHC0wLQtOaCwYEKi43A6W9KGkGAwnlNGqUugQdleEHTMLZnL67u4m6kU1KTKlFASfyDuFCCvdyGGaa5-gZ9kib1AiJ_2exgWvRh1yM86PehsJH65Zp0r6x5zhqZpLI1IS9K-zlyvaKg_WgYuVMzvsd3JrB2BAo-BIZGX9MFA8t-CC3qVtTLXH8WAkHo9IyA1u7GnlCM5p9wffwpu1NhCsZTuQwPnn0BGmOCD0tPCm_LJSJSDyCtkfBXvK_hdsQ3XM0Jcttl1oHJKYqbPoIjHMaLl7pNGmwMhcjlgPqXMq01Eln0wm6NHbJyTe5WMBN7FaB0WEaot7V9TsFxACRJzD2dJu-zP7xJ_vw6sMlYcXLf962SkzRShIMTJiBzSxui5sRJ1uKPCehcdP4E3pEc1tIFO1dQZTSwrLf9luz1S79zCflUCgJFWa8GfN4KGWG09mO4jUBJIdtobsDeM_NPyvraz6Lq4OTz90zgQQ1cxTzQ49MzYcIesnrw7TE2Ilr7UTkOpuoxL4rPw=w696-h1278-no"
+            
+            box.separator()  
+            
 
         # WEBLINKS #
         if self.prefs_tabs == 'url':
             
             box = layout.box().column(1)
+            
+            row = box.column(1)   
+            row.label(text="The list of auxiliary addons that belong to this collection:")      
+
+            row.separator() 
              
             row = box.column_flow(2) 
             row.operator('wm.url_open', text = 'MifthTools', icon = 'HELP').url = "https://blenderartists.org/forum/showthread.php?346588-MifthTools-Addon"
@@ -407,6 +382,7 @@ class TP_Panels_Preferences(AddonPreferences):
             row.operator('wm.url_open', text = 'Copy Attributes', icon = 'HELP').url = "http://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/3D_interaction/Copy_Attributes_Menu"
             row.operator('wm.url_open', text = 'Dupli Multi Linked', icon = 'HELP').url = "https://blenderartists.org/forum/showthread.php?229346-AddOn-Duplicate-Multiple-Linked"
             row.operator('wm.url_open', text = 'BlenderArtist', icon = 'BLENDER').url = "https://blenderartists.org/forum/showthread.php?409893-Addon-T-CopyShop&p=3116714#post3116714"
+
 
 
 # PROPERTY GROUP #
@@ -506,7 +482,9 @@ def register():
     # PROPS COPY TO TARGET # 
     bpy.types.WindowManager.totarget_props = PointerProperty(type = ToTarget_Properties)
 
-
+    # MANUAL #
+    bpy.utils.register_manual_map(VIEW3D_TP_Copy_Manual)
+    
 
 def unregister():
     try: bpy.utils.unregister_module(__name__)
@@ -526,6 +504,9 @@ def unregister():
 
     # PROPS COPY TO TARGET # 
     del bpy.types.WindowManager.totarget_props 
+
+    # MANUAL #
+    bpy.utils.unregister_manual_map(VIEW3D_TP_Copy_Manual)
 
 if __name__ == "__main__":
     register()
