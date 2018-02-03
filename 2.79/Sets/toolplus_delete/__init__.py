@@ -234,7 +234,7 @@ class TP_Panels_Preferences(AddonPreferences):
                 row.label(text="! Change search to key-bindig and insert the hotkey: [x] !", icon ="BLANK1")
                 row.label(text="! Now disable all the delete menus you want to replace !", icon ="BLANK1")
                 row.label(text="! Example for editmode: disable Call Menu (VIEW3D_MT_edit_mesh_delete) ", icon ="BLANK1")
-                row.label(text="! It replace now only the delete menu in editmode with one from this addon ", icon ="BLANK1")
+                row.label(text="! It replace only the delete menu in editmode now ", icon ="BLANK1")
                 
             box.separator()               
           
