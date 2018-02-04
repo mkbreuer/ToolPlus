@@ -769,6 +769,9 @@ class VIEW3D_TP_ReCoplanar_Menu(bpy.types.Menu):
         button_reposition = icons.get("icon_reposition") 
         layout.operator("tp_ops.reposition", icon_value=button_reposition.icon_id)
       
+        button_center = icons.get("icon_center") 
+        layout.operator("tp_ops.relocate", text="ReLocate", icon_value=button_center.icon_id)
+
         button_bloc = icons.get("icon_bloc") 
         layout.operator("tp_ops.copy_local_transform", text="ReTransform", icon_value=button_bloc.icon_id ) 
 

@@ -24,13 +24,9 @@ from bpy.props import *
 
 
  # RIGHT CLICK BUTTON TO ONLINE MANUAL
-def VIEW3D_TP_Bound_Manual():
+def VIEW3D_TP_ReCoPlanar_Manual():
     url_manual_prefix = "https://github.com/mkbreuer/ToolPlus/wiki"
     url_manual_mapping = (
-        ("bpy.ops.tp_ops.bbox_cube"                       , "/TP-Bounding"),
-        ("bpy.ops.tp_ops.bbox_cylinder"                   , "/TP-Bounding"),
-        ("bpy.ops.tp_ops.bbox_sphere"                     , "/TP-Bounding"),
-        ("bpy.ops.tp_ops.bbox_select_box"                 , "/TP-Bounding"),
         ("bpy.ops.tp_ops.set_new_local"                   , "/TP-Recoplanar"),
         ("bpy.ops.tp_ops.recenter"                        , "/TP-Recoplanar"),
         ("bpy.ops.tp_ops.reposition"                      , "/TP-Recoplanar"),

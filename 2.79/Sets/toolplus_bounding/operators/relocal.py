@@ -176,7 +176,7 @@ def set_local_operator(self, context):
 
 # OPERATOR SET LOCAL #
 class VIEWD3D_TP_SET_LOCAL(bpy.types.Operator):
-    """ set local orientation to 1 selected face """
+    """ set local orientation to selected active face (normal direction)"""
     bl_idname = "tp_ops.set_new_local"
     bl_label = "ReLocal"
     bl_options = {"REGISTER", "UNDO"}
