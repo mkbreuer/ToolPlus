@@ -27,8 +27,17 @@ from bpy.props import *
 def VIEW3D_TP_Bound_Manual():
     url_manual_prefix = "https://github.com/mkbreuer/ToolPlus/wiki"
     url_manual_mapping = (
-        ("bpy.ops.tp_ops.easy_lattice_panel"         , "/TP-Bounding"),
-        ("bpy.ops.tp_ops.lattice_apply"              , "/TP-Bounding"),
+        ("bpy.ops.tp_ops.bbox_cube"                       , "/TP-Bounding"),
+        ("bpy.ops.tp_ops.bbox_cylinder"                   , "/TP-Bounding"),
+        ("bpy.ops.tp_ops.bbox_sphere"                     , "/TP-Bounding"),
+        ("bpy.ops.tp_ops.bbox_select_box"                 , "/TP-Bounding"),
+        ("bpy.ops.tp_ops.set_new_local"                   , "/TP-Bounding"),
+        ("bpy.ops.tp_ops.recenter"                        , "/TP-Bounding"),
+        ("bpy.ops.tp_ops.reposition"                      , "/TP-Bounding"),
+        ("bpy.ops.tp_ops.copy_local_transform"            , "/TP-Bounding"),
+        ("bpy.ops.object.transforms_to_deltas"            , "/TP-Bounding"),
+        ("bpy.ops.tp_ops.relocate()"                      , "/TP-Bounding"),
+        ("bpy.ops.tp_ops.delete_dummy"                    , "/TP-Bounding"),
         )
     return url_manual_prefix, url_manual_mapping
 
