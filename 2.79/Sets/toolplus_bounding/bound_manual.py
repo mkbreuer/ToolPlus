@@ -1,6 +1,6 @@
 # ##### BEGIN GPL LICENSE BLOCK #####
 #
-#  This program is free software; you can redistribute it and / or
+#  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
 #  as published by the Free Software Foundation; either version 2
 #  of the License, or (at your option) any later version.
@@ -12,32 +12,24 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software Foundation,
-#  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110 - 1301, USA.
+#  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 # ##### END GPL LICENSE BLOCK #####
 #
 
-
-# LOAD MODULE #
+# LOAD MODUL #    
 import bpy
 from bpy import *
 from bpy.props import *
 
-    
-# LOAD CUSTOM TOOL SETTINGS #
-def settings_load(self):
-    tp = bpy.context.window_manager.tp_props_bbox
-    tool = self.name.split()[0].lower()
-    keys = self.as_keywords().keys()
-    for key in keys:
-        setattr(self, key, getattr(tp, key))
+
+ # RIGHT CLICK BUTTON TO ONLINE MANUAL
+def VIEW3D_TP_Bound_Manual():
+    url_manual_prefix = "https://github.com/mkbreuer/ToolPlus/wiki"
+    url_manual_mapping = (
+        ("bpy.ops.tp_ops.easy_lattice_panel"         , "/TP-Bounding"),
+        ("bpy.ops.tp_ops.lattice_apply"              , "/TP-Bounding"),
+        )
+    return url_manual_prefix, url_manual_mapping
 
 
-# STORE CUSTOM TOOL SETTINGS #
-def settings_write(self):
-    tp = bpy.context.window_manager.tp_props_bbox
-    tool = self.name.split()[0].lower()
-    keys = self.as_keywords().keys()
-    for key in keys:
-        setattr(tp, key, getattr(self, key))
- 

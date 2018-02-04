@@ -19,20 +19,23 @@
 
 bl_info = {
 "name": "T+ Bounding", 
-"author": "marvink.k.breuer (MKB)",
-"version": (2, 6),
+"author": "Marvin.K.Breuer (MKB)",
+"version": (2, 7),
 "blender": (2, 79, 0),
-"location": "View3D > TAB Tools > Panel: Bounding / Menu: ADD [SHIFT+A]",
-"description": "create bounding geomtry on selected objects",
+"location": "View3D > Panel: Bounding",
+"description": "create bounding geometry on selected objects",
 "warning": "",
-"wiki_url": "",
+"wiki_url": "https://github.com/mkbreuer/ToolPlus",
 "tracker_url": "",
 "category": "ToolPlus"}
 
 
+# LOAD MANUAL #
+from toolplus_bounding.bound_manual  import (VIEW3D_TP_Bound_Manual)
+
 # LOAD UI #
-from toolplus_bounding.panel_ui    import (VIEW3D_TP_BBOX_MESHES_TOOLS)
-from toolplus_bounding.panel_ui    import (VIEW3D_TP_BBOX_MESHES_UI)
+from toolplus_bounding.bound_panel    import (VIEW3D_TP_BBOX_MESHES_TOOLS)
+from toolplus_bounding.bound_panel    import (VIEW3D_TP_BBOX_MESHES_UI)
 
 # LOAD ICONS #
 from . icons.icons              import load_icons
@@ -58,17 +61,6 @@ if "bpy" in locals():
     imp.reload(tubes) 
     imp.reload(help) 
 
-    imp.reload(delete) 
-    imp.reload(display) 
-    imp.reload(fastnavi) 
-    imp.reload(material) 
-    imp.reload(matswitch) 
-    imp.reload(normals) 
-    imp.reload(opengl) 
-    imp.reload(orphan) 
-    imp.reload(shading)     
-    imp.reload(silhouette)     
-
     imp.reload(internal) 
 
 else:
@@ -83,33 +75,26 @@ else:
     from .operators import spheres                                                                                                                       
     from .operators import tubes   
     from .operators import help                                          
-       
-    from .visuals import delete 
-    from .visuals import display 
-    from .visuals import fastnavi  
-    from .visuals import material                                          
-    from .visuals import matswitch                                          
-    from .visuals import normals                                          
-    from .visuals import opengl  
-    from .visuals import orphan  
-    from .visuals import shading  
-    from .visuals import silhouette    
 
     from .internals import internal    
                                  
+
 
 # LOAD MODULS #   
 import bpy
 from bpy import*
 from bpy.props import* 
+from toolplus_bounding.bound_keymap  import*
+
 from bpy.types import AddonPreferences, PropertyGroup
+
 
 
 # UI REGISTRY #
 panels = (VIEW3D_TP_BBOX_MESHES_UI, VIEW3D_TP_BBOX_MESHES_TOOLS)
 
 def update_panel_location(self, context):
-    message = "T+ Bounding: Updating Panel locations has failed"
+
     try:
         for panel in panels:
             if "bl_rna" in panel.__dict__:
@@ -125,13 +110,11 @@ def update_panel_location(self, context):
         if context.user_preferences.addons[__name__].preferences.tab_location == 'off':  
             return None  
 
-    except Exception as e:
-        print("\n[{}]\n{}\n\nError:\n{}".format(__name__, message, e))
+    except:
         pass
 
 
-
-# REGISTRY: PANEL TOOLS # 
+# TOOLS REGISTRY  # 
 def update_display_tools(self, context):
 
     try:
@@ -146,6 +129,15 @@ def update_display_tools(self, context):
         return None    
 
 
+
+# ADDON CHECK #
+def addon_exists(name):
+    for addon_name in bpy.context.user_preferences.addons.keys():
+        if name in addon_name: return True
+    return False
+
+
+
 # ADDON PREFERENCES #
 class TP_Panels_Preferences(AddonPreferences):
     bl_idname = __name__
@@ -154,10 +146,11 @@ class TP_Panels_Preferences(AddonPreferences):
         items=(('info',       "Info",       "Info"),
                ('location',   "Location",   "Location"),
                ('tools',      "Tools",      "Tools"),
+               ('keymap',     "Keymap",     "Keymap"),
                ('url',        "URLs",       "URLs")),
                default='info')
 
-    # TAB LOACATION #           
+    # LOACATION #           
     tab_location = EnumProperty(
         name = 'Panel Location',
         description = 'location switch',
@@ -166,26 +159,36 @@ class TP_Panels_Preferences(AddonPreferences):
                ('off', 'Off', 'on or off for panel in the shelfs')),
                default='tools', update = update_panel_location)
 
+    # MENU # 
+    tab_menu_bound = EnumProperty(
+        name = '3d View Menu',
+        description = 'save user settings and restart blender after switching the panel location',
+        items=(('menu', 'Menu on', 'enable menu for 3d view'),
+               ('off', 'Menu off', 'enable or disable menu for 3d view')),
+               default='menu', update = update_menu)
 
-    # UPDATE: TOOLSETS #
+
+    # TOOLSETS #
     tab_display_apply = EnumProperty(name = 'Display Tools', description = 'on / off',
-                  items=(('on', 'Apply Transform on', 'enable more tools in panel'), ('off', 'Apply Transform off', 'disable more tools in panel')), default='off', update = update_display_tools)
+                  items=(('on', 'ReCoplanar on', 'enable more tools in panel'), ('off', 'ReCoplanar off', 'disable more tools in panel')), default='off', update = update_display_tools)
 
     tab_display_select = EnumProperty(name = 'Display Tools', description = 'on / off',
-                  items=(('on', 'Select on', 'enable more tools in panel'), ('off', 'Select off', 'disable more tools in panel')), default='off', update = update_display_tools)
-
-    tab_display_visual = EnumProperty(name = 'Display Tools', description = 'on / off',
-                  items=(('on', 'Visual on', 'enable tools in panel'), ('off', 'Visual off', 'disable tools in panel')), default='on', update = update_display_tools)
-
-    tab_display_advance = EnumProperty(name = 'Display Tools', description = 'on / off',
-                  items=(('on', 'Advance on', 'enable tools in panel'), ('off', 'Advance off', 'disable tools in panel')), default='on', update = update_display_tools)
+                  items=(('on', 'Select on', 'enable bound select in panel'), ('off', 'Select off', 'disable bound select in panel')), default='off', update = update_display_tools)
 
     tab_display_history = EnumProperty(name = 'Display Tools', description = 'on / off',
                   items=(('on', 'History on', 'enable more tools in panel'), ('off', 'History off', 'disable more tools in panel')), default='off', update = update_display_tools)
 
+    # TO MENU #
+    tab_display_bbox_menu = EnumProperty(name = 'Display Tools', description = 'on / off',
+                  items=(('on', 'Bounding on', 'enable tools in default add menu > [SHIFT+A]'), ('off', 'Bounding off', 'disable tools in default add menu > [SHIFT+A]')), default='on', update = update_display_tools)
 
-    # UPADTE: PANEL #
+    tab_display_recoplanar_menu = EnumProperty(name = 'Display Tools', description = 'on / off',
+                  items=(('on', 'ReCoplanar on', 'enable tools default special menu > [W]'), ('off', 'ReCoplanar off', 'disable tools in default special menu > [W]')), default='off', update = update_display_tools)
+
+
+    # PANEL #
     tools_category = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_location)
+
 
     def draw(self, context):
         layout = self.layout
@@ -199,14 +202,12 @@ class TP_Panels_Preferences(AddonPreferences):
             row.label(text="Welcome to T+ Bounding!")
 
             row = layout.column()
-            row.label(text="This addon allows you to create different types bounding geometry")
+            row.label(text="This addon allows you to create different types of bounding geometry")
             row.label(text="> primitives: grid, cube, circle, cylinder, cone, torus, sphere & ico")
             row.label(text="> as mesh types: shaded, shadless (transparent), wired only (deleted faces)")
-            row.label(text="> also smooth, draw all edges, etc. and add material with changeable color to it.")
+            row.label(text="> also smooth, draw all edges and add material with changeable color to it.")
             row.label(text="> run select to get the created geometry by name")
-            row.label(text="> the further tools: select, transform apply and history can be show or hidden in the panel")
-            row.label(text="> yThis addon adds 3 buttons into the ADD Mesh Menu [SHIFT+A]")
-            row.label(text="> and 4 buttons into the SPECIAL Menu [W]")
+            row.label(text="> Have Fun :)")
 
 
         # LOACATION #
@@ -240,17 +241,76 @@ class TP_Panels_Preferences(AddonPreferences):
             row = box.column_flow(4)
             row.prop(self, 'tab_display_apply', expand=True) 
             row.prop(self, 'tab_display_select', expand=True) 
-            row.prop(self, 'tab_display_visual', expand=True) 
-            row.prop(self, 'tab_display_advance', expand=True) 
             row.prop(self, 'tab_display_history', expand=True) 
 
-            box.separator() 
+            box.separator()                      
+
+            row = box.row()        
+            row.label(text="Add Tools to default Menus", icon ="INFO")
+
+            row = box.row(1)           
+            row.label(text="Add Menu >")       
+            row.prop(self, 'tab_display_bbox_menu', expand=True) 
+           
+            box.separator()           
+           
+            row = box.row(1)
+            row.label(text="Special Menu >")   
+            row.prop(self, 'tab_display_recoplanar_menu', expand=True)    
+
             box.separator()
 
             row = layout.row()
             row.label(text="! save user settings for permant on/off !", icon ="INFO")
 
             box.separator() 
+
+
+        # KEYMAP #
+        if self.prefs_tabs == 'keymap':
+
+            box = layout.box().column(1)
+             
+            row = box.column(1)  
+            row.label("Bound Menu [CTRL+SHIFT+D]", icon ="COLLAPSEMENU") 
+
+            row = box.row(1)          
+            row.prop(self, 'tab_menu_bound', expand=True)
+            
+            if self.tab_menu_bound == 'off':
+                
+                box.separator() 
+                
+                row = box.row(1) 
+                row.label(text="! menu hidden with next reboot durably!", icon ="INFO")
+
+  
+            # TIP #
+            box.separator()
+            
+            row = layout.row(1)             
+            row.label(text="! For default key change > go to > User Preferences > TAB: Input !", icon ="INFO")
+
+            row = layout.column(1) 
+            row.label(text="1 > Change search to key-bindig and insert the hotkey: ctrl shift d ", icon ="BLANK1")
+            row.label(text="2 > Under 3D View you find the call menu, name: 'tp_menu.bound_menu' !", icon ="BLANK1")
+            row.label(text="3 > Choose a new key configuration and save user settings !", icon ="BLANK1")
+
+            row.separator() 
+            
+            row.label(text="(4) > You can use the 'is key free' addon under User Interface to finde a free shortcut !", icon ="BLANK1")
+        
+            box.separator()  
+
+            row = layout.row(1)             
+            row.label(text="! Other way to change the default key is to edit the keymap script !", icon ="INFO")
+             
+            row = layout.row(1) 
+            row.operator("tp_ops.keymap_bound", text = 'Open KeyMap (Text Editor)')
+            row.operator('wm.url_open', text = 'Type of Events (WEB)').url = "https://lh3.googleusercontent.com/zfNKbUKpnvLTPADu4btQI_adXhkR9iPiSyy31ZvP89YNK6YSiLf4iVC3lpzN76DTdEdHHIZqZK6qM2OYRSAeFRlIof5xHC0wLQtOaCwYEKi43A6W9KGkGAwnlNGqUugQdleEHTMLZnL67u4m6kU1KTKlFASfyDuFCCvdyGGaa5-gZ9kib1AiJ_2exgWvRh1yM86PehsJH65Zp0r6x5zhqZpLI1IS9K-zlyvaKg_WgYuVMzvsd3JrB2BAo-BIZGX9MFA8t-CC3qVtTLXH8WAkHo9IyA1u7GnlCM5p9wffwpu1NhCsZTuQwPnn0BGmOCD0tPCm_LJSJSDyCtkfBXvK_hdsQ3XM0Jcttl1oHJKYqbPoIjHMaLl7pNGmwMhcjlgPqXMq01Eln0wm6NHbJyTe5WMBN7FaB0WEaot7V9TsFxACRJzD2dJu-zP7xJ_vw6sMlYcXLf962SkzRShIMTJiBzSxui5sRJ1uKPCehcdP4E3pEc1tIFO1dQZTSwrLf9luz1S79zCflUCgJFWa8GfN4KGWG09mO4jUBJIdtobsDeM_NPyvraz6Lq4OTz90zgQQ1cxTzQ49MzYcIesnrw7TE2Ilr7UTkOpuoxL4rPw=w696-h1278-no"
+            
+            box.separator()  
+
 
         # WEB #
         if self.prefs_tabs == 'url':
@@ -489,8 +549,6 @@ class Dropdown_BBox_Panel_Props(bpy.types.PropertyGroup):
                default = "tp_w0",    
                description = "widget orientation")
 
-
-
     ### BOUNDING SPHERE ###
     tp_geom_sphere = bpy.props.EnumProperty(
         items=[("tp_add_sph"  ,"Sphere" ,"add sphere" ),
@@ -558,7 +616,6 @@ class Dropdown_BBox_Panel_Props(bpy.types.PropertyGroup):
                default = "tp_w0",    
                description = "widget orientation")
                
-
     ### BOUNDING SELECTIONS ###
     types_sel =  [("tp_01"  ,"Box"     ," "   ,""  ,1),
                   ("tp_02"  ,"Grid"    ," "   ,""  ,2), 
@@ -607,11 +664,12 @@ class Dropdown_TP_Visual_Props(bpy.types.PropertyGroup):
                                        default = "tp_mat_00",  
                                        description="material index switch") 
 
-
     new_swatch = FloatVectorProperty(name = "Color", default=[0.0,1.0,1.0], min = 0, max = 1,  subtype='COLOR')
     index_count = bpy.props.IntProperty(name="MAT-ID",  description="set material index", min=0, max=100, default=0) 
  
     matrandom = bpy.props.BoolProperty(name="ID-Switch / ID-Random", description="enable random material", default=False)  
+
+
 
 
 
@@ -650,60 +708,85 @@ class Orphan_Tools_Props(bpy.types.PropertyGroup):
 
 
 
-    
-
-
-
-# ADD TO DEFAULT MENU #  
+# ADD TO DEFAULT MENU # 
 from .icons.icons import load_icons 
+ 
+class VIEW3D_TP_BBox_Menu(bpy.types.Menu):
+    bl_label = "Bounding"
+    bl_idname = "VIEW3D_TP_BBox_Menu"
+
+    def draw(self, context):
+        layout = self.layout
+        
+        icons = load_icons()
+
+        button_bbox = icons.get("icon_bbox") 
+        layout.operator("tp_ops.bbox_cube", text="Cube, Grid", icon_value=button_bbox.icon_id)  
+
+        button_bsph = icons.get("icon_bsph") 
+        layout.operator("tp_ops.bbox_sphere",text="Spheres, Ico", icon_value=button_bsph.icon_id)
+
+        button_bcyl = icons.get("icon_bcyl") 
+        layout.operator("tp_ops.bbox_cylinder",text="Tube, Cone, Circle, Torus", icon_value=button_bcyl.icon_id)
+
+
 def draw_bound_item(self, context):
-    icons = load_icons()
-
     layout = self.layout
 
-    layout.separator()    
-
-    button_bbox = icons.get("icon_bbox") 
-    layout.operator("tp_ops.bbox_cube", text="Boundig Boxes", icon_value=button_bbox.icon_id)  
-
-    button_bcyl = icons.get("icon_bcyl") 
-    layout.operator("tp_ops.bbox_cylinder",text="Boundig Tubes", icon_value=button_bcyl.icon_id)
-
-    button_bsph = icons.get("icon_bsph") 
-    layout.operator("tp_ops.bbox_sphere",text="Boundig Spheres", icon_value=button_bsph.icon_id)
+    icons = load_icons()
 
 
-# ADD TO DEFAULT SPECIAL MENU [W] #  
+    display_bbox_menu = context.user_preferences.addons[__package__].preferences.tab_display_bbox_menu
+    if display_bbox_menu == 'on':
+        
+        if context.mode == 'OBJECT':
+
+            layout.separator()    
+
+            button_bbox = icons.get("icon_bbox") 
+            layout.menu("VIEW3D_TP_BBox_Menu", text="Bounding", icon_value=button_bbox.icon_id)  
+
+
+
+# ADD TO DEFAULT SPECIAL MENU [W] # 
 from .icons.icons import load_icons 
+ 
+class VIEW3D_TP_ReCoplanar_Menu(bpy.types.Menu):
+    bl_label = "ReCoplanar"
+    bl_idname = "VIEW3D_TP_ReCoplanar_Menu"
+
+    def draw(self, context):
+        layout = self.layout
+        
+        icons = load_icons()
+
+        button_relocal = icons.get("icon_relocal") 
+        layout.operator("tp_ops.set_new_local", icon_value=button_relocal.icon_id) 
+
+        button_recenter = icons.get("icon_recenter") 
+        layout.operator("tp_ops.recenter", icon_value=button_recenter.icon_id)  
+
+        button_reposition = icons.get("icon_reposition") 
+        layout.operator("tp_ops.reposition", icon_value=button_reposition.icon_id)
+      
+        button_bloc = icons.get("icon_bloc") 
+        layout.operator("tp_ops.copy_local_transform", text="ReTransform", icon_value=button_bloc.icon_id ) 
+
+
 def draw_recoplanar_item(self, context):
-    icons = load_icons()
-
     layout = self.layout
 
-    layout.separator()    
-
-    button_relocal = icons.get("icon_relocal") 
-    layout.operator("tp_ops.set_new_local", icon_value=button_relocal.icon_id) 
-
-    button_recenter = icons.get("icon_recenter") 
-    layout.operator("tp_ops.recenter", icon_value=button_recenter.icon_id)  
-
-    button_reposition = icons.get("icon_reposition") 
-    layout.operator("tp_ops.reposition", icon_value=button_reposition.icon_id)
+    icons = load_icons()
   
-    button_bloc = icons.get("icon_bloc") 
-    layout.operator("tp_ops.copy_local_transform", icon_value=button_bloc.icon_id ) 
+    display_recoplanar_menu = context.user_preferences.addons[__package__].preferences.tab_display_recoplanar_menu
+    if display_recoplanar_menu == 'on':
 
+        if context.mode == 'OBJECT':
+            
+            layout.separator()    
 
-def draw_recoplanar_edit_item(self, context):
-    icons = load_icons()
-
-    layout = self.layout
-
-    layout.separator()    
-
-    button_relocal = icons.get("icon_relocal") 
-    layout.operator("tp_ops.set_new_local", icon_value=button_relocal.icon_id) 
+            button_relocal = icons.get("icon_relocal") 
+            layout.menu("VIEW3D_TP_ReCoplanar_Menu", text="ReCoplanar", icon_value=button_relocal.icon_id)  
 
 
 
@@ -718,12 +801,12 @@ def register():
     update_panel_location(None, bpy.context)
     update_display_tools(None, bpy.context)
 
-    # TO MENU
+    # TO MENU #
     bpy.types.INFO_MT_mesh_add.append(draw_bound_item) 
     bpy.types.VIEW3D_MT_object_specials.append(draw_recoplanar_item) 
-    #bpy.types.VIEW3D_MT_edit_mesh_specials.append(draw_recoplanar_edit_item) 
+
    
-    # PROPS
+    # PROPS #
     bpy.types.WindowManager.bbox_window = bpy.props.PointerProperty(type = Dropdown_BBox_Props)    
     bpy.types.WindowManager.tp_props_bbox = bpy.props.PointerProperty(type = Dropdown_BBox_Panel_Props)      
 
@@ -744,11 +827,14 @@ def register():
     bpy.types.Scene.display_props = bpy.props.PointerProperty(type=Display_Tools_Props)
     bpy.types.Scene.orphan_props = bpy.props.PointerProperty(type=Orphan_Tools_Props)
 
+    # MANUAL #
+    bpy.utils.register_manual_map(VIEW3D_TP_Bound_Manual)
+
 
 
 def unregister():
 
-    # PROPS    
+    # PROPS #    
     del bpy.types.WindowManager.bbox_window
     del bpy.types.WindowManager.tp_props_bbox
 
@@ -770,6 +856,9 @@ def unregister():
 
     try: bpy.utils.unregister_module(__name__)
     except: traceback.print_exc()
+
+    # MANUAL #
+    bpy.utils.unregister_manual_map(VIEW3D_TP_Bound_Manual)
 
 
 if __name__ == "__main__":

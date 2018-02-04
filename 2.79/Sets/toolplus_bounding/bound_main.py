@@ -1,8 +1,30 @@
+# ##### BEGIN GPL LICENSE BLOCK #####
+#
+# (C) 2017 MKB
+#
+#  This program is free software; you can redistribute it and / or
+#  modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; either version 2
+#  of the License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software Foundation,
+#  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110 - 1301, USA.
+#
+# ##### END GPL LICENSE BLOCK #####
+#
+
+
+# LOAD MODUL #    
 import bpy
 from bpy import *
 from bpy.props import *
-from .icons.icons import load_icons
-
+from . icons.icons import load_icons    
 
 
 def draw_panel_layout(context, layout):
@@ -666,13 +688,6 @@ def draw_panel_layout(context, layout):
             
             box.separator()
 
-            #box = col.box().column(1)    
-           
-            #row = box.row(1) 
-            #row.prop(context.scene,'rno_bool_keepOrder',text='')         
-            #row.enabled = False
-            #row.operator("object.rno_keep_selection_order", "Respect Selection")
-
             box = col.box().column(1)                     
             
             row = box.row(1)                 
@@ -751,10 +766,7 @@ def draw_panel_layout(context, layout):
         else:                  
             row.prop(tp_props, "display_transform", text="", icon="COLLAPSEMENU")  
 
-        #row.label("Alter")
-
-        #sub2 = row.row(1)
-        #sub2.scale_x = 1       
+  
         row.operator("tp_ops.set_new_local", text = "ReLocal") 
         row.operator("tp_ops.recenter")             
         row.operator("tp_ops.reposition")             

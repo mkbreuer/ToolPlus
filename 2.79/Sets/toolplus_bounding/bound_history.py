@@ -1,5 +1,7 @@
 # ##### BEGIN GPL LICENSE BLOCK #####
 #
+# (C) 2017 MKB
+#
 #  This program is free software; you can redistribute it and / or
 #  modify it under the terms of the GNU General Public License
 #  as published by the Free Software Foundation; either version 2
@@ -18,26 +20,22 @@
 #
 
 
-# LOAD MODULE #
+# LOAD MODUL #    
 import bpy
 from bpy import *
 from bpy.props import *
 
+
+def draw_history_layout(context, layout):          
+      
+    layout.operator_context = 'INVOKE_REGION_WIN'
+
+    box = layout.box().column(1)  
+
+    row = box.row(1)        
+    row.operator("ed.undo", text="Undo", icon="FRAME_PREV")  
+    row.operator("ed.undo_history", text="History", icon="COLLAPSEMENU")
+    row.operator("ed.redo", text="Redo", icon="FRAME_NEXT") 
+   
+    box.separator()                
     
-# LOAD CUSTOM TOOL SETTINGS #
-def settings_load(self):
-    tp = bpy.context.window_manager.tp_props_bbox
-    tool = self.name.split()[0].lower()
-    keys = self.as_keywords().keys()
-    for key in keys:
-        setattr(self, key, getattr(tp, key))
-
-
-# STORE CUSTOM TOOL SETTINGS #
-def settings_write(self):
-    tp = bpy.context.window_manager.tp_props_bbox
-    tool = self.name.split()[0].lower()
-    keys = self.as_keywords().keys()
-    for key in keys:
-        setattr(tp, key, getattr(self, key))
- 

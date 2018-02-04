@@ -1,18 +1,38 @@
+# ##### BEGIN GPL LICENSE BLOCK #####
+#
+# (C) 2017 MKB
+#
+#  This program is free software; you can redistribute it and / or
+#  modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; either version 2
+#  of the License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software Foundation,
+#  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110 - 1301, USA.
+#
+# ##### END GPL LICENSE BLOCK #####
+#
+
+
+# LOAD MODUL #    
 import bpy
 from bpy import *
 from bpy.props import *
 from .icons.icons import load_icons
 
-from toolplus_bounding.history_ui import draw_history_layout
-from toolplus_bounding.main_ui import draw_panel_layout
-from toolplus_bounding.visual_ui import draw_visual_layout
+# LOAD UI #  
+from toolplus_bounding.bound_history    import draw_history_layout
+from toolplus_bounding.bound_main       import draw_panel_layout
 
 
 EDIT = ["EDIT_MESH", "EDIT_CURVE", "EDIT_SURFACE", "EDIT_LATTICE", "EDIT_METABALL", "EDIT_TEXT", "EDIT_ARMATURE", "POSE"]
 GEOM = ['POSE', 'LAMP', 'CAMERA', 'EMPTY', 'SPEAKER']
-
-
-
 
 class VIEW3D_TP_BBOX_MESHES_TOOLS(bpy.types.Panel):
     bl_category = "T+"
@@ -72,21 +92,11 @@ class VIEW3D_TP_BBOX_MESHES_UI(bpy.types.Panel):
 
 
 
-
-
 def draw_bounding_panel_layout(context, layout):
 
     layout.operator_context = 'INVOKE_REGION_WIN'
-                                              
-    
+                                                  
     draw_panel_layout(context, layout)   
-
-
-    display_visual = context.user_preferences.addons[__package__].preferences.tab_display_visual
-    if display_visual == 'on':
-
-        draw_visual_layout(context, layout)     
-
 
     display_history = context.user_preferences.addons[__package__].preferences.tab_display_history 
     if display_history == 'on':

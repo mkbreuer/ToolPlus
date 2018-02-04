@@ -1,23 +1,23 @@
-# ***** BEGIN GPL LICENSE BLOCK *****
+# ##### BEGIN GPL LICENSE BLOCK #####
 #
+# (C) 2017 MKB
 #
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
+#  This program is free software; you can redistribute it and / or
+#  modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; either version 2
+#  of the License, or (at your option) any later version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software Foundation,
-# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software Foundation,
+#  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110 - 1301, USA.
 #
+# ##### END GPL LICENSE BLOCK #####
 #
-# ***** END GPL LICENCE BLOCK *****
-
 
 # LOAD MODULE #
 import bpy
@@ -38,7 +38,7 @@ def local_rotate(mesh, mat):
         v.co = vec
 
 
-# ALIGN TO FACE #
+# ALIGN TO ACTIVE FACE #
 #"author": "Tom Rethaller"
 def get_ortho(a,b,c):
     if c != 0.0 and -a != b:
@@ -87,6 +87,8 @@ def align_to_active_faces(from_obj, to_obj):
 
     # Set Euler mode
     from_obj.rotation_mode = 'XYZ'
+
+
 
 
 
