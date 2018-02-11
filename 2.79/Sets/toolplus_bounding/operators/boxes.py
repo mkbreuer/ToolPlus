@@ -79,30 +79,6 @@ def build_box(self, context):
              (4, 0, 3, 7),
             ]
 
-    """
-    width = self.width
-    height = self.height
-    depth = self.depth
-
-                
-    verts = [(+1.0 * width, +1.0 * height, -1.0 * depth),
-             (+1.0 * width, -1.0 * height, -1.0 * depth),
-             (-1.0 * width, -1.0 * height, -1.0 * depth),
-             (-1.0 * width, +1.0 * height, -1.0 * depth),
-             (+1.0 * width, +1.0 * height, +1.0 * depth),
-             (+1.0 * width, -1.0 * height, +1.0 * depth),
-             (-1.0 * width, -1.0 * height, +1.0 * depth),
-             (-1.0 * width, +1.0 * height, +1.0 * depth),
-             ]
-    edges = []
-    faces = [(0, 1, 2, 3),
-             (4, 7, 6, 5),
-             (0, 4, 5, 1),
-             (1, 5, 6, 2),
-             (2, 6, 7, 3),
-             (4, 0, 3, 7),
-            ]
-    """
 
     mesh = bpy.data.meshes.new(name="_bbox")
     mesh.from_pydata(verts, edges, faces)

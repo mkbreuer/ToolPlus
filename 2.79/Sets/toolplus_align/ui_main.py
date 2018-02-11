@@ -1023,9 +1023,14 @@ def draw_align_panel_layout(self, context, layout):
             button_align_distribute = icons.get("icon_align_distribute")  
             row.operator("mesh.vertex_distribute",text="Distribute", icon_value=button_align_distribute.icon_id)                                        
 
-            #imdjs_tools
-            #button_align_radians = icons.get("icon_align_radians")  
-            #row.operator("me
+            
+            imdjs_tools_addon = "IMDJS_mesh_tools" 
+            state = addon_utils.check(imdjs_tools_addon)
+            if not state[0]:
+                pass
+            else:  
+                button_align_radians = icons.get("icon_align_radians")  
+                row.operator("mesh.round_selected_points", text="Radians")
 
             box.separator()
       

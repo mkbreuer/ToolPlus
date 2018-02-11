@@ -20,7 +20,7 @@
 bl_info = {
 "name": "T+ Bounding", 
 "author": "Marvin.K.Breuer (MKB)",
-"version": (2, 7),
+"version": (2, 8),
 "blender": (2, 79, 0),
 "location": "View3D > Panel: Bounding",
 "description": "create bounding geometry on selected objects",

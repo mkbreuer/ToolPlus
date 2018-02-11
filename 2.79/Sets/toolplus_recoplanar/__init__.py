@@ -23,7 +23,7 @@
 bl_info = {
 "name": "ReCoPlanar", 
 "author": "marvink.k.breuer (MKB)",
-"version": (1, 0),
+"version": (1, 1),
 "blender": (2, 7, 9),
 "location": "View3D > Panel: Recenter",
 "description": "center and reposition an selected object",

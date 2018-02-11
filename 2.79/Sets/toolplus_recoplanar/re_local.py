@@ -65,9 +65,9 @@ def build_cone(self, context):
 
 # OPERATOR SET LOCAL #
 class VIEWD3D_TP_SET_LOCAL(bpy.types.Operator):
-    """ set local orientation to 1 selected face """
+    """ set local orientation to selected active face """
     bl_idname = "tp_ops.set_new_local"
-    bl_label = "Set Local"
+    bl_label = "SetLocal"
     bl_context = "objectmode"
     bl_options = {"REGISTER", "UNDO"}
 
@@ -75,7 +75,30 @@ class VIEWD3D_TP_SET_LOCAL(bpy.types.Operator):
     def poll(cls, context):
         return context.active_object is not None
 
+
+    # WIDGET #
+    set_widget = bpy.props.EnumProperty(
+        items=[("tp_w0"    ,"None"      ,"None"   ),
+               ("tp_w1"    ,"Local"     ,"Local"  ),
+               ("tp_w2"    ,"Global"    ,"Global" )],
+               name = "Set Widget",
+               default = "tp_w1",    
+               description = "widget orientation")
+               
   
+    # DRAW PROPS [F6] # 
+    def draw(self, context):
+        layout = self.layout
+       
+        box = layout.box().column(1)   
+
+        row = box.row(1)
+        row.label(text="Widget:")
+        row.prop(self, "set_widget", expand = True)        
+       
+        box.separator() 
+
+
     def execute(self, context):
         active = bpy.context.active_object            
         selected = bpy.context.selected_objects
@@ -149,6 +172,15 @@ class VIEWD3D_TP_SET_LOCAL(bpy.types.Operator):
             self.report({'INFO'}, 'select only 1 object')
     
         del name_list[:]
+
+        # Widget
+        if self.set_widget == "tp_w0":
+            pass
+        if self.set_widget == "tp_w1":
+            bpy.context.space_data.transform_orientation = 'LOCAL'              
+        if self.set_widget == "tp_w2":
+            bpy.context.space_data.transform_orientation = 'GLOBAL'  
+
         return {'FINISHED'}
 
 

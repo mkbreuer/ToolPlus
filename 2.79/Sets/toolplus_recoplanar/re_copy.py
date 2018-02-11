@@ -311,10 +311,10 @@ class VIEW3D_TP_Copy_Transform_Local(bpy.types.Operator):
         # Widget
         if self.set_widget == "tp_w0":
             pass
-        elif self.set_widget == "tp_w1":
+        if self.set_widget == "tp_w1":
             bpy.context.space_data.transform_orientation = 'LOCAL'              
-        else:
-            bpy.context.space_data.transform_orientation = 'GLOBAL'  
+        if self.set_widget == "tp_w2":
+            bpy.context.space_data.transform_orientation = 'GLOBAL' 
 
         return {'FINISHED'}
 

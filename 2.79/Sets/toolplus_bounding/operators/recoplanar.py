@@ -1,10 +1,10 @@
 # ##### BEGIN GPL LICENSE BLOCK #####
 #
-# Copyright (C) 2017  Marvin.K.Breuer (MKB)]
+# (C) 2017 MKB
 #
 #  This program is free software; you can redistribute it and / or
 #  modify it under the terms of the GNU General Public License
-#  as published by the Free Software Foundation; either version 3
+#  as published by the Free Software Foundation; either version 2
 #  of the License, or (at your option) any later version.
 #
 #  This program is distributed in the hope that it will be useful,
@@ -17,6 +17,7 @@
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110 - 1301, USA.
 #
 # ##### END GPL LICENSE BLOCK #####
+#
 
 
 # LOAD MODULE #
@@ -103,10 +104,30 @@ class VIEW3D_TP_ReCenter(bpy.types.Operator):
 
 
 
+# LISTS FOR SELECTED #
+source_name_list = []
+empty_list = []
+
+# create empty to repair apply transform
+def create_empty_object(context):
+    
+    bpy.ops.view3d.snap_cursor_to_selected()
+    bpy.ops.mesh.primitive_plane_add(radius=10)  
+      
+    bpy.context.object.name = "empty_geom"
+    bpy.context.object.data.name = "empty_geom"
+    
+    bpy.ops.object.editmode_toggle()
+
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.delete(type='VERT')
+
+    bpy.ops.object.editmode_toggle()
+
 
 # OPERATOR RELOCATE #
 class VIEW3D_TP_ReLocate(bpy.types.Operator):
-    """set location back to center with offset / Attention: purge all orphaned meshdata"""
+    """set location back to center with offset / repair: apply transform"""
     bl_idname = "tp_ops.relocate"
     bl_label = "ReLocate"
     bl_options = {'REGISTER', 'UNDO'}
@@ -114,9 +135,8 @@ class VIEW3D_TP_ReLocate(bpy.types.Operator):
     @classmethod
     def poll(cls, context):
         return context.active_object is not None
- 
-    delta_rot = bpy.props.BoolProperty(name = "Delta Rotation", description = "zero all values", default = True)
-    delta_scale = bpy.props.BoolProperty(name = "Delta Scale", description = "zero all values", default = True)
+
+    delta_location = bpy.props.BoolProperty(name = "Delta Location", description = "zero all values", default = False)
 
     def execute(self, context):
                 
@@ -137,23 +157,43 @@ class VIEW3D_TP_ReLocate(bpy.types.Operator):
 
                 bpy.ops.view3d.snap_cursor_to_center()
                 bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
-                                
-                bpy.ops.object.transforms_to_deltas(mode='LOC')
 
-                for i in range(self.delta_rot):
-                    bpy.ops.object.transforms_to_deltas(mode='ROT')
+                # add source to name list
+                source_name_list.append(obj.name)   
 
-                for i in range(self.delta_scale):
-                    bpy.ops.object.transforms_to_deltas(mode='SCALE')
+                #store name from source
+                storename = bpy.context.object.name
 
+                #create empty object
+                create_empty_object(context)
+
+                # add new object to dummy name list
+                empty_object_name = "empty_geom"
+                empty_list.append(empty_object_name) 
                 
+                # select objects in lists
+                bpy.data.objects[obj.name].select = True                  
+                bpy.data.objects[empty_object_name].select = True  
+                
+                # merge both
+                bpy.ops.object.join()
+
+                # reload and rename
+                bpy.context.object.name = storename
+                bpy.context.object.data.name = storename
+
                 # reload 3d cursor
-                v3d.cursor_location = current_cloc   
+                v3d.cursor_location = current_cloc
 
                 # place origin
                 bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
 
-        
+                
+                # delta location
+                for i in range(self.delta_location):                             
+                    bpy.ops.object.transforms_to_deltas(mode='LOC')
+
+
         return {'FINISHED'}
 
 
@@ -165,7 +205,7 @@ class VIEW3D_TP_ReLocate(bpy.types.Operator):
 class VIEW3D_TP_RePosition(bpy.types.Operator):
     """reposition to previous location with unapplied rotation / Attention: purge all orphaned meshdata"""
     bl_idname = "tp_ops.reposition"
-    bl_label = "RePlace"
+    bl_label = "RePosition"
     bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
@@ -329,15 +369,12 @@ class VIEW3D_TP_DELETE_ORPHANED_DUMMIES(bpy.types.Operator):
 
 
 
-def register():
+# REGISTRY #        
+def register():    
     bpy.utils.register_module(__name__)
- 
-def unregister():
+
+def unregister():   
     bpy.utils.unregister_module(__name__)
- 
+
 if __name__ == "__main__":
     register()
-
-
-
-

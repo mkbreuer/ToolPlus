@@ -104,10 +104,30 @@ class VIEW3D_TP_ReCenter(bpy.types.Operator):
 
 
 
+# LISTS FOR SELECTED #
+source_name_list = []
+empty_list = []
+
+# create empty to repair apply transform
+def create_empty_object(context):
+    
+    bpy.ops.view3d.snap_cursor_to_selected()
+    bpy.ops.mesh.primitive_plane_add(radius=10)  
+      
+    bpy.context.object.name = "empty_geom"
+    bpy.context.object.data.name = "empty_geom"
+    
+    bpy.ops.object.editmode_toggle()
+
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.delete(type='VERT')
+
+    bpy.ops.object.editmode_toggle()
+
 
 # OPERATOR RELOCATE #
 class VIEW3D_TP_ReLocate(bpy.types.Operator):
-    """set location back to center with offset / Attention: purge all orphaned meshdata"""
+    """set location back to center with offset / repair: apply transform"""
     bl_idname = "tp_ops.relocate"
     bl_label = "ReLocate"
     bl_options = {'REGISTER', 'UNDO'}
@@ -115,9 +135,8 @@ class VIEW3D_TP_ReLocate(bpy.types.Operator):
     @classmethod
     def poll(cls, context):
         return context.active_object is not None
- 
-    delta_rot = bpy.props.BoolProperty(name = "Delta Rotation", description = "zero all values", default = True)
-    delta_scale = bpy.props.BoolProperty(name = "Delta Scale", description = "zero all values", default = True)
+
+    delta_location = bpy.props.BoolProperty(name = "Delta Location", description = "zero all values", default = False)
 
     def execute(self, context):
                 
@@ -138,23 +157,43 @@ class VIEW3D_TP_ReLocate(bpy.types.Operator):
 
                 bpy.ops.view3d.snap_cursor_to_center()
                 bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
-                                
-                bpy.ops.object.transforms_to_deltas(mode='LOC')
 
-                for i in range(self.delta_rot):
-                    bpy.ops.object.transforms_to_deltas(mode='ROT')
+                # add source to name list
+                source_name_list.append(obj.name)   
 
-                for i in range(self.delta_scale):
-                    bpy.ops.object.transforms_to_deltas(mode='SCALE')
+                #store name from source
+                storename = bpy.context.object.name
 
+                #create empty object
+                create_empty_object(context)
+
+                # add new object to dummy name list
+                empty_object_name = "empty_geom"
+                empty_list.append(empty_object_name) 
                 
+                # select objects in lists
+                bpy.data.objects[obj.name].select = True                  
+                bpy.data.objects[empty_object_name].select = True  
+                
+                # merge both
+                bpy.ops.object.join()
+
+                # reload and rename
+                bpy.context.object.name = storename
+                bpy.context.object.data.name = storename
+
                 # reload 3d cursor
-                v3d.cursor_location = current_cloc   
+                v3d.cursor_location = current_cloc
 
                 # place origin
                 bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
 
-        
+                
+                # delta location
+                for i in range(self.delta_location):                             
+                    bpy.ops.object.transforms_to_deltas(mode='LOC')
+
+
         return {'FINISHED'}
 
 
