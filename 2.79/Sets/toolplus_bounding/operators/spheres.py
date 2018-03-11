@@ -385,7 +385,8 @@ class VIEW3D_TP_BTube(bpy.types.Operator):
 
                 # display: draw all edges
                 for i in range(self.sphere_edges):
-                    bpy.ops.tp_ops.wire_on()
+                    bpy.context.object.show_wire = True
+                    bpy.context.object.show_all_edges = True     
                
                 # stay shaded
                 if self.sphere_meshtype == "tp_00":

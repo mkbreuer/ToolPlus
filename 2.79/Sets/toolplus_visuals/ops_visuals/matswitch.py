@@ -31,7 +31,7 @@ class VIEW3D_TP_Visual_Set_Color(bpy.types.Operator):
 
     @classmethod
     def poll(self, context):
-        if context.object and context.object.type == 'MESH':
+        if context.object:
             return len(context.object.data.materials)
 
     new_swatch = FloatVectorProperty(name = "Color", default=[0.0,1.0,1.0], min = 0, max = 1,  subtype='COLOR')
@@ -94,7 +94,7 @@ class VIEW3D_TP_Visual_Set_Color_Contrast(bpy.types.Operator):
 
     @classmethod
     def poll(self, context):
-        if context.object and context.object.type == 'MESH':
+        if context.object:
             return len(context.object.data.materials)
 
     mat_mode = bpy.props.StringProperty(default="")

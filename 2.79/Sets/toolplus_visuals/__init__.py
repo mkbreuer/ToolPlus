@@ -20,7 +20,7 @@
 bl_info = {
 "name": "Visuals", 
 "author": "marvin.k.breuer (MKB)",
-"version": (0, 1, 0),
+"version": (0, 1, 1),
 "blender": (2, 7, 9),
 "location": "3D View",
 "description": "display tools for the 3D view",
