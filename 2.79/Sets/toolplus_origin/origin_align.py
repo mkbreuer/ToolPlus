@@ -30,7 +30,6 @@
 #    "tracker_url": "",
 #    "category": "User Changed"}
 
-# t+ version 01
 
 
 # LOAD MODUL #
@@ -38,10 +37,10 @@ import bpy, mathutils
 from mathutils import Vector, Matrix
 from bpy.props import EnumProperty, BoolProperty, FloatVectorProperty 
 
+
+
 #subject 0 per oggetto, 1 per pivot e 2 per cursor
-def align_function(subject, active_too, consistent, self_or_active, loc_x, loc_y, loc_z, ref1, ref2, loc_offset, 
-        rot_x, rot_y, rot_z, rot_offset, scale_x, scale_y, scale_z, scale_offset,
-         fit_x, fit_y, fit_z):
+def align_function(subject, active_too, consistent, self_or_active, loc_x, loc_y, loc_z, ref1, ref2, loc_offset, rot_x, rot_y, rot_z, rot_offset, scale_x, scale_y, scale_z, scale_offset, fit_x, fit_y, fit_z):
                
     sel_obj = bpy.context.selected_objects
     act_obj = bpy.context.active_object
@@ -51,6 +50,7 @@ def align_function(subject, active_too, consistent, self_or_active, loc_x, loc_y
     global sel_center
     global ref2_co
     
+   
     def get_reference_points(obj, space):
         
         me = obj.data
@@ -134,7 +134,10 @@ def align_function(subject, active_too, consistent, self_or_active, loc_x, loc_y
         center_z = min_z + ((max_z - min_z) / 2)               
         
         reference_points = [min_x, center_x, max_x, min_y, center_y, max_y, min_z, center_z, max_z]    
+       
         return reference_points
+    
+    
     
     def get_sel_ref(ref_co, sel_obj): #cerco i punti estremi della selezione
         
@@ -147,7 +150,6 @@ def align_function(subject, active_too, consistent, self_or_active, loc_x, loc_y
                 ref_points = get_reference_points(obj, "global")
                 ref_min = Vector([ref_points[0], ref_points[3], ref_points[6]])
                 ref_max = Vector([ref_points[2], ref_points[5], ref_points[8]])
-
 
                 if ref_min[0] < sel_min[0]:
                     sel_min[0] = ref_min[0]
@@ -165,96 +167,131 @@ def align_function(subject, active_too, consistent, self_or_active, loc_x, loc_y
         return sel_min, sel_max;
                     
                     
+   
     def find_ref2_co(act_obj):
+        
         #contiene le coordinate del punto di riferimento per il posizionamento
         if ref2 == "0":        
             ref_points = get_reference_points(act_obj, "global")
             ref2_co = [ref_points[0], ref_points[3], ref_points[6]]           
             ref2_co = Vector(ref2_co)
+       
         elif ref2 == "1":
             ref_points = get_reference_points(act_obj, "global")
             ref2_co = [ref_points[1], ref_points[4], ref_points[7]]     
             ref2_co = Vector(ref2_co)
+       
         elif ref2 == "2":
             ref2_co = act_obj.location
             ref2_co = Vector(ref2_co)
+      
         elif ref2 == "3":    
             ref_points = get_reference_points(act_obj, "global")
             ref2_co = [ref_points[2], ref_points[5], ref_points[8]]                 
             ref2_co = Vector(ref2_co)
+       
         elif ref2 == "4":
             ref2_co = bpy.context.scene.cursor_location                    
 
         return ref2_co
+    
     
     def find_new_coord(obj):
                 
         ref_points = get_reference_points(obj, "global") 
 
         if loc_x == True:
+           
             if ref1 == "0":                           
                 min_x = ref_points[0]
                 new_x = ref2_co[0] + (obj.location[0] - min_x) + loc_offset[0]
+           
             elif ref1 == "1":
                 center_x = ref_points[1]
                 new_x = ref2_co[0] + (obj.location[0] - center_x) + loc_offset[0]
+           
             elif ref1 == "2":
                 new_x = ref2_co[0] + loc_offset[0]
+           
             elif ref1 == "3":                
                 max_x = ref_points[2]   
                 new_x = ref2_co[0] - (max_x - obj.location[0]) + loc_offset[0] 
             obj.location[0] = new_x
+        
         if loc_y == True:
+           
             if ref1 == "0":            
                 min_y = ref_points[3]
                 new_y = ref2_co[1] + (obj.location[1] - min_y) + loc_offset[1]
+            
             elif ref1 == "1":
                 center_y = ref_points[4]
                 new_y = ref2_co[1] + (obj.location[1] - center_y) + loc_offset[1]
+           
             elif ref1 == "2":
                 new_y = ref2_co[1] + loc_offset[1]
+           
             elif ref1 == "3":                
                 max_y = ref_points[5]   
                 new_y = ref2_co[1] - (max_y - obj.location[1]) + loc_offset[1]        
             obj.location[1] = new_y
+       
         if loc_z == True:
+            
             if ref1 == "0":           
                 min_z = ref_points[6]
                 new_z = ref2_co[2] + (obj.location[2] - min_z) + loc_offset[2]
+            
             elif ref1 == "1":
                 center_z = ref_points[7]
                 new_z = ref2_co[2] + (obj.location[2] - center_z) + loc_offset[2]
+           
             elif ref1 == "2":
                 new_z = ref2_co[2] + loc_offset[2]
+           
             elif ref1 == "3":                
                 max_z = ref_points[8]
                 new_z = ref2_co[2] - (max_z - obj.location[2]) + loc_offset[2]
+           
             obj.location[2] = new_z
     
+   
     def find_new_rotation(obj):
+      
         if rot_x == True:
             obj.rotation_euler[0] = act_obj.rotation_euler[0] + rot_offset[0]
+      
         if rot_y == True:    
             obj.rotation_euler[1] = act_obj.rotation_euler[1] + rot_offset[1]
+      
         if rot_z == True:    
             obj.rotation_euler[2] = act_obj.rotation_euler[2] + rot_offset[2]
     
+  
     def find_new_scale(obj):
+       
         if scale_x == True:
             obj.scale[0] = act_obj.scale[0] + scale_offset[0]
+       
         if scale_y == True:    
             obj.scale[1] = act_obj.scale[1] + scale_offset[1]
+       
         if scale_z == True:    
             obj.scale[2] = act_obj.scale[2] + scale_offset[2]
                     
+  
     def find_new_dimensions(obj, ref_dim):
+       
         ref_points = get_reference_points(obj, "local")
+       
         if fit_x:
             dim = ref_points[2] - ref_points[0]
             obj.scale[0] = (ref_dim[0] / dim) * act_obj.scale[0] 
+       
         if fit_y:
             dim = ref_points[5] - ref_points[3]
             obj.scale[1] = (ref_dim[1] / dim) * act_obj.scale[1] 
+      
         if fit_z:
             dim = ref_points[8] - ref_points[6]
             obj.scale[2] = (ref_dim[2] / dim) * act_obj.scale[2]         
@@ -284,54 +321,69 @@ def align_function(subject, active_too, consistent, self_or_active, loc_x, loc_y
             
         if loc_x: 
             movement(offset_x)
+       
         if loc_y:
             movement(offset_y)   
+       
         if loc_z:
             movement(offset_z)
                
+  
     def point_in_selection(act_obj, sel_obj):
+     
         ok = False
         for o in sel_obj:
             if o != act_obj:
                 ref_ob = o
                 obj_mtx = o.matrix_world                   
+               
                 if o.type == 'MESH' and len(o.data.vertices) > 0:
                     ref_co = o.data.vertices[0].co.copy()
                     ref_co = obj_mtx * ref_co
                     ok = True                        
                     break
+                
                 elif o.type == 'CURVE' and len(o.data.splines) > 0:
                     ref_co = o.data.splines[0].bezier_point[0].co.copy()
                     ref_co = obj_mtx * ref_co
                     ok = True
                     break
+               
                 elif o.type == 'SURFACE' and len(o.data.splines) > 0:
                     ref_co = o.data.splines[0].points[0].co.copy()
                     ref_co = obj_mtx * ref_co
                     ok = True
                     break
+               
                 elif o.type == 'FONT' and len(o.data.splines) > 0:
                     ref_co = o.data.splines[0].bezier_points[0].co.copy()
                     ref_co = obj_mtx * ref_co
                     ok = True
                     break                   
+      
         #se nessun oggetto aveva dati, uso la posizione di un oggetto che non fosse quello attivo
         # come punto interno della selezione        
         if ok == False:
             ref_co = ref_ob.location
         
         return ref_co    
+  
                 
     if subject == "0":
+        
         #if act_obj.type == ('MESH' or 'FONT' or 'CURVE' or 'SURFACE'):
         if act_obj.type == 'MESH' or act_obj.type == 'FONT' or act_obj.type == 'SURFACE': #or act_obj.type == 'CURVE' 
             ref2_co = find_ref2_co(act_obj)            
+        
         else:
+          
             if ref2 == "4":
                 ref2_co = bpy.context.scene.cursor_location
+           
             else:    
                 ref2_co = act_obj.location
    
+       
         #nel caso di selezione consistente
         if consistent: 
             #cerco un punto che sia nello spazio della selezione           
@@ -345,8 +397,10 @@ def align_function(subject, active_too, consistent, self_or_active, loc_x, loc_y
             #calcolo di quanto spostare la selezione
             if ref1 == "0":                                               
                 translate = ref2_co - sel_min + loc_offset
+          
             elif ref1 == "1":
                 translate = ref2_co - sel_center + loc_offset                              
+         
             elif ref1 == "3": 
                 translate = ref2_co - sel_max + loc_offset                                           
                        
@@ -361,9 +415,14 @@ def align_function(subject, active_too, consistent, self_or_active, loc_x, loc_y
                         obj.location[1] += translate[1]
                     if loc_z:        
                         obj.location[2] += translate[2]
+        
+      
         else:    #not consistent 
+           
             for obj in sel_obj:
+              
                 if obj != act_obj:
+                   
                     if rot_x or rot_y or rot_z:
                         find_new_rotation(obj)
                 
@@ -383,21 +442,30 @@ def align_function(subject, active_too, consistent, self_or_active, loc_x, loc_y
                         find_new_coord(obj)
                     
             if active_too == True:
+               
                 if loc_x or loc_y or loc_z:
                     find_new_coord(act_obj)
+              
                 if rot_x or rot_y or rot_z:
                     find_new_rotation(act_obj)
+              
                 if scale_x or scale_y or scale_z:
                     find_new_scale(act_obj)
+              
                 #add dimensions if dim offset will be added               
             
+   
     elif subject == "1":
+       
         if self_or_active == "1":
             if act_obj.type == 'MESH':
                 ref2_co = find_ref2_co(act_obj)
+       
         for obj in sel_obj:
+           
             if self_or_active == "0":
                 ref2_co = find_ref2_co(obj)
+           
             if loc_x or loc_y or loc_z:
                 if obj != act_obj and obj.type == 'MESH':
                     move_pivot(obj)
@@ -409,40 +477,62 @@ def align_function(subject, active_too, consistent, self_or_active, loc_x, loc_y
                         ref2_co = find_ref2_co(act_obj)
                     move_pivot(act_obj)
                             
+    
     elif subject == "2":
+       
         if self_or_active == "1":
+           
             if act_obj.type == 'MESH' or act_obj.type == 'FONT' or act_obj.type == 'SURFACE': #or act_obj.type == 'CURVE' 
                 ref2_co = find_ref2_co(act_obj)
                 ref_points = get_reference_points(act_obj, "global")
+           
             else: 
                 ref2_co = act_obj.location
                 ref_points = [act_obj.location[0], act_obj.location[0], act_obj.location[0], act_obj.location[1], act_obj.location[1], act_obj.location[1], act_obj.location[2], act_obj.location[2], act_obj.location[2]]        
             
+           
             if ref2 == "0":            
+               
                 if loc_x == True:
                     bpy.context.scene.cursor_location[0] = ref_points[0] + loc_offset[0]
+               
                 if loc_y == True:
                     bpy.context.scene.cursor_location[1] = ref_points[3] + loc_offset[1]
+              
                 if loc_z == True:
                     bpy.context.scene.cursor_location[2] = ref_points[6] + loc_offset[2]
+           
             elif ref2 == "1":
+                
                 if loc_x == True:
                     bpy.context.scene.cursor_location[0] = ref_points[1] + loc_offset[0]
+               
                 if loc_y == True:
                     bpy.context.scene.cursor_location[1] = ref_points[4] + loc_offset[1]
+               
                 if loc_z == True:
                     bpy.context.scene.cursor_location[2] = ref_points[7] + loc_offset[2]
+            
             elif ref2 == "2":
+               
                 if loc_x == True: bpy.context.scene.cursor_location[0] = act_obj.location[0] + loc_offset[0]
+               
                 if loc_y == True: bpy.context.scene.cursor_location[1] = act_obj.location[1] + loc_offset[1]
+               
                 if loc_z == True: bpy.context.scene.cursor_location[2] = act_obj.location[2] + loc_offset[2]
+           
             elif ref2 == "3":
+                
                 if loc_x == True:
                     bpy.context.scene.cursor_location[0] = ref_points[2] + loc_offset[0]
+                
                 if loc_y == True:
                     bpy.context.scene.cursor_location[1] = ref_points[5] + loc_offset[1]
+               
                 if loc_z == True:
                     bpy.context.scene.cursor_location[2] = ref_points[8] + loc_offset[2]
+        
+       
         elif self_or_active == "2":
             ref_co = point_in_selection(act_obj, sel_obj)
             
@@ -450,31 +540,42 @@ def align_function(subject, active_too, consistent, self_or_active, loc_x, loc_y
             sel_center = sel_min + ((sel_max - sel_min) / 2)
             
             if ref2 == "0":            
+                
                 if loc_x == True:
                     bpy.context.scene.cursor_location[0] = sel_min[0] + loc_offset[0]
+               
                 if loc_y == True:
                     bpy.context.scene.cursor_location[1] = sel_min[1] + loc_offset[1]
+               
                 if loc_z == True:
                     bpy.context.scene.cursor_location[2] = sel_min[2] + loc_offset[2]
+           
             elif ref2 == "1":
+               
                 if loc_x == True:
                     bpy.context.scene.cursor_location[0] = sel_center[0] + loc_offset[0]
+              
                 if loc_y == True:
                     bpy.context.scene.cursor_location[1] = sel_center[1] + loc_offset[1]
+               
                 if loc_z == True:
                     bpy.context.scene.cursor_location[2] = sel_center[2] + loc_offset[2]
+          
             elif ref2 == "3":
+                
                 if loc_x == True:
                     bpy.context.scene.cursor_location[0] = sel_max[0] + loc_offset[0]
+                
                 if loc_y == True:
                     bpy.context.scene.cursor_location[1] = sel_max[1] + loc_offset[1]
+               
                 if loc_z == True:
                     bpy.context.scene.cursor_location[2] = sel_max[2] + loc_offset[2]
             
          
 
 
-class AlignTools(bpy.types.Operator):
+class VIEW3_AlignTools(bpy.types.Operator):
     """Advanced Align Tools"""
     bl_idname = "tp_origin.align_tools"
     bl_label = "Advanced Align Tools"
@@ -485,8 +586,12 @@ class AlignTools(bpy.types.Operator):
     #property definition
 
     #Object-Pivot-Cursor:
-    subject = EnumProperty (items=(("0", "Object", "Align Objects"), ("1", "Origin", "Align Objects Origin"), ("2", "Cursor", "Align Cursor To Active")), 
-                        name = "Align To", description = "What will be moved")
+    subject = EnumProperty (items=(("0", "Object", "Align Objects"), 
+                                   ("1", "Origin", "Align Objects Origin"), 
+                                   ("2", "Cursor", "Align Cursor To Active")), 
+                                   name = "Align To", 
+                                   description = "What will be moved")
+
     # Move active Too:                               
     active_too = BoolProperty (name = "Active too", default= False, description= "Move the active object too")
     
@@ -500,31 +605,46 @@ class AlignTools(bpy.types.Operator):
     loc_y = BoolProperty (name = "Align to Y axis", default= False, description= "Enable Y axis alignment")                               
     loc_z = BoolProperty (name = "Align to Z axis", default= False, description= "Enable Z axis alignment")
    
+
     #Selection Option:
-    ref1 = EnumProperty (items=(("3", "Max", "Align the maximum point"), ("1", "Center", "Align the center point"), ("2", "Origin", "Align the Origin"), 
-                                    ("0", "Min", "Align the minimum point")),
-                                    name = "Selection reference", description = "Moved objects reference point")   
+    ref1 = EnumProperty (items=(("3", "Max", "Align the maximum point"), 
+                                ("1", "Center", "Align the center point"), 
+                                ("2", "Origin", "Align the Origin"), 
+                                ("0", "Min", "Align the minimum point")),
+                                name = "Selection reference", 
+                                description = "Moved objects reference point")   
+
     #Active Oject Option:
-    ref2 = EnumProperty (items=(("3", "Max", "Align to the maximum point"), ("1", "Center", "Align to the center point"), ("2", "Origin", "Align to the Origin"),
-                                 ("0", "Min", "Align to the minimum point"), ("4", "Cursor", "Description")),
-                                    name = "Active reference", description = "Destination point")
+    ref2 = EnumProperty (items=(("3", "Max", "Align to the maximum point"), 
+                                ("1", "Center", "Align to the center point"),
+                                ("2", "Origin", "Align to the Origin"),
+                                ("0", "Min", "Align to the minimum point"), 
+                                ("4", "Cursor", "Description")),
+                                name = "Active reference", 
+                                description = "Destination point")
     
-    self_or_active = EnumProperty (items = (("0", "Self", "In relation of itself"), ("1", "Active", "In relation of the active object"), ("2", "Selection", "In relation of the entire selection")), 
-                                    name = "Relation", default = "1", description = "To what the Origin will be aligned")
+
+    self_or_active = EnumProperty (items = (("0", "Self", "In relation of itself"), 
+                                            ("1", "Active", "In relation of the active object"), 
+                                            ("2", "Selection", "In relation of the entire selection")), 
+                                            name = "Relation", 
+                                            default = "1", 
+                                            description = "To what the Origin will be aligned")
+
     #Location Offset
-    loc_offset = FloatVectorProperty(name="Location Offset", description="Offset for location align position", default=(0.0, 0.0, 0.0),
-                subtype='XYZ', size=3)
+    loc_offset = FloatVectorProperty(name="Location Offset", description="Offset for location align position", default=(0.0, 0.0, 0.0), subtype='XYZ', size=3)
+
     #Rotation Offset
-    rot_offset = FloatVectorProperty(name="Rotation Offset", description="Offset for rotation alignment", default=(0.0, 0.0, 0.0),
-                subtype='EULER', size=3) 
+    rot_offset = FloatVectorProperty(name="Rotation Offset", description="Offset for rotation alignment", default=(0.0, 0.0, 0.0), subtype='EULER', size=3) 
+
     #Scale Offset
-    scale_offset = FloatVectorProperty(name="Scale Offset", description="Offset for scale match", default=(0.0, 0.0, 0.0),
-                subtype='XYZ', size=3)                                               
+    scale_offset = FloatVectorProperty(name="Scale Offset", description="Offset for scale match", default=(0.0, 0.0, 0.0), subtype='XYZ', size=3)                                               
                
     #Fit Dimension Prop:
     fit_x = BoolProperty (name = "Fit Dimension to X axis", default= False, description= "")
     fit_y = BoolProperty (name = "Fit Dimension to Y axis", default= False, description= "")
     fit_z = BoolProperty (name = "Fit Dimension to Z axis", default= False, description= "")
+
     #Apply Fit Dimension:
     apply_dim = BoolProperty (name = "Apply  Dimension", default= False, description= "")
    
@@ -543,10 +663,10 @@ class AlignTools(bpy.types.Operator):
     
     #Apply Scale:
     apply_scale = BoolProperty (name = "Apply Scale", default= False, description= "")
-   
+
     def draw(self, context):
         layout = self.layout
-       
+
         #Object-Pivot-Cursor:
         row0 = layout.row()
         row0.prop(self, 'subject', expand =True)
@@ -555,6 +675,7 @@ class AlignTools(bpy.types.Operator):
         row1 = layout.row()
         row1.prop(self,'active_too')
         row1.prop(self, 'advanced')
+       
         if self.advanced:
             row1b = layout.row()
             row1b.prop(self, 'consistent')
@@ -567,7 +688,7 @@ class AlignTools(bpy.types.Operator):
         row3.prop(self, "loc_x", text="X")       
         row3.prop(self, "loc_y", text="Y") 
         row3.prop(self, "loc_z", text="Z")
-        
+
         #Offset:                
         if self.advanced == True:
             #row8 = col.row()
@@ -579,13 +700,16 @@ class AlignTools(bpy.types.Operator):
         if self.advanced == True:
             sel = bpy.context.selected_objects
             sel_obs = len(sel)
+        
             if sel_obs != 0:
                 row4 = layout.row()
                 row4.label(text="Selected: "+str(sel_obs)+" Objects", icon ='OBJECT_DATA')
+      
         if self.subject == "1" or self.subject == "2":
             row5b = layout.row()
             row5b.prop(self, 'self_or_active', expand = True)
-        else:    
+
+        else:          
             row5 = layout.row()
             row5.prop(self, 'ref1', expand=True)
            
@@ -599,6 +723,7 @@ class AlignTools(bpy.types.Operator):
         row7 = layout.row()
         row7.prop (self, 'ref2', expand=True)
                          
+      
         if self.subject == "0":
             row12 = layout.row()
             row12.label(icon='MAN_ROT', text='Align Rotation:')       
@@ -607,6 +732,7 @@ class AlignTools(bpy.types.Operator):
             row13.prop (self, 'rot_y', text='Y')
             row13.prop (self, 'rot_z', text='Z')
             row13.prop (self, 'apply_rot', text='Apply')
+           
             if self.advanced == True:
                 row13b = layout.row()
                 row13b.prop (self, 'rot_offset', text = '')
@@ -618,6 +744,7 @@ class AlignTools(bpy.types.Operator):
             row15.prop (self, 'scale_y', text='Y')
             row15.prop (self, 'scale_z', text='Z')
             row15.prop (self, 'apply_scale', text='Apply')
+           
             if self.advanced == True:
                 row15b = layout.row()
                 row15b.prop (self, 'scale_offset', text = '')
@@ -632,10 +759,8 @@ class AlignTools(bpy.types.Operator):
 
 
     def execute(self, context):
-        align_function(self.subject, self.active_too, self.consistent, self.self_or_active, self.loc_x, self.loc_y, self.loc_z, 
-        self.ref1, self.ref2, self.loc_offset,
-         self.rot_x, self.rot_y, self.rot_z, self.rot_offset,
-         self.scale_x, self.scale_y, self.scale_z, self.scale_offset, self.fit_x, self.fit_y, self.fit_z) 
+        align_function(self.subject, self.active_too, self.consistent, self.self_or_active, self.loc_x, self.loc_y, self.loc_z, self.ref1, self.ref2, self.loc_offset,
+        self.rot_x, self.rot_y, self.rot_z, self.rot_offset, self.scale_x, self.scale_y, self.scale_z, self.scale_offset, self.fit_x, self.fit_y, self.fit_z) 
                                
         return {'FINISHED'} 
     
@@ -643,17 +768,13 @@ class AlignTools(bpy.types.Operator):
         return context.window_manager.invoke_props_popup(self, event)  
 
 
-## REGISTRY # 
-#def menu_func(self, context):
-#    self.layout.operator("tp_origin.align_tools", text="Align Objects")
 
-#def register():
-#    bpy.utils.register_class(AlignTools)
-#	bpy.types.VIEW3D_MT_object_specials.prepend(menu_func)
+# REGISTRY #        
+def register():    
+    bpy.utils.register_module(__name__)
 
-#def unregister():
-#    bpy.utils.unregister_class(AlignTools)
-#    bpy.types.VIEW3D_MT_object_specials.remove(menu_func)
+def unregister():   
+    bpy.utils.unregister_module(__name__)
 
-#if __name__ == "__main__":
-#    register()
+if __name__ == "__main__":
+    register()

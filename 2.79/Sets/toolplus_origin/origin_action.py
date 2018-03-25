@@ -40,6 +40,34 @@ class View3D_TP_KeyMap(bpy.types.Operator):
         return {"FINISHED"}
 
 
+
+
+class View3D_TP_Copy_Origin(bpy.types.Operator):
+    '''Set Origin to the Origin Location of the selected Object(s)'''
+    bl_idname = "tp_ops.copy_origin"
+    bl_label = "Copy Origin"
+    bl_options = {"REGISTER", 'UNDO'}   
+
+    def execute(self, context):
+        
+        current_pivot = bpy.context.space_data.pivot_point
+
+        if context.mode == 'OBJECT':
+            bpy.ops.view3d.snap_cursor_to_active()
+            bpy.context.space_data.pivot_point = 'CURSOR'
+            bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
+
+        else:        
+            bpy.ops.object.editmode_toggle()         
+            bpy.ops.view3d.snap_cursor_to_active()
+            bpy.context.space_data.pivot_point = 'CURSOR'
+            bpy.ops.object.origin_set(type='ORIGIN_CURSOR')      
+            bpy.ops.object.editmode_toggle()          
+        
+        bpy.context.space_data.pivot_point = current_pivot      
+        return{'FINISHED'}  
+
+
 class View3D_TP_Origin_EditCenter(bpy.types.Operator):
     '''Set Origin to Center / Editmode'''
     bl_idname = "tp_ops.origin_set_editcenter"

@@ -51,7 +51,7 @@ class draw_origin_panel_layout:
         layout = self.layout.column_flow(1)  
         layout.operator_context = 'INVOKE_REGION_WIN'
 
-        tp_props = context.window_manager.bbox_origin_window     
+        tp_props = context.window_manager.tp_props_origin     
           
         icons = load_icons()
 
@@ -72,29 +72,74 @@ class draw_origin_panel_layout:
             row.separator()
             
             button_origin_tomesh = icons.get("icon_origin_tomesh")
-            row.operator("tp_ops.origin_tomesh", text="Origin to Mesh", icon_value=button_origin_tomesh.icon_id)
+            row.operator("tp_ops.origin_tomesh", text="Origin to Geom", icon_value=button_origin_tomesh.icon_id)
 
             button_origin_meshto = icons.get("icon_origin_meshto")
-            row.operator("tp_ops.origin_meshto", text="Mesh to Origin", icon_value=button_origin_meshto.icon_id)
+            row.operator("tp_ops.origin_meshto", text="Geom to Origin", icon_value=button_origin_meshto.icon_id)
 
-            row.separator()
-            
+            selected = bpy.context.selected_objects
+            n = len(selected)                         
+            if n == 1:
+
+                button_origin_tosnap = icons.get("icon_origin_tosnap")         
+                row.operator("tp_ops.origin_modal", text="Snap to Geom", icon_value=button_origin_tosnap.icon_id)
+
+
+            display_advanced = context.user_preferences.addons[__package__].preferences.tab_display_tools
+            if display_advanced == 'on':
+                pass
+            else:  
+
+                n = len(selected)            
+                if n == 2:
+
+                    if tp_props.display_origin_active:                     
+                        
+                        button_origin_copy = icons.get("icon_origin_copy")           
+                        row.prop(tp_props, "display_origin_active", text="Align to Active", icon_value=button_origin_copy.icon_id)                      
+
+                    else:
+                       
+                        button_origin_toactive = icons.get("icon_origin_toactive")               
+                        row.prop(tp_props, "display_origin_active", text="Align to Active", icon_value=button_origin_toactive.icon_id)                        
+
+                    if tp_props.display_origin_active: 
+               
+                        box.separator()
+                        
+                        row = box.row(1)                        
+                        
+                        row = box.row()
+                        row.prop(tp_props, 'tp_axis_active', expand=True)
+                        
+                        box.separator() 
+     
+                        row = box.row()                        
+                        row.prop(tp_props, 'tp_distance_active', expand=True)                                              
+                        row.operator("tp_ops.origin_to_active", text="RUN")                
+                     
+                        box.separator() 
+                        
+                        row = box.row(1)
+                        
+                        if tp_props.active_too == True:
+                            row.prop(tp_props, 'active_too', text="Active Origin too!")
+                        else:
+                            row.prop(tp_props, 'active_too', text="Not Active Origin!")
+                                            
+                        box.separator()
+                        box = col.box().column(1)     
+
+
+            box.separator()
+           
+            row = box.row(1)
             button_origin_mass = icons.get("icon_origin_mass")           
             row.operator("tp_ops.origin_set_mass", text="Center of Mass", icon_value=button_origin_mass.icon_id)
 
             box.separator()
-            
-            Display_Dynamics = context.user_preferences.addons[__package__].preferences.tab_display_tools
-            if Display_Dynamics == 'on':       
-                box = col.box().column(1)                         
-            
-                row = box.column(1)
-                row.operator("tp_batch.origin_batch", text="Origin Batch", icon="SETTINGS")   
-
-                box.separator() 
 
 
-            box = col.box().column(1)
             row = box.row(1)
             
             if tp_props.display_origin_bbox:                     
@@ -116,7 +161,8 @@ class draw_origin_panel_layout:
                 
                 if tp_props.display_origin_bbox: 
                  
-                    box = col.box().column(1)     
+                    box.separator()                   
+                     
                     box.scale_x = 0.1
                     
                     row = box.row(1)                                     
@@ -239,19 +285,43 @@ class draw_origin_panel_layout:
                     row.operator('tp_ops.cubefront_cornerbottom_plus_xy', text="", icon_value=button_origin_right_bottom.icon_id)
 
                     box.separator()
+                    box.separator()
+
+                    row = box.row(1)
+                    row.prop(context.object, "show_bounds", text="Show Bounds") 
+                    row.prop(context.object, "draw_bounds_type", text="") 
+
+                    box.separator()
+                    box = col.box().column(1) 
 
 
-            box = col.box().column(1) 
+
+            display_advanced = context.user_preferences.addons[__package__].preferences.tab_display_tools
+            if display_advanced == 'on':  
+
+                box.separator()          
+               
+                row = box.column(1)
+
+                button_origin_distribute = icons.get("icon_origin_distribute")  
+                row.operator("object.distribute_osc", "Distribute", icon_value=button_origin_distribute.icon_id)
+
+                button_origin_align = icons.get("icon_origin_align")                
+                row.operator("tp_origin.align_tools", "Advanced", icon_value=button_origin_align.icon_id)    
+      
+
+
+            box.separator()  
              
             row = box.row(1)
             
             if tp_props.display_origin_zero:                     
                 button_align_zero = icons.get("icon_align_zero")          
-                row.prop(tp_props, "display_origin_zero", text="ZeroAxis", icon_value=button_align_zero.icon_id)                             
+                row.prop(tp_props, "display_origin_zero", text="Zero to Axis", icon_value=button_align_zero.icon_id)                             
            
             else:
                 button_align_zero = icons.get("icon_align_zero")              
-                row.prop(tp_props, "display_origin_zero", text="ZeroAxis", icon_value=button_align_zero.icon_id)               
+                row.prop(tp_props, "display_origin_zero", text="Zero to Axis", icon_value=button_align_zero.icon_id)               
 
             if tp_props.display_origin_zero: 
 
@@ -259,8 +329,10 @@ class draw_origin_panel_layout:
 
                 row = box.row(1)
                 row.prop(context.scene, 'tp_switch_axis', expand=True)
+
+                box.separator() 
                 
-                row = box.row(1)
+                row = box.row()
                 row.prop(context.scene, 'tp_switch', expand=True)
 
                 sub = row.row(1)
@@ -272,21 +344,7 @@ class draw_origin_panel_layout:
             box.separator()    
 
 
-            display_advanced = context.user_preferences.addons[__package__].preferences.tab_display_advanced
-            if display_advanced == 'on':  
-
-                box = col.box().column(1) 
-                
-                row = box.column(1)
-
-                button_origin_distribute = icons.get("icon_origin_distribute")  
-                row.operator("object.distribute_osc", "Distribute", icon_value=button_origin_distribute.icon_id)
-
-                button_origin_align = icons.get("icon_origin_align")                
-                row.operator("tp_origin.align_tools", "Advanced", icon_value=button_origin_align.icon_id)    
-      
-
-                box.separator()                                     
+                           
 
         else:
 
@@ -315,9 +373,8 @@ class draw_origin_panel_layout:
                 button_origin_ccc = icons.get("icon_origin_ccc")            
                 row.operator("tp_ops.origin_ccc","3P-Center", icon_value=button_origin_ccc.icon_id)    
 
-                box.separator() 
-
-                box = col.box().column(1)
+                box.separator()  
+                
                 row = box.row(1)
                 
                 if tp_props.display_origin_editbox:                     
@@ -329,7 +386,8 @@ class draw_origin_panel_layout:
                     
                 if tp_props.display_origin_editbox:        
 
-                    box = col.box().column(1)     
+                    box.separator()    
+                    
                     box.scale_x = 0.1
                     
                     row = box.row(1)                                     
@@ -452,12 +510,26 @@ class draw_origin_panel_layout:
                     row.operator('tp_ops.cubefront_cornerbottom_plus_xy', text="", icon_value=button_origin_right_bottom.icon_id)
 
                     box.separator()
+                    box = col.box().column(1) 
+                    box.separator()  
 
             else:
                 box.separator()                 
 
 
-            box = col.box().column(1)
+
+            display_advanced = context.user_preferences.addons[__package__].preferences.tab_display_tools
+            if display_advanced == 'on':  
+
+                box.separator()          
+               
+                row = box.column(1)
+                button_origin_mesh = icons.get("icon_origin_mesh")                
+                row.operator("tp_ops.origin_transform", "Advanced", icon_value=button_origin_mesh.icon_id)    
+      
+        
+            box.separator()  
+            
             row = box.row(1)         
 
             if tp_props.display_origin_zero_edm:                     
@@ -475,7 +547,9 @@ class draw_origin_panel_layout:
                 row = box.row(1)
                 row.prop(context.scene, 'tp_switch_axis', expand=True)       
             
-                row = box.row(1)
+                box.separator() 
+
+                row = box.row()
                 row.prop(context.scene, 'tp_switch', expand=True)
                 
                 sub = row.row(1)

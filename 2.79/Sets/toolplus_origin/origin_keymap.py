@@ -29,7 +29,7 @@ from toolplus_origin.origin_menu    import (VIEW3D_TP_Origin_Menu)
 # KEY REGISTRY # 
 addon_keymaps_menu = []
 
-def update_menu(self, context):
+def update_menu_origin(self, context):
     try:
         bpy.utils.unregister_class(VIEW3D_TP_Origin_Menu)
         
@@ -43,7 +43,7 @@ def update_menu(self, context):
     except:
         pass
     
-    if context.user_preferences.addons[__package__].preferences.tab_menu_view == 'menu':
+    if context.user_preferences.addons[__package__].preferences.tab_menu_origin == 'menu':
 
         bpy.utils.register_class(VIEW3D_TP_Origin_Menu)
     
@@ -59,7 +59,7 @@ def update_menu(self, context):
         kmi.properties.name = "tp_menu.origin_base"
 
 
-    if context.user_preferences.addons[__package__].preferences.tab_menu_view == 'off':
+    if context.user_preferences.addons[__package__].preferences.tab_menu_origin == 'off':
         pass
 
 

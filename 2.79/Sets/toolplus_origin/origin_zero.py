@@ -27,7 +27,7 @@ from bpy.props import *
 
 
 class View3D_TP_Zero_to_Axis(bpy.types.Operator):
-    """Zero Axis"""                 
+    """align only origin, object or cursor to an axis"""                 
     bl_idname = "tp_ops.zero_axis"          
     bl_label = "ZeroAxis"                 
     bl_options = {'REGISTER', 'UNDO'}   
@@ -57,6 +57,8 @@ class View3D_TP_Zero_to_Axis(bpy.types.Operator):
 
         row = box.row()
         row.prop(self, 'tp_switch', expand=True)
+      
+        box.separator()
 
         row = box.row()
         row.prop(self, 'tp_switch_axis', expand=True)
@@ -64,9 +66,7 @@ class View3D_TP_Zero_to_Axis(bpy.types.Operator):
         box.separator()
         
     def execute(self, context):
-
-
-            
+      
 
         if self.tp_switch_axis == "tp_x":  
             
@@ -188,7 +188,7 @@ class View3D_TP_Zero_to_Axis(bpy.types.Operator):
 
 
 class View3D_TP_Zero_to_Axis_Panel(bpy.types.Operator):
-    """Zero Axis"""                 
+    """align only origin, object or cursor to an axis"""              
     bl_idname = "tp_ops.zero_axis_panel"          
     bl_label = "ZeroAxis"                 
     bl_options = {'REGISTER', 'UNDO'}   
@@ -322,8 +322,6 @@ class View3D_TP_Zero_to_Axis_Panel(bpy.types.Operator):
                 bpy.context.space_data.cursor_location[0] = 0 
                 bpy.context.space_data.cursor_location[1] = 0 
                 bpy.context.space_data.cursor_location[2] = 0 
-
-
 
         return {'FINISHED'} 
 

@@ -1,5 +1,7 @@
 # ##### BEGIN GPL LICENSE BLOCK #####
 #
+# (C) 2017 MKB
+#
 #  This program is free software; you can redistribute it and / or
 #  modify it under the terms of the GNU General Public License
 #  as published by the Free Software Foundation; either version 2
@@ -17,11 +19,6 @@
 # ##### END GPL LICENSE BLOCK #####
 #
 
-# author:  zeffii (aka Dealga McArdle)
-# tinycad: CCEN without mesh creation
-
-# t+ version 01
-
 
 # LOAD MODUL #
 import math
@@ -32,6 +29,8 @@ from mathutils import geometry
 from mathutils import Vector
 
 
+# taken form tinycad: CCEN without mesh creation
+# author:  zeffii (aka Dealga McArdle)
 def generate_3PT_mode_1_(pts, obj):
     origin = obj.location
     transform_matrix = obj.matrix_local
@@ -60,7 +59,6 @@ def generate_3PT_mode_1_(pts, obj):
     else:
         print('not on a circle')
 
-
 def get_three_verts_from_selection_(obj):
     me = obj.data
     bm = bmesh.from_edit_mesh(me)
@@ -71,6 +69,10 @@ def get_three_verts_from_selection_(obj):
 
     return [v.co[:] for v in bm.verts if v.select]
 
+
+
+
+# OPERATOR #
 
 class VIEW3D_TP_CircleCenterCursor(bpy.types.Operator):
     """circle center of three selected vertices"""

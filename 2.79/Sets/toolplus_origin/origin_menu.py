@@ -27,6 +27,8 @@ from bpy import *
 from bpy.props import *
 from . icons.icons import load_icons
 
+EDIT = ["EDIT_MESH", "EDIT_CURVE", "EDIT_SURFACE", "EDIT_LATTICE", "EDIT_METABALL", "EDIT_ARMATURE"]
+
 
 def draw_origin_menu_layout(self, context, layout):
           
@@ -85,10 +87,25 @@ class VIEW3D_TP_Origin_Menu(bpy.types.Menu):
             layout.separator()
             
             button_origin_tomesh = icons.get("icon_origin_tomesh")
-            layout.operator("tp_ops.origin_tomesh", text="Origin to Mesh", icon_value=button_origin_tomesh.icon_id)
+            layout.operator("tp_ops.origin_tomesh", text="Origin to Geom", icon_value=button_origin_tomesh.icon_id)
 
             button_origin_meshto = icons.get("icon_origin_meshto")
-            layout.operator("tp_ops.origin_meshto", text="Mesh to Origin", icon_value=button_origin_meshto.icon_id)
+            layout.operator("tp_ops.origin_meshto", text="Geom to Origin", icon_value=button_origin_meshto.icon_id)
+
+            if len(bpy.context.selected_objects) == 1: 
+                
+                button_origin_tosnap = icons.get("icon_origin_tosnap")         
+                layout.operator("tp_ops.origin_modal", text="Origin to Snap", icon_value=button_origin_tosnap.icon_id)
+      
+
+            display_advanced = context.user_preferences.addons[__package__].preferences.tab_display_tools
+            if display_advanced == 'on':
+                pass
+            else:  
+                if len(bpy.context.selected_objects) == 2: 
+                    
+                    button_origin_toactive = icons.get("icon_origin_toactive")         
+                    layout.operator("tp_ops.origin_to_active", text="Align to Active", icon_value=button_origin_toactive.icon_id)
 
             layout.separator()
 
@@ -98,12 +115,11 @@ class VIEW3D_TP_Origin_Menu(bpy.types.Menu):
             layout.separator()
 
             if len(bpy.context.selected_objects) == 1: 
-              
-                if context.mode == 'OBJECT':
-                    button_origin_bbox = icons.get("icon_origin_bbox")                               
-                    layout.operator("object.bbox_origin_modal_ops", text="BBox Origin", icon_value=button_origin_bbox.icon_id)                                
-            else:                            
 
+                button_origin_bbox = icons.get("icon_origin_bbox")                               
+                layout.operator("object.bbox_origin_modal_ops", text="1-BBox Modal", icon_value=button_origin_bbox.icon_id)                                
+                       
+            if len(bpy.context.selected_objects) > 1: 
                 obj = context.active_object
                 if obj:
                     obj_type = obj.type
@@ -111,13 +127,27 @@ class VIEW3D_TP_Origin_Menu(bpy.types.Menu):
                     if obj.type in {'MESH'}:
 
                         button_origin_bbox = icons.get("icon_origin_bbox")   
-                        layout.operator("tp_ops.bbox_origin_set","BBox Origin", icon_value=button_origin_bbox.icon_id)
-  
-            
+                        layout.operator("tp_ops.bbox_origin_set","X-BBox Bound", icon_value=button_origin_bbox.icon_id)
+      
+
+            display_advanced = context.user_preferences.addons[__package__].preferences.tab_display_tools
+            if display_advanced == 'on':  
+
+                layout.separator()
+
+                button_origin_distribute = icons.get("icon_origin_distribute")  
+                layout.operator("object.distribute_osc", "Distribute", icon_value=button_origin_distribute.icon_id)
+
+                button_origin_align = icons.get("icon_origin_align")                
+                layout.operator("tp_origin.align_tools", "Advanced", icon_value=button_origin_align.icon_id)    
+
+ 
+
         if ob.mode == 'EDIT_MESH':
 
             draw_origin_menu_layout(self, context, layout) 
                         
+
         if ob.mode == 'EDIT_CURVE':
             
             draw_origin_menu_layout(self, context, layout) 
@@ -145,9 +175,21 @@ class VIEW3D_TP_Origin_Menu(bpy.types.Menu):
         if context.mode == 'POSE':
 
             draw_origin_menu_layout(self, context, layout) 
+
+
+        if ob.mode in EDIT:   
+               
+            display_advanced = context.user_preferences.addons[__package__].preferences.tab_display_tools
+            if display_advanced == 'on':  
+
+                layout.separator()
+
+                button_origin_mesh = icons.get("icon_origin_mesh")                
+                layout.operator("tp_ops.origin_transform", "Advanced", icon_value=button_origin_mesh.icon_id)   
              
+
         layout.separator()
        
         button_align_zero = icons.get("icon_align_zero")                
-        layout.operator("tp_ops.zero_axis", "ZeroAxis", icon_value=button_align_zero.icon_id)      
+        layout.operator("tp_ops.zero_axis", "Zero to Axis", icon_value=button_align_zero.icon_id)      
 

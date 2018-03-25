@@ -22,13 +22,13 @@
 
 bl_info = {
     "name": "T+ Origin",
-    "author": "Marvin.K.Breuer (MKB)",
-    "version": (0, 1, 7),
+    "author": "marvin.k.breuer (MKB)",
+    "version": (0, 1, 8),
     "blender": (2, 7, 9),
-    "location": "View3D > Tool Shelf [T] or Property Shelf [N] or Menu",
-    "description": "Origin Tools Collection",
+    "location": "Editor: View 3D > Panel or Menu: Origin",
+    "description": "set origin",
     "warning": "",
-    "wiki_url": "",
+    "wiki_url": "https://github.com/mkbreuer/ToolPlus/wiki",
     "tracker_url": "",
     "category": "ToolPlus"}
 
@@ -55,24 +55,30 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'toolplus_origin')
 if "bpy" in locals():
     import imp
     imp.reload(origin_action)
+    imp.reload(origin_active)
     imp.reload(origin_align)
     imp.reload(origin_batch)
     imp.reload(origin_bbox)
+    imp.reload(origin_bbox_modal)
     imp.reload(origin_center)
     imp.reload(origin_distribute)
     imp.reload(origin_modal)
     imp.reload(origin_operators)
+    imp.reload(origin_transform)
     imp.reload(origin_zero)
 
 else:
     from . import origin_action         
+    from . import origin_active        
     from . import origin_align         
     from . import origin_batch               
     from . import origin_bbox               
+    from . import origin_bbox_modal               
     from . import origin_center                 
     from . import origin_distribute                 
     from . import origin_modal         
     from . import origin_operators                 
+    from . import origin_transform                 
     from . import origin_zero         
 
 
@@ -87,7 +93,7 @@ from bpy.types import AddonPreferences, PropertyGroup
 
 
 # UI REGISTRY # 
-def update_panel_position(self, context):
+def update_panel_origin(self, context):
     try:
         bpy.utils.unregister_class(VIEW3D_TP_Origin_Panel_UI)
         bpy.utils.unregister_class(VIEW3D_TP_Origin_Panel_TOOLS)
@@ -99,8 +105,8 @@ def update_panel_position(self, context):
     except:
         pass
     
-    if context.user_preferences.addons[__name__].preferences.tab_location == 'tools':
-        VIEW3D_TP_Origin_Panel_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category
+    if context.user_preferences.addons[__name__].preferences.tab_location_origin == 'tools':
+        VIEW3D_TP_Origin_Panel_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_origin
 
         bpy.utils.register_class(VIEW3D_TP_Origin_Panel_TOOLS)
     
@@ -123,35 +129,46 @@ def update_tools(self, context):
 class TP_Panels_Preferences(AddonPreferences):
     bl_idname = __name__
     
+
+    # LIST #
     prefs_tabs = EnumProperty(
         items=(('info',       "Info",       "Info"),
                ('toolsets',   "Tools",      "Tools"),
                ('location',   "Location",   "Location"),
                ('keymap',     "Keymap",     "Keymap"),   
                ('url',        "URLs",       "URLs")),
-               default='info')
 
-    #Tab Location           
-    tab_location = EnumProperty(
+               default='info')
+    #------------------------------
+
+    # PANEL #          
+    tab_location_origin = EnumProperty(
         name = 'Panel Location',
         description = 'save user settings and restart blender after switching the panel location',
         items=(('tools', 'Tool Shelf', 'place panel in the tool shelf [T]'),
                ('ui', 'Property Shelf', 'place panel in the property shelf [N]')),
-               default='tools', update = update_panel_position)
+               default='tools', update = update_panel_origin)
 
-    tab_menu_view = EnumProperty(
+    tools_category_origin = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_origin)
+  
+    #------------------------------
+
+    # MENU #
+    tab_menu_origin = EnumProperty(
         name = '3d View Menu',
         description = 'save user settings and restart blender after switching the panel location',
         items=(('menu', 'Menu on', 'enable menu for 3d view'),
                ('off', 'Menu off', 'enable or disable menu for 3d view')),
-               default='menu', update = update_menu)
+               default='menu', update = update_menu_origin)
+  
+    #------------------------------
 
-    tab_display_tools = EnumProperty(name = 'Batch Menu',  description = 'on / off', items=(('on', 'Batch on', 'enable tools in panel'),  ('off', 'Batch off', 'disable tools in panel')), default='off', update = update_tools)
-    tab_display_advanced = EnumProperty(name = 'Advanced',  description = 'on / off', items=(('on', 'Advanced on', 'enable tools in panel'),  ('off', 'Advanced off', 'disable tools in panel')), default='off', update = update_tools)
+    # TOOLS #
+    tab_display_tools = EnumProperty(name = 'Advanced',  description = 'on / off', items=(('on', 'Advanced on', 'enable tools in panel'),  ('off', 'Advanced off', 'disable tools in panel')), default='on', update = update_tools)
+   
+    #------------------------------
 
-    tools_category = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position)
-
-
+    # DRAW LIST #   
     def draw(self, context):
         layout = self.layout
         
@@ -164,12 +181,16 @@ class TP_Panels_Preferences(AddonPreferences):
             box = layout.box().column(1)
             
             row = box.column(1)   
-            row.label(text="Welcome to T+ Origin Collection!")  
-            row.label(text="The addon set allows you to:") 
-            row.label(text="1. set the origin to center, cursor, active or selected geometry")   
-            row.label(text="2. to place the origin to a point on the object bounding box")   
-            row.label(text="3. or zero the origin to one of the 3d view axis")      
-            row.label(text="Have Fun! :)")         
+            row.label(text="Welcome to T+ Origin!")  
+            row.label(text="This collection allows you to set the origin to new position:")   
+            row.label(text="-> to center, cursor, active or selected geometry.")   
+            row.label(text="-> to the object bounding box.")   
+            row.label(text="-> snap the origin to a point on the geometry.")   
+            row.label(text="-> zero the origin to selected active.")      
+            row.label(text="-> zero the origin, cursor or object to one of the 3d view axis.")      
+            row.label(text="-> distribute object between there origin.")      
+            row.label(text="-> or use advanced align tool with a bunch of more options.")      
+            row.label(text="-> at least: to Have Fun! :)")         
 
 
         # TOOLS #
@@ -179,7 +200,6 @@ class TP_Panels_Preferences(AddonPreferences):
 
             row = box.row()
             row.prop(self, 'tab_display_tools', expand=True)
-            row.prop(self, 'tab_display_advanced', expand=True)
 
             row = layout.row()
             row.label(text="! save user settings for permant on/off !", icon ="INFO")
@@ -196,16 +216,16 @@ class TP_Panels_Preferences(AddonPreferences):
             row.label("Location Origin:")
             
             row = box.row(1)
-            row.prop(self, 'tab_location', expand=True)
+            row.prop(self, 'tab_location_origin', expand=True)
           
             box.separator() 
         
             row = box.row(1)            
-            if self.tab_location == 'tools':
+            if self.tab_location_origin == 'tools':
                 
                 box.separator() 
                 
-                row.prop(self, "tools_category")
+                row.prop(self, "tools_category_origin")
 
             row = layout.row()
             row.label(text="! please reboot blender after changing the panel location !", icon ="INFO")
@@ -225,11 +245,11 @@ class TP_Panels_Preferences(AddonPreferences):
             row.label("Menu: CTRL+D ")
 
             row = box.row(1)          
-            row.prop(self, 'tab_menu_view', expand=True)
+            row.prop(self, 'tab_menu_origin', expand=True)
                 
             box.separator() 
 
-            if self.tab_menu_view == 'off':
+            if self.tab_menu_origin == 'off':
                 row = box.row(1) 
                 row.label(text="! The menu hidden with next reboot durably!", icon ="INFO")
 
@@ -267,26 +287,40 @@ class TP_Panels_Preferences(AddonPreferences):
             box = layout.box().column(1)
             
             row = box.column(1)   
-            row.label(text="The list of auxiliary addons that a belong to this collection:")      
+            row.operator('wm.url_open', text = 'Wiki', icon = 'HELP').url = "https://github.com/mkbreuer/ToolPlus/wiki"
+            row.operator('wm.url_open', text = 'BlenderArtist', icon = 'BLENDER').url = "https://blenderartists.org/forum/showthread.php?410351-Addon-T-Origin&p=3119318#post3119318"
+               
+            box.separator()  
 
-            row.separator() 
-                                    
-            row = box.row()
-            row.operator('wm.url_open', text = 'Distribute', icon = 'HELP').url = "http://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/3D_interaction/Oscurart_Tools"
-            row.operator('wm.url_open', text = 'Modal Origin', icon = 'HELP').url = "http://blenderlounge.fr/forum/viewtopic.php?f=18&t=1438"
-            row.operator('wm.url_open', text = 'Advance Align', icon = 'HELP').url = "https://blenderartists.org/forum/showthread.php?256114-Add-on-Advanced-align-tools"
-            row.operator('wm.url_open', text = 'Mesh TinyCad', icon = 'HELP').url = "https://github.com/zeffii/mesh_tiny_cad"
-            row.operator('wm.url_open', text = 'Thread', icon = 'BLENDER').url = "https://blenderartists.org/forum/showthread.php?410351-Addon-T-Origin&p=3119318#post3119318"
 
 
 # PROPERTIES # 
-class DropdownOriginToolProps(bpy.types.PropertyGroup):
+class Dropdown_Origin_ToolProps(bpy.types.PropertyGroup):
 
-    display_origin_editbox = bpy.props.BoolProperty(name="Origin BBox", description="open / close", default=False)
-    display_origin_bbox = bpy.props.BoolProperty(name="Origin BBox", description="open / close", default=False)
-    display_origin_zero = bpy.props.BoolProperty(name="Zero Axis", description="open / close", default=False)
-    display_origin_zero_edm = bpy.props.BoolProperty(name="Zero Axis", description="open / close", default=False)
+    display_origin_editbox = bpy.props.BoolProperty(name="Origin BBox", description="align origin to the boundtyp: box (4x vertice / 12x edge / 6x face)", default=False)
+    display_origin_bbox = bpy.props.BoolProperty(name="Origin BBox", description="align origin to the boundtyp: box (4x vertice / 12x edge / 6x face)", default=False)
+    display_origin_zero = bpy.props.BoolProperty(name="Zero Axis", description="align origin, object or cursor to an axis", default=False)
+    display_origin_zero_edm = bpy.props.BoolProperty(name="Zero Axis", description="align only origin, object or cursor to an axis", default=False)
+    display_origin_active = bpy.props.BoolProperty(name="Align to Active", description="align origin to active object", default=False)
 
+    tp_axis_active = bpy.props.EnumProperty(
+        items=[("tp_x"    ,"X"    ,"01"),
+               ("tp_y"    ,"Y"    ,"02"),
+               ("tp_z"    ,"Z"    ,"03"),
+               ("tp_a"    ,"XYZ"  ,"04")],
+               name = "Align to Active",
+               default = "tp_x",    
+               description = "zero target to choosen axis")
+
+    tp_distance_active = bpy.props.EnumProperty(
+        items=[("tp_min"    ,"Min"    ,"01"),
+               ("tp_mid"    ,"Mid"    ,"02"),
+               ("tp_max"    ,"Max"    ,"03")],
+               name = "Align Distance",
+               default = "tp_mid",    
+               description = "align distance for origin")
+
+    active_too = bpy.props.BoolProperty(name="Active too!",  description="align active origin too", default=False, options={'SKIP_SAVE'})    
 
 
 
@@ -299,11 +333,11 @@ def register():
     try: bpy.utils.register_module(__name__)
     except: traceback.print_exc()
 
-    bpy.types.WindowManager.bbox_origin_window = bpy.props.PointerProperty(type = DropdownOriginToolProps)
+    bpy.types.WindowManager.tp_props_origin = bpy.props.PointerProperty(type = Dropdown_Origin_ToolProps)
     
     update_tools(None, bpy.context)
-    update_menu(None, bpy.context)
-    update_panel_position(None, bpy.context)
+    update_menu_origin(None, bpy.context)
+    update_panel_origin(None, bpy.context)
 
     # MANUAL #
     bpy.utils.register_manual_map(VIEW3D_Origin_Manual)
@@ -314,7 +348,7 @@ def unregister():
     try: bpy.utils.unregister_module(__name__)
     except: traceback.print_exc()
 
-    del bpy.types.WindowManager.bbox_origin_window
+    del bpy.types.WindowManager.tp_props_origin
  
     # MANUAL #
     bpy.utils.unregister_manual_map(VIEW3D_Origin_Manual) 
