@@ -42,7 +42,7 @@ Install Instruction
 
 * I created them for my personal workflow in my private time.
 
-* Because it makes fun and save time at the end, i try to update them continuously.
+* And i try to update them continuously, because it makes fun and save time at the end
 
 * If you like the setups and want to support it for further updates, place a smile :)
 
