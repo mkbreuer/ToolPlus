@@ -19,6 +19,20 @@
 # ##### END GPL LICENSE BLOCK #####
 #
 
+
+# to hide an button in the header, place a rhombus in front of the line
+
+# example 1 > with default operator > hide one line:
+
+        #row.operator("object.transform_apply", text="", icon="FILE_TICK").location=True
+
+# example 2 > operator with custom icons > hide two lines:
+
+        #button_origin_center_view = icons.get("icon_origin_center_view")
+        #row.operator("object.transform_apply", text="", icon_value=button_origin_center_view.icon_id).location=True
+
+
+
 # LOAD MODUL #    
 import bpy
 from bpy import *
@@ -38,7 +52,37 @@ from . menus.menu_snapto  import (VIEW3D_TP_Header_SelectTo_Menu)
 from . origin.origin_menu  import (VIEW3D_TP_Origin_Menu)
 from . origin.origin_menu  import (VIEW3D_TP_Origin_Advanced_Menu)
 
+
 EDIT = ["EDIT_MESH", "EDIT_CURVE", "EDIT_SURFACE", "EDIT_LATTICE", "EDIT_METABALL", "EDIT_ARMATURE"]
+
+
+def draw_origin_button_menu_layout(self, context, layout):
+          
+        icons = load_icons()
+       
+        row = layout.row(1)
+       
+        button_origin_center_view = icons.get("icon_origin_center_view")
+        row.operator("tp_ops.origin_set_center", text="Center", icon_value=button_origin_center_view.icon_id)
+
+        button_origin_cursor = icons.get("icon_origin_cursor")
+        row.operator("tp_ops.origin_cursor_edm", text="Cursor", icon_value=button_origin_cursor.icon_id)            
+
+        button_origin_edm = icons.get("icon_origin_edm")            
+        row.operator("tp_ops.origin_edm","Edm-Select", icon_value=button_origin_edm.icon_id)       
+
+        button_origin_obj = icons.get("icon_origin_obj")   
+        row.operator("tp_ops.origin_obm","Obm-Select", icon_value=button_origin_obj.icon_id)            
+
+        if context.mode == 'EDIT_MESH':
+
+            button_origin_ccc = icons.get("icon_origin_ccc")            
+            row.operator("tp_ops.origin_ccc","3P-Center", icon_value=button_origin_ccc.icon_id)       
+             
+            button_origin_bbox = icons.get("icon_origin_bbox")       
+            row.operator("tp_ops.bbox_origin_set","BBox Origin", icon_value=button_origin_bbox.icon_id)
+
+
 
 # UI: MAIN MENU # 
 class VIEW3D_TP_Header_Menus(bpy.types.Header):
@@ -59,10 +103,11 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
         view = context.space_data        
         obj = context.active_object        
-        obj_type = obj.type
+        if obj:
+            obj_type = obj.type
 
-        is_geometry = (obj_type in {'MESH', 'CURVE', 'SURFACE', 'META', 'FONT'})        
-        is_mesh = (obj_type in {'MESH'})   
+            is_geometry = (obj_type in {'MESH', 'CURVE', 'SURFACE', 'META', 'FONT'})        
+            is_mesh = (obj_type in {'MESH'})   
 
         row = layout.row(1)
 
@@ -141,8 +186,78 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
             if display_origin == 'on':  
                 
                 row.separator()
+                
+                ob = context
+                if ob.mode == 'OBJECT':
 
-                row.menu("VIEW3D_TP_Origin_Menu", text= "", icon= "VERTEXSEL")
+                    button_origin_center_view = icons.get("icon_origin_center_view")
+                    row.operator("object.transform_apply", text="", icon_value=button_origin_center_view.icon_id).location=True
+
+                    button_origin_cursor = icons.get("icon_origin_cursor")
+                    row.operator("tp_ops.origin_set_cursor", text="", icon_value=button_origin_cursor.icon_id)
+
+                    button_origin_tomesh = icons.get("icon_origin_tomesh")
+                    row.operator("tp_ops.origin_tomesh", text="", icon_value=button_origin_tomesh.icon_id)
+
+                    button_origin_meshto = icons.get("icon_origin_meshto")
+                    row.operator("tp_ops.origin_meshto", text="", icon_value=button_origin_meshto.icon_id)
+
+                    if len(bpy.context.selected_objects) == 1: 
+                        
+                        button_origin_tosnap = icons.get("icon_origin_tosnap")         
+                        row.operator("tp_ops.origin_modal", text="", icon_value=button_origin_tosnap.icon_id)
+
+                    button_origin_mass = icons.get("icon_origin_mass")           
+                    row.operator("tp_ops.origin_set_mass", text="", icon_value=button_origin_mass.icon_id)
+
+                    if len(bpy.context.selected_objects) == 1: 
+
+                        button_origin_bbox = icons.get("icon_origin_bbox")                               
+                        row.operator("object.bbox_origin_modal_ops", text="", icon_value=button_origin_bbox.icon_id)                                
+                               
+                    if len(bpy.context.selected_objects) > 1: 
+                        obj = context.active_object
+                        if obj:
+                            obj_type = obj.type
+                            
+                            if obj.type in {'MESH'}:
+
+                                button_origin_bbox = icons.get("icon_origin_bbox")   
+                                row.operator("tp_ops.bbox_origin_set","", icon_value=button_origin_bbox.icon_id)
+              
+
+                if ob.mode == 'EDIT_MESH':
+
+                    draw_origin_button_menu_layout(self, context, layout) 
+                                
+
+                if ob.mode == 'EDIT_CURVE':
+                    
+                    draw_origin_button_menu_layout(self, context, layout) 
+             
+                if ob.mode == 'EDIT_SURFACE':
+                    
+                    draw_origin_button_menu_layout(self, context, layout) 
+
+                if ob.mode == 'EDIT_METABALL':
+                    
+                    draw_origin_button_menu_layout(self, context, layout) 
+           
+                if ob.mode == 'EDIT_LATTICE':
+                    
+                    draw_origin_button_menu_layout(self, context, layout)             
+                         
+                if  context.mode == 'PARTICLE':
+               
+                    draw_origin_button_menu_layout(self, context, layout) 
+
+                if ob.mode == 'EDIT_ARMATURE':
+
+                    draw_origin_button_menu_layout(self, context, layout)             
+
+                if context.mode == 'POSE':
+
+                    draw_origin_button_menu_layout(self, context, layout) 
 
 
             # ALIGN TO #   

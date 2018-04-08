@@ -80,16 +80,16 @@ None so far
 '''
 
 
-#bl_info = {
-#    'name': 'NP 020 Point Distance',
-#    'author': 'Okavango & the Blenderartists community',
-#    'version': (0, 2, 0),
-#    'blender': (2, 75, 0),
-#    'location': 'View3D',
-#    'warning': '',
-#    'description': 'Measures distance between two snapped points',
-#    'wiki_url': '',
-#    'category': '3D View'}
+bl_info = {
+    'name': 'NP 020 Point Distance',
+    'author': 'Okavango & the Blenderartists community',
+    'version': (0, 2, 0),
+    'blender': (2, 75, 0),
+    'location': 'View3D',
+    'warning': '',
+    'description': 'Measures distance between two snapped points',
+    'wiki_url': '',
+    'category': '3D View'}
 
 import bpy
 import copy
@@ -102,9 +102,9 @@ from mathutils import Vector, Matrix
 from blf import ROTATION
 from math import radians
 
-from .utils_geometry import *
-from .utils_graphics import *
-from .utils_function import *
+from toolplus_header.station.utils_geometry import *
+from toolplus_header.station.utils_graphics import *
+from toolplus_header.station.utils_function import *
 
 # Defining the main class - the macro:
 
@@ -256,7 +256,8 @@ def draw_callback_px_TRANS(self, context):
 
     np_print('04_callback_TRANS_START')
 
-    addon_prefs = context.user_preferences.addons[__package__].preferences
+    addon_key = __package__.split(".")[0]  
+    addon_prefs = context.user_preferences.addons[addon_key].preferences
 
     scale = addon_prefs.nppd_scale
     badge = addon_prefs.nppd_badge
@@ -997,7 +998,8 @@ def draw_callback_px_NAV(self, context):
 
     np_print('05_callback_NAV_START')
 
-    addon_prefs = context.user_preferences.addons[__package__].preferences
+    addon_key = __package__.split(".")[0]  
+    addon_prefs = context.user_preferences.addons[addon_key].preferences
 
     scale = addon_prefs.nppd_scale
     badge = addon_prefs.nppd_badge
@@ -1448,7 +1450,10 @@ class NP020PDHoldResult(bpy.types.Operator):
         flag = NP020PD.flag
         np_print('flag=', flag)
         np_print('07_HOLD_INVOKE_a')
-        addon_prefs = context.user_preferences.addons[__package__].preferences
+
+        addon_key = __package__.split(".")[0]    
+        addon_prefs = context.user_preferences.addons[addon_key].preferences
+
         hold = addon_prefs.nppd_hold
         if hold:
             if context.area.type == 'VIEW_3D':
@@ -1479,7 +1484,10 @@ class NP020PDDeletePoints(bpy.types.Operator):
     bl_options = {'INTERNAL'}
 
     def execute(self, context):
-        addon_prefs = context.user_preferences.addons[__package__].preferences
+
+        addon_key = __package__.split(".")[0]  
+        addon_prefs = context.user_preferences.addons[addon_key].preferences
+
         dist = NP020PD.dist
         step = addon_prefs.nppd_step
         info = addon_prefs.nppd_info

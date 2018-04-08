@@ -19,7 +19,7 @@
 bl_info = {
     "name": "T+ Header",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 1, 0),
+    "version": (0, 2),
     "blender": (2, 79, 0),
     "location": "3D View > Header",
     "description": "tools for 3d view header",
@@ -32,7 +32,7 @@ bl_info = {
 from toolplus_header.header_manual   import (VIEW3D_TP_Header_Manual)
 
 # LOAD PROPS #
-from toolplus_header.header_point_align  import (NPPLRestoreContext)
+from toolplus_header.station.np_point_align  import (NPPLRestoreContext)
 
 # LOAD CUSTOM ICONS #
 from . icons.icons    import load_icons
@@ -85,11 +85,11 @@ else:
     from .operator import  header_snap         
     from .operator import  header_text         
 
-    from . import header_point_align           
-    from . import header_point_distance   
-    from . import header_point_move                   
-    from . import header_point_scale           
-    from . import header_roto_move          
+    from .station import np_point_align           
+    from .station import np_point_distance   
+    from .station import np_point_move                   
+    from .station import np_point_scale           
+    from .station import np_roto_move          
 
     from . import header_snapline          
    

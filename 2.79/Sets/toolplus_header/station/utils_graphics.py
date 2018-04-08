@@ -29,14 +29,15 @@ from math import *
 from bpy_extras import view3d_utils
 from bpy.app.handlers import persistent
 
-from .utils_geometry import *
-from .utils_function import *
+from toolplus_header.station.utils_geometry import *
+from toolplus_header.station.utils_function import *
 
  # GET ADDON COLOR SETTINGS AND PRODUCE VALUES:
 
 def addon_settings_graph():
 
-    addon_prefs = bpy.context.user_preferences.addons[__package__].preferences
+    addon_key = __package__.split(".")[0]    
+    addon_prefs = bpy.context.user_preferences.addons[addon_key].preferences
 
     np_col_scheme = addon_prefs.np_col_scheme
     np_size_num = int(round(addon_prefs.np_size_num, 0))

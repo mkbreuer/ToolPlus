@@ -24,23 +24,26 @@ import bpy
 from bpy import*
 from bpy.props import*
 
+from os.path import dirname
+from . import snapset_keymap
+
+class View3D_TP_KeyMap_Snapset(bpy.types.Operator):
+    bl_idname = "tp_ops.keymap_snapset"
+    bl_label = "Open KeyMap (Text Editor)"
+    bl_description = "open keymap file in the text editor"
+
+    def execute(self, context):
+        path = snapset_keymap.__file__
+        bpy.data.texts.load(path)
+        return {"FINISHED"}
+
 
 
 class VIEW3D_TP_Snapset_Grid(bpy.types.Operator):
     """Absolute Grid > setting pivot & snap grid snapping"""
     bl_idname = "tp_ops.grid"
-    bl_label = "Absolute Grid"
-    bl_options = {'REGISTER', 'UNDO'}
-
-    def draw(self, layout):
-        layout = self.layout
-        
-        box = layout.box().column(1)  
-        
-        row = box.column(1)      
-        row.label("Snap: INCREMENT")      
-        row.label("Pivot: BOUNDING_BOX_CENTER") 
-        row.label("Active: GRID_ABSOLUTE") 
+    bl_label = "Snapset Grid"
+    bl_options = {'INTERNAL'}
 
     def execute(self, context):
 
@@ -58,19 +61,7 @@ class VIEW3D_TP_Snapset_Place(bpy.types.Operator):
     """Place Objects > setting pivot & snap for normal rotate"""
     bl_idname = "tp_ops.place"
     bl_label = "Place Object"
-    bl_options = {'REGISTER', 'UNDO'}
-
-    def draw(self, layout):
-        layout = self.layout
-        
-        box = layout.box().column(1)  
-        
-        row = box.column(1)      
-        row.label("Snap: FACE")     
-        row.label("Target: CLOSEST")   
-        row.label("Pivot: ACTIVE_ELEMENT") 
-        row.label("Active: ALIGN_ROTATION") 
-        row.label("Active: SNAP_PROJECT") 
+    bl_options = {'INTERNAL'}
 
     def execute(self, context):            
 
@@ -89,17 +80,7 @@ class VIEW3D_TP_Snapset_Retopo(bpy.types.Operator):
     """Mesh Retopo > setting pivot & snap for surface snapping"""
     bl_idname = "tp_ops.retopo"
     bl_label = "Mesh Retopo"
-    bl_options = {'REGISTER', 'UNDO'}
-
-    def draw(self, layout):
-        layout = self.layout
-        
-        box = layout.box().column(1)  
-        
-        row = box.column(1)      
-        row.label("Snap: FACE")     
-        row.label("Target: CLOSEST")   
-        row.label("Pivot: BOUNDING_BOX_CENTER") 
+    bl_options = {'INTERNAL'}
 
     def execute(self, context):            
 
@@ -113,21 +94,11 @@ class VIEW3D_TP_Snapset_Retopo(bpy.types.Operator):
 
 
 
-class VIEW3D_TP_Snapset_Active_Vert(bpy.types.Operator):
+class VIEW3D_TP_Snapset_Active(bpy.types.Operator):
     """Snap with Active Verts or Closest Median > setting pivot & snap"""
     bl_idname = "tp_ops.active_snap"
     bl_label = "Snap Verts"
-    bl_options = {'REGISTER', 'UNDO'}
-
-    def draw(self, layout):
-        layout = self.layout
-        
-        box = layout.box().column(1)  
-        
-        row = box.column(1)      
-        row.label("Snap: VERTEX")     
-        row.label("Target: ACTIVE")   
-        row.label("Pivot: MEDIAN_POINT") 
+    bl_options = {'INTERNAL'}
 
     def execute(self, context):            
                 
@@ -141,21 +112,11 @@ class VIEW3D_TP_Snapset_Active_Vert(bpy.types.Operator):
 
 
 
-class VIEW3D_TP_Snapset_Closest_Vert(bpy.types.Operator):
+class VIEW3D_TP_Snapset_Closest(bpy.types.Operator):
     """Snap with Closest Median > setting pivot & snap"""
     bl_idname = "tp_ops.closest_snap"
     bl_label = "Snap Closest"
-    bl_options = {'REGISTER', 'UNDO'}
-
-    def draw(self, layout):
-        layout = self.layout
-        
-        box = layout.box().column(1)  
-        
-        row = box.column(1)      
-        row.label("Snap: VERTEX")     
-        row.label("Target: CLOSEST")   
-        row.label("Pivot: MEDIAN_POINT") 
+    bl_options = {'INTERNAL'}
 
     def execute(self, context):            
                 
@@ -168,27 +129,13 @@ class VIEW3D_TP_Snapset_Closest_Vert(bpy.types.Operator):
         return {'FINISHED'}
 
 
-
-class VIEW3D_TP_Snapset_Active_3d(bpy.types.Operator):
+class VIEW3D_TP_Snapset_Active_3d_Int(bpy.types.Operator):
     """Set 3D Cursor to active or selected"""
-    bl_idname = "tp_ops.active_3d"
-    bl_label = "3d Cursor to..."
-    bl_options = {'REGISTER', 'UNDO'}
+    bl_idname = "tp_ops.active_3d_int"
+    bl_label = "3d Cursor"
+    bl_options = {'INTERNAL'}
 
-    tp_3dc = bpy.props.EnumProperty(
-                             items=[("tp_active"        ,"Active"      ,"Active"      ,"" , 1),                                     
-                                    ("tp_select"        ,"Selected"    ,"Selected"    ,"" , 2)],
-                                    name = "3d Cursor to...", 
-                                    default = "tp_active")
-
-    def draw(self, layout):
-        layout = self.layout
-        
-        box = layout.box().column(1)  
-        
-        row = box.row(1)
-        row.alignment = 'CENTER'        
-        row.prop(self, 'tp_3dc',text=" ", expand =True)   
+    mode = bpy.props.StringProperty(default="")
 
     def execute(self, context):            
 
@@ -199,10 +146,10 @@ class VIEW3D_TP_Snapset_Active_3d(bpy.types.Operator):
         bpy.context.scene.tool_settings.snap_target = 'ACTIVE'
         bpy.context.scene.tool_settings.use_snap_align_rotation = False   
                         
-        if self.tp_3dc == "tp_active": 
+        if self.mode in "tp_active": 
             bpy.ops.view3d.snap_cursor_to_active()   
 
-        if self.tp_3dc == "tp_select": 
+        if self.mode in "tp_select": 
             bpy.ops.view3d.snap_cursor_to_selected()            
 
         return {'FINISHED'}
@@ -210,12 +157,42 @@ class VIEW3D_TP_Snapset_Active_3d(bpy.types.Operator):
 
 
 
+class VIEW3D_TP_Snapset_Active_3d_Modal(bpy.types.Operator):
+    """Set 3D Cursor to active or selected"""
+    bl_idname = "tp_ops.active_3d"
+    bl_label = "3d Cursor_modal"
+    bl_options = {'REGISTER', 'UNDO'}
 
+    def modal(self, context, event):
+        context.area.tag_redraw()
+        
+        if event.type == 'RIGHTMOUSE':
+            bpy.ops.tp_ops.active_3d_int(mode="tp_active")         
+        else:
+            bpy.ops.tp_ops.active_3d_int(mode="tp_select")        
+       
+        if event.value == 'PRESS':
+            return {'CANCELLED'}
+
+        return {'RUNNING_MODAL'}
+
+    def invoke(self, context, event):
+        if context.space_data.type == 'VIEW_3D':
+            context.window_manager.modal_handler_add(self)
+            return {'RUNNING_MODAL'}
+        else:
+            self.report({'WARNING'}, "Active space must be a View3d")
+            return {'CANCELLED'}
+
+
+
+
+# NOT USED #
 class View3D_TP_Snap_Setup_Menu(bpy.types.Operator):
     """Setups for Snapping"""
     bl_idname = "tp_ops.snap_setup_menu"
     bl_label = "Snap Sets :)"
-    bl_options = {'REGISTER', 'UNDO'}
+    bl_options = {'INTERNAL'}
 
 
     tp_snap = bpy.props.EnumProperty(

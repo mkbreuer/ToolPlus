@@ -38,21 +38,33 @@ from mathutils.geometry import (
     intersect_ray_tri)
 
 def get_units_info(scale, unit_system, separate_units):
+    
     if unit_system == 'METRIC':
-            scale_steps = ((1000, 'km'), (1, 'm'), (1 / 100, 'cm'),
-                (1 / 1000, 'mm'), (1 / 1000000, '\u00b5m'))
+           
+        scale_steps = ((1000, 'km'), 
+                       (1, 'm'), 
+                       (1 / 100, 'cm'),
+                       (1 / 1000, 'mm'), 
+                       (1 / 1000000, '\u00b5m'))
+   
     elif unit_system == 'IMPERIAL':
-            scale_steps = ((5280, 'mi'), (1, '\''),
-                (1 / 12, '"'), (1 / 12000, 'thou'))
-            scale /= 0.3048  # BU to feet
+        
+        scale_steps = ((5280, 'mi'), 
+                      (1, '\''),
+                      (1 / 12, '"'), 
+                      (1 / 12000, 'thou'))
+        scale /= 0.3048  # BU to feet
+   
     else:
-            scale_steps = ((1, ' BU'),)
-            separate_units = False
+        scale_steps = ((1, ' BU'),)
+        separate_units = False
 
     return (scale, scale_steps, separate_units)
 
 def convert_distance(val, units_info, precision = 5):
+    
     scale, scale_steps, separate_units = units_info
+
     sval = val * scale
     idx = 0
     while idx < len(scale_steps) - 1:

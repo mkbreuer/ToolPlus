@@ -18,16 +18,16 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
-#bl_info = {
-#    'name': 'NP 020 Point Align',
-#    'author': 'Okavango & the Blenderartists community',
-#    'version': (0, 2, 0),
-#    'blender': (2, 75, 0),
-#    'location': 'View3D',
-#    'warning': '',
-#    'description': 'Aligns selected objects using 1, 2 or 3 pairs of snap points',
-#    'wiki_url': '',
-#    'category': '3D View'}
+bl_info = {
+    'name': 'NP 020 Point Align',
+    'author': 'Okavango & the Blenderartists community',
+    'version': (0, 2, 0),
+    'blender': (2, 75, 0),
+    'location': 'View3D',
+    'warning': '',
+    'description': 'Aligns selected objects using 1, 2 or 3 pairs of snap points',
+    'wiki_url': '',
+    'category': '3D View'}
 
 import bpy
 import copy
@@ -40,9 +40,9 @@ from math import *
 from bpy_extras import view3d_utils
 from bpy.app.handlers import persistent
 
-from .utils_geometry import *
-from .utils_graphics import *
-from .utils_function import *
+from toolplus_header.station.utils_geometry import *
+from toolplus_header.station.utils_graphics import *
+from toolplus_header.station.utils_function import *
 
 # Defining the main class - the macro:
 
