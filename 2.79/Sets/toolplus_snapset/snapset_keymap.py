@@ -26,8 +26,8 @@ from bpy import *
 
 
 # ADD 3D VIEW MENU #  
-from toolplus_snapset.snapset_menu  import (VIEW3D_TP_SnapSet_Menu)
-from toolplus_snapset.snapset_menu  import (VIEW3D_TP_SnapSet_Menu_Pie)
+from toolplus_snapset.snapset_menu_cascade  import (VIEW3D_TP_SnapSet_Menu)
+from toolplus_snapset.snapset_menu_pie      import (VIEW3D_TP_SnapSet_Menu_Pie)
 
 # KEY REGISTRY # 
 addon_keymaps_menu = []
@@ -83,12 +83,16 @@ def update_snapset_menu(self, context):
 
 
 # ADD TO SPECIAL [W] #  
-from toolplus_snapset.snapset_menu  import (draw_snapset_item_special)
+from toolplus_snapset.snapset_menu_special  import (draw_snapset_item_special)
 
-def update_snapset_submenu(self, context):
+def update_snapset_special(self, context):
 
-    try:
-        bpy.types.VIEW3D_MT_special.remove(draw_snapset_item_special)          
+    try:     
+        bpy.types.VIEW3D_MT_object_specials.remove(draw_snapset_item_special)  
+        bpy.types.VIEW3D_MT_edit_mesh_specials.remove(draw_snapset_item_special)  
+        bpy.types.VIEW3D_MT_edit_curve_specials.remove(draw_snapset_item_special)  
+        bpy.types.VIEW3D_MT_armature_specials.remove(draw_snapset_item_special)  
+        bpy.types.VIEW3D_MT_particle_specials.remove(draw_snapset_item_special)  
 
     except:
         pass
@@ -118,7 +122,7 @@ def update_snapset_submenu(self, context):
 
 
 # ADD TO HEADER #  
-from toolplus_snapset.snapset_menu  import (VIEW3D_TP_SnapSet_Header_Menu)
+from toolplus_snapset.snapset_menu_header  import (VIEW3D_TP_SnapSet_Header_Menu)
 
 def update_snapset_header(self, context):
 

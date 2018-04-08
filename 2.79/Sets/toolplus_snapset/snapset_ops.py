@@ -40,7 +40,7 @@ class View3D_TP_KeyMap_Snapset(bpy.types.Operator):
 
 
 class VIEW3D_TP_Snapset_Grid(bpy.types.Operator):
-    """Absolute Grid > setting pivot & snap grid snapping"""
+    """snap to increments of grid """
     bl_idname = "tp_ops.grid"
     bl_label = "Snapset Grid"
     bl_options = {'INTERNAL'}
@@ -58,7 +58,7 @@ class VIEW3D_TP_Snapset_Grid(bpy.types.Operator):
 
 
 class VIEW3D_TP_Snapset_Place(bpy.types.Operator):
-    """Place Objects > setting pivot & snap for normal rotate"""
+    """snap to object surface with normal rotation"""
     bl_idname = "tp_ops.place"
     bl_label = "Place Object"
     bl_options = {'INTERNAL'}
@@ -77,7 +77,7 @@ class VIEW3D_TP_Snapset_Place(bpy.types.Operator):
 
 
 class VIEW3D_TP_Snapset_Retopo(bpy.types.Operator):
-    """Mesh Retopo > setting pivot & snap for surface snapping"""
+    """snap to surface of another object"""
     bl_idname = "tp_ops.retopo"
     bl_label = "Mesh Retopo"
     bl_options = {'INTERNAL'}
@@ -95,7 +95,7 @@ class VIEW3D_TP_Snapset_Retopo(bpy.types.Operator):
 
 
 class VIEW3D_TP_Snapset_Active(bpy.types.Operator):
-    """Snap with Active Verts or Closest Median > setting pivot & snap"""
+    """snap selected to active vertex"""
     bl_idname = "tp_ops.active_snap"
     bl_label = "Snap Verts"
     bl_options = {'INTERNAL'}
@@ -113,7 +113,7 @@ class VIEW3D_TP_Snapset_Active(bpy.types.Operator):
 
 
 class VIEW3D_TP_Snapset_Closest(bpy.types.Operator):
-    """Snap with Closest Median > setting pivot & snap"""
+    """snap selected to closest median"""
     bl_idname = "tp_ops.closest_snap"
     bl_label = "Snap Closest"
     bl_options = {'INTERNAL'}
@@ -130,7 +130,7 @@ class VIEW3D_TP_Snapset_Closest(bpy.types.Operator):
 
 
 class VIEW3D_TP_Snapset_Active_3d_Int(bpy.types.Operator):
-    """Set 3D Cursor to active or selected"""
+    """set 3D cursor >> LMB: to selected / >> RMB: to active """
     bl_idname = "tp_ops.active_3d_int"
     bl_label = "3d Cursor"
     bl_options = {'INTERNAL'}
@@ -158,7 +158,7 @@ class VIEW3D_TP_Snapset_Active_3d_Int(bpy.types.Operator):
 
 
 class VIEW3D_TP_Snapset_Active_3d_Modal(bpy.types.Operator):
-    """Set 3D Cursor to active or selected"""
+    """set 3D cursor >> LMB: to selected / >> RMB: to active """
     bl_idname = "tp_ops.active_3d"
     bl_label = "3d Cursor_modal"
     bl_options = {'REGISTER', 'UNDO'}
@@ -189,7 +189,7 @@ class VIEW3D_TP_Snapset_Active_3d_Modal(bpy.types.Operator):
 
 # NOT USED #
 class View3D_TP_Snap_Setup_Menu(bpy.types.Operator):
-    """Setups for Snapping"""
+    """Presets for Snapping"""
     bl_idname = "tp_ops.snap_setup_menu"
     bl_label = "Snap Sets :)"
     bl_options = {'INTERNAL'}

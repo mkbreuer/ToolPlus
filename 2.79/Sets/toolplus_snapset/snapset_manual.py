@@ -25,14 +25,14 @@ from bpy.props import *
 
  # RIGHT CLICK BUTTON TO ONLINE MANUAL
 def VIEW3D_TP_SnapSet_Manual():
-    url_manual_prefix = "https://github.com/mkbreuer/Snap-Set"
+    url_manual_prefix = "https://github.com/mkbreuer/ToolPlus/wiki"
     url_manual_mapping = (
-        ("bpy.ops.tp_ops.active_snap"      , "/wiki"),
-        ("bpy.ops.tp_ops.closest_snap"     , "/wiki"),
-        ("bpy.ops.tp_ops.active_3d"        , "/wiki"),
-        ("bpy.ops.tp_ops.grid"             , "/wiki"),
-        ("bpy.ops.tp_ops.place"            , "/wiki"),
-        ("bpy.ops.tp_ops.retopo"           , "/wiki"),
+        ("bpy.ops.tp_ops.active_snap"      , "/TP-SnapSet"),
+        ("bpy.ops.tp_ops.closest_snap"     , "/TP-SnapSet"),
+        ("bpy.ops.tp_ops.active_3d"        , "/TP-SnapSet"),
+        ("bpy.ops.tp_ops.grid"             , "/TP-SnapSet"),
+        ("bpy.ops.tp_ops.place"            , "/TP-SnapSet"),
+        ("bpy.ops.tp_ops.retopo"           , "/TP-SnapSet"),
         )
     return url_manual_prefix, url_manual_mapping
 

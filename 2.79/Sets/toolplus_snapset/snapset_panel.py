@@ -123,9 +123,19 @@ class draw_snapset_layout:
             # OPTIONS #  
             row = box.row(align=True)
 
+            if display_buttons_pl == 'off':  
+                if display_name_pl == 'icon_id': 
+                    row.operator("tp_ops.set_pivot", " ", icon="ROTATE").tp_pivot="BOUNDING_BOX_CENTER"
+                    row.operator("tp_ops.set_pivot", " ", icon="CURSOR").tp_pivot="CURSOR"
+                    row.operator("tp_ops.set_pivot", " ", icon="ROTACTIVE").tp_pivot="ACTIVE_ELEMENT"
+                    row.operator("tp_ops.set_pivot", " ", icon="ROTATECOLLECTION").tp_pivot="INDIVIDUAL_ORIGINS"
+                    row.operator("tp_ops.set_pivot", " ", icon="ROTATECENTER").tp_pivot="MEDIAN_POINT"  
+
+            else:
+                pass
+
             button_snap_set = icons.get("icon_snap_set") 
             row.menu("VIEW3D_TP_SnapSet_Menu_Panel", text= tx_snapset, icon_value=button_snap_set.icon_id) 
-
 
 
 

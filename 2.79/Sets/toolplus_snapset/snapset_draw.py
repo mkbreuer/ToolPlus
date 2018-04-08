@@ -67,7 +67,7 @@ def draw_callback_px_grid(self, context):
 
 
 class VIEW3D_TP_Snapset_Grid_Modal(bpy.types.Operator):
-    """Absolute Grid > setting pivot & snap grid snapping"""
+    """snap to increments of grid"""
     bl_idname = "tp_ops.grid_modal"
     bl_label = "Absolute Grid"
     bl_options = {'REGISTER', 'UNDO'}
@@ -148,7 +148,7 @@ def draw_callback_px_place(self, context):
 
 
 class VIEW3D_TP_Snapset_Place_Modal(bpy.types.Operator):
-    """Place Objects > setting pivot & snap for normal rotate"""
+    """snap to object surface with normal rotation"""
     bl_idname = "tp_ops.place_modal"
     bl_label = "Place Object"
     bl_options = {'REGISTER', 'UNDO'}
@@ -217,7 +217,7 @@ def draw_callback_px_retopo(self, context):
 
 
 class VIEW3D_TP_Snapset_Retopo_Modal(bpy.types.Operator):
-    """Mesh Retopo > setting pivot & snap for surface snapping"""
+    """snap to surface of another object"""
     bl_idname = "tp_ops.retopo_modal"
     bl_label = "Mesh Retopo"
     bl_options = {'REGISTER', 'UNDO'}
@@ -289,7 +289,7 @@ def draw_callback_px_active(self, context):
 
 
 class VIEW3D_TP_Snapset_Active_Modal(bpy.types.Operator):
-    """Snap with Active Verts or Closest Median > setting pivot & snap"""
+    """snap selected to active vertex"""
     bl_idname = "tp_ops.active_snap_modal"
     bl_label = "Snap Verts"
     bl_options = {'REGISTER', 'UNDO'}
@@ -360,7 +360,7 @@ def draw_callback_px_closest(self, context):
 
 
 class VIEW3D_TP_Snapset_Closest_Modal(bpy.types.Operator):
-    """Snap with Closest Median > setting pivot & snap"""
+    """snap selected to closest median"""
     bl_idname = "tp_ops.closest_snap_modal"
     bl_label = "Snap Closest"
     bl_options = {'REGISTER', 'UNDO'}
@@ -431,7 +431,7 @@ def draw_callback_px_cursor(self, context):
 
 
 class VIEW3D_TP_Snapset_Active_3d_Modal(bpy.types.Operator):
-    """Set 3D Cursor to active or selected"""
+    """set 3D cursor >> LMB: to selected / >> RMB: to active """
     bl_idname = "tp_ops.active_3d_modal"
     bl_label = "3d Cursor_modal"
     bl_options = {'REGISTER', 'UNDO'}

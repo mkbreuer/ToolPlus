@@ -19,7 +19,7 @@
 bl_info = {
     "name": "SnapSet",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2),
+    "version": (0, 2, 1),
     "blender": (2, 7, 7),
     "location": "3D View",
     "description": "snap set presets for 3d view",
@@ -43,16 +43,21 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'toolplus_snapset'
 
 if "bpy" in locals():
     import imp
-     
-    imp.reload(snapset_ops)                                                                  
+                                                                      
     imp.reload(snapset_draw)                                                                  
+    imp.reload(snapset_ops)                                                                                                                                   
+    imp.reload(snapset_targets)                                                                  
+    imp.reload(snapset_widget)                                                                  
 
 else:
        
-    from . import snapset_ops 
     from . import snapset_draw 
+    from . import snapset_ops  
+    from . import snapset_targets 
+    from . import snapset_widget 
     
     from . snapset_keymap  import*
+
 
 
 # LOAD MODULS #
@@ -144,6 +149,14 @@ class TP_Panels_Preferences(AddonPreferences):
         default='off', update = update_snapset_tools)
 
 
+    tab_display_transform = EnumProperty(
+        name = 'Transform Orientation', 
+        description = 'on / off',
+        items=(('on',  'Enable Transform Orientation',  'add tools to pie'), 
+               ('off', 'Remove Transform Orientation',  'remove tools from pie')), 
+        default='off', update = update_snapset_tools)
+
+
     # SUBMENUS #    
     tab_snapset_special = EnumProperty(
         name = 'Append to Special Menu',
@@ -151,7 +164,7 @@ class TP_Panels_Preferences(AddonPreferences):
         items=(('append',   'Menu Bottom', 'add menus to default special menus'),
                ('prepend',  'Menu Top',    'add menus to default special menus'),
                ('remove',   'Menu Remove', 'remove menus from default menus')),
-        default='remove', update = update_snapset_submenu)               
+        default='remove', update = update_snapset_special)               
 
 
     #----------------------------
@@ -186,7 +199,7 @@ class TP_Panels_Preferences(AddonPreferences):
 
     # DRAW #
  
-    text_color = FloatVectorProperty(name="",  default=(0, 0.8, 1),  min=0, max=1, subtype='COLOR')
+    text_color = FloatVectorProperty(name="",  default=(0.5, 1, 1),  min=0, max=1, subtype='COLOR')
  
     text_width = IntProperty(name="Width", default=10, min=20, max=50)
     text_height = IntProperty(name="Height", default=10, min=20, max=100)
@@ -212,24 +225,10 @@ class TP_Panels_Preferences(AddonPreferences):
             
             row = box.column(1)   
             row.label(text="Welcome to T+ SnapSet !")  
-            row.label(text="> This addon add snap set presets for 3d view to:") 
-            
-            box.separator()         
-            row.label(text="> Menu [ALT+W] ")   
-            
-            
-            box.separator()         
-            row.label(text="> Special [W] ")   
-            
-            
-            box.separator() 
-            row.label(text="> Header")   
-            row.label(text="> The menu look can be adjusted directly in the addon preferences or in header")                      
-            row.label(text="> Gear Button: open the options for text or icons in the menus")  
-            row.label(text="> Save user setting to apply the changes durably.")  
-            
-           
-            box.separator()             
+            row.label(text="> This addon add snap set presets for 3d view to:")       
+            row.label(text="> Menu [ALT+W], Special [W], Panel or Header")                              
+            row.label(text="> Optional: use modal operator with infotext for the 3d viewport")                              
+            row.separator()             
             row.label(text="> Have Fun! ;)")  
 
 
@@ -334,8 +333,15 @@ class TP_Panels_Preferences(AddonPreferences):
 
                 row = box.row(1)                  
                 row.label(" ")   
-                row.prop(self, 'tab_display_modal',  expand=True)
                 row.label(" ")   
+                row.prop(self, 'tab_display_modal',  expand=True)                            
+          
+                box.separator()                
+                
+                row = box.row(1)                  
+                row.label(" ")   
+                row.label(" ")   
+                row.prop(self, 'tab_display_transform',  expand=True)
                 
 
             if self.tab_snapset_menu == 'off':
@@ -436,8 +442,8 @@ class TP_Panels_Preferences(AddonPreferences):
         # WEB #
         if self.prefs_tabs == 'url':
             row = layout.column_flow(2)
-            row.operator('wm.url_open', text = 'Wiki', icon = 'HELP').url = "https://github.com/mkbreuer/ToolPlus/wiki"
-            row.operator('wm.url_open', text = 'Blenderartist', icon = 'BLENDER').url = "https://blenderartists.org/forum/showthread.php?346610-Addon-Function-to-Header&highlight="
+            row.operator('wm.url_open', text = 'Wiki', icon = 'HELP').url = "https://github.com/mkbreuer/ToolPlus/wiki/TP-SnapSet"
+            row.operator('wm.url_open', text = 'Blenderartist', icon = 'BLENDER').url = "https://blenderartists.org/forum/showthread.php?401729-Addon-T-SnapSets&p=3067342#post3067342"
 
 
 
@@ -451,7 +457,7 @@ def register():
     except: traceback.print_exc()
 
     update_snapset_menu(None, bpy.context)
-    update_snapset_submenu(None, bpy.context)
+    update_snapset_special(None, bpy.context)
     update_snapset_header(None, bpy.context)
     update_snapset_tools(None, bpy.context)
     update_snapset_panel(None, bpy.context)
