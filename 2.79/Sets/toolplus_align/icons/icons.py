@@ -14,7 +14,12 @@ def load_icons():
     mkb_icons = bpy.utils.previews.new()
 
     icons_dir = os.path.join(os.path.dirname(__file__))
+
+    #--------------------------------------------------
   
+
+    # ALIGN #
+    mkb_icons.load("icon_apply", os.path.join(icons_dir, "apply.png"), 'IMAGE')    
     mkb_icons.load("icon_align_baply", os.path.join(icons_dir, "baply.png"), 'IMAGE')    
 
     mkb_icons.load("icon_align_advance", os.path.join(icons_dir, "align_advance.png"), 'IMAGE')    
@@ -26,6 +31,7 @@ def load_icons():
     mkb_icons.load("icon_align_rectangular", os.path.join(icons_dir, "align_rectangular.png"), 'IMAGE')
     mkb_icons.load("icon_align_shrinkwrap", os.path.join(icons_dir, "align_shrinkwrap.png"), 'IMAGE')
     mkb_icons.load("icon_align_vertices", os.path.join(icons_dir, "align_vertices.png"), 'IMAGE')
+    mkb_icons.load("icon_align_unbevel", os.path.join(icons_dir, "align_unbevel.png"), 'IMAGE')
 
     mkb_icons.load("icon_align_to_normal", os.path.join(icons_dir, "align_to_normal.png"), 'IMAGE')    
 
@@ -55,7 +61,17 @@ def load_icons():
     mkb_icons.load("icon_align_zy", os.path.join(icons_dir, "align_zy.png"), 'IMAGE')    
 
     mkb_icons.load("icon_align_zero", os.path.join(icons_dir, "align_zero.png"), 'IMAGE')    
+    
+    mkb_icons.load("icon_flip_lattice", os.path.join(icons_dir, "flip_lattice.png"), 'IMAGE')
+    
+    mkb_icons.load("icon_look_at_cursor", os.path.join(icons_dir, "look_at_cursor.png"), 'IMAGE')
+    mkb_icons.load("icon_look_at_obj", os.path.join(icons_dir, "look_at_obj.png"), 'IMAGE')
 
+    mkb_icons.load("icon_lattice_add", os.path.join(icons_dir, "lattice_add.png"), 'IMAGE')
+    mkb_icons.load("icon_lattice_apply", os.path.join(icons_dir, "lattice_apply.png"), 'IMAGE')
+
+
+    # CURSOR #
     mkb_icons.load("icon_cursor", os.path.join(icons_dir, "cursor.png"), 'IMAGE')
     mkb_icons.load("icon_cursor_3point_center", os.path.join(icons_dir, "cursor_3point_center.png"), 'IMAGE')
     mkb_icons.load("icon_cursor_active_edm", os.path.join(icons_dir, "cursor_active_edm.png"), 'IMAGE')
@@ -67,15 +83,15 @@ def load_icons():
     mkb_icons.load("icon_cursor_mesh", os.path.join(icons_dir, "cursor_mesh.png"), 'IMAGE')
     mkb_icons.load("icon_cursor_object", os.path.join(icons_dir, "cursor_object.png"), 'IMAGE')
 
-    mkb_icons.load("icon_flip_lattice", os.path.join(icons_dir, "flip_lattice.png"), 'IMAGE')
-    
-    mkb_icons.load("icon_look_at_cursor", os.path.join(icons_dir, "look_at_cursor.png"), 'IMAGE')
-    mkb_icons.load("icon_look_at_obj", os.path.join(icons_dir, "look_at_obj.png"), 'IMAGE')
 
+
+    # ORIGIN #
     mkb_icons.load("icon_origin_active", os.path.join(icons_dir, "origin_active.png"), 'IMAGE')
     mkb_icons.load("icon_origin_align", os.path.join(icons_dir, "origin_align.png"), 'IMAGE')
+    mkb_icons.load("icon_origin_apply", os.path.join(icons_dir, "origin_apply.png"), 'IMAGE')
     mkb_icons.load("icon_origin_bbox", os.path.join(icons_dir, "origin_bbox.png"), 'IMAGE')
     mkb_icons.load("icon_origin_bottom", os.path.join(icons_dir, "origin_bottom.png"), 'IMAGE')
+    mkb_icons.load("icon_origin_ccc", os.path.join(icons_dir, "origin_ccc.png"), 'IMAGE')
     mkb_icons.load("icon_origin_center", os.path.join(icons_dir, "origin_center.png"), 'IMAGE')
     mkb_icons.load("icon_origin_center_view", os.path.join(icons_dir, "origin_center_view.png"), 'IMAGE')
     mkb_icons.load("icon_origin_cross", os.path.join(icons_dir, "origin_cross.png"), 'IMAGE')
@@ -95,9 +111,17 @@ def load_icons():
     mkb_icons.load("icon_origin_selected", os.path.join(icons_dir, "origin_selected.png"), 'IMAGE')
     mkb_icons.load("icon_origin_tomesh", os.path.join(icons_dir, "origin_tomesh.png"), 'IMAGE')
     mkb_icons.load("icon_origin_top", os.path.join(icons_dir, "origin_top.png"), 'IMAGE')
+    mkb_icons.load("icon_origin_copy", os.path.join(icons_dir, "origin_copy.png"), 'IMAGE')
+    mkb_icons.load("icon_origin_tosnap", os.path.join(icons_dir, "origin_tosnap.png"), 'IMAGE')
+    mkb_icons.load("icon_origin_toactive", os.path.join(icons_dir, "origin_toactive.png"), 'IMAGE')
+    mkb_icons.load("icon_origin_mesh", os.path.join(icons_dir, "origin_mesh.png"), 'IMAGE')
 
+
+    # RULER #
     mkb_icons.load("icon_ruler_triangle", os.path.join(icons_dir, "ruler_triangle.png"), 'IMAGE')
+   
 
+    # SELECT #
     mkb_icons.load("icon_select_active_edm", os.path.join(icons_dir, "select_active_edm.png"), 'IMAGE')
     mkb_icons.load("icon_select_active_obm", os.path.join(icons_dir, "select_active_obm.png"), 'IMAGE')
     mkb_icons.load("icon_select_center", os.path.join(icons_dir, "select_center.png"), 'IMAGE')
@@ -109,6 +133,8 @@ def load_icons():
     mkb_icons.load("icon_select_object", os.path.join(icons_dir, "select_object.png"), 'IMAGE')
     mkb_icons.load("icon_select_link", os.path.join(icons_dir, "select_link.png"), 'IMAGE')
 
+
+    # SNAP #
     mkb_icons.load("icon_snap_abc", os.path.join(icons_dir, "snap_abc.png"), 'IMAGE')
     mkb_icons.load("icon_snap_active", os.path.join(icons_dir, "snap_active.png"), 'IMAGE')
     mkb_icons.load("icon_snap_cursor", os.path.join(icons_dir, "snap_cursor.png"), 'IMAGE')
@@ -122,7 +148,12 @@ def load_icons():
     mkb_icons.load("icon_snap_grab", os.path.join(icons_dir, "snap_grab.png"), 'IMAGE')
     mkb_icons.load("icon_snap_rotate", os.path.join(icons_dir, "snap_rotate.png"), 'IMAGE')
     mkb_icons.load("icon_snap_scale", os.path.join(icons_dir, "snap_scale.png"), 'IMAGE')
+    mkb_icons.load("icon_snap_ruler", os.path.join(icons_dir, "snap_ruler.png"), 'IMAGE')
+    mkb_icons.load("icon_snap_set", os.path.join(icons_dir, "snap_set.png"), 'IMAGE')
     
+
+
+    #--------------------------------------------
 
     toolplus_icon_collections["main"] = mkb_icons
     toolplus_icons_loaded = True

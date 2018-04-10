@@ -23,53 +23,11 @@
 import bpy
 from bpy import *
 from bpy.props import *
-from .. icons.icons import load_icons
-
-
-class VIEW3D_TP_SnapSetMenu(bpy.types.Menu):
-    bl_label = "SnapSet"
-    bl_idname = "VIEW3D_TP_SnapSetMenu"
-
-    def draw(self, context):
-        layout = self.layout
-       
-        icons = load_icons()   
-        
-        layout.label("SnapSet")
-
-        layout.separator()
-
-        if context.mode == 'OBJECT':
-            button_snap_place = icons.get("icon_snap_place")
-            layout.operator("tp_ops.place", text="Place", icon_value=button_snap_place.icon_id)
-
-        else:
-            button_snap_retopo = icons.get("icon_snap_retopo")
-            layout.operator("tp_ops.retopo", text="Retopo", icon_value=button_snap_retopo.icon_id)    
-
-        layout.separator()
-
-        button_snap_grid = icons.get("icon_snap_grid")
-        layout.operator("tp_ops.grid", text="GridSnap", icon_value=button_snap_grid.icon_id)
-                    
-        button_snap_cursor = icons.get("icon_snap_cursor")           
-        layout.operator("tp_ops.active_3d", text="3D Cursor", icon_value=button_snap_cursor.icon_id) 
- 
-        layout.separator()  
-
- 
-        button_snap_active = icons.get("icon_snap_active")
-        layout.operator("tp_ops.closest_snap", text="Closest", icon_value=button_snap_active.icon_id)
-
-        button_snap_active = icons.get("icon_snap_active")
-        layout.operator("tp_ops.active_snap", text="Active", icon_value=button_snap_active.icon_id) 
-
-
 
 
 class VIEW3D_TP_Pivot_Box(bpy.types.Operator):
-   """Set pivot point to Bounding Box"""
-   bl_label = "Set pivot point to Bounding Box"
+   """use Bounding Box Center"""
+   bl_label = "Bounding Box Center"
    bl_idname = "tp_ops.pivot_bounding_box"
    bl_options = {'REGISTER', 'UNDO'}
     
@@ -79,8 +37,8 @@ class VIEW3D_TP_Pivot_Box(bpy.types.Operator):
 
  
 class VIEW3D_TP_Pivot_Cursor(bpy.types.Operator):
-   """Set pivot point to 3D Cursor"""
-   bl_label = "Set pivot point to 3D Cursor"
+   """use 3D Cursor"""
+   bl_label = "3D Cursor"
    bl_idname = "tp_ops.pivot_3d_cursor"
    bl_options = {'REGISTER', 'UNDO'}
     
@@ -90,8 +48,8 @@ class VIEW3D_TP_Pivot_Cursor(bpy.types.Operator):
 
 
 class VIEW3D_TP_Pivot_Median(bpy.types.Operator):
-    """Set pivot point to Median Point"""
-    bl_label = "Set pivot point to Median Point"
+    """use Median Point"""
+    bl_label = "Median Point"
     bl_idname = "tp_ops.pivot_median"
     bl_options = {'REGISTER', 'UNDO'}
     
@@ -101,8 +59,8 @@ class VIEW3D_TP_Pivot_Median(bpy.types.Operator):
 
 
 class VIEW3D_TP_Pivot_Active(bpy.types.Operator):
-   """Set pivot point to Active"""
-   bl_label = "Set pivot point to Active"
+   """use Active Element"""
+   bl_label = "Active Element"
    bl_idname = "tp_ops.pivot_active"
    bl_options = {'REGISTER', 'UNDO'}
     
@@ -112,8 +70,8 @@ class VIEW3D_TP_Pivot_Active(bpy.types.Operator):
 
 
 class VIEW3D_TP_Pivot_Individual(bpy.types.Operator):
-    """Set pivot point to Individual"""
-    bl_label = "Set pivot point to Individual Point"
+    """use Individual Origins"""
+    bl_label = "Individual Origins"
     bl_idname = "tp_ops.pivot_individual"
     bl_options = {'REGISTER', 'UNDO'}
     

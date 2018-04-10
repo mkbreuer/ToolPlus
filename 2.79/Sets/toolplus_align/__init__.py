@@ -20,7 +20,7 @@
 bl_info = {
     "name": "Align",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 2),
+    "version": (0, 2, 4),
     "blender": (2, 7, 9),
     "location": "VIEW 3D, UV Image-, Graph and Node Editor",
     "description": "align tools collection",
@@ -30,37 +30,18 @@ bl_info = {
     "category": "ToolPlus"}
 
 
-from toolplus_align.ui_normal_translate          import (VIEW3D_TP_Translate_Normal_Menu)
-from toolplus_align.ui_normal_translate          import (VIEW3D_TP_Resize_Normal_Menu)
-from toolplus_align.ui_normal_translate          import (VIEW3D_TP_Rotate_Normal_Menu)
+# LOAD MANUAL #
+from toolplus_align.align_manual  import (VIEW3D_TP_Align_Manual)
 
-from toolplus_align.ui_menu                      import (VIEW3D_TP_Align_Menu)
-from toolplus_align.ui_menu                      import (VIEW3D_TP_Align_Menu_Graph)
-from toolplus_align.ui_menu                      import (VIEW3D_TP_Align_Menu_UV)
-from toolplus_align.ui_menu                      import (VIEW3D_TP_Align_Menu_Node)
-
-from toolplus_align.ui_menu_relax                import (VIEW3D_TP_Relax_Menu)
-from toolplus_align.ui_menu_origin               import (VIEW3D_TP_Origin_Menu)
-
-from toolplus_align.ui_menu_pie                  import (VIEW3D_TP_Align_PIE)
-
-from toolplus_align.ui_main                      import (VIEW3D_TP_Align_TOOLS)
-from toolplus_align.ui_main                      import (VIEW3D_TP_Align_UI)
-from toolplus_align.ui_main                      import (VIEW3D_TP_Align_PROPS)
-
-from toolplus_align.ops_origin.origin_batch      import (View3D_TP_Origin_Batch)
-
+# LOAD PROPERTIES #
 from toolplus_align.ops_auxiliary.oned_scripts   import (paul_managerProps)
+from toolplus_align.ops_station.np_point_align   import (NPPLRestoreContext)
 
-from toolplus_align.np_point_align               import (NPPLRestoreContext)
-
+# LOAD CUSTOM ICONS #
 from . icons.icons                               import load_icons
 from . icons.icons                               import clear_icons
 
-
-##################################
-
-
+# LOAD OPERATORS #
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'toolplus_align'))
 
@@ -82,6 +63,7 @@ if "bpy" in locals():
     imp.reload(con_rotation)
     imp.reload(distribute)     
     imp.reload(distribute_obj)
+    imp.reload(easylattice)
     imp.reload(face_to_face)
     imp.reload(oned_scripts)
     imp.reload(shrinksmooth) 
@@ -91,12 +73,17 @@ if "bpy" in locals():
     imp.reload(to_ground)
     imp.reload(xoffsets) 
     imp.reload(xyspread) 
+    imp.reload(unbevel) 
     
     imp.reload(origin_action)
+    imp.reload(origin_active)
     imp.reload(origin_batch)
-    imp.reload(origin_modal)
     imp.reload(origin_bbox)
+    imp.reload(origin_bbox_modal)
+    imp.reload(origin_center)
+    imp.reload(origin_modal)
     imp.reload(origin_operators)
+    imp.reload(origin_transform)
     imp.reload(origin_zero)
 
     imp.reload(np_point_align)
@@ -104,10 +91,6 @@ if "bpy" in locals():
     imp.reload(np_point_move)
     imp.reload(np_point_scale)
     imp.reload(np_roto_move)
-
-    imp.reload(header_main)
-    imp.reload(header_menu)
-    imp.reload(header_ops)
 
 
 else:
@@ -128,6 +111,7 @@ else:
     from .ops_auxiliary import con_rotation  
     from .ops_auxiliary import distribute
     from .ops_auxiliary import distribute_obj 
+    from .ops_auxiliary import easylattice   
     from .ops_auxiliary import face_to_face   
     from .ops_auxiliary import oned_scripts  
     from .ops_auxiliary import snap_offset 
@@ -137,30 +121,33 @@ else:
     from .ops_auxiliary import to_ground                                 
     from .ops_auxiliary import xoffsets          
     from .ops_auxiliary import xyspread          
+    from .ops_auxiliary import unbevel          
 
     from .ops_origin import origin_action                
-    from .ops_origin import origin_batch                              
-    from .ops_origin import origin_modal         
+    from .ops_origin import origin_active                                      
+    from .ops_origin import origin_batch                                      
     from .ops_origin import origin_bbox         
-    from .ops_origin import origin_bbox         
+    from .ops_origin import origin_bbox_modal         
+    from .ops_origin import origin_center 
+    from .ops_origin import origin_modal 
     from .ops_origin import origin_operators                 
+    from .ops_origin import origin_transform                    
     from .ops_origin import origin_zero                    
 
-    from . import np_point_align           
-    from . import np_point_distance   
-    from . import np_point_move                   
-    from . import np_point_scale           
-    from . import np_roto_move           
-
-    from . import header_main           
-    from . import header_menu           
-    from . import header_ops           
+    from .ops_station import np_point_align           
+    from .ops_station import np_point_distance   
+    from .ops_station import np_point_move                   
+    from .ops_station import np_point_scale           
+    from .ops_station import np_roto_move           
 
 
+    # LOAD MAPS #
+    from .align_uimap   import *
+    from .align_keymap  import *
+    from .align_append  import *
 
 
-##################################
-
+# LOAD MODULS #
 import bpy
 from bpy import *
 from bpy.props import*
@@ -169,36 +156,7 @@ import bpy.utils.previews
 from bpy.types import AddonPreferences, PropertyGroup
 
 
-
-# UI REGISTRY #
-panels_main = (VIEW3D_TP_Align_TOOLS, VIEW3D_TP_Align_UI, VIEW3D_TP_Align_PROPS)
-
-def update_panel_position(self, context):
-    message = "Align: Updating Panel locations has failed"
-    try:
-        for panel in panels_main:
-            if "bl_rna" in panel.__dict__:
-                bpy.utils.unregister_class(panel)
-  
-        if context.user_preferences.addons[__name__].preferences.tab_location_align == 'tools':
-         
-            VIEW3D_TP_Align_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_align
-            bpy.utils.register_class(VIEW3D_TP_Align_TOOLS)
-        
-        if context.user_preferences.addons[__name__].preferences.tab_location_align == 'ui':
-            bpy.utils.register_class(VIEW3D_TP_Align_UI)
-
-        if context.user_preferences.addons[__name__].preferences.tab_location_align == 'props':
-            bpy.utils.register_class(VIEW3D_TP_Align_PROPS)
-
-        if context.user_preferences.addons[__name__].preferences.tab_location_align == 'off':  
-            return None
-
-    except Exception as e:
-        print("\n[{}]\n{}\n\nError:\n{}".format(__name__, message, e))
-        pass
-
-
+# TOOLS REGISTRY #
 def update_display_tools(self, context):
 
     try:
@@ -213,217 +171,9 @@ def update_display_tools(self, context):
         return None
 
 
-def update_header_tools(self, context):
-
-    try:
-        return True
-    except:
-        pass
-
-    if context.user_preferences.addons[__name__].preferences.update_header_tools == 'on':
-        return True
-
-    if context.user_preferences.addons[__name__].preferences.update_header_tools == 'off':
-        return None
-
-
-
-# KEY MENU #
-addon_keymaps = []
-keymaps_list = [
-    {
-        'name_view': "3D View",
-        'space_type': "VIEW_3D",
-        'prop_name': "tp_menu.align_main"
-    },
-    {
-        'name_view': "Image",
-        'space_type': "IMAGE_EDITOR",
-        'prop_name': "tp_menu.align_main_uv"
-    },
-    {
-        'name_view': "Graph Editor",
-        'space_type': "GRAPH_EDITOR",
-        'prop_name': "tp_menu.align_main_graph"
-    },
-    {
-        'name_view': "Node Editor",
-        'space_type': "NODE_EDITOR",
-        'prop_name': "tp_menu.align_main_node"
-    }
-]
-
-keymaps_list_pie = [
-    {
-        'name_view': "Image",
-        'space_type': "IMAGE_EDITOR",
-        'prop_name': "tp_menu.align_main_uv"
-    },
-    {
-        'name_view': "Graph Editor",
-        'space_type': "GRAPH_EDITOR",
-        'prop_name': "tp_menu.align_main_graph"
-    },
-    {
-        'name_view': "Node Editor",
-        'space_type': "NODE_EDITOR",
-        'prop_name': "tp_menu.align_main_node"
-    },
-    {
-        'name_view': "3D View",
-        'space_type': "VIEW_3D",
-        'prop_name': "tp_pie.align_pie_menu"
-    }
-
-]
-
-
-def update_menu(self, context):
-    try:
-        bpy.utils.unregister_class(VIEW3D_TP_Align_Menu)
-        bpy.utils.unregister_class(VIEW3D_TP_Align_Menu_Graph)
-        bpy.utils.unregister_class(VIEW3D_TP_Align_Menu_UV)
-        bpy.utils.unregister_class(VIEW3D_TP_Align_Menu_Node)
-        bpy.utils.unregister_class(VIEW3D_TP_Align_PIE)
-        
-        wm = bpy.context.window_manager
-        if wm.keyconfigs.addon:
-            for km in addon_keymaps:
-                for kmi in km.keymap_items:
-                    km.keymap_items.remove(kmi)
-        addon_keymaps.clear()
-        
-    except:
-        pass
-    
-    if context.user_preferences.addons[__name__].preferences.tab_menu_align == 'menu':
-     
-        VIEW3D_TP_Align_Menu.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_menu
-    
-        bpy.utils.register_class(VIEW3D_TP_Align_Menu)
-        bpy.utils.register_class(VIEW3D_TP_Align_Menu_Graph)
-        bpy.utils.register_class(VIEW3D_TP_Align_Menu_UV)
-        bpy.utils.register_class(VIEW3D_TP_Align_Menu_Node)
-    
-        kc = bpy.context.window_manager.keyconfigs.addon
-        if kc:
-            for keym in keymaps_list:
-                km = kc.keymaps.new(name=keym['name_view'], space_type=keym['space_type'])
-                kmi = km.keymap_items.new('wm.call_menu', 'D', 'PRESS', ctrl=True)
-                kmi.properties.name = keym['prop_name']
-                addon_keymaps.append(km)
-
-    if context.user_preferences.addons[__name__].preferences.tab_menu_align == 'pie':
-       
-        bpy.utils.register_class(VIEW3D_TP_Align_Menu_Graph)
-        bpy.utils.register_class(VIEW3D_TP_Align_Menu_UV)
-        bpy.utils.register_class(VIEW3D_TP_Align_Menu_Node)
-        bpy.utils.register_class(VIEW3D_TP_Align_PIE)
-    
-        kc = bpy.context.window_manager.keyconfigs.addon
-        if kc:
-            for keym in keymaps_list_pie:
-                km = kc.keymaps.new(name=keym['name_view'], space_type=keym['space_type'])
-                kmi = km.keymap_items.new('wm.call_menu', 'D', 'PRESS', ctrl=True)
-                kmi = km.keymap_items.new('wm.call_menu_pie', 'D', 'PRESS', ctrl=True)
-                kmi.properties.name = keym['prop_name']
-                addon_keymaps.append(km)
-
-
-    if context.user_preferences.addons[__name__].preferences.tab_menu_align == 'off':
-        pass
-
-
-addon_keymaps_menu = []
-
-def update_menu_relax(self, context):
-    try:
-        bpy.utils.unregister_class(VIEW3D_TP_Relax_Menu)
-        
-        wm = bpy.context.window_manager
-        for km in addon_keymaps_menu:
-            wm.keyconfigs.addon.keymaps.remove(km)
-        del addon_keymaps_menu[:]
-        
-    except:
-        pass
-    
-    if context.user_preferences.addons[__name__].preferences.tab_menu_view_relax == 'menu':
-     
-        VIEW3D_TP_Relax_Menu.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_menu    
-        bpy.utils.register_class(VIEW3D_TP_Relax_Menu)
-
-        wm = bpy.context.window_manager        
-        km = wm.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')        
-        kmi = km.keymap_items.new('wm.call_menu', 'W', 'PRESS', ctrl=True, shift=True) #,alt=True
-        kmi.properties.name = "tp_menu.relax_base"
-
-    if context.user_preferences.addons[__name__].preferences.tab_menu_view_relax == 'off':
-        pass
-
-
-def update_menu_origin(self, context):
-    try:
-        bpy.utils.unregister_class(VIEW3D_TP_Origin_Menu)
-
-        wm = bpy.context.window_manager
-        for km in addon_keymaps_menu:
-            wm.keyconfigs.addon.keymaps.remove(km)
-        del addon_keymaps_menu[:]
-        
-    except:
-        pass
-    
-    if context.user_preferences.addons[__name__].preferences.tab_menu_view_origin == 'menu':
-     
-        VIEW3D_TP_Origin_Menu.bl_category = context.user_preferences.addons[__name__].preferences.tools_category_menu    
-        bpy.utils.register_class(VIEW3D_TP_Origin_Menu)
-
-        wm = bpy.context.window_manager        
-        km = wm.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')        
-        kmi = km.keymap_items.new('wm.call_menu', 'D', 'PRESS', ctrl=True) #,alt=True, shift=True, 
-        kmi.properties.name = "tp_menu.origin_base"
-
-    if context.user_preferences.addons[__name__].preferences.tab_menu_view_origin == 'off':
-        pass
-
-
-
-
-def update_menu_normal(self, context):
-
-    try:
-        bpy.types.VIEW3D_PT_tools_transform.remove(Draw_VIEW3D_TP_Transform_Normal)
-        bpy.types.VIEW3D_PT_tools_transform_mesh.remove(Draw_VIEW3D_TP_Transform_Normal)
-        bpy.types.VIEW3D_PT_tools_transform_curve.remove(Draw_VIEW3D_TP_Transform_Normal)
-        bpy.types.VIEW3D_PT_tools_transform_surface.remove(Draw_VIEW3D_TP_Transform_Normal)
-        bpy.types.VIEW3D_PT_tools_mballedit.remove(Draw_VIEW3D_TP_Transform_Normal)
-        bpy.types.VIEW3D_PT_tools_armatureedit_transform.remove(Draw_VIEW3D_TP_Transform_Normal)
-        bpy.types.VIEW3D_PT_tools_latticeedit.remove(Draw_VIEW3D_TP_Transform_Normal)
-        bpy.types.VIEW3D_MT_transform_object.remove(Draw_VIEW3D_TP_Transform_Normal)
-        bpy.types.VIEW3D_MT_transform.remove(Draw_VIEW3D_TP_Transform_Normal)
-    except:
-        pass
-    
-    if context.user_preferences.addons[__name__].preferences.tab_menu_normal == 'menu':
-
-        bpy.types.VIEW3D_PT_tools_transform.append(Draw_VIEW3D_TP_Transform_Normal)    
-        bpy.types.VIEW3D_PT_tools_transform_mesh.append(Draw_VIEW3D_TP_Transform_Normal)    
-        bpy.types.VIEW3D_PT_tools_transform_curve.append(Draw_VIEW3D_TP_Transform_Normal)    
-        bpy.types.VIEW3D_PT_tools_transform_surface.append(Draw_VIEW3D_TP_Transform_Normal)    
-        bpy.types.VIEW3D_PT_tools_mballedit.append(Draw_VIEW3D_TP_Transform_Normal)    
-        bpy.types.VIEW3D_PT_tools_armatureedit_transform.append(Draw_VIEW3D_TP_Transform_Normal)    
-        bpy.types.VIEW3D_PT_tools_latticeedit.append(Draw_VIEW3D_TP_Transform_Normal)    
-        bpy.types.VIEW3D_MT_transform_object.prepend(Draw_VIEW3D_TP_Transform_Normal)  
-        bpy.types.VIEW3D_MT_transform.prepend(Draw_VIEW3D_TP_Transform_Normal)  
-
-    if context.user_preferences.addons[__name__].preferences.tab_menu_normal == 'off':
-        pass
-
 
 
 # ADDON PREFERENCES #
-
 class TP_Panels_Preferences(AddonPreferences):
     bl_idname = __name__
     
@@ -439,6 +189,9 @@ class TP_Panels_Preferences(AddonPreferences):
                default='info')
 
 
+    #----------------------------------------------------------------------------------------
+
+
     # PANEL LOCATION #           
     tab_location_align = EnumProperty(
         name = 'Panel Location',
@@ -449,6 +202,8 @@ class TP_Panels_Preferences(AddonPreferences):
                ('off',      'Off',                  'hide panel')),
                default='tools', update = update_panel_position)
 
+
+    #----------------------------------------------------------------------------------------
 
 
     # MENU PROPS #    
@@ -479,12 +234,18 @@ class TP_Panels_Preferences(AddonPreferences):
         description = 'add normal translate menus to toolshelf [T] > tools > transform',
         items=(('menu', 'Menu on', 'enable menu'),
                ('off', 'Menu off', 'disable menu')),
-               default='off', update = update_menu_normal)               
+               default='off', update = update_submenu_normal)               
+
 
     #----------------------------------------------------------------------------------------
-    
-    # ADVANCED #
 
+
+    # TOOLS UI #    
+    expand_panel_tools = bpy.props.BoolProperty(name="Expand", description="Expand, to display the settings", default=False)    
+
+    tab_origin_advanced = EnumProperty(name = 'Advanced',  description = 'on / off', 
+                  items=(('on', 'Advanced on', 'enable tools in panel'),  ('off', 'Advanced off', 'disable tools in panel')), default='on', update = update_display_tools)
+   
     tab_looptools = EnumProperty(name = 'Display Tools', description = 'on / off',
                   items=(('on', 'Looptools on', 'enable tools in panel'), ('off', 'Looptols off', 'disable tools in panel')), default='off', update = update_display_tools)
 
@@ -497,49 +258,7 @@ class TP_Panels_Preferences(AddonPreferences):
     #----------------------------------------------------------------------------------------
 
 
-    # HEADER #
-
-    tab_header_custom_a = EnumProperty(name = 'Header Tools', description = 'on / off',
-                  items=(('on', 'Custom on', 'enable tools in panel'), ('off', 'Custom off', 'disable tools in panel')), default='off', update = update_header_tools)
-
-    tab_header_custom_b = EnumProperty(name = 'Header Tools', description = 'on / off',
-                  items=(('on', 'Custom on', 'enable tools in panel'), ('off', 'Custom off', 'disable tools in panel')), default='off', update = update_header_tools)
-
-    tab_header_select = EnumProperty(name = 'Header Tools', description = 'on / off',
-                  items=(('on', 'SnapTo on', 'enable tools in panel'), ('off', 'SnapTo off', 'disable tools in panel')), default='off', update = update_header_tools)
-
-    tab_header_mirror = EnumProperty(name = 'Header Tools', description = 'on / off',
-                  items=(('on', 'Mirror on', 'enable tools in panel'), ('off', 'Mirror off', 'disable tools in panel')), default='off', update = update_header_tools)
-
-    tab_header_origin = EnumProperty(name = 'Header Tools', description = 'on / off',
-                  items=(('on', 'Origin on', 'enable tools in panel'), ('off', 'Origin off', 'disable tools in panel')), default='off', update = update_header_tools)
-
-    tab_header_object = EnumProperty(name = 'Header Tools', description = 'on / off',
-                  items=(('on', 'Display on', 'enable tools in panel'), ('off', 'Display off', 'disable tools in panel')), default='off', update = update_header_tools)
-
-    tab_header_align = EnumProperty(name = 'Header Tools', description = 'on / off',
-                  items=(('on', 'SnapTools on', 'enable tools in panel'), ('off', 'SnapTools off', 'disable tools in panel')), default='off', update = update_header_tools)
-
-    tab_header_np = EnumProperty(name = 'Header Tools', description = 'on / off',
-                  items=(('on', 'NP Station on', 'enable tools in panel'), ('off', 'NP Station off', 'disable tools in panel')), default='off', update = update_header_tools)
-
-    tab_header_zero = EnumProperty(name = 'Header Tools', description = 'on / off',
-                  items=(('on', 'Align Advance on', 'enable tools in panel'), ('off', 'Align Advance off', 'disable tools in panel')), default='off', update = update_header_tools)
-
-    tab_header_history = EnumProperty(name = 'Header Tools', description = 'on / off',
-                  items=(('on', 'History on', 'enable tools in panel'), ('off', 'History off', 'disable tools in panel')), default='off', update = update_header_tools)
-
-    tab_header_save = EnumProperty(name = 'Header Tools', description = 'on / off',
-                  items=(('on', 'Save on', 'enable tools in panel'), ('off', 'Save off', 'disable tools in panel')), default='off', update = update_header_tools)
-
-    tab_header_view = EnumProperty(name = 'Header Tools', description = 'on / off',
-                  items=(('on', 'View on', 'enable tools in panel'), ('off', 'View off', 'disable tools in panel')), default='off', update = update_header_tools)
-
-
-    #----------------------------------------------------------------------------------------
-
-
-    tools_category_align = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_position)
+    tools_category_align = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'Align', update = update_panel_position)
     tools_category_menu = bpy.props.BoolProperty(name = "Menu: Align", description = "enable or disable menu", default=True, update = update_menu)
 
 
@@ -566,7 +285,7 @@ class TP_Panels_Preferences(AddonPreferences):
     np_scale_dist = bpy.props.FloatProperty(
             name='',
             description='Distance multiplier (for example, for cm use 100)',
-            default=100,
+            default=1,
             min=0,
             step=100,
             precision=2)
@@ -595,10 +314,11 @@ class TP_Panels_Preferences(AddonPreferences):
 
     #----------------------------------------------------------------------------------------
 
+
     nppd_scale = bpy.props.FloatProperty(
             name = 'Scale',
             description = 'Distance multiplier (for example, for cm use 100)',
-            default = 100,
+            default = 1,
             min = 0,
             step = 1,
             precision = 3)
@@ -737,7 +457,7 @@ class TP_Panels_Preferences(AddonPreferences):
 
     #----------------------------------------------------------------------------------------
         
-
+    # DRAW PREFERENCES #
     def draw(self, context):
         layout = self.layout
         
@@ -832,7 +552,7 @@ class TP_Panels_Preferences(AddonPreferences):
             row.label("Align Menu:", icon ="COLLAPSEMENU") 
             
             row.separator()           
-            row.label("Menu: [CTRL+D] ")
+            row.label("Menu: [SHIFT+Y] ")
 
             row = box.row(1)          
             row.prop(self, 'tab_menu_align', expand=True)
@@ -850,14 +570,9 @@ class TP_Panels_Preferences(AddonPreferences):
 
             # ORIGIN #
             box = layout.box().column(1)
-             
-            row = box.column(1)  
-            row.label("Origin Menu:", icon ="COLLAPSEMENU") 
-            
-            row.separator()           
-            row.label("Menu: [CTRL+D] ")
-
-            row = box.row(1)          
+                         
+            row = box.row(1)   
+            row.label("Origin Menu: [CTRL+D] ", icon ="COLLAPSEMENU")       
             row.prop(self, 'tab_menu_view_origin', expand=True)
             
             if self.tab_menu_view_origin == 'off':
@@ -866,21 +581,22 @@ class TP_Panels_Preferences(AddonPreferences):
                 
                 row = box.row(1) 
                 row.label(text="! durably hidden with next reboot!", icon ="INFO")
-        
+            else:
+              
+                box.separator()                 
+                
+                row = box.row(1)          
+                row.label(" ", icon ="BLANK1")    
+                row.prop(self, 'tab_origin_advanced', expand=True)                
+                                    
         
             box.separator()  
-
           
             # RELAX #
             box = layout.box().column(1)
              
-            row = box.column(1)  
-            row.label("Relax Menu:", icon ="COLLAPSEMENU") 
-            
-            row.separator()           
-            row.label("Menu: [CTRL+SHIFT+W] ")
-
-            row = box.row(1)          
+            row = box.row(1)         
+            row.label("Relax Menu: [CTRL+SHIFT+W] ", icon ="COLLAPSEMENU")       
             row.prop(self, 'tab_menu_view_relax', expand=True)
             
             if self.tab_menu_view_relax == 'off':
@@ -890,22 +606,31 @@ class TP_Panels_Preferences(AddonPreferences):
                 row = box.row(1) 
                 row.label(text="! durably hidden with next reboot!", icon ="INFO")
 
+
+            box.separator()
+            box.separator()
            
             # TIP #
-            box.separator()  
-            
             row = layout.row(1)             
-            row.label(text="! For key change go to > User Preferences > TAB: Input !", icon ="INFO")
-            sub = row.row(1)
-            sub.scale_x = 0.5      
-            sub.operator('wm.url_open', text = 'Addon Tip: is key free', icon = 'PLUGIN').url = "https://github.com/Antonioya/blender/tree/master/iskeyfree"
+            row.label(text="! For key change you can go also to > User Preferences > TAB: Input !", icon ="INFO")
 
             row = layout.column(1) 
-            row.label(text="1 > Change search to key-bindig and insert the hotkey, eg. align menu: ctrl d !", icon ="BLANK1")
-            row.label(text="2 > Under 3D View you find the call menu, name: tp_menu.align_main !", icon ="BLANK1")
+            row.label(text="1 > Change search to key-bindig and insert the hotkey, eg. key: shift y", icon ="BLANK1")
+            row.label(text="2 > Under 3D View you find the call menu, name: VIEW3D_TP_Align_Menu !", icon ="BLANK1")
             row.label(text="3 > Choose a new key configuration and save user settings !", icon ="BLANK1")
+
+            row.separator() 
+            
+            row.label(text="(4) > Use the 'is key free' addon under User Interface to finde a free shortcut !", icon ="BLANK1")
         
             box.separator()  
+
+            row = layout.row(1)             
+            row.label(text="! Or edit the keymap script directly !", icon ="INFO")
+            row.operator("tp_ops.keymap_align", text = 'Open KeyMap (Text Editor)')
+            row.operator('wm.url_open', text = 'Type of Events (WEB)').url = "https://lh3.googleusercontent.com/zfNKbUKpnvLTPADu4btQI_adXhkR9iPiSyy31ZvP89YNK6YSiLf4iVC3lpzN76DTdEdHHIZqZK6qM2OYRSAeFRlIof5xHC0wLQtOaCwYEKi43A6W9KGkGAwnlNGqUugQdleEHTMLZnL67u4m6kU1KTKlFASfyDuFCCvdyGGaa5-gZ9kib1AiJ_2exgWvRh1yM86PehsJH65Zp0r6x5zhqZpLI1IS9K-zlyvaKg_WgYuVMzvsd3JrB2BAo-BIZGX9MFA8t-CC3qVtTLXH8WAkHo9IyA1u7GnlCM5p9wffwpu1NhCsZTuQwPnn0BGmOCD0tPCm_LJSJSDyCtkfBXvK_hdsQ3XM0Jcttl1oHJKYqbPoIjHMaLl7pNGmwMhcjlgPqXMq01Eln0wm6NHbJyTe5WMBN7FaB0WEaot7V9TsFxACRJzD2dJu-zP7xJ_vw6sMlYcXLf962SkzRShIMTJiBzSxui5sRJ1uKPCehcdP4E3pEc1tIFO1dQZTSwrLf9luz1S79zCflUCgJFWa8GfN4KGWG09mO4jUBJIdtobsDeM_NPyvraz6Lq4OTz90zgQQ1cxTzQ49MzYcIesnrw7TE2Ilr7UTkOpuoxL4rPw=w696-h1278-no"
+            
+            box.separator()   
 
 
         # HEADER #
@@ -915,19 +640,10 @@ class TP_Panels_Preferences(AddonPreferences):
             
             box = layout.box().column(1)
              
-            row = box.column(1)  
-            row.label("Functions to Header:", icon ="COLLAPSEMENU")   
+            row = box.row(1)  
+            row.label("Functions to Header are removed as separated addon :", icon ="INFO")    
+            row.operator('wm.url_open', text = 'T+ Header').url = "https://github.com/mkbreuer/ToolPlus/2.79/Sets"
 
-            row = box.column_flow(3)
-            row.prop(self, 'tab_header_select', expand=True)
-            row.prop(self, 'tab_header_mirror', expand=True)
-            row.prop(self, 'tab_header_origin', expand=True)
-            row.prop(self, 'tab_header_align', expand=True)
-            row.prop(self, 'tab_header_np', expand=True)
-            row.prop(self, 'tab_header_zero', expand=True)
-            row.prop(self, 'tab_header_history', expand=True)
-            row.prop(self, 'tab_header_save', expand=True)
-            row.prop(self, 'tab_header_view', expand=True)
 
 
         # NP STATION #
@@ -1091,7 +807,7 @@ class TP_Panels_Preferences(AddonPreferences):
 
 
 
-# PROPS #
+# PROPERTIES # 
 class Dropdown_Align_Props(bpy.types.PropertyGroup):
 
     display_align_help = bpy.props.BoolProperty(name = "Help ", description = "open/close help", default = False) 
@@ -1107,24 +823,27 @@ class Dropdown_Align_Props(bpy.types.PropertyGroup):
     display_origin_bbox = bpy.props.BoolProperty(name="Origin BBox", description="open / close", default=False)
     display_origin_zero = bpy.props.BoolProperty(name="Zero Axis", description="open / close", default=False)
     display_origin_zero_edm = bpy.props.BoolProperty(name="Zero Axis", description="open / close", default=False)
+    display_origin_active = bpy.props.BoolProperty(name="Align to Active", description="align origin to active object", default=False)
 
+    tp_axis_active = bpy.props.EnumProperty(
+        items=[("tp_x"    ,"X"    ,"01"),
+               ("tp_y"    ,"Y"    ,"02"),
+               ("tp_z"    ,"Z"    ,"03"),
+               ("tp_a"    ,"XYZ"  ,"04")],
+               name = "Align to Active",
+               default = "tp_x",    
+               description = "zero target to choosen axis")
 
+    tp_distance_active = bpy.props.EnumProperty(
+        items=[("tp_min"    ,"Min"    ,"01"),
+               ("tp_mid"    ,"Mid"    ,"02"),
+               ("tp_max"    ,"Max"    ,"03")],
+               name = "Align Distance",
+               default = "tp_mid",    
+               description = "align distance for origin")
 
-def Draw_VIEW3D_TP_Transform_Normal(self,context):
-    layout = self.layout
-    col = layout.column(align=True)
-
-    col.operator("transform.tosphere", text="To Sphere")
-    col.operator("transform.shear", text="Shear")
-    col.operator("transform.bend", text="Bend")
-
-    col.separator() 
-
-    col.menu("tp_ops.translate_normal_menu", text="N-Translate")
-    col.menu("tp_ops.rotate_normal_menu", text="N-Rotate")
-    col.menu("tp_ops.resize_normal_menu", text="N-Scale")
-
-    col.separator()     
+    active_too = bpy.props.BoolProperty(name="Active too!",  description="align active origin too", default=False, options={'SKIP_SAVE'})    
+    
 
 
 
@@ -1171,12 +890,13 @@ def register():
            
     update_panel_position(None, bpy.context)
     update_display_tools(None, bpy.context)
-    update_header_tools(None, bpy.context)
 
     update_menu(None, bpy.context) 
     update_menu_relax(None, bpy.context)
     update_menu_origin(None, bpy.context)
-    update_menu_normal(None, bpy.context)
+
+    update_submenu_normal(None, bpy.context)
+
         
     # ALIGN #
     bpy.types.WindowManager.tp_collapse_align = bpy.props.PointerProperty(type = Dropdown_Align_Props)    
@@ -1255,6 +975,9 @@ def register():
     NP020PointScale.define("OBJECT_OT_np_ps_run_resize")
     NP020PointScale.define("OBJECT_OT_np_ps_restore_context")
 
+    # MANUAL #
+    bpy.utils.register_manual_map(VIEW3D_TP_Align_Manual)
+
 
 
 def unregister():
@@ -1268,6 +991,10 @@ def unregister():
     try: bpy.utils.unregister_module(__name__)
     except: traceback.print_exc()
     
+    # MANUAL #
+    bpy.utils.unregister_manual_map(VIEW3D_TP_Align_Manual)
+
+
 
 if __name__ == "__main__":
     register()

@@ -1,5 +1,7 @@
 # ##### BEGIN GPL LICENSE BLOCK #####
 #
+# (C) 2017 MKB
+#
 #  This program is free software; you can redistribute it and / or
 #  modify it under the terms of the GNU General Public License
 #  as published by the Free Software Foundation; either version 2
@@ -15,96 +17,113 @@
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110 - 1301, USA.
 #
 # ##### END GPL LICENSE BLOCK #####
+#
 
 
-# LOAD MODULE #
+# LOAD MODUL #    
 import bpy
 from bpy import *
 from bpy.props import *
 
 
-class VIEW3D_TP_Origin_EditCenter(bpy.types.Operator):
+class View3D_TP_Copy_Origin(bpy.types.Operator):
+    '''Set Origin to the Origin Location of the selected Object(s)'''
+    bl_idname = "tp_ops.copy_origin"
+    bl_label = "Copy Origin"
+    bl_options = {"REGISTER", 'UNDO'}   
+
+    def execute(self, context):
+        
+        current_pivot = bpy.context.space_data.pivot_point
+
+        if context.mode == 'OBJECT':
+            bpy.ops.view3d.snap_cursor_to_active()
+            bpy.context.space_data.pivot_point = 'CURSOR'
+            bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
+
+        else:        
+            bpy.ops.object.editmode_toggle()         
+            bpy.ops.view3d.snap_cursor_to_active()
+            bpy.context.space_data.pivot_point = 'CURSOR'
+            bpy.ops.object.origin_set(type='ORIGIN_CURSOR')      
+            bpy.ops.object.editmode_toggle()          
+        
+        bpy.context.space_data.pivot_point = current_pivot      
+        return{'FINISHED'}  
+
+
+class View3D_TP_Origin_EditCenter(bpy.types.Operator):
     '''Set Origin to Center / Editmode'''
     bl_idname = "tp_ops.origin_set_editcenter"
-    bl_label = "Origin to Center / Edit"
+    bl_label = "Set Origin to Center / Editmode"
     bl_options = {"REGISTER", 'UNDO'}   
 
     def execute(self, context):
 
         bpy.ops.mesh.select_all(action='SELECT') 
-
-        current_loc = context.space_data.cursor_location.xyz 
         bpy.ops.view3d.snap_cursor_to_selected()
-        
         bpy.ops.object.editmode_toggle() 
         bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_MASS')               
         bpy.ops.object.editmode_toggle()
         bpy.ops.mesh.select_all(action='DESELECT') 
- 
-        context.space_data.cursor_location = current_loc        
-    
+        
         return{'FINISHED'}  
     
 
-class VIEW3D_TP_OriginObm(bpy.types.Operator):
-    """set origin to selected / switch to objectmode"""                 
+class View3D_TP_OriginObm(bpy.types.Operator):
+    """set origin to selected / stay in objectmode"""                 
     bl_idname = "tp_ops.origin_obm"          
-    bl_label = "Origin to Selected / Object"                 
+    bl_label = "origin to selected / in objectmode"                 
     bl_options = {'REGISTER', 'UNDO'}   
 
     def execute(self, context):
 
-        current_loc = context.space_data.cursor_location.xyz 
         bpy.ops.view3d.snap_cursor_to_selected()
-
         bpy.ops.object.editmode_toggle()
         bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
         bpy.ops.object.editmode_toggle()
         bpy.ops.object.editmode_toggle()
-
-        context.space_data.cursor_location = current_loc
 
         return {'FINISHED'}
     
 
-class VIEW3D_TP_OriginEdm(bpy.types.Operator):
-    """set origin to selected and stay in editmode"""                 
+class View3D_TP_OriginEdm(bpy.types.Operator):
+    """set origin to selected / stay in editmode"""                 
     bl_idname = "tp_ops.origin_edm"          
-    bl_label = "Origin to Selected / Edit"                 
+    bl_label = "origin to selected in editmode"                 
     bl_options = {'REGISTER', 'UNDO'}   
 
     def execute(self, context):
-
-        current_loc = context.space_data.cursor_location.xyz 
         bpy.ops.view3d.snap_cursor_to_selected()
-     
         bpy.ops.object.editmode_toggle()
         bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
         bpy.ops.object.editmode_toggle()
-
-        context.space_data.cursor_location = current_loc
+        bpy.ops.object.editmode_toggle()
+        bpy.ops.object.editmode_toggle()
 
         return {'FINISHED'}
 
 
-class VIEW3D_TP_Origin_Edm_Cursor(bpy.types.Operator):
+class View3D_TP_Origin_Edm_Cursor(bpy.types.Operator):
     """set origin to cursor / stay in editmode"""                 
     bl_idname = "tp_ops.origin_cursor_edm"          
-    bl_label = "Origin to Cursor / Edit"                 
+    bl_label = "origin to cursor in editmode"                 
     bl_options = {'REGISTER', 'UNDO'}   
 
     def execute(self, context):
         bpy.ops.object.editmode_toggle()
         bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
         bpy.ops.object.editmode_toggle()
+        bpy.ops.object.editmode_toggle()
+        bpy.ops.object.editmode_toggle()
 
         return {'FINISHED'}
 
 
-class VIEW3D_TP_Origin_Obm_Cursor(bpy.types.Operator):
-    """set origin to cursor / switch to objectmode"""                 
+class View3D_TP_Origin_Obm_Cursor(bpy.types.Operator):
+    """set origin to cursor / stay in objectmode"""                 
     bl_idname = "tp_ops.origin_cursor_obm"          
-    bl_label = "Origin to Cursor / Object"                 
+    bl_label = "origin to cursor in objectmode"                 
     bl_options = {'REGISTER', 'UNDO'}   
 
     def execute(self, context):
@@ -117,7 +136,7 @@ class VIEW3D_TP_Origin_Obm_Cursor(bpy.types.Operator):
 
 
 
-class VIEW3D_TP_Origin_Center(bpy.types.Operator):
+class View3D_TP_Origin_Center(bpy.types.Operator):
     '''Set Origin to Center'''
     bl_idname = "tp_ops.origin_set_center"
     bl_label = "Origin to Center"
@@ -139,7 +158,7 @@ class VIEW3D_TP_Origin_Center(bpy.types.Operator):
         return{'FINISHED'}
 
 
-class VIEW3D_TP_Origin_Cursor(bpy.types.Operator):
+class View3D_TP_Origin_Cursor(bpy.types.Operator):
     '''Set Origin to Cursor'''
     bl_idname = "tp_ops.origin_set_cursor"
     bl_label = "Origin to Cursor"
@@ -158,33 +177,46 @@ class VIEW3D_TP_Origin_Cursor(bpy.types.Operator):
         return{'FINISHED'}
 
  
-class VIEW3D_TP_Origin_Volume(bpy.types.Operator):
-    '''Set Origin to Center of Mass'''
-    bl_idname = "tp_ops.origin_set_volume"
-    bl_label = "Origin to Center of Mass (Volume)"
-    bl_options = {"REGISTER", 'UNDO'}   
-
-    def execute(self, context):
-
-        bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_VOLUME')
-        
-        return{'FINISHED'}
-
 
 class VIEW3D_TP_Origin_Mass(bpy.types.Operator):
-    '''Set Origin to Center of Mass'''
+    '''Set Origin to Center of Mass: (Surface) or (Volume)'''
     bl_idname = "tp_ops.origin_set_mass"
-    bl_label = "Origin to Center of Mass (Surface)"
+    bl_label = "Center of Mass"
     bl_options = {"REGISTER", 'UNDO'}   
 
-    def execute(self, context):
+    set_mass = bpy.props.EnumProperty(
+      items = [("tp_ms",   "Mass (Surface)",  "Mass (Surface)",  "BLANK1", 1),
+               ("tp_mv",   "Mass (Volume)",   "Mass (Volume)",   "BLANK1", 2)], 
+               name = " ",
+               default = "tp_ms",
+               description="Set Origin to Center of Mass: (Surface) or (Volume)")
+                                      
 
-        bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_MASS')
+    def draw(self, context):
+        layout = self.layout
         
+        col = layout.column(align=True)
+
+        box = col.box().column(1)             
+
+        row = box.row(1)  
+        row.prop(self, 'set_mass', text=" ", expand=True)
+
+        box.separator()
+
+
+    def execute(self, context):
+        
+        if self.set_mass == "tp_ms":
+            bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_MASS')        
+        else:        
+            bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_VOLUME')
+
         return{'FINISHED'}
 
 
-class VIEW3D_TP_Origin_toMesh(bpy.types.Operator):
+
+class View3D_TP_Origin_toMesh(bpy.types.Operator):
     '''Set Origin to Mesh'''
     bl_idname = "tp_ops.origin_tomesh"
     bl_label = "Origin to Mesh"
@@ -197,7 +229,7 @@ class VIEW3D_TP_Origin_toMesh(bpy.types.Operator):
         return{'FINISHED'}    
     
     
-class VIEW3D_TP_Origin_Meshto(bpy.types.Operator):
+class View3D_TP_Origin_Meshto(bpy.types.Operator):
     '''Set Mesh to Origin'''
     bl_idname = "tp_ops.origin_meshto"
     bl_label = "Mesh to Origin"
@@ -211,21 +243,16 @@ class VIEW3D_TP_Origin_Meshto(bpy.types.Operator):
 
 
 
-# REGISTRY #
-def register():
+
+# REGISTRY #        
+def register():    
     bpy.utils.register_module(__name__)
-     
-def unregister():
+
+def unregister():   
     bpy.utils.unregister_module(__name__)
- 
+
 if __name__ == "__main__":
     register()
-
-
-
-
-
-
 
 
 

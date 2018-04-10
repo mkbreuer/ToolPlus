@@ -1,5 +1,7 @@
 # ##### BEGIN GPL LICENSE BLOCK #####
 #
+# (C) 2017 MKB
+#
 #  This program is free software; you can redistribute it and / or
 #  modify it under the terms of the GNU General Public License
 #  as published by the Free Software Foundation; either version 2
@@ -15,16 +17,17 @@
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110 - 1301, USA.
 #
 # ##### END GPL LICENSE BLOCK #####
+#
 
 
-# LOAD MODULE #
+# LOAD MODUL #    
 import bpy
 from bpy import *
 from bpy.props import *
 
 
-class VIEW3D_TP_Zero_to_Axis(bpy.types.Operator):
-    """Zero Axis"""                 
+class View3D_TP_Zero_to_Axis(bpy.types.Operator):
+    """align only origin, object or cursor to an axis"""                 
     bl_idname = "tp_ops.zero_axis"          
     bl_label = "ZeroAxis"                 
     bl_options = {'REGISTER', 'UNDO'}   
@@ -34,7 +37,7 @@ class VIEW3D_TP_Zero_to_Axis(bpy.types.Operator):
                ("tp_org"    ,"Origin"    ,"02"),
                ("tp_crs"    ,"Cursor"    ,"03")],
                name = "ZeroFor",
-               default = "tp_obj",    
+               default = "tp_org",    
                description = "zero object or cursor")
 
     tp_switch_axis = bpy.props.EnumProperty(
@@ -54,6 +57,8 @@ class VIEW3D_TP_Zero_to_Axis(bpy.types.Operator):
 
         row = box.row()
         row.prop(self, 'tp_switch', expand=True)
+      
+        box.separator()
 
         row = box.row()
         row.prop(self, 'tp_switch_axis', expand=True)
@@ -61,9 +66,7 @@ class VIEW3D_TP_Zero_to_Axis(bpy.types.Operator):
         box.separator()
         
     def execute(self, context):
-
-
-            
+      
 
         if self.tp_switch_axis == "tp_x":  
             
@@ -75,12 +78,9 @@ class VIEW3D_TP_Zero_to_Axis(bpy.types.Operator):
             if self.tp_switch == "tp_org":                
                 
                 if context.mode == 'OBJECT':
-                    for ob in bpy.context.selected_objects:
-                        bpy.context.scene.objects.active = ob 
-                                            
-                        bpy.ops.view3d.snap_cursor_to_active()        
-                        bpy.context.space_data.cursor_location[0] = 0 
-                        bpy.ops.tp_ops.origin_set_cursor()                    
+                    bpy.ops.view3d.snap_cursor_to_active()        
+                    bpy.context.space_data.cursor_location[0] = 0 
+                    bpy.ops.tp_ops.origin_set_cursor()                    
                 else:   
                     bpy.ops.object.editmode_toggle()
                     
@@ -102,12 +102,9 @@ class VIEW3D_TP_Zero_to_Axis(bpy.types.Operator):
             if self.tp_switch == "tp_org":
                 
                 if context.mode == 'OBJECT':
-                    for ob in bpy.context.selected_objects:
-                        bpy.context.scene.objects.active = ob 
-
-                        bpy.ops.view3d.snap_cursor_to_active()        
-                        bpy.context.space_data.cursor_location[1] = 0 
-                        bpy.ops.tp_ops.origin_set_cursor()                    
+                    bpy.ops.view3d.snap_cursor_to_active()        
+                    bpy.context.space_data.cursor_location[1] = 0 
+                    bpy.ops.tp_ops.origin_set_cursor()                    
                 else:   
                     bpy.ops.object.editmode_toggle()
                     
@@ -130,12 +127,9 @@ class VIEW3D_TP_Zero_to_Axis(bpy.types.Operator):
             if self.tp_switch == "tp_org":        
                 
                 if context.mode == 'OBJECT':
-                    for ob in bpy.context.selected_objects:
-                        bpy.context.scene.objects.active = ob 
-
-                        bpy.ops.view3d.snap_cursor_to_active()        
-                        bpy.context.space_data.cursor_location[2] = 0 
-                        bpy.ops.tp_ops.origin_set_cursor()                    
+                    bpy.ops.view3d.snap_cursor_to_active()        
+                    bpy.context.space_data.cursor_location[2] = 0 
+                    bpy.ops.tp_ops.origin_set_cursor()                    
                 else:   
                     bpy.ops.object.editmode_toggle()
                     
@@ -193,8 +187,8 @@ class VIEW3D_TP_Zero_to_Axis(bpy.types.Operator):
 
 
 
-class VIEW3D_TP_Zero_to_Axis_Panel(bpy.types.Operator):
-    """Zero Axis"""                 
+class View3D_TP_Zero_to_Axis_Panel(bpy.types.Operator):
+    """align only origin, object or cursor to an axis"""              
     bl_idname = "tp_ops.zero_axis_panel"          
     bl_label = "ZeroAxis"                 
     bl_options = {'REGISTER', 'UNDO'}   
@@ -230,12 +224,9 @@ class VIEW3D_TP_Zero_to_Axis_Panel(bpy.types.Operator):
             if scene.tp_switch == "tp_org":                
                 
                 if context.mode == 'OBJECT':
-                    for ob in bpy.context.selected_objects:
-                        bpy.context.scene.objects.active = ob 
-
-                        bpy.ops.view3d.snap_cursor_to_active()        
-                        bpy.context.space_data.cursor_location[0] = 0 
-                        bpy.ops.tp_ops.origin_set_cursor()                    
+                    bpy.ops.view3d.snap_cursor_to_active()        
+                    bpy.context.space_data.cursor_location[0] = 0 
+                    bpy.ops.tp_ops.origin_set_cursor()                    
                 else:   
                     bpy.ops.object.editmode_toggle()
                     
@@ -258,12 +249,9 @@ class VIEW3D_TP_Zero_to_Axis_Panel(bpy.types.Operator):
             if scene.tp_switch == "tp_org":
                 
                 if context.mode == 'OBJECT':
-                    for ob in bpy.context.selected_objects:
-                        bpy.context.scene.objects.active = ob 
-
-                        bpy.ops.view3d.snap_cursor_to_active()        
-                        bpy.context.space_data.cursor_location[1] = 0 
-                        bpy.ops.tp_ops.origin_set_cursor()                    
+                    bpy.ops.view3d.snap_cursor_to_active()        
+                    bpy.context.space_data.cursor_location[1] = 0 
+                    bpy.ops.tp_ops.origin_set_cursor()                    
                 else:   
                     bpy.ops.object.editmode_toggle()
                     
@@ -286,14 +274,9 @@ class VIEW3D_TP_Zero_to_Axis_Panel(bpy.types.Operator):
             if scene.tp_switch == "tp_org":        
                 
                 if context.mode == 'OBJECT':
-                    for ob in bpy.context.selected_objects:
-                        bpy.context.scene.objects.active = ob 
-
-                        bpy.ops.view3d.snap_cursor_to_active()   
-                             
-                    bpy.context.space_data.cursor_location[2] = 0
-                    bpy.ops.tp_ops.origin_set_cursor()       
-                                 
+                    bpy.ops.view3d.snap_cursor_to_active()        
+                    bpy.context.space_data.cursor_location[2] = 0 
+                    bpy.ops.tp_ops.origin_set_cursor()                    
                 else:   
                     bpy.ops.object.editmode_toggle()
                     
@@ -340,14 +323,12 @@ class VIEW3D_TP_Zero_to_Axis_Panel(bpy.types.Operator):
                 bpy.context.space_data.cursor_location[1] = 0 
                 bpy.context.space_data.cursor_location[2] = 0 
 
-
-
         return {'FINISHED'} 
 
 
 
 
-class VIEW3D_TP_Zero_X(bpy.types.Operator):
+class View3D_TP_Zero_X(bpy.types.Operator):
     """Zero X Axis"""                 
     bl_idname = "tp_ops.zero_x"          
     bl_label = "ZeroX"                 
@@ -361,7 +342,7 @@ class VIEW3D_TP_Zero_X(bpy.types.Operator):
         return {'FINISHED'} 
 
     
-class VIEW3D_TP_Zero_Y(bpy.types.Operator):
+class View3D_TP_Zero_Y(bpy.types.Operator):
     """Zero Y Axis"""                 
     bl_idname = "tp_ops.zero_y"          
     bl_label = "ZeroY"                 
@@ -375,7 +356,7 @@ class VIEW3D_TP_Zero_Y(bpy.types.Operator):
         return {'FINISHED'} 
 
 
-class VIEW3D_TP_Zero_Z(bpy.types.Operator):
+class View3D_TP_Zero_Z(bpy.types.Operator):
     """Zero Z Axis"""                 
     bl_idname = "tp_ops.zero_z"          
     bl_label = "ZeroZ"                 
@@ -389,7 +370,7 @@ class VIEW3D_TP_Zero_Z(bpy.types.Operator):
         return {'FINISHED'} 
 
 
-class VIEW3D_TP_Zero_Cursor(bpy.types.Operator):
+class View3D_TP_Zero_Cursor(bpy.types.Operator):
     """Zero Cursor"""                 
     bl_idname = "tp_ops.zero_cursor"          
     bl_label = "Zero3DC"                 
@@ -404,7 +385,7 @@ class VIEW3D_TP_Zero_Cursor(bpy.types.Operator):
         return {'FINISHED'} 
 
 
-class VIEW3D_TP_Zero_All_Axis(bpy.types.Operator):
+class View3D_TP_Zero_All_Axis(bpy.types.Operator):
     """Zero all Axis"""                 
     bl_idname = "tp_ops.zero_all_axis"          
     bl_label = "ZeroObj"                 
@@ -420,16 +401,12 @@ class VIEW3D_TP_Zero_All_Axis(bpy.types.Operator):
         return {'FINISHED'} 
 
 
-
-# REGISTRY 
-def register():
+# REGISTRY #        
+def register():    
     bpy.utils.register_module(__name__)
-     
-def unregister():
+
+def unregister():   
     bpy.utils.unregister_module(__name__)
- 
+
 if __name__ == "__main__":
     register()
-
-
-

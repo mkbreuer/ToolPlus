@@ -23,8 +23,27 @@
 import bpy
 from bpy import *
 from bpy.props import *
-import addon_utils
 
+
+
+# KEYMAP TO EDITOR #
+from os.path import dirname
+from .. import align_keymap
+
+class View3D_TP_KeyMap(bpy.types.Operator):
+    bl_idname = "tp_ops.keymap_align"
+    bl_label = "Open KeyMap (Text Editor)"
+    bl_description = "open keymap file in the text editor"
+
+    def execute(self, context):
+        path = align_keymap.__file__
+        bpy.data.texts.load(path)
+        return {"FINISHED"}
+
+
+
+# ADDON CHECK #
+import addon_utils
 
 class VIEW3D_TP_Looptools(bpy.types.Operator):
    """enable looptools (save user settings be required for a permant activation)"""
@@ -42,6 +61,7 @@ class VIEW3D_TP_Looptools(bpy.types.Operator):
             self.report({'INFO'}, "LoopTools activated!") 
 
         return {'FINISHED'}
+
 
     
 # REGISTRY #

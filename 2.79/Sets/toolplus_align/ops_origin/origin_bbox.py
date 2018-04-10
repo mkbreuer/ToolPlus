@@ -1,5 +1,7 @@
 # ##### BEGIN GPL LICENSE BLOCK #####
 #
+# (C) 2017 MKB
+#
 #  This program is free software; you can redistribute it and / or
 #  modify it under the terms of the GNU General Public License
 #  as published by the Free Software Foundation; either version 2
@@ -15,6 +17,7 @@
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110 - 1301, USA.
 #
 # ##### END GPL LICENSE BLOCK #####
+#
 
 
 # LOAD MODULE #
@@ -22,151 +25,6 @@ import bpy
 from bpy import *
 from bpy.props import *
 from .. icons.icons import load_icons
-
-    
-    
-class VIEW3D_TP_Origin_Obm(bpy.types.Operator):
-    """set origin to selected / stay in objectmode"""                 
-    bl_idname = "tp_ops.origin_obm"          
-    bl_label = "origin to selected / in objectmode"                 
-    bl_options = {'REGISTER', 'UNDO'}   
-
-    def execute(self, context):
-
-        bpy.ops.view3d.snap_cursor_to_selected()
-        bpy.ops.object.editmode_toggle()
-        bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
-        bpy.ops.object.editmode_toggle()
-        bpy.ops.object.editmode_toggle()
-
-        return {'FINISHED'}
-    
-
-class VIEW3D_TP_Origin_Edm(bpy.types.Operator):
-    """set origin to selected / stay in editmode"""                 
-    bl_idname = "tp_ops.origin_edm"          
-    bl_label = "origin to selected in editmode"                 
-    bl_options = {'REGISTER', 'UNDO'}   
-
-    def execute(self, context):
-        bpy.ops.view3d.snap_cursor_to_selected()
-        bpy.ops.object.editmode_toggle()
-        bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
-        bpy.ops.object.editmode_toggle()
-        bpy.ops.object.editmode_toggle()
-        bpy.ops.object.editmode_toggle()
-
-        return {'FINISHED'}
-
-
-class VIEW3D_TP_Origin_Edm_Cursor(bpy.types.Operator):
-    """set origin to cursor / stay in editmode"""                 
-    bl_idname = "tp_ops.origin_cursor_edm"          
-    bl_label = "origin to cursor in editmode"                 
-    bl_options = {'REGISTER', 'UNDO'}   
-
-    def execute(self, context):
-        bpy.ops.object.editmode_toggle()
-        bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
-        bpy.ops.object.editmode_toggle()
-        bpy.ops.object.editmode_toggle()
-        bpy.ops.object.editmode_toggle()
-
-        return {'FINISHED'}
-
-
-class VIEW3D_TP_Origin_Obm_Cursor(bpy.types.Operator):
-    """set origin to cursor / stay in objectmode"""                 
-    bl_idname = "tp_ops.origin_cursor_obm"          
-    bl_label = "origin to cursor in objectmode"                 
-    bl_options = {'REGISTER', 'UNDO'}   
-
-    def execute(self, context):
-        bpy.ops.object.editmode_toggle()
-        bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
-        bpy.ops.object.editmode_toggle()
-        bpy.ops.object.editmode_toggle()
-
-        return {'FINISHED'}   
-
-
-
-class VIEW3D_TP_Place_Origin(bpy.types.Operator):
-    '''Set Origin'''
-    bl_idname = "place.origin"
-    bl_label = "Set Origin"
-    bl_options = {"REGISTER", 'UNDO'}   
-
-    geoto = bpy.props.BoolProperty(name="Geometry to Origin",  description="Place Origin", default = False)   
-    orito = bpy.props.BoolProperty(name="Origin to Geometry",  description="Place Origin", default = False)   
-    cursor = bpy.props.BoolProperty(name="Origin to 3D Cursor",  description="Place Origin", default = False)   
-    mass = bpy.props.BoolProperty(name="Origin to MassCenter",  description="Place Origin", default = False)   
-    mode_obm = bpy.props.BoolProperty(name="Switch Mode",  description="Switch the Mode", default = False)   
-    cursor_edm = bpy.props.BoolProperty(name="Set to Cursor",  description="Set to Cursor", default = True)   
-    mode = bpy.props.BoolProperty(name="Switch Mode",  description="Switch the Mode", default = False)   
-
-    def draw(self, context):
-        layout = self.layout.column(1)
-        box = layout.box().column(1)
-
-        row = box.column(1)         
-        if context.mode == 'OBJECT':   
-            row.prop(self, 'geoto')
-            row.prop(self, 'orito')
-            row.prop(self, 'cursor')
-            row.prop(self, 'mass')
-            row.prop(self, 'mode_obm')
-        else:             
-            row.prop(self, 'cursor_edm')
-            row.prop(self, 'mode')
-
-        #row.operator('wm.operator_defaults', text="Reset", icon ="RECOVER_AUTO")    
-
-    def execute(self, context):
-        
-
-        if bpy.context.mode == 'OBJECT':
-            
-            for i in range(self.geoto):
-                bpy.ops.object.origin_set(type='GEOMETRY_ORIGIN')
-            
-            for i in range(self.orito):               
-                bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY')
-
-            for i in range(self.cursor):
-                bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
-            
-            for i in range(self.mass):
-                bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_MASS')
-        
-            for i in range(self.mode_obm):
-                bpy.ops.object.editmode_toggle()
-
-        if bpy.context.mode == 'EDIT_MESH':
-            
-            for i in range(self.cursor_edm):            
-                bpy.ops.view3d.snap_cursor_to_selected()
-           
-            bpy.ops.object.editmode_toggle()
-            bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
-            bpy.ops.object.editmode_toggle()
-            
-            for i in range(self.mode):
-                bpy.ops.object.editmode_toggle()
-        
-        return{'FINISHED'}
- 
-    def invoke(self, context, event):
-        self.geoto
-        self.orito
-        self.cursor
-        self.mass
-        self.mode_obm
-        self.mode
-        return context.window_manager.invoke_props_dialog(self, width = 150)    
-
- 
-
 
 
 class VIEW3D_TP_BBox_Origin_Back(bpy.types.Operator):
@@ -220,179 +78,129 @@ class VIEW3D_TP_BBox_Origin_Back(bpy.types.Operator):
        
         icons = load_icons()
      
-        box = layout.box().column(1)     
+        box = layout.box().column(1)      
         box.scale_x = 0.1
-
-
-        #####  
         
         row = box.row(1)                                     
+        row.alignment ='CENTER'         
+        row.label(" +Y Axis")
+        row.separator() 
+        row.label("   xY Axis")
+        row.separator()   
+        row.label("--Y Axis")
 
-        subA = row.row(1)
-        subA.alignment ='LEFT'         
-        subA.label(" +Y Axis")
-
-        row.separator()
-      
-        subB = row.row(1)
-        subB.alignment ='CENTER'         
-        subB.label("XZ Axis")
-
-        row.separator()
-       
-        subC = row.row(1)
-        subC.alignment ='RIGHT'         
-        subC.label("--Y Axis")
-
-
-
-        #####  
-        
+        #####                  
         row = box.row(1)                                     
- 
-        sub1 = row.row(1)     
-        sub1.alignment ='LEFT' 
-
-        button_origin_left_top = icons.get("icon_origin_left_top")           
-        sub1.prop(self, 'Back_Left_Top', text="", icon_value=button_origin_left_top.icon_id)
-
-        button_origin_top = icons.get("icon_origin_top")     
-        sub1.prop(self, 'Back_Top', text="", icon_value=button_origin_top.icon_id)
-
-        button_origin_right_top = icons.get("icon_origin_right_top")   
-        sub1.prop(self, 'Back_Right_Top', text="", icon_value=button_origin_right_top.icon_id)
-
-
-        row.separator()
-
-
-        sub2 = row.row(1)
-        sub2.alignment ='CENTER' 
-        
-        button_origin_left_top = icons.get("icon_origin_left_top")                   
-        sub2.prop(self, 'Middle_Left_Top', text="", icon_value=button_origin_left_top.icon_id)
-
-        button_origin_top = icons.get("icon_origin_top")         
-        sub2.prop(self, 'Top', text="", icon_value=button_origin_top.icon_id)
-
-        button_origin_right_top = icons.get("icon_origin_right_top")   
-        sub2.prop(self, 'Middle_Right_Top', text="", icon_value=button_origin_right_top.icon_id)
-
-
-        row.separator()
-
-
-        sub3 = row.row(1)
-        sub3.alignment ='RIGHT' 
-        
-        button_origin_left_top = icons.get("icon_origin_left_top")         
-        sub3.prop(self, 'Front_Left_Top', text="", icon_value=button_origin_left_top.icon_id)
-
-        button_origin_top = icons.get("icon_origin_top") 
-        sub3.prop(self, 'Front_Top', text="", icon_value=button_origin_top.icon_id)
-        
-        button_origin_right_top = icons.get("icon_origin_right_top")           
-        sub3.prop(self, 'Front_Right_Top', text="", icon_value=button_origin_right_top.icon_id)
-        
-
-        #####
-
- 
-        row = box.row(1) 
+        row.alignment ='CENTER'
          
-        sub4 = row.row(1)
-        sub4.alignment ='LEFT' 
+        button_origin_left_top = icons.get("icon_origin_left_top")   
+        row.operator('tp_ops.cubeback_cornertop_minus_xy', text="", icon_value=button_origin_left_top.icon_id)
+       
+        button_origin_top = icons.get("icon_origin_top")  
+        row.operator('tp_ops.cubeback_edgetop_minus_y', text="", icon_value=button_origin_top.icon_id)
         
-        button_origin_left = icons.get("icon_origin_left")        
-        sub4.prop(self, 'Back_Left', text="", icon_value=button_origin_left.icon_id)
-        
-        button_origin_diagonal = icons.get("icon_origin_diagonal")        
-        sub4.prop(self, 'Back', text="", icon_value=button_origin_diagonal.icon_id)
-
-        button_origin_right = icons.get("icon_origin_right")
-        sub4.prop(self, 'Back_Right', text="", icon_value=button_origin_right.icon_id)
-
+        button_origin_right_top = icons.get("icon_origin_right_top")
+        row.operator('tp_ops.cubeback_cornertop_plus_xy', text="", icon_value=button_origin_right_top.icon_id)
 
         row.separator()
-
-
-        sub5 = row.row(1)
-        sub5.alignment ='CENTER' 
-
-        button_origin_left = icons.get("icon_origin_left")  
-        sub5.prop(self, 'Left', text="", icon_value=button_origin_left.icon_id)
-
-        button_origin_cross = icons.get("icon_origin_cross")
-        sub5.prop(self, 'Middle', text="", icon_value=button_origin_cross.icon_id)
-
-        button_origin_right = icons.get("icon_origin_right")
-        sub5.prop(self, 'Right', text="", icon_value=button_origin_right.icon_id)
-
+        
+        button_origin_left_top = icons.get("icon_origin_left_top")   
+        row.operator('tp_ops.cubefront_edgetop_minus_x', text="", icon_value=button_origin_left_top.icon_id)
+        
+        button_origin_top = icons.get("icon_origin_top")  
+        row.operator('tp_ops.cubefront_side_plus_z', text="", icon_value=button_origin_top.icon_id)
+        
+        button_origin_right_top = icons.get("icon_origin_right_top")
+        row.operator('tp_ops.cubefront_edgetop_plus_x', text="", icon_value=button_origin_right_top.icon_id)
 
         row.separator()
-
-
-        sub6 = row.row(1)
-        sub6.alignment ='RIGHT' 
         
-        button_origin_left = icons.get("icon_origin_left")  
-        sub6.prop(self, 'Front_Left', text="", icon_value=button_origin_left.icon_id)
-
-        button_origin_diagonal = icons.get("icon_origin_diagonal")  
-        sub6.prop(self, 'Front', text="", icon_value=button_origin_diagonal.icon_id)
+        button_origin_left_top = icons.get("icon_origin_left_top")   
+        row.operator('tp_ops.cubefront_cornertop_minus_xy', text="", icon_value=button_origin_left_top.icon_id)
         
-        button_origin_right = icons.get("icon_origin_right")
-        sub6.prop(self, 'Front_Right', text="", icon_value=button_origin_right.icon_id)
-
-
+        button_origin_top = icons.get("icon_origin_top")  
+        row.operator('tp_ops.cubeback_edgetop_plus_y', text="", icon_value=button_origin_top.icon_id)
+        
+        button_origin_right_top = icons.get("icon_origin_right_top")
+        row.operator('tp_ops.cubefront_cornertop_plus_xy', text="", icon_value=button_origin_right_top.icon_id)
+        
         #####
 
+        row = box.row(1)                          
+        row.alignment ='CENTER' 
+        
+        button_origin_left = icons.get("icon_origin_left")
+        row.operator('tp_ops.cubefront_edgemiddle_minus_x', text="", icon_value=button_origin_left.icon_id)
+       
+        button_origin_cross = icons.get("icon_origin_cross")
+        row.operator('tp_ops.cubefront_side_plus_y', text="", icon_value=button_origin_cross.icon_id)
+        
+        button_origin_right = icons.get("icon_origin_right")
+        row.operator('tp_ops.cubefront_edgemiddle_plus_x', text="", icon_value=button_origin_right.icon_id)
+
+        row.separator()
+
+        button_origin_left = icons.get("icon_origin_left")
+        row.operator('tp_ops.cubefront_side_minus_x', text="", icon_value=button_origin_left.icon_id)
+       
+        if context.mode == 'OBJECT':
+            button_origin_diagonal = icons.get("icon_origin_diagonal")
+            row.operator('object.origin_set', text="", icon_value=button_origin_diagonal.icon_id).type='ORIGIN_GEOMETRY'
+        else:
+            button_origin_diagonal = icons.get("icon_origin_diagonal")
+            row.operator('tp_ops.origin_set_editcenter', text="", icon_value=button_origin_diagonal.icon_id)
+        
+        button_origin_right = icons.get("icon_origin_right")
+        row.operator('tp_ops.cubefront_side_plus_x', text="", icon_value=button_origin_right.icon_id)
+
+        row.separator()
+        
+        button_origin_left = icons.get("icon_origin_left")
+        row.operator('tp_ops.cubefront_edgemiddle_minus_y', text="", icon_value=button_origin_left.icon_id)
+        
+        button_origin_cross = icons.get("icon_origin_cross")
+        row.operator('tp_ops.cubefront_side_minus_y', text="", icon_value=button_origin_cross.icon_id)
+        
+        button_origin_right = icons.get("icon_origin_right")
+        row.operator('tp_ops.cubefront_edgemiddle_plus_y', text="", icon_value=button_origin_right.icon_id)
+
+        #####
 
         row = box.row(1)
-          
-        sub7 = row.row(1)
-        sub7.alignment ='LEFT' 
-        
-        button_origin_left_bottom = icons.get("icon_origin_left_bottom")        
-        sub7.prop(self, 'Back_Left_Bottom', text="", icon_value=button_origin_left_bottom.icon_id)
-
-        button_origin_bottom = icons.get("icon_origin_bottom")
-        sub7.prop(self, 'Back_Bottom', text="", icon_value=button_origin_bottom.icon_id)
-        
-        button_origin_right_bottom = icons.get("icon_origin_right_bottom")
-        sub7.prop(self, 'Back_Right_Bottom', text="", icon_value=button_origin_right_bottom.icon_id)
-
-        
-        row.separator()
-
-
-        sub8 = row.row(1)
-        sub8.alignment ='CENTER' 
-
-        button_origin_left_bottom = icons.get("icon_origin_left_bottom")
-        sub8.prop(self, 'Middle_Left_Bottom', text="", icon_value=button_origin_left_bottom.icon_id)
-
-        button_origin_bottom = icons.get("icon_origin_bottom")
-        sub8.prop(self, 'Bottom', text="", icon_value=button_origin_bottom.icon_id)
-
-        button_origin_right_bottom = icons.get("icon_origin_right_bottom")
-        sub8.prop(self, 'Middle_Right_Bottom', text="", icon_value=button_origin_right_bottom.icon_id)    
-
-
-        row.separator()
-     
-      
-        sub9 = row.row(1)
-        sub9.alignment ='RIGHT' 
+        row.alignment ='CENTER' 
         
         button_origin_left_bottom = icons.get("icon_origin_left_bottom")
-        sub9.prop(self, 'Front_Left_Bottom', text="",icon_value=button_origin_left_bottom.icon_id)
+        row.operator('tp_ops.cubeback_cornerbottom_minus_xy', text="", icon_value=button_origin_left_bottom.icon_id)
         
         button_origin_bottom = icons.get("icon_origin_bottom")
-        sub9.prop(self, 'Front_Bottom', text="", icon_value=button_origin_bottom.icon_id)
-
+        row.operator('tp_ops.cubefront_edgebottom_plus_y', text="", icon_value=button_origin_bottom.icon_id)
+        
         button_origin_right_bottom = icons.get("icon_origin_right_bottom")
-        sub9.prop(self, 'Front_Right_Bottom', text="", icon_value=button_origin_right_bottom.icon_id)
+        row.operator('tp_ops.cubeback_cornerbottom_plus_xy', text="", icon_value=button_origin_right_bottom.icon_id)
+
+        row.separator()
+        
+        button_origin_left_bottom = icons.get("icon_origin_left_bottom")
+        row.operator('tp_ops.cubefront_edgebottom_minus_x', text="", icon_value=button_origin_left_bottom.icon_id)
+        
+        button_origin_bottom = icons.get("icon_origin_bottom")
+        row.operator('tp_ops.cubefront_side_minus_z', text="", icon_value=button_origin_bottom.icon_id)
+        
+        button_origin_right_bottom = icons.get("icon_origin_right_bottom")
+        row.operator('tp_ops.cubefront_edgebottom_plus_x', text="", icon_value=button_origin_right_bottom.icon_id)    
+
+        row.separator()
+
+        button_origin_left_bottom = icons.get("icon_origin_left_bottom")
+        row.operator('tp_ops.cubefront_cornerbottom_minus_xy', text="", icon_value=button_origin_left_bottom.icon_id)
+        
+        button_origin_bottom = icons.get("icon_origin_bottom")
+        row.operator('tp_ops.cubefront_edgebottom_minus_y', text="", icon_value=button_origin_bottom.icon_id)
+        
+        button_origin_right_bottom = icons.get("icon_origin_right_bottom")
+        row.operator('tp_ops.cubefront_cornerbottom_plus_xy', text="", icon_value=button_origin_right_bottom.icon_id)
+
+        box.separator()
 
 
         #####
