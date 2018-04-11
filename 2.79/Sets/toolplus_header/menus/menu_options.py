@@ -121,24 +121,25 @@ class VIEW3D_TP_Header_Options_Menu(bpy.types.Menu):
         layout.separator() 
 
         display_button_menu = context.user_preferences.addons[addon_key].preferences.tab_display_gui
-        if display_button_menu == 'on':  
+        if display_button_menu == 'buttons':  
 
             layout.menu("VIEW3D_TP_Header_Options_Buttons") 
             
             layout.separator()          
 
-        else:
 
+        display_button_menu = context.user_preferences.addons[addon_key].preferences.tab_display_gui
+        if display_button_menu == 'menus':  
+
+      
             layout.prop(panel_prefs, 'tab_display_name', text="")
             
             layout.menu("VIEW3D_TP_Header_Options_Buttons_Menu")            
            
             layout.separator()  
-        
-        #layout.prop(panel_prefs, 'tab_display_options', text="")
-        layout.prop(panel_prefs, 'tab_display_gui', text="")
-        #layout.prop(panel_prefs, 'tab_display_bottom', text="")
 
+
+        layout.prop(panel_prefs, 'tab_display_gui', text="")
 
 
 

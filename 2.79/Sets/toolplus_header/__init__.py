@@ -19,7 +19,7 @@
 bl_info = {
     "name": "T+ Header",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 2),
+    "version": (0, 2, 3),
     "blender": (2, 79, 0),
     "location": "3D View > Header",
     "description": "tools for 3d view header",
@@ -209,9 +209,9 @@ class TP_Panels_Preferences(AddonPreferences):
     tab_display_gui = EnumProperty(
         name = 'Buttons or Menus', 
         description = 'on = only butttons / off = use menus',
-        items=(('button', 'Use only Buttons',  'enable tools in header'), 
-               ('radio',  'Use Radio Buttons', 'enable tools in header'), 
-               ('menus',  'Use Menu Lists',    'enable tools in header')), 
+        items=(('radio',   'Use Radio Buttons', 'enable tools in header'), 
+               ('buttons', 'Use only Buttons',  'enable tools in header'), 
+               ('menus',   'Use Menu Lists',    'enable tools in header')), 
         default='menus', update = update_tools_header)
 
     tab_display_bottom = EnumProperty(

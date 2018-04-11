@@ -110,16 +110,14 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
         row = layout.row(1)
 
+        # OPTIONS #  
+        row.menu("VIEW3D_TP_Header_Options_Menu", text="", icon= "SCRIPTWIN")     
+
+        row.separator() 
 
         # USE BUTTONS #
         display_buttons = context.user_preferences.addons[__package__].preferences.tab_display_gui
         if display_buttons == 'buttons': 
-
-
-            # OPTIONS #  
-            row.menu("VIEW3D_TP_Header_Options_Menu", text="", icon= "SCRIPTWIN")     
-
-            row.separator()
 
 
             # RULER #  
@@ -623,11 +621,6 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
 
 
-            # OPTIONS #  
-            row.menu("VIEW3D_TP_Header_Options_Menu", text="", icon= "SCRIPTWIN")         
-            
-            row.separator()
-           
             # CUSTOM #  
             display_custom = context.user_preferences.addons[__package__].preferences.tab_display_custom
             if display_custom == 'on':
