@@ -19,7 +19,7 @@
 bl_info = {
     "name": "T+ Header",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 1),
+    "version": (0, 2, 2),
     "blender": (2, 79, 0),
     "location": "3D View > Header",
     "description": "tools for 3d view header",
@@ -206,12 +206,13 @@ class TP_Panels_Preferences(AddonPreferences):
                ('off', 'Hide Options', 'disable option menu in header')), 
         default='on', update = update_tools_header)
 
-    tab_display_buttons = EnumProperty(
+    tab_display_gui = EnumProperty(
         name = 'Buttons or Menus', 
         description = 'on = only butttons / off = use menus',
-        items=(('on',  'Use Buttons', 'enable tools in header'), 
-               ('off', 'Use Menus', 'disable tools in header')), 
-        default='off', update = update_tools_header)
+        items=(('button', 'Use only Buttons',  'enable tools in header'), 
+               ('radio',  'Use Radio Buttons', 'enable tools in header'), 
+               ('menus',  'Use Menu Lists',    'enable tools in header')), 
+        default='menus', update = update_tools_header)
 
     tab_display_bottom = EnumProperty(
         name = 'Top or Bottom', 
@@ -669,13 +670,13 @@ class TP_Panels_Preferences(AddonPreferences):
 
             row = box.row().column_flow(4)          
             #row.prop(self, 'tab_display_options',  expand=True)
-            row.prop(self, 'tab_display_buttons',  expand=True)
+            row.prop(self, 'tab_display_gui',  expand=True)
             #row.prop(self, 'tab_display_bottom',  expand=True)
             row.prop(self, 'tab_display_name',  expand=True)
 
             box.separator() 
 
-            display_button_menu = context.user_preferences.addons[__name__].preferences.tab_display_buttons
+            display_button_menu = context.user_preferences.addons[__name__].preferences.tab_display_gui
             if display_button_menu == 'on':  
 
                 box.separator() 

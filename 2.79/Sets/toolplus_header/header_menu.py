@@ -112,8 +112,8 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
 
         # USE BUTTONS #
-        display_buttons = context.user_preferences.addons[__package__].preferences.tab_display_buttons
-        if display_buttons == 'on': 
+        display_buttons = context.user_preferences.addons[__package__].preferences.tab_display_gui
+        if display_buttons == 'buttons': 
 
 
             # OPTIONS #  
@@ -428,14 +428,69 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
 
 
+        # USE RADIO BUTTONS #
+        display_radio = context.user_preferences.addons[__package__].preferences.tab_display_gui
+        if display_radio == 'radio': 
+
+
+            view = context.space_data
+            scene = context.scene        
+            gs = scene.game_settings
+            mode_string = context.mode
+            edit_object = context.edit_object
+            obj = context.active_object
+            
+            toolsettings = context.tool_settings
+
+            row = layout.row(align=True)
+            
+            if not scene.render.use_shading_nodes:
+                row.prop(gs, "material_mode", text="")
+
+            if view.viewport_shade == 'SOLID':
+                row.prop(view, "show_textured_solid", text="Texture")
+                row.prop(view, "show_only_render", text="Render")
+                row.prop(view, "show_floor", text="Grid")
+                row.prop(view, "use_matcap")
+              
+                if view.use_matcap:
+                    sub = row.row(align=True)
+                    sub.scale_x = 0.25
+                    sub.scale_y = 0.2
+                    sub.template_icon_view(view, "matcap_icon")
+
+            elif view.viewport_shade == 'TEXTURED':
+                if scene.render.use_shading_nodes or gs.material_mode != 'GLSL':
+                    row.prop(view, "show_textured_shadeless")        
+
+            
+            row.prop(view, "show_backface_culling", text="Backface")
+            if obj and obj.mode == 'EDIT' and view.viewport_shade not in {'BOUNDBOX', 'WIREFRAME'}:
+                row.prop(view, "show_occlude_wire", text="Hidden")
+
+
+            row = layout.row(align=True)
+            row.operator("screen.region_quadview", text="", icon="SPLITSCREEN")
+
+            if view.region_quadviews:
+                region = view.region_quadviews[2]
+                col = layout.column()
+                col.prop(region, "lock_rotation")
+                row = layout.row(align=True)
+                row.enabled = region.lock_rotation
+                row.prop(region, "show_sync_view")
+                row = layout.row(align=True)
+                row.enabled = region.lock_rotation and region.show_sync_view
+                row.prop(region, "use_box_clip")
+
+
+
+
 
         # USE MENUS #
-        else:
+        display_menus = context.user_preferences.addons[__package__].preferences.tab_display_gui
+        if display_menus == 'menus': 
 
-
-#            # BOTTOM MENUS #       
-#            display_bottom = context.user_preferences.addons[__package__].preferences.tab_display_bottom
-#            if display_bottom == 'on': 
 
             # NAMES / ICONS #  
             display_name = context.user_preferences.addons[__package__].preferences.tab_display_name
