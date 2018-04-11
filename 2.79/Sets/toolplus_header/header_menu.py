@@ -44,6 +44,7 @@ from . menus.menu_display import (VIEW3D_TP_Header_Display_Menu)
 from . menus.menu_ruler   import (VIEW3D_TP_Header_Ruler_Menu)
 from . menus.menu_shading import (VIEW3D_TP_Header_Shading_Menu)
 from . menus.menu_station import (VIEW3D_TP_Header_Station_Menu)
+from . menus.menu_custom  import (VIEW3D_TP_Header_Custom_Menu)
 
 from . menus.menu_snapset import (VIEW3D_TP_Header_SnapSet_Menu)
 from . menus.menu_snapto  import (VIEW3D_TP_Header_CursorTo_Menu)
@@ -59,9 +60,7 @@ EDIT = ["EDIT_MESH", "EDIT_CURVE", "EDIT_SURFACE", "EDIT_LATTICE", "EDIT_METABAL
 def draw_origin_button_menu_layout(self, context, layout):
           
         icons = load_icons()
-       
-        row = layout.row(1)
-       
+
         button_origin_center_view = icons.get("icon_origin_center_view")
         row.operator("tp_ops.origin_set_center", text="Center", icon_value=button_origin_center_view.icon_id)
 
@@ -442,6 +441,10 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
             display_name = context.user_preferences.addons[__package__].preferences.tab_display_name
             if display_name == 'both_id':  
 
+                # CUSTOM #                         
+                ico_custom = "LAMP_DATA"                               
+                tx_custom = " Custom"
+                       
                 # RULER #                         
                 ico_ruler = "NOCURVE"                               
                 tx_ruler = " Ruler"
@@ -455,7 +458,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
                 tx_shading = " Shading"
 
                  # CURSOR TO #
-                ico_cursorto = "FORCE_FORCE"                               
+                ico_cursorto = "CURSOR"                               
                 tx_cursorto = " CursorTo"    
   
                 # SELECT TO #
@@ -471,7 +474,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
                 tx_advanced = " AlignTo" 
 
                 # SNAPSET #
-                ico_snapset = "CURSOR"                               
+                ico_snapset = "FORCE_FORCE"                               
                 tx_snapset = " SnapSet"                  
                   
                 # STATION #
@@ -480,6 +483,10 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
  
  
             elif display_name == 'icon_id':  
+
+                # CUSTOM #                         
+                ico_custom = "LAMP_DATA"                               
+                tx_custom = ""
 
                 # RULER #            
                 ico_ruler = "NOCURVE"         
@@ -494,7 +501,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
                 tx_shading = "" 
 
                  # CURSOR TO #
-                ico_cursorto = "FORCE_FORCE"                               
+                ico_cursorto = "CURSOR"                               
                 tx_cursorto = ""    
   
                 # SELECT TO #
@@ -510,7 +517,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
                 tx_advanced = "" 
 
                 # SNAPSET #
-                ico_snapset = "CURSOR"                               
+                ico_snapset = "FORCE_FORCE"                               
                 tx_snapset = ""                  
                   
                 # STATION #
@@ -518,6 +525,10 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
                 tx_station = ""  
 
             elif display_name == 'text_id': 
+
+                # CUSTOM #                    
+                ico_custom = "NONE"
+                tx_custom = "Custom"
 
                 # RULER #                    
                 ico_ruler = "NONE"
@@ -557,12 +568,19 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
 
 
-
             # OPTIONS #  
             row.menu("VIEW3D_TP_Header_Options_Menu", text="", icon= "SCRIPTWIN")         
             
             row.separator()
            
+            # CUSTOM #  
+            display_custom = context.user_preferences.addons[__package__].preferences.tab_display_custom
+            if display_custom == 'on':
+
+                row.menu("VIEW3D_TP_Header_Custom_Menu", text= tx_custom, icon= ico_custom)
+
+                row.separator()       
+
   
             # RULER #  
             display_ruler = context.user_preferences.addons[__package__].preferences.tab_display_ruler
@@ -570,16 +588,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
                 row.menu("VIEW3D_TP_Header_Ruler_Menu", text= tx_ruler, icon= ico_ruler)
 
-                row.separator()
-     
-
-             # SNAPSET #   
-            display_snapset = context.user_preferences.addons[__package__].preferences.tab_display_snapset
-            if display_snapset == 'on': 
-              
-                row.menu("VIEW3D_TP_Header_SnapSet_Menu", text= tx_snapset, icon= ico_snapset)
-
-                row.separator()               
+                row.separator()          
                 
 
             # SNAP TO #   
@@ -594,6 +603,16 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
                
                 row.separator()
           
+    
+
+             # SNAPSET #   
+            display_snapset = context.user_preferences.addons[__package__].preferences.tab_display_snapset
+            if display_snapset == 'on': 
+              
+                row.menu("VIEW3D_TP_Header_SnapSet_Menu", text= tx_snapset, icon= ico_snapset)
+
+                row.separator()     
+
             
             # ORIGIN TO #   
             display_origin = context.user_preferences.addons[__package__].preferences.tab_display_origin

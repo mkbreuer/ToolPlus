@@ -74,5 +74,7 @@ class VIEW3D_TP_Header_Station_Menu(bpy.types.Menu):
             layout.operator("tp_ops.snapline", text='SnapLine', icon_value=button_snap_line.icon_id) 
             
             
-            
+        layout.separator()                
+        
+        layout.label("Snap Transform")            
 

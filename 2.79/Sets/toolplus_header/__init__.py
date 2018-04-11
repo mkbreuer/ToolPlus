@@ -19,7 +19,7 @@
 bl_info = {
     "name": "T+ Header",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2),
+    "version": (0, 2, 1),
     "blender": (2, 79, 0),
     "location": "3D View > Header",
     "description": "tools for 3d view header",
@@ -154,6 +154,7 @@ class TP_Panels_Preferences(AddonPreferences):
 
 
     #------------------------------
+
 
     # MENU #
     tab_menu_header = EnumProperty(
@@ -291,6 +292,19 @@ class TP_Panels_Preferences(AddonPreferences):
         items=(('on', 'Window on', 'enable tools in header'), 
                ('off', 'Window off', 'disable tools in header')), 
         default='on', update = update_tools_header)
+
+
+    #----------------------------
+
+
+    # CUSTOM #
+    
+    tab_display_custom = EnumProperty(
+        name = 'Custom Menu', 
+        description = 'on / off',
+        items=(('on', 'Custom on', 'enable custom menu in header'), 
+               ('off', 'Custom off', 'disable custom menu in header')), 
+        default='off', update = update_tools_header)
 
 
     #----------------------------
@@ -660,48 +674,78 @@ class TP_Panels_Preferences(AddonPreferences):
             row.prop(self, 'tab_display_name',  expand=True)
 
             box.separator() 
-            box.separator() 
-            
-            row = box.column_flow(4)  
-            row.label("Tools Type", icon ="COLLAPSEMENU") 
 
-            box.separator() 
-            box.separator() 
+            display_button_menu = context.user_preferences.addons[__name__].preferences.tab_display_buttons
+            if display_button_menu == 'on':  
 
-            row = box.row().column_flow(4)   
-            row.prop(self, 'tab_display_ruler',  expand=True)
-            row.prop(self, 'tab_display_objects',  expand=True)
-            row.prop(self, 'tab_display_snap', expand=True)
-            row.prop(self, 'tab_display_snapset', expand=True)
-            row.prop(self, 'tab_display_shading', expand=True)
-            row.prop(self, 'tab_display_origin', expand=True)
-            row.prop(self, 'tab_display_advanced', expand=True)
+                box.separator() 
+                
+                row = box.column_flow(4)  
+                row.label("Buttons Type", icon ="COLLAPSEMENU") 
 
-            box.separator() 
-            box.separator() 
-            
-            row = box.row().column_flow(4)   
-            row.prop(self, 'tab_display_station',  expand=True)
-            row.prop(self, 'tab_display_point_distance',  expand=True)
-            row.prop(self, 'tab_display_point_move',  expand=True)
-            row.prop(self, 'tab_display_roto_move',  expand=True)
-            row.prop(self, 'tab_display_point_scale',  expand=True)
-            row.prop(self, 'tab_display_point_align',  expand=True)
-            row.prop(self, 'tab_display_snapline', expand=True)
+                box.separator() 
+                box.separator() 
 
-            box.separator() 
-            box.separator() 
-            
-            row = box.row().column_flow(4)    
-            row.prop(self, 'tab_display_history', expand=True)
-            row.prop(self, 'tab_display_save', expand=True)
-            row.prop(self, 'tab_display_view', expand=True)
-            row.prop(self, 'tab_display_window', expand=True)
+                row = box.row().column_flow(4)   
+                row.prop(self, 'tab_display_ruler',  expand=True)
+                row.prop(self, 'tab_display_objects',  expand=True)
+                row.prop(self, 'tab_display_snap', expand=True)
+                row.prop(self, 'tab_display_snapset', expand=True)
+                row.prop(self, 'tab_display_shading', expand=True)
+                row.prop(self, 'tab_display_origin', expand=True)
+                row.prop(self, 'tab_display_advanced', expand=True)
 
-            box.separator() 
-            box.separator() 
+                box.separator() 
+                box.separator() 
+                
+                row = box.row().column_flow(4)   
+                row.prop(self, 'tab_display_station',  expand=True)
+                row.prop(self, 'tab_display_point_distance',  expand=True)
+                row.prop(self, 'tab_display_point_move',  expand=True)
+                row.prop(self, 'tab_display_roto_move',  expand=True)
+                row.prop(self, 'tab_display_point_scale',  expand=True)
+                row.prop(self, 'tab_display_point_align',  expand=True)
+                row.prop(self, 'tab_display_snapline', expand=True)
+
+                box.separator() 
+                box.separator() 
+                
+                row = box.row().column_flow(4)    
+                row.prop(self, 'tab_display_history', expand=True)
+                row.prop(self, 'tab_display_save', expand=True)
+                row.prop(self, 'tab_display_view', expand=True)
+                row.prop(self, 'tab_display_window', expand=True)
+
+                box.separator() 
+                box.separator() 
  
+            else:
 
+                box.separator() 
+                
+                row = box.column_flow(4)  
+                row.label("Menu Type", icon ="COLLAPSEMENU") 
+
+                box.separator() 
+                box.separator() 
+
+                row = box.row().column_flow(4)              
+                row.prop(self, 'tab_display_custom',  expand=True)
+                row.prop(self, 'tab_display_ruler',  expand=True)
+                row.prop(self, 'tab_display_snap', expand=True)
+                row.prop(self, 'tab_display_snapset', expand=True)
+                row.prop(self, 'tab_display_origin', expand=True)
+                row.prop(self, 'tab_display_advanced', expand=True)
+                row.prop(self, 'tab_display_station', expand=True)
+                row.prop(self, 'tab_display_objects',  expand=True)
+                row.prop(self, 'tab_display_shading', expand=True)
+
+          
+                box.separator() 
+                box.separator() 
+
+
+      
         # SNAPLINE #
         if self.prefs_tabs == 'snapline':
 

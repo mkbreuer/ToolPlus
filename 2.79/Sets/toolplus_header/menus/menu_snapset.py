@@ -57,4 +57,7 @@ class VIEW3D_TP_Header_SnapSet_Menu(bpy.types.Menu):
         else:
             button_snap_retopo = icons.get("icon_snap_retopo")
             layout.operator("tp_ops.retopo", text="Retopo", icon_value=button_snap_retopo.icon_id)    
-
+        
+        layout.separator()
+                
+        layout.label("SnapSet Presets")

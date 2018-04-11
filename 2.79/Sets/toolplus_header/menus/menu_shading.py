@@ -116,6 +116,16 @@ class VIEW3D_TP_Header_Shading_Menu(bpy.types.Menu):
                 layout.operator("mesh.faces_shade_smooth", text="Smooth", icon="SMOOTH") 
 
                 layout.separator() 
+             
+                layout.operator("mesh.normals_make_consistent",text="Recalulate Normals", icon='SNAP_NORMAL')
+
+                button_normals_flip = icons.get("icon_normals_flip")
+                layout.operator("mesh.flip_normals", text="Flip Normals", icon_value=button_normals_flip.icon_id)                 
+               
+                button_remove_doubles = icons.get("icon_remove_doubles")
+                layout.operator("mesh.remove_doubles", text="Remove Doubles",icon_value=button_remove_doubles.icon_id)                            
+
+                layout.separator() 
       
                 layout.prop(context.active_object.data, "auto_smooth_angle", text="AutoSmooth Angle")              
                 layout.prop(context.active_object.data, "use_auto_smooth",icon="AUTO")
@@ -134,3 +144,8 @@ class VIEW3D_TP_Header_Shading_Menu(bpy.types.Menu):
                 layout.operator("mesh.mark_sharp", text="Clear E-Sharp", icon='PANEL_CLOSE').clear = True
                 layout.operator("mesh.mark_sharp", text="Sharp Edges", icon='SNAP_EDGE')
 
+
+
+        layout.separator()                
+        
+        layout.label("Shading Tools")   

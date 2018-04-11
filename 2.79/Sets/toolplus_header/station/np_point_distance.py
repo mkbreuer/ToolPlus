@@ -256,8 +256,7 @@ def draw_callback_px_TRANS(self, context):
 
     np_print('04_callback_TRANS_START')
 
-    addon_key = __package__.split(".")[0]  
-    addon_prefs = context.user_preferences.addons[addon_key].preferences
+    addon_prefs = context.user_preferences.addons[__package__].preferences
 
     scale = addon_prefs.nppd_scale
     badge = addon_prefs.nppd_badge
@@ -998,8 +997,7 @@ def draw_callback_px_NAV(self, context):
 
     np_print('05_callback_NAV_START')
 
-    addon_key = __package__.split(".")[0]  
-    addon_prefs = context.user_preferences.addons[addon_key].preferences
+    addon_prefs = context.user_preferences.addons[__package__].preferences
 
     scale = addon_prefs.nppd_scale
     badge = addon_prefs.nppd_badge
@@ -1450,10 +1448,7 @@ class NP020PDHoldResult(bpy.types.Operator):
         flag = NP020PD.flag
         np_print('flag=', flag)
         np_print('07_HOLD_INVOKE_a')
-
-        addon_key = __package__.split(".")[0]    
-        addon_prefs = context.user_preferences.addons[addon_key].preferences
-
+        addon_prefs = context.user_preferences.addons[__package__].preferences
         hold = addon_prefs.nppd_hold
         if hold:
             if context.area.type == 'VIEW_3D':
@@ -1484,10 +1479,7 @@ class NP020PDDeletePoints(bpy.types.Operator):
     bl_options = {'INTERNAL'}
 
     def execute(self, context):
-
-        addon_key = __package__.split(".")[0]  
-        addon_prefs = context.user_preferences.addons[addon_key].preferences
-
+        addon_prefs = context.user_preferences.addons[__package__].preferences
         dist = NP020PD.dist
         step = addon_prefs.nppd_step
         info = addon_prefs.nppd_info

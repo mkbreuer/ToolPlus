@@ -162,6 +162,10 @@ class VIEW3D_TP_Origin_Menu(bpy.types.Menu):
             draw_origin_menu_layout(self, context, layout) 
 
 
+        layout.separator()                
+        
+        layout.label("Snap Origin to...")
+
 
 
 class VIEW3D_TP_Origin_Advanced_Menu(bpy.types.Menu):
@@ -197,3 +201,7 @@ class VIEW3D_TP_Origin_Advanced_Menu(bpy.types.Menu):
         button_align_zero = icons.get("icon_align_zero")                
         layout.operator("tp_ops.zero_axis", "Zero to Axis", icon_value=button_align_zero.icon_id)      
 
+
+        layout.separator()                
+        
+        layout.label("Align to...")

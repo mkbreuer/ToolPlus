@@ -106,6 +106,10 @@ def load_icons():
     # DISPLAY #
     mkb_icons.load("icon_draw_wire", os.path.join(icons_dir, "draw_wire.png"), 'IMAGE')
 
+    # SHADING #
+    mkb_icons.load("icon_remove_doubles", os.path.join(icons_dir, "remove_doubles.png"), 'IMAGE')
+    mkb_icons.load("icon_normals_flip", os.path.join(icons_dir, "normals_flip.png"), 'IMAGE')
+
 
     #--------------------------------------------
 

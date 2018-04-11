@@ -36,8 +36,7 @@ from toolplus_header.station.utils_function import *
 
 def addon_settings_graph():
 
-    addon_key = __package__.split(".")[0]    
-    addon_prefs = bpy.context.user_preferences.addons[addon_key].preferences
+    addon_prefs = bpy.context.user_preferences.addons[__package__].preferences
 
     np_col_scheme = addon_prefs.np_col_scheme
     np_size_num = int(round(addon_prefs.np_size_num, 0))

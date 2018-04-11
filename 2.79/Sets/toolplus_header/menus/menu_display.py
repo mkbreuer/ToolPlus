@@ -91,3 +91,6 @@ class VIEW3D_TP_Header_Display_Menu(bpy.types.Menu):
         layout.prop(obj, "show_name", text="Name")
         layout.prop(obj, "show_axis", text="Axis")
 
+        layout.separator()                
+        
+        layout.label("Display Tools")        

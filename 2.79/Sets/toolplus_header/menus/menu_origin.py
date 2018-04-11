@@ -155,3 +155,8 @@ class VIEW3D_TP_Header_OriginTo_Menu(bpy.types.Menu):
 
             draw_origin_menu_layout(self, context, layout) 
 
+
+
+        layout.separator()                
+        
+        layout.label("Snap Origin to...")

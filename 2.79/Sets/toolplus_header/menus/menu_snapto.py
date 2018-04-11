@@ -61,6 +61,11 @@ class VIEW3D_TP_Header_CursorTo_Menu(bpy.types.Menu):
             
             button_cursor_3point_center = icons.get("icon_cursor_3point_center")           
             layout.operator("mesh.circlecentercursor", text="Circle", icon_value=button_cursor_3point_center.icon_id)   
+        
+        layout.separator()
+
+        layout.label("Snap Cursor to...")
+
 
 
 class VIEW3D_TP_Header_SelectTo_Menu(bpy.types.Menu):
@@ -91,5 +96,8 @@ class VIEW3D_TP_Header_SelectTo_Menu(bpy.types.Menu):
         button_select_active_obm = icons.get("icon_select_active_obm")
         layout.operator("view3d.snap_selected_to_active", text="Active", icon_value=button_select_active_obm.icon_id)
 
+        layout.separator()
 
+        layout.label("Snap Select to...")
+        
 
