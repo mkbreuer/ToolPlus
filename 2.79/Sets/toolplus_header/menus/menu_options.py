@@ -43,26 +43,25 @@ class VIEW3D_TP_Header_Options_Buttons(bpy.types.Menu):
 
         addon_key = __package__.split(".")[0]    
         panel_prefs = context.user_preferences.addons[addon_key].preferences
-        expand = panel_prefs.expand_panel_tools
  
-        layout.prop(panel_prefs, 'tab_display_ruler', text="")
-        layout.prop(panel_prefs, 'tab_display_objects', text="")
-        layout.prop(panel_prefs, 'tab_display_snap', text="")
-        layout.prop(panel_prefs, 'tab_display_snapset', text="")
-        layout.prop(panel_prefs, 'tab_display_shading', text="")
-        layout.prop(panel_prefs, 'tab_display_advanced', text="")
+        layout.prop(panel_prefs, 'tab_display_ruler')
+        layout.prop(panel_prefs, 'tab_display_objects')
+        layout.prop(panel_prefs, 'tab_display_snap')
+        layout.prop(panel_prefs, 'tab_display_snapset')
+        layout.prop(panel_prefs, 'tab_display_shading')
+        layout.prop(panel_prefs, 'tab_display_advanced')
 
-        layout.prop(panel_prefs, 'tab_display_point_distance', text="")
-        layout.prop(panel_prefs, 'tab_display_point_move', text="")
-        layout.prop(panel_prefs, 'tab_display_roto_move', text="")
-        layout.prop(panel_prefs, 'tab_display_point_scale', text="")
-        layout.prop(panel_prefs, 'tab_display_point_align', text="")
-        layout.prop(panel_prefs, 'tab_display_snapline', text="")
+        layout.prop(panel_prefs, 'tab_display_point_distance')
+        layout.prop(panel_prefs, 'tab_display_point_move')
+        layout.prop(panel_prefs, 'tab_display_roto_move')
+        layout.prop(panel_prefs, 'tab_display_point_scale')
+        layout.prop(panel_prefs, 'tab_display_point_align')
+        layout.prop(panel_prefs, 'tab_display_snapline')
 
-        layout.prop(panel_prefs, 'tab_display_history', text="")
-        layout.prop(panel_prefs, 'tab_display_save', text="")
-        layout.prop(panel_prefs, 'tab_display_view', text="")
-        layout.prop(panel_prefs, 'tab_display_window', text="")
+        layout.prop(panel_prefs, 'tab_display_history')
+        layout.prop(panel_prefs, 'tab_display_save')
+        layout.prop(panel_prefs, 'tab_display_view')
+        layout.prop(panel_prefs, 'tab_display_window')
 
 
 class VIEW3D_TP_Header_Options_Buttons_Menu(bpy.types.Menu):
@@ -80,17 +79,16 @@ class VIEW3D_TP_Header_Options_Buttons_Menu(bpy.types.Menu):
 
         addon_key = __package__.split(".")[0]    
         panel_prefs = context.user_preferences.addons[addon_key].preferences
-        expand = panel_prefs.expand_panel_tools
  
-        layout.prop(panel_prefs, 'tab_display_custom', text="")
-        layout.prop(panel_prefs, 'tab_display_ruler', text="")
-        layout.prop(panel_prefs, 'tab_display_snap', text="")
-        layout.prop(panel_prefs, 'tab_display_snapset', text="")
-        layout.prop(panel_prefs, 'tab_display_origin', text="")
-        layout.prop(panel_prefs, 'tab_display_advanced', text="")
-        layout.prop(panel_prefs, 'tab_display_station', text="")
-        layout.prop(panel_prefs, 'tab_display_objects', text="")
-        layout.prop(panel_prefs, 'tab_display_shading', text="")
+        layout.prop(panel_prefs, 'tab_display_custom')
+        layout.prop(panel_prefs, 'tab_display_ruler')
+        layout.prop(panel_prefs, 'tab_display_snap')
+        layout.prop(panel_prefs, 'tab_display_snapset')
+        layout.prop(panel_prefs, 'tab_display_origin')
+        layout.prop(panel_prefs, 'tab_display_advanced')
+        layout.prop(panel_prefs, 'tab_display_station')
+        layout.prop(panel_prefs, 'tab_display_objects')
+        layout.prop(panel_prefs, 'tab_display_shading')
 
 
 
@@ -107,7 +105,6 @@ class VIEW3D_TP_Header_Options_Menu(bpy.types.Menu):
 
         layout.scale_y = 1.5      
      
-        #layout.prop(tp_props, "display_help", text="View Help", icon='INFO')    
         #layout.operator("wm.url_open", text="Open Wiki", icon='QUESTION').url = "https://github.com/mkbreuer/ToolPlus/wiki"             
 
         wm = context.window_manager    
@@ -116,30 +113,26 @@ class VIEW3D_TP_Header_Options_Menu(bpy.types.Menu):
 
         addon_key = __package__.split(".")[0]    
         panel_prefs = context.user_preferences.addons[addon_key].preferences
-        expand = panel_prefs.expand_panel_tools
 
         layout.separator() 
 
-        display_button_menu = context.user_preferences.addons[addon_key].preferences.tab_display_gui
-        if display_button_menu == 'buttons':  
+        display_button_menu = context.user_preferences.addons[addon_key].preferences.tab_display_buttons
+        if display_button_menu == True:  
 
             layout.menu("VIEW3D_TP_Header_Options_Buttons") 
             
             layout.separator()          
 
+        else:
 
-        display_button_menu = context.user_preferences.addons[addon_key].preferences.tab_display_gui
-        if display_button_menu == 'menus':  
-
-      
             layout.prop(panel_prefs, 'tab_display_name', text="")
             
             layout.menu("VIEW3D_TP_Header_Options_Buttons_Menu")            
            
             layout.separator()  
+        
 
-
-        layout.prop(panel_prefs, 'tab_display_gui', text="")
+        layout.prop(panel_prefs, 'tab_display_buttons')
 
 
 

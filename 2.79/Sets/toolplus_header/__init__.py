@@ -19,7 +19,7 @@
 bl_info = {
     "name": "T+ Header",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 3),
+    "version": (0, 1, 3),
     "blender": (2, 79, 0),
     "location": "3D View > Header",
     "description": "tools for 3d view header",
@@ -197,29 +197,6 @@ class TP_Panels_Preferences(AddonPreferences):
     #----------------------------
 
     # TOOLS UI #    
-    expand_panel_tools = bpy.props.BoolProperty(name="Expand", description="Expand, to display the settings", default=False)    
-
-    tab_display_options = EnumProperty(
-        name = 'Options', 
-        description = 'on / off',
-        items=(('on',  'Show Options', 'enable option menu in header'), 
-               ('off', 'Hide Options', 'disable option menu in header')), 
-        default='on', update = update_tools_header)
-
-    tab_display_gui = EnumProperty(
-        name = 'Buttons or Menus', 
-        description = 'on = only butttons / off = use menus',
-        items=(('radio',   'Use Radio Buttons', 'enable tools in header'), 
-               ('buttons', 'Use only Buttons',  'enable tools in header'), 
-               ('menus',   'Use Menu Lists',    'enable tools in header')), 
-        default='menus', update = update_tools_header)
-
-    tab_display_bottom = EnumProperty(
-        name = 'Top or Bottom', 
-        description = 'use menus for bottom or top header',
-        items=(('bottom', 'Type Bottom', 'use menus for bottom header'), 
-               ('top',    'Type Top',    'use menus for top header')), 
-        default='bottom', update = update_tools_header)
 
     tab_display_name = EnumProperty(
         name = 'Name & Icon Toggle', 
@@ -229,118 +206,31 @@ class TP_Panels_Preferences(AddonPreferences):
                ('text_id', 'Show only Names', 'disable names in header menus')), 
         default='both_id', update = update_tools_header)
 
+    tab_display_buttons = bpy.props.BoolProperty(name="Menus or Buttons", description="show or hide tools in header", default=False)    
 
     # TOOLS #       
-    tab_display_ruler = EnumProperty(
-        name = 'Ruler Display', 
-        description = 'on / off',
-        items=(('on', 'Ruler on', 'enable tools in header'), 
-               ('off', 'Ruler off', 'disable tools in header')), 
-        default='on', update = update_tools_header)
-
-    tab_display_objects = EnumProperty(
-        name = 'Object Display', 
-        description = 'on / off',
-        items=(('on', 'Obj-Display on', 'enable tools in header'), 
-               ('off', 'Obj-Display off', 'disable tools in header')), 
-        default='on', update = update_tools_header)
-
-    tab_display_snap = EnumProperty(
-        name = 'SnapTo Display', 
-        description = 'on / off',
-        items=(('on', 'SnapTo on', 'enable tools in header'), 
-               ('off', 'SnapTo off', 'disable tools in header')), 
-        default='on', update = update_tools_header)
-
-    tab_display_snapset = EnumProperty(
-        name = 'SnapSet Display', 
-        description = 'on / off',
-        items=(('on', 'SnapSet on', 'enable tools in header'), 
-               ('off','SnapSet off', 'disable tools in header')), 
-        default='on', update = update_tools_header)
-
-    tab_display_shading = EnumProperty(
-        name = 'Shading Tools', 
-        description = 'on / off',
-        items=(('on', 'Shading on', 'enable tools in header'), 
-               ('off', 'Shading off', 'disable tools in header')), 
-        default='on', update = update_tools_header)
-
-    tab_display_history = EnumProperty(
-        name = 'History Tools', 
-        description = 'on / off',
-        items=(('on', 'History on', 'enable tools in header'), 
-               ('off', 'History off', 'disable tools in header')), 
-        default='on', update = update_tools_header)
-
-    tab_display_save = EnumProperty(
-        name = 'Save Tools', 
-        description = 'on / off',
-        items=(('on', 'Save on', 'enable tools in header'), 
-               ('off', 'Save off', 'disable tools in header')), 
-        default='on', update = update_tools_header)
-
-    tab_display_view = EnumProperty(
-        name = 'View Tools', 
-        description = 'on / off',
-        items=(('on', 'View on', 'enable tools in header'), 
-               ('off', 'View off', 'disable tools in header')), 
-        default='on', update = update_tools_header)
-
-    tab_display_window = EnumProperty(
-        name = 'Window Tools', 
-        description = 'on / off',
-        items=(('on', 'Window on', 'enable tools in header'), 
-               ('off', 'Window off', 'disable tools in header')), 
-        default='on', update = update_tools_header)
-
-
-    #----------------------------
-
+    tab_display_ruler = bpy.props.BoolProperty(name="Ruler", description="show or hide tools in header", default=True)    
+    tab_display_objects = bpy.props.BoolProperty(name="Object", description="show or hide tools in header", default=True)    
+    tab_display_snap = bpy.props.BoolProperty(name="SnapTo", description="show or hide tools in header", default=True)    
+    tab_display_snapset = bpy.props.BoolProperty(name="SnapSet", description="show or hide tools in header", default=True)    
+    tab_display_shading = bpy.props.BoolProperty(name="Shading", description="show or hide tools in header", default=True)    
+    tab_display_history = bpy.props.BoolProperty(name="History", description="show or hide tools in header", default=True)    
+    tab_display_save = bpy.props.BoolProperty(name="Save", description="show or hide tools in header", default=True)    
+    tab_display_view = bpy.props.BoolProperty(name="View", description="show or hide tools in header", default=True)    
+    tab_display_window = bpy.props.BoolProperty(name="Window", description="show or hide tools in header", default=True)    
 
     # CUSTOM #
-    
-    tab_display_custom = EnumProperty(
-        name = 'Custom Menu', 
-        description = 'on / off',
-        items=(('on', 'Custom on', 'enable custom menu in header'), 
-               ('off', 'Custom off', 'disable custom menu in header')), 
-        default='off', update = update_tools_header)
-
-
-    #----------------------------
-
+    tab_display_custom = bpy.props.BoolProperty(name="Custom", description="show or hide tools in header", default=True)    
 
     # ORIGIN #
-
-    tab_display_origin = EnumProperty(
-        name = 'Origin', 
-        description = 'on / off',
-        items=(('on', 'Origin on', 'enable tools in header'), 
-               ('off', 'Origin off', 'disable tools in header')), 
-        default='on', update = update_tools_header)
-
-    tab_display_advanced = EnumProperty(
-        name = 'Align Advanced', 
-        description = 'on / off',
-        items=(('on', 'Advanced on', 'enable tools in header'), 
-               ('off', 'Advanced off', 'disable tools in header')), 
-        default='on', update = update_tools_header)
-
-
+    tab_display_origin = bpy.props.BoolProperty(name="Origin", description="show or hide tools in header", default=True)    
+    tab_display_advanced = bpy.props.BoolProperty(name="Align Advanced", description="show or hide tools in header", default=True)    
 
     #----------------------------
 
 
     # SNAPLINE #
-
-    tab_display_snapline = EnumProperty(
-        name = 'SnapLine', 
-        description = 'on / off',
-        items=(('on', 'SnapLine on', 'enable tools in header'), 
-               ('off', 'SnapLine off', 'disable tools in header')), 
-        default='off', update = update_tools_header)
-
+    tab_display_snapline = bpy.props.BoolProperty(name="SnapLine", description="show or hide tools in header", default=True)    
 
     expand_snap_settings = bpy.props.BoolProperty(name="Expand", description="Expand, to display the settings", default=False)      
 
@@ -365,36 +255,12 @@ class TP_Panels_Preferences(AddonPreferences):
 
 
     # NP STATION #
-
-    tab_display_station = EnumProperty(name = 'NP Station', description = 'on / off',
-                  items=(('on', 'NP Station on', 'enable tools in header'), 
-                         ('off', 'NP Station off', 'disable tools in header')), 
-                         default='off', update = update_tools_header)
-
-    tab_display_point_distance = EnumProperty(name = 'NP Station', description = 'on / off',
-                  items=(('on', 'NP Distance on', 'enable tools in header'), 
-                         ('off', 'NP Distance off', 'disable tools in header')), 
-                         default='on', update = update_tools_header)
-
-    tab_display_point_move = EnumProperty(name = 'NP Station', description = 'on / off',
-                  items=(('on', 'NP Move on', 'enable tools in header'), 
-                         ('off', 'NP Move off', 'disable tools in header')), 
-                         default='on', update = update_tools_header)
-
-    tab_display_roto_move = EnumProperty(name = 'NP Station', description = 'on / off',
-                  items=(('on', 'NP Rotation on', 'enable tools in header'), 
-                         ('off', 'NP Rotation off', 'disable tools in header')), 
-                         default='on', update = update_tools_header)
-
-    tab_display_point_scale = EnumProperty(name = 'NP Station', description = 'on / off',
-                  items=(('on', 'NP Scale on', 'enable tools in header'), 
-                         ('off', 'NP Scale off', 'disable tools in header')), 
-                         default='on', update = update_tools_header)
-
-    tab_display_point_align = EnumProperty(name = 'NP Station', description = 'on / off',
-                  items=(('on', 'NP Align on', 'enable tools in header'), 
-                         ('off', 'NP Align off', 'disable tools in header')), 
-                         default='on', update = update_tools_header)
+    tab_display_station = bpy.props.BoolProperty(name="NP Station", description="show or hide tools in header", default=True)    
+    tab_display_point_distance = bpy.props.BoolProperty(name="NP Distance", description="show or hide tools in header", default=True)    
+    tab_display_point_move = bpy.props.BoolProperty(name="NP Move", description="show or hide tools in header", default=True)    
+    tab_display_roto_move = bpy.props.BoolProperty(name="NP Rotation", description="show or hide tools in header", default=True)    
+    tab_display_point_scale = bpy.props.BoolProperty(name="NP Scale", description="show or hide tools in header", default=True)    
+    tab_display_point_align = bpy.props.BoolProperty(name="NP Align", description="show or hide tools in header", default=True)    
 
 
     #------------------------------
@@ -605,10 +471,11 @@ class TP_Panels_Preferences(AddonPreferences):
             
             row = box.column(1)   
             row.label(text="Welcome to T+ Header !")  
-            row.label(text="> This addon append functions to the 3d view header as menus or button tools")   
+            row.label(text="> This addon append functions to the 3d view header as menus or buttons")   
             row.label(text="> The menu look can be adjusted directly in the addon preferences or in header")                      
-            row.label(text="> Gear Button: open the options for text or icons in the menus")  
+            row.label(text="> Option Gear Button: allows to change text or icons in the menus")  
             row.label(text="> Save user setting to apply the changes durably.")  
+            row.label(text="> There is also a custom menu to have more functions if needed!")  
             row.label(text="> Have Fun! ;)")  
 
 
@@ -663,59 +530,57 @@ class TP_Panels_Preferences(AddonPreferences):
             box.separator()             
            
             row = box.column_flow(4)  
-            row.label("Header UI", icon ="COLLAPSEMENU") 
+            row.label("HEADER UI", icon ="COLLAPSEMENU") 
 
             box.separator() 
             box.separator() 
 
             row = box.row().column_flow(4)          
-            #row.prop(self, 'tab_display_options',  expand=True)
-            row.prop(self, 'tab_display_gui',  expand=True)
-            #row.prop(self, 'tab_display_bottom',  expand=True)
+            row.prop(self, 'tab_display_buttons',  expand=True)
             row.prop(self, 'tab_display_name',  expand=True)
 
             box.separator() 
 
-            display_button_menu = context.user_preferences.addons[__name__].preferences.tab_display_gui
-            if display_button_menu == 'on':  
+            display_button_menu = context.user_preferences.addons[__name__].preferences.tab_display_buttons
+            if display_button_menu == True:  
 
                 box.separator() 
                 
                 row = box.column_flow(4)  
-                row.label("Buttons Type", icon ="COLLAPSEMENU") 
+                row.label("BUTTON TOOLS TYPE", icon ="COLLAPSEMENU") 
 
                 box.separator() 
                 box.separator() 
 
                 row = box.row().column_flow(4)   
-                row.prop(self, 'tab_display_ruler',  expand=True)
-                row.prop(self, 'tab_display_objects',  expand=True)
-                row.prop(self, 'tab_display_snap', expand=True)
-                row.prop(self, 'tab_display_snapset', expand=True)
-                row.prop(self, 'tab_display_shading', expand=True)
-                row.prop(self, 'tab_display_origin', expand=True)
-                row.prop(self, 'tab_display_advanced', expand=True)
+                row.prop(self, 'tab_display_ruler')
+                row.prop(self, 'tab_display_objects')
+                row.prop(self, 'tab_display_snap')
+                row.prop(self, 'tab_display_snapset')
+                row.prop(self, 'tab_display_shading')
+                row.prop(self, 'tab_display_origin')
+                row.prop(self, 'tab_display_advanced')
 
                 box.separator() 
                 box.separator() 
                 
                 row = box.row().column_flow(4)   
-                row.prop(self, 'tab_display_station',  expand=True)
-                row.prop(self, 'tab_display_point_distance',  expand=True)
-                row.prop(self, 'tab_display_point_move',  expand=True)
-                row.prop(self, 'tab_display_roto_move',  expand=True)
-                row.prop(self, 'tab_display_point_scale',  expand=True)
-                row.prop(self, 'tab_display_point_align',  expand=True)
-                row.prop(self, 'tab_display_snapline', expand=True)
+                row.prop(self, 'tab_display_station')
+                row.prop(self, 'tab_display_point_distance')
+                row.prop(self, 'tab_display_point_move')
+                row.prop(self, 'tab_display_roto_move')
+                row.prop(self, 'tab_display_point_scale')
+                row.prop(self, 'tab_display_point_align')
+                row.prop(self, 'tab_display_snapline')
 
                 box.separator() 
                 box.separator() 
                 
                 row = box.row().column_flow(4)    
-                row.prop(self, 'tab_display_history', expand=True)
-                row.prop(self, 'tab_display_save', expand=True)
-                row.prop(self, 'tab_display_view', expand=True)
-                row.prop(self, 'tab_display_window', expand=True)
+                row.prop(self, 'tab_display_history')
+                row.prop(self, 'tab_display_save')
+                row.prop(self, 'tab_display_view')
+                row.prop(self, 'tab_display_window')
 
                 box.separator() 
                 box.separator() 
@@ -725,23 +590,28 @@ class TP_Panels_Preferences(AddonPreferences):
                 box.separator() 
                 
                 row = box.column_flow(4)  
-                row.label("Menu Type", icon ="COLLAPSEMENU") 
+                row.label("MENU TOOLS TYPE", icon ="COLLAPSEMENU") 
 
                 box.separator() 
                 box.separator() 
 
                 row = box.row().column_flow(4)              
-                row.prop(self, 'tab_display_custom',  expand=True)
-                row.prop(self, 'tab_display_ruler',  expand=True)
-                row.prop(self, 'tab_display_snap', expand=True)
-                row.prop(self, 'tab_display_snapset', expand=True)
-                row.prop(self, 'tab_display_origin', expand=True)
-                row.prop(self, 'tab_display_advanced', expand=True)
-                row.prop(self, 'tab_display_station', expand=True)
-                row.prop(self, 'tab_display_objects',  expand=True)
-                row.prop(self, 'tab_display_shading', expand=True)
-
+                row.prop(self, 'tab_display_custom')
+                row.prop(self, 'tab_display_ruler')
+                row.prop(self, 'tab_display_snap')
+                row.prop(self, 'tab_display_snapset')
+                row.prop(self, 'tab_display_origin')
+                row.prop(self, 'tab_display_advanced')
+                row.prop(self, 'tab_display_station')
+                row.prop(self, 'tab_display_objects')
+                row.prop(self, 'tab_display_shading')
           
+                box.separator() 
+                box.separator() 
+                
+                row = box.row()             
+                row.operator('tp_ops.keymap_custom', text="Open Custom Menu in Text Editor")                
+                
                 box.separator() 
                 box.separator() 
 
@@ -989,6 +859,21 @@ class Dropdown_Header_Props(bpy.types.PropertyGroup):
 
     display_tools = bpy.props.BoolProperty(name = "Open/Close", description = "Open/Close", default = True) 
 
+
+
+# OPEN FILE IN TEXT EDITOR #
+from os.path import dirname
+from . menus import menu_custom
+
+class View3D_TP_KeyMap_Custom(bpy.types.Operator):
+    bl_idname = "tp_ops.keymap_custom"
+    bl_label = "Open KeyMap (Text Editor)"
+    bl_description = "open keymap file in the text editor"
+
+    def execute(self, context):
+        path = menu_custom.__file__
+        bpy.data.texts.load(path)
+        return {"FINISHED"}
 
     
 # REGISTRY #

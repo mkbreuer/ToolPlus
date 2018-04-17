@@ -43,18 +43,21 @@ class VIEW3D_TP_Header_Custom_Menu(bpy.types.Menu):
 
         if context.mode == 'OBJECT':
 
-            layout.label("Custom")
+            layout.label("Custom Menu")
             
             layout.separator()
           
             layout.label("Custom")
-            layout.label("etc...")
+            layout.operator("render.opengl", text="OpenGl Image", icon ="RENDER_STILL")
+            layout.operator("render.opengl", text="OpenGl Animation", icon ="RENDER_ANIMATION").animation=True
+
 
         else:
    
-            layout.label("Custom")
+            layout.label("Custom Menu")
             
             layout.separator()
           
             layout.label("Custom")
-            layout.label("etc...")
+            layout.operator("render.opengl", text="OpenGl Image", icon ="RENDER_STILL")
+            layout.operator("render.opengl", text="OpenGl Animation", icon ="RENDER_ANIMATION").animation=True            

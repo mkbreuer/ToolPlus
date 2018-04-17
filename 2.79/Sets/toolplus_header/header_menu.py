@@ -110,19 +110,21 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
         row = layout.row(1)
 
-        # OPTIONS #  
-        row.menu("VIEW3D_TP_Header_Options_Menu", text="", icon= "SCRIPTWIN")     
-
-        row.separator() 
 
         # USE BUTTONS #
-        display_buttons = context.user_preferences.addons[__package__].preferences.tab_display_gui
-        if display_buttons == 'buttons': 
+        display_buttons = context.user_preferences.addons[__package__].preferences.tab_display_buttons
+        if display_buttons == True: 
+
+
+            # OPTIONS #  
+            row.menu("VIEW3D_TP_Header_Options_Menu", text="", icon= "SCRIPTWIN")     
+
+            row.separator()
 
 
             # RULER #  
             display_ruler = context.user_preferences.addons[__package__].preferences.tab_display_ruler
-            if display_ruler == 'on':
+            if display_ruler == True:
 
                 button_ruler_triangle = icons.get("icon_ruler_triangle") 
                 row.operator("view3d.ruler", text='', icon_value = button_ruler_triangle.icon_id)     
@@ -132,7 +134,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
             # SNAP SET #   
             display_snap_set = context.user_preferences.addons[__package__].preferences.tab_display_snapset
-            if display_snap_set == 'on': 
+            if display_snap_set == True: 
 
                 row.separator()
 
@@ -159,7 +161,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
            
             # SNAP TO #   
             display_snap = context.user_preferences.addons[__package__].preferences.tab_display_snap
-            if display_snap == 'on':  
+            if display_snap == True:  
 
                 row.separator()
 
@@ -180,7 +182,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
             # ORIGIN TO #   
             display_origin = context.user_preferences.addons[__package__].preferences.tab_display_origin
-            if display_origin == 'on':  
+            if display_origin == True:  
                 
                 row.separator()
                 
@@ -259,7 +261,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
             # ALIGN TO #   
             display_advanced = context.user_preferences.addons[__package__].preferences.tab_display_advanced
-            if display_advanced == 'on':  
+            if display_advanced == True:  
                
                 row.separator()                
                 
@@ -283,7 +285,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
             
             # NP POINT DISTANCE #       
             display_point_distance = context.user_preferences.addons[__package__].preferences.tab_display_point_distance
-            if display_point_distance == 'on':  
+            if display_point_distance == True:  
 
                 button_snap_ruler = icons.get("icon_snap_ruler") 
                 row.operator("tp_ops.np_020_point_distance", text='', icon_value = button_snap_ruler.icon_id)
@@ -291,7 +293,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
             if context.mode == 'OBJECT':
 
                 display_point_move = context.user_preferences.addons[__package__].preferences.tab_display_point_move
-                if display_point_move == 'on':  
+                if display_point_move == True:  
 
                     button_snap_grab = icons.get("icon_snap_grab") 
                     row.operator("tp_ops.np_020_point_move", text='', icon_value=button_snap_grab.icon_id)                   
@@ -301,20 +303,20 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
 
                 display_roto_move = context.user_preferences.addons[__package__].preferences.tab_display_roto_move
-                if display_roto_move == 'on':  
+                if display_roto_move == True:  
 
                     button_snap_rotate = icons.get("icon_snap_rotate") 
                     row.operator("tp_ops.np_020_roto_move", text='', icon_value=button_snap_rotate.icon_id)
 
                 display_point_scale = context.user_preferences.addons[__package__].preferences.tab_display_point_scale
-                if display_point_scale == 'on':   
+                if display_point_scale == True:   
  
                     button_snap_scale = icons.get("icon_snap_scale") 
                     row.operator("tp_ops.np_020_point_scale", text='', icon_value=button_snap_scale.icon_id)
 
 
                 display_point_align = context.user_preferences.addons[__package__].preferences.tab_display_point_align
-                if display_point_align == 'on':  
+                if display_point_align == True:  
 
                     button_snap_abc = icons.get("icon_snap_abc") 
                     row.operator("tp_ops.np_020_point_align", text='', icon_value=button_snap_abc.icon_id) 
@@ -322,7 +324,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
             # SNAPLINE #   
             display_snapline = context.user_preferences.addons[__package__].preferences.tab_display_snapline
-            if display_snapline == 'on':  
+            if display_snapline == True:  
 
                 if is_mesh:
 
@@ -332,7 +334,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
             # DISPLAY #  
             display_objects = context.user_preferences.addons[__package__].preferences.tab_display_objects
-            if display_objects == 'on':  
+            if display_objects == True:  
                 
                 row.separator()
                 
@@ -347,7 +349,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
             # SHADING #  
             display_shading = context.user_preferences.addons[__package__].preferences.tab_display_shading
-            if display_shading == 'on':  
+            if display_shading == True:  
 
                row.separator()
                 
@@ -367,7 +369,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
             # VIEW #
             display_view = context.user_preferences.addons[__package__].preferences.tab_display_view
-            if display_view == 'on':                  
+            if display_view == True:                  
                     
                 row = layout.row(1)
                 row.operator_context = 'INVOKE_REGION_WIN'                
@@ -381,7 +383,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
             # WINDOWS #
             display_window = context.user_preferences.addons[__package__].preferences.tab_display_window
-            if display_window == 'on':  
+            if display_window == True:  
 
                 row = layout.row(1)
                 row.operator_context = 'INVOKE_REGION_WIN'                
@@ -407,7 +409,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
             # HISTORY #               
             display_header_history = context.user_preferences.addons[__package__].preferences.tab_display_history
-            if display_header_history == 'on': 
+            if display_header_history == True: 
 
                 row = layout.row(1)
                 row.operator("ed.undo", text="", icon="FRAME_PREV")
@@ -417,7 +419,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
             # SAVE #           
             display_header_save = context.user_preferences.addons[__package__].preferences.tab_display_save
-            if display_header_save == 'on': 
+            if display_header_save == True: 
 
                 row = layout.row(1)
                 row.operator("wm.save_mainfile",text="",icon="FILE_TICK") 
@@ -426,69 +428,14 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
 
 
-        # USE RADIO BUTTONS #
-        display_radio = context.user_preferences.addons[__package__].preferences.tab_display_gui
-        if display_radio == 'radio': 
-
-
-            view = context.space_data
-            scene = context.scene        
-            gs = scene.game_settings
-            mode_string = context.mode
-            edit_object = context.edit_object
-            obj = context.active_object
-            
-            toolsettings = context.tool_settings
-
-            row = layout.row(align=True)
-            
-            if not scene.render.use_shading_nodes:
-                row.prop(gs, "material_mode", text="")
-
-            if view.viewport_shade == 'SOLID':
-                row.prop(view, "show_textured_solid", text="Texture")
-                row.prop(view, "show_only_render", text="Render")
-                row.prop(view, "show_floor", text="Grid")
-                row.prop(view, "use_matcap")
-              
-                if view.use_matcap:
-                    sub = row.row(align=True)
-                    sub.scale_x = 0.25
-                    sub.scale_y = 0.2
-                    sub.template_icon_view(view, "matcap_icon")
-
-            elif view.viewport_shade == 'TEXTURED':
-                if scene.render.use_shading_nodes or gs.material_mode != 'GLSL':
-                    row.prop(view, "show_textured_shadeless")        
-
-            
-            row.prop(view, "show_backface_culling", text="Backface")
-            if obj and obj.mode == 'EDIT' and view.viewport_shade not in {'BOUNDBOX', 'WIREFRAME'}:
-                row.prop(view, "show_occlude_wire", text="Hidden")
-
-
-            row = layout.row(align=True)
-            row.operator("screen.region_quadview", text="", icon="SPLITSCREEN")
-
-            if view.region_quadviews:
-                region = view.region_quadviews[2]
-                col = layout.column()
-                col.prop(region, "lock_rotation")
-                row = layout.row(align=True)
-                row.enabled = region.lock_rotation
-                row.prop(region, "show_sync_view")
-                row = layout.row(align=True)
-                row.enabled = region.lock_rotation and region.show_sync_view
-                row.prop(region, "use_box_clip")
-
-
-
-
 
         # USE MENUS #
-        display_menus = context.user_preferences.addons[__package__].preferences.tab_display_gui
-        if display_menus == 'menus': 
+        else:
 
+
+#            # BOTTOM MENUS #       
+#            display_bottom = context.user_preferences.addons[__package__].preferences.tab_display_bottom
+#            if display_bottom == True: 
 
             # NAMES / ICONS #  
             display_name = context.user_preferences.addons[__package__].preferences.tab_display_name
@@ -621,9 +568,14 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
 
 
+            # OPTIONS #  
+            row.menu("VIEW3D_TP_Header_Options_Menu", text="", icon= "SCRIPTWIN")         
+            
+            row.separator()
+           
             # CUSTOM #  
             display_custom = context.user_preferences.addons[__package__].preferences.tab_display_custom
-            if display_custom == 'on':
+            if display_custom == True:
 
                 row.menu("VIEW3D_TP_Header_Custom_Menu", text= tx_custom, icon= ico_custom)
 
@@ -632,7 +584,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
   
             # RULER #  
             display_ruler = context.user_preferences.addons[__package__].preferences.tab_display_ruler
-            if display_ruler == 'on':
+            if display_ruler == True:
 
                 row.menu("VIEW3D_TP_Header_Ruler_Menu", text= tx_ruler, icon= ico_ruler)
 
@@ -641,7 +593,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
             # SNAP TO #   
             display_snap = context.user_preferences.addons[__package__].preferences.tab_display_snap
-            if display_snap == 'on':  
+            if display_snap == True:  
 
                 row.menu("VIEW3D_TP_Header_CursorTo_Menu", text= tx_cursorto, icon= ico_cursorto)
 
@@ -655,7 +607,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
              # SNAPSET #   
             display_snapset = context.user_preferences.addons[__package__].preferences.tab_display_snapset
-            if display_snapset == 'on': 
+            if display_snapset == True: 
               
                 row.menu("VIEW3D_TP_Header_SnapSet_Menu", text= tx_snapset, icon= ico_snapset)
 
@@ -664,7 +616,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
             
             # ORIGIN TO #   
             display_origin = context.user_preferences.addons[__package__].preferences.tab_display_origin
-            if display_origin == 'on':  
+            if display_origin == True:  
                 
                 row.menu("VIEW3D_TP_Origin_Menu", text= tx_originto, icon= ico_originto)
 
@@ -673,7 +625,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
            
             # ALIGN TO #   
             display_advanced = context.user_preferences.addons[__package__].preferences.tab_display_advanced
-            if display_advanced == 'on':  
+            if display_advanced == True:  
                 
                 row.menu("VIEW3D_TP_Origin_Advanced_Menu", text= tx_advanced, icon= ico_advanced)
 
@@ -682,7 +634,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
             # NP STATION # 
             display_station = context.user_preferences.addons[__package__].preferences.tab_display_station
-            if display_station == 'on':  
+            if display_station == True:  
      
                 row.menu("VIEW3D_TP_Header_Station_Menu", text= tx_station, icon= ico_station)
 
@@ -691,7 +643,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
             # DISPLAY #  
             display_objects = context.user_preferences.addons[__package__].preferences.tab_display_objects
-            if display_objects == 'on':  
+            if display_objects == True:  
         
                 if obj:
                     row.menu("VIEW3D_TP_Header_Display_Menu", text= tx_display, icon= ico_display)
@@ -701,7 +653,7 @@ class VIEW3D_TP_Header_Menus(bpy.types.Header):
 
             # SHADING #  
             display_shading = context.user_preferences.addons[__package__].preferences.tab_display_shading
-            if display_shading == 'on':  
+            if display_shading == True:  
                 
                 row.menu("VIEW3D_TP_Header_Shading_Menu", text= tx_shading, icon= ico_shading)
 
