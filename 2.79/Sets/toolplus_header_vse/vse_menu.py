@@ -49,16 +49,15 @@ class VIEW3D_TP_VSE_Options_Menu(bpy.types.Menu):
 
         addon_key = __package__.split(".")[0]    
         panel_prefs = context.user_preferences.addons[addon_key].preferences
-        expand = panel_prefs.expand_panel_tools
  
-        layout.prop(panel_prefs, 'tab_vse_view', text="")
-        layout.prop(panel_prefs, 'tab_vse_add', text="")
-        layout.prop(panel_prefs, 'tab_vse_select', text="")
-        layout.prop(panel_prefs, 'tab_vse_move', text="")
-        layout.prop(panel_prefs, 'tab_vse_edit', text="")
-        layout.prop(panel_prefs, 'tab_vse_marker', text="")
-        layout.prop(panel_prefs, 'tab_vse_history', text="")
-        layout.prop(panel_prefs, 'tab_vse_custom', text="")
+        layout.prop(panel_prefs, 'tab_vse_view')
+        layout.prop(panel_prefs, 'tab_vse_add')
+        layout.prop(panel_prefs, 'tab_vse_select')
+        layout.prop(panel_prefs, 'tab_vse_move')
+        layout.prop(panel_prefs, 'tab_vse_edit')
+        layout.prop(panel_prefs, 'tab_vse_marker')
+        layout.prop(panel_prefs, 'tab_vse_history')
+        layout.prop(panel_prefs, 'tab_vse_custom')
 
 
 
@@ -131,16 +130,21 @@ class VIEW3D_TP_VSE_HEADER_Menu(bpy.types.Header):
             row.menu("VIEW3D_TP_VSE_Options_Menu", text="", icon="SCRIPTWIN")  
 
 
+
+            # CUSTOM #
             display_vse_custom = context.user_preferences.addons[__package__].preferences.tab_vse_custom
-            if display_vse_custom == 'on':  
+            if display_vse_custom == True:  
+                            
 
                 row = layout.row(1)
-                row.label(text="Your Custom...", icon="LAMP") 
+                row.label(text="Custom", icon="LAMP") 
 
 
-
+            
+            
+            # VIEW #            
             display_vse_view = context.user_preferences.addons[__package__].preferences.tab_vse_view
-            if display_vse_view == 'on':  
+            if display_vse_view == True:  
 
                 row = layout.row(1)
                 row.operator_context = 'INVOKE_REGION_WIN'
@@ -158,10 +162,11 @@ class VIEW3D_TP_VSE_HEADER_Menu(bpy.types.Header):
 
                 range_set = icons.get("range_set") 
                 row.operator("anim.previewrange_set", text="", icon_value=range_set.icon_id)
-
           
+            
+            # ADD #            
             display_vse_add = context.user_preferences.addons[__package__].preferences.tab_vse_add
-            if display_vse_add == 'on':  
+            if display_vse_add == True:  
 
                 row = layout.row(1)   
                    
@@ -171,9 +176,10 @@ class VIEW3D_TP_VSE_HEADER_Menu(bpy.types.Header):
                 add_effects = icons.get("add_effects")      
                 row.menu("SEQUENCER_MT_add_effect", text="", icon_value=add_effects.icon_id)  
 
-          
+
+            # SELECT #          
             display_vse_select = context.user_preferences.addons[__package__].preferences.tab_vse_select
-            if display_vse_select == 'on': 
+            if display_vse_select == True: 
  
                 row = layout.row(1)
                 
@@ -202,9 +208,10 @@ class VIEW3D_TP_VSE_HEADER_Menu(bpy.types.Header):
                 props.left_right = 'RIGHT'
                 props.linked_time = True
                         
-
+    
+            # MOVE #
             display_vse_move = context.user_preferences.addons[__package__].preferences.tab_vse_move
-            if display_vse_move == 'on': 
+            if display_vse_move == True: 
 
                 row = layout.row(1)
 
@@ -233,9 +240,10 @@ class VIEW3D_TP_VSE_HEADER_Menu(bpy.types.Header):
                             
                 row.operator("sequencer.duplicate_move", text="", icon = "PASTEFLIPDOWN")
 
-
+           
+            # EDIT #
             display_vse_edit = context.user_preferences.addons[__package__].preferences.tab_vse_edit
-            if display_vse_edit == 'on': 
+            if display_vse_edit == True: 
 
                 row = layout.row(1) 
 
@@ -280,9 +288,9 @@ class VIEW3D_TP_VSE_HEADER_Menu(bpy.types.Header):
                 row.operator("sequencer.rebuild_proxy", text="", icon = "FILE_REFRESH")   
 
  
- 
+            # MARKER # 
             display_vse_marker = context.user_preferences.addons[__package__].preferences.tab_vse_marker
-            if display_vse_marker == 'on':    
+            if display_vse_marker == True:    
 
                 row = layout.row(1)
                 
@@ -323,9 +331,10 @@ class VIEW3D_TP_VSE_HEADER_Menu(bpy.types.Header):
                 marker_delete = icons.get("marker_delete")
                 row.operator("marker.delete", text="", icon_value=marker_delete.icon_id)
                 
-
+            
+            # EDIT #
             display_vse_edit = context.user_preferences.addons[__package__].preferences.tab_vse_edit
-            if display_vse_edit == 'on': 
+            if display_vse_edit == True: 
 
                 row = layout.row(1)
                 strip = act_strip(context)    
@@ -351,10 +360,10 @@ class VIEW3D_TP_VSE_HEADER_Menu(bpy.types.Header):
                         row.operator("sequencer.crossfade_sounds", text="", icon = "SOUND")        
 
             
-
+            # HISTORY #
             display_vse_history = context.user_preferences.addons[__package__].preferences.tab_vse_history
-            if display_vse_history == 'on': 
+            if display_vse_history == True: 
                 
                 row = layout.row(1)
-                row.operator("ed.undo", text="", icon="LOOP_BACK")
-                row.operator("ed.redo", text="", icon="LOOP_FORWARDS")
+                row.operator("ed.undo", text="", icon="FRAME_PREV")
+                row.operator("ed.redo", text="", icon="FRAME_NEXT")
