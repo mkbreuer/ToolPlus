@@ -62,6 +62,23 @@ class VIEW3D_TP_Looptools(bpy.types.Operator):
 
         return {'FINISHED'}
 
+class VIEW3D_TP_TinyCAD(bpy.types.Operator):
+   """enable tiny cad (save user settings be required for a permant activation)"""
+   bl_label = "TinyCAD"
+   bl_idname = "tp_ops.enable_tinycad"
+   bl_options = {'REGISTER', 'UNDO'}
+
+   def execute(self, context):
+        # check for needed addons
+        mesh_tiny_cad_addon = "mesh_tiny_cad"
+        state = addon_utils.check(mesh_tiny_cad_addon)
+        if not state[0]:
+            bpy.ops.wm.addon_enable(module=mesh_tiny_cad_addon)
+            print(self)
+            self.report({'INFO'}, "TinyCAD activated!") 
+
+        return {'FINISHED'}
+
 
     
 # REGISTRY #

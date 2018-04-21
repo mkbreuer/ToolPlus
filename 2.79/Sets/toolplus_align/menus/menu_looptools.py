@@ -34,7 +34,7 @@ class VIEW3D_TP_Align_Menu_LoopTools(bpy.types.Menu):
 
         layout.operator_context = 'INVOKE_REGION_WIN'
 
-        layout.scale_y = 1.3
+        layout.scale_y = 1.2
 
         button_align_space = icons.get("icon_align_space")
         layout.operator("mesh.looptools_space", text="LpT  Space", icon_value=button_align_space.icon_id)
@@ -48,3 +48,5 @@ class VIEW3D_TP_Align_Menu_LoopTools(bpy.types.Menu):
         button_align_flatten = icons.get("icon_align_flatten")                
         layout.operator("mesh.looptools_flatten", text="LpT  Circle", icon_value=button_align_flatten.icon_id)
  
+        button_align_bridge = icons.get("icon_align_bridge")
+        layout.operator("mesh.looptools_bridge", text="LpT  Bridge", icon_value=button_align_bridge.icon_id).loft = False        

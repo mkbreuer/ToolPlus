@@ -53,96 +53,178 @@ class VIEW3D_TP_Align_Menu(bpy.types.Menu):
 
         addon_key = __package__.split(".")[0]    
         panel_prefs = context.user_preferences.addons[addon_key].preferences
-        expand = panel_prefs.expand_panel_tools
         
         layout.operator_context = 'INVOKE_REGION_WIN'        
 
-        layout.menu("VIEW3D_TP_Pivot_Menu", text="Pivot", icon="CURSOR")  
+        # PIVOT #
+        Display_Pivot = context.user_preferences.addons[addon_key].preferences.tab_pivot_menu
+        if Display_Pivot == True:  
+ 
+            layout.menu("VIEW3D_TP_Pivot_Menu", text="Pivot", icon="CURSOR")  
+
 
         button_snap_set = icons.get("icon_snap_set")           
         layout.menu("VIEW3D_TP_SnapSet_Menu", text="SnapSet", icon_value=button_snap_set.icon_id)  
-
-        layout.separator()   
           
-        layout.menu("VIEW3D_TP_Origin_Menu_Align", text="Origin", icon="LAYER_ACTIVE")   
 
-        layout.separator()
+        # ORIGIN #
+        Display_Origin = context.user_preferences.addons[addon_key].preferences.tab_origin_menu
+        if Display_Origin == True: 
+
+            layout.separator()   
+
+            layout.menu("VIEW3D_TP_Origin_Menu_Align", text="Origin", icon="LAYER_ACTIVE")   
+
+
+        # ALIGN TO #
+        Display_Align_to = context.user_preferences.addons[addon_key].preferences.tab_align_to_menu
+        if Display_Align_to == True:  
+
+            layout.separator()
+
+            if context.mode == 'OBJECT':
+             
+                layout.menu("VIEW3D_TP_Location_Menu", text="Move", icon ="MAN_TRANS")   
+                layout.menu("VIEW3D_TP_Rotation_Menu", text="Rotate", icon ="MAN_ROT")  
+                layout.menu("VIEW3D_TP_Scale_Menu", text="Scale", icon ="MAN_SCALE")  
+
+            else:
+     
+                layout.menu("VIEW3D_TP_Axis_Menu", text="To Axis", icon ="MANIPUL")   
+           
+
+
+        # TOOLS #
+        Display_Aligner = context.user_preferences.addons[addon_key].preferences.tab_aligner_menu
+        if Display_Aligner == True: 
+
+            layout.separator()
+
+            button_origin_align = icons.get("icon_origin_align") 
+            layout.menu("VIEW3D_TP_SnapTools_Menu", text="Tools", icon_value=button_origin_align.icon_id)      
+
+
 
         if context.mode == 'OBJECT':
-         
-            layout.menu("VIEW3D_TP_Location_Menu", text="Move", icon ="MAN_TRANS")   
-            layout.menu("VIEW3D_TP_Rotation_Menu", text="Rotate", icon ="MAN_ROT")  
-            layout.menu("VIEW3D_TP_Scale_Menu", text="Scale", icon ="MAN_SCALE")  
 
-        else:
- 
-            layout.menu("VIEW3D_TP_Axis_Menu", text="To Axis", icon ="MANIPUL")   
-       
-        layout.separator()
-
-        button_origin_align = icons.get("icon_origin_align") 
-        layout.menu("VIEW3D_TP_SnapTools_Menu", text="Tools", icon_value=button_origin_align.icon_id)      
-
-        if context.mode == 'OBJECT':
-
-            button_snap_grab = icons.get("icon_snap_grab") 
-            layout.menu("VIEW3D_TP_Station_Menu", text="Station", icon_value=button_snap_grab.icon_id)  
            
-            obj = context.active_object     
-            if obj:
-               obj_type = obj.type
-                              
-               if obj_type in {'MESH'}:           
+             # NP STATION #
+            Display_Station = context.user_preferences.addons[addon_key].preferences.tab_station_menu
+            if Display_Station == True:           
            
-                    layout.separator()
-                      
-                    layout.operator("mesh.wplsmthdef_snap", text="Save M-State", icon ="SHAPEKEY_DATA")
+                button_snap_grab = icons.get("icon_snap_grab") 
+                layout.menu("VIEW3D_TP_Station_Menu", text="Station", icon_value=button_snap_grab.icon_id)  
+           
+           
+            # INTERPOLATE #
+            Display_Interpolate = context.user_preferences.addons[addon_key].preferences.tab_interpolate_menu
+            if Display_Interpolate == True:    
+                        
+                obj = context.active_object     
+                if obj:
+                   obj_type = obj.type
+                                  
+                   if obj_type in {'MESH'}:           
+               
+                        layout.separator()
+                          
+                        layout.operator("mesh.wplsmthdef_snap", text="Save M-State", icon ="SHAPEKEY_DATA")
+
 
 
         if context.mode == 'EDIT_MESH':
        
-            layout.separator()
+            # INTERPOLATE #
+            Display_Interpolate = context.user_preferences.addons[addon_key].preferences.tab_interpolate_menu
+            if Display_Interpolate == True: 
 
-            layout.operator("mesh.wplsmthdef_apply", text="Apply S-Deform", icon ="FRAME_NEXT")
+                layout.separator()
 
-            layout.separator()
+                layout.operator("mesh.wplsmthdef_apply", text="Apply S-Deform", icon ="FRAME_NEXT")
 
-           
-            button_align_straigten = icons.get("icon_align_straigten") 
-            layout.menu("VIEW3D_TP_Align_Menu_Space", text="Space", icon_value=button_align_straigten.icon_id)   
 
-           
-            Display_Looptools = context.user_preferences.addons[addon_key].preferences.tab_looptools
-            if Display_Looptools == 'on':
+            # SPACE #
+            Display_Space = context.user_preferences.addons[addon_key].preferences.tab_space_menu
+            if Display_Space == True: 
+
+                layout.separator()
+               
+                button_align_straigten = icons.get("icon_align_straigten") 
+                layout.menu("VIEW3D_TP_Align_Menu_Space", text="Space", icon_value=button_align_straigten.icon_id)   
+
+            
+
+            # TINYCAD #            
+            Display_TinyCAD = context.user_preferences.addons[addon_key].preferences.tab_tinycad_menu
+            if Display_TinyCAD == True:
+
+                layout.separator()
+            
+                mesh_tiny_cad_addon = "mesh_tiny_cad" 
+                state = addon_utils.check(mesh_tiny_cad_addon)
+                if not state[0]:                                         
+                    layout.operator("tp_ops.enable_tinycad", text="!_Activate TinyCAD_!", icon='BLANK1')                 
+                else:             
+                    button_tinycad = icons.get("icon_tinycad")           
+                    layout.menu("VIEW3D_MT_edit_mesh_tinycad", text="TinyCAD", icon_value=button_tinycad.icon_id)   
+
+
+
+            # LOOPTOOLS #            
+            Display_Looptools = context.user_preferences.addons[addon_key].preferences.tab_looptools_menu
+            if Display_Looptools == True:
             
                 loop_tools_addon = "mesh_looptools" 
                 state = addon_utils.check(loop_tools_addon)
                 if not state[0]:                                         
                     layout.operator("tp_ops.enable_looptools", text="!_Activate Looptools_!", icon='BLANK1')                 
                 else:             
-                    layout.menu("VIEW3D_TP_Align_Menu_Gstretch", text="GStretch", icon="GREASEPENCIL")   
-              
+
                     layout.separator()
 
                     button_align_circle = icons.get("icon_align_circle")           
                     layout.menu("VIEW3D_TP_Align_Menu_LoopTools", text="LoopTools", icon_value=button_align_circle.icon_id)   
+                 
+                    layout.menu("VIEW3D_TP_Align_Menu_Gstretch", text="GStretch", icon="GREASEPENCIL")   
+              
+
+            # MESHMACHINE #
+            Display_MESHmachine = context.user_preferences.addons[addon_key].preferences.tab_machine_menu
+            if Display_MESHmachine == True: 
+
+                layout.separator()
+            
+                layout.menu("VIEW3D_TP_Machine_Align_Menu", text="MESHmachine", icon="MOD_BEVEL")   
 
 
+            # RELAX # 
+            Display_Relax = context.user_preferences.addons[addon_key].preferences.tab_relax_menu 
+            if Display_Relax == True:
 
-            Display_Relax = context.user_preferences.addons[addon_key].preferences.tab_relax 
-            if Display_Relax == 'on':
+                layout.separator()
 
                 button_align_shrinkwrap = icons.get("icon_align_shrinkwrap")
                 layout.menu("VIEW3D_TP_Align_Menu_Relax", text="Smooth Relax", icon_value=button_align_shrinkwrap.icon_id)   
 
-        layout.separator()
 
-        button_align_mirror_obm = icons.get("icon_align_mirror_obm")              
-        layout.menu("VIEW3D_TP_Mirror_Menu", text="Mirror", icon_value=button_align_mirror_obm.icon_id)   
-        layout.menu("VIEW3D_TP_ModMirror_Menu", text="Mirror", icon="MOD_MIRROR")   
 
-        layout.separator()
-       
-        button_align_zero = icons.get("icon_align_zero")                
-        layout.operator("tp_ops.zero_axis", "ZeroAxis", icon_value=button_align_zero.icon_id)      
+        # MIRROR # 
+        Display_Mirror = context.user_preferences.addons[addon_key].preferences.tab_mirror_menu
+        if Display_Mirror == True: 
+
+            layout.separator()
+
+            button_align_mirror_obm = icons.get("icon_align_mirror_obm")              
+            layout.menu("VIEW3D_TP_Mirror_Menu", text="Mirror", icon_value=button_align_mirror_obm.icon_id)   
+            layout.menu("VIEW3D_TP_ModMirror_Menu", text="Mirror", icon="MOD_MIRROR")   
+
+
+        # ZERO TO #
+        Display_Zero_to = context.user_preferences.addons[addon_key].preferences.tab_zero_to_menu
+        if Display_Zero_to == True:  
+
+            layout.separator()
+           
+            button_align_zero = icons.get("icon_align_zero")                
+            layout.operator("tp_ops.zero_axis", "ZeroAxis", icon_value=button_align_zero.icon_id)      
 

@@ -33,7 +33,6 @@ def draw_edit_layout(self, context, layout):
 
     addon_key = __package__.split(".")[0]    
     panel_prefs = context.user_preferences.addons[addon_key].preferences
-    expand = panel_prefs.expand_panel_tools
 
     icons = load_icons()
 
@@ -41,304 +40,387 @@ def draw_edit_layout(self, context, layout):
 
     col = layout.column(align=True)         
 
-    box = col.box().column(1)  
-    
-    row = box.row(1)         
-    row.label("Origin to..")  
+    # ORIGIN #
+    Display_Origin = context.user_preferences.addons[addon_key].preferences.tab_origin
+    if Display_Origin == True: 
 
-    row = box.row(1) 
-
-    if tp_props.display_origin_bbox:                     
+        box = col.box().column(1)  
         
-        button_origin_bbox = icons.get("icon_origin_bbox")            
-        row.prop(tp_props, "display_origin_bbox", text=" ", icon_value=button_origin_bbox.icon_id)                     
-    else:               
-        button_origin_bbox = icons.get("icon_origin_bbox")                
-        row.prop(tp_props, "display_origin_bbox", text=" ", icon_value=button_origin_bbox.icon_id)
+        row = box.row(1)         
+        row.label("Origin to..")  
+
+        row = box.row(1) 
+
+        if tp_props.display_origin_bbox:                     
+            
+            button_origin_bbox = icons.get("icon_origin_bbox")            
+            row.prop(tp_props, "display_origin_bbox", text=" ", icon_value=button_origin_bbox.icon_id)                     
+        else:               
+            button_origin_bbox = icons.get("icon_origin_bbox")                
+            row.prop(tp_props, "display_origin_bbox", text=" ", icon_value=button_origin_bbox.icon_id)
 
 
-    button_origin_center_view = icons.get("icon_origin_center_view")
-    row.operator("tp_ops.origin_set_center", text=" ", icon_value=button_origin_center_view.icon_id)
+        button_origin_center_view = icons.get("icon_origin_center_view")
+        row.operator("tp_ops.origin_set_center", text=" ", icon_value=button_origin_center_view.icon_id)
 
-    button_origin_cursor = icons.get("icon_origin_cursor")
-    row.operator("tp_ops.origin_cursor_edm", text=" ", icon_value=button_origin_cursor.icon_id)            
+        button_origin_cursor = icons.get("icon_origin_cursor")
+        row.operator("tp_ops.origin_cursor_edm", text=" ", icon_value=button_origin_cursor.icon_id)            
 
-    button_origin_edm = icons.get("icon_origin_edm")            
-    row.operator("tp_ops.origin_edm"," ", icon_value=button_origin_edm.icon_id)       
+        button_origin_edm = icons.get("icon_origin_edm")            
+        row.operator("tp_ops.origin_edm"," ", icon_value=button_origin_edm.icon_id)       
 
-    button_origin_obj = icons.get("icon_origin_obj")   
-    row.operator("tp_ops.origin_obm"," ", icon_value=button_origin_obj.icon_id)             
+        button_origin_obj = icons.get("icon_origin_obj")   
+        row.operator("tp_ops.origin_obm"," ", icon_value=button_origin_obj.icon_id)             
 
 
-    box.separator()                                                     
+        box.separator()                                                     
 
-    row = box.row(1)
+        row = box.row(1)
 
-    obj = context.active_object
-    if obj:
-        obj_type = obj.type
-        
-        if obj.type in {'MESH'}:
+        obj = context.active_object
+        if obj:
+            obj_type = obj.type
+            
+            if obj.type in {'MESH'}:
 
-            if tp_props.display_origin_bbox: 
-             
-                box = col.box().column(1)     
-                box.scale_x = 0.1
-                
-                row = box.row(1)                                     
-                row.alignment ='CENTER'         
-                row.label(" +Y Axis")
-                row.separator() 
-                row.label("   xY Axis")
-                row.separator()   
-                row.label("--Y Axis")
-
-                #####                  
-                row = box.row(1)                                     
-                row.alignment ='CENTER'
+                if tp_props.display_origin_bbox: 
                  
-                button_origin_left_top = icons.get("icon_origin_left_top")   
-                row.operator('tp_ops.cubeback_cornertop_minus_xy', text="", icon_value=button_origin_left_top.icon_id)
-               
-                button_origin_top = icons.get("icon_origin_top")  
-                row.operator('tp_ops.cubeback_edgetop_minus_y', text="", icon_value=button_origin_top.icon_id)
-                
-                button_origin_right_top = icons.get("icon_origin_right_top")
-                row.operator('tp_ops.cubeback_cornertop_plus_xy', text="", icon_value=button_origin_right_top.icon_id)
+                    box = col.box().column(1)     
+                    box.scale_x = 0.1
+                    
+                    row = box.row(1)                                     
+                    row.alignment ='CENTER'         
+                    row.label(" +Y Axis")
+                    row.separator() 
+                    row.label("   xY Axis")
+                    row.separator()   
+                    row.label("--Y Axis")
 
-                row.separator()
-                
-                button_origin_left_top = icons.get("icon_origin_left_top")   
-                row.operator('tp_ops.cubefront_edgetop_minus_x', text="", icon_value=button_origin_left_top.icon_id)
-                
-                button_origin_top = icons.get("icon_origin_top")  
-                row.operator('tp_ops.cubefront_side_plus_z', text="", icon_value=button_origin_top.icon_id)
-                
-                button_origin_right_top = icons.get("icon_origin_right_top")
-                row.operator('tp_ops.cubefront_edgetop_plus_x', text="", icon_value=button_origin_right_top.icon_id)
+                    #####                  
+                    row = box.row(1)                                     
+                    row.alignment ='CENTER'
+                     
+                    button_origin_left_top = icons.get("icon_origin_left_top")   
+                    row.operator('tp_ops.cubeback_cornertop_minus_xy', text="", icon_value=button_origin_left_top.icon_id)
+                   
+                    button_origin_top = icons.get("icon_origin_top")  
+                    row.operator('tp_ops.cubeback_edgetop_minus_y', text="", icon_value=button_origin_top.icon_id)
+                    
+                    button_origin_right_top = icons.get("icon_origin_right_top")
+                    row.operator('tp_ops.cubeback_cornertop_plus_xy', text="", icon_value=button_origin_right_top.icon_id)
 
-                row.separator()
-                
-                button_origin_left_top = icons.get("icon_origin_left_top")   
-                row.operator('tp_ops.cubefront_cornertop_minus_xy', text="", icon_value=button_origin_left_top.icon_id)
-                
-                button_origin_top = icons.get("icon_origin_top")  
-                row.operator('tp_ops.cubeback_edgetop_plus_y', text="", icon_value=button_origin_top.icon_id)
-                
-                button_origin_right_top = icons.get("icon_origin_right_top")
-                row.operator('tp_ops.cubefront_cornertop_plus_xy', text="", icon_value=button_origin_right_top.icon_id)
-                
-                #####
+                    row.separator()
+                    
+                    button_origin_left_top = icons.get("icon_origin_left_top")   
+                    row.operator('tp_ops.cubefront_edgetop_minus_x', text="", icon_value=button_origin_left_top.icon_id)
+                    
+                    button_origin_top = icons.get("icon_origin_top")  
+                    row.operator('tp_ops.cubefront_side_plus_z', text="", icon_value=button_origin_top.icon_id)
+                    
+                    button_origin_right_top = icons.get("icon_origin_right_top")
+                    row.operator('tp_ops.cubefront_edgetop_plus_x', text="", icon_value=button_origin_right_top.icon_id)
 
-                row = box.row(1)                          
-                row.alignment ='CENTER' 
-                
-                button_origin_left = icons.get("icon_origin_left")
-                row.operator('tp_ops.cubefront_edgemiddle_minus_x', text="", icon_value=button_origin_left.icon_id)
-               
-                button_origin_cross = icons.get("icon_origin_cross")
-                row.operator('tp_ops.cubefront_side_plus_y', text="", icon_value=button_origin_cross.icon_id)
-                
-                button_origin_right = icons.get("icon_origin_right")
-                row.operator('tp_ops.cubefront_edgemiddle_plus_x', text="", icon_value=button_origin_right.icon_id)
+                    row.separator()
+                    
+                    button_origin_left_top = icons.get("icon_origin_left_top")   
+                    row.operator('tp_ops.cubefront_cornertop_minus_xy', text="", icon_value=button_origin_left_top.icon_id)
+                    
+                    button_origin_top = icons.get("icon_origin_top")  
+                    row.operator('tp_ops.cubeback_edgetop_plus_y', text="", icon_value=button_origin_top.icon_id)
+                    
+                    button_origin_right_top = icons.get("icon_origin_right_top")
+                    row.operator('tp_ops.cubefront_cornertop_plus_xy', text="", icon_value=button_origin_right_top.icon_id)
+                    
+                    #####
 
-                row.separator()
+                    row = box.row(1)                          
+                    row.alignment ='CENTER' 
+                    
+                    button_origin_left = icons.get("icon_origin_left")
+                    row.operator('tp_ops.cubefront_edgemiddle_minus_x', text="", icon_value=button_origin_left.icon_id)
+                   
+                    button_origin_cross = icons.get("icon_origin_cross")
+                    row.operator('tp_ops.cubefront_side_plus_y', text="", icon_value=button_origin_cross.icon_id)
+                    
+                    button_origin_right = icons.get("icon_origin_right")
+                    row.operator('tp_ops.cubefront_edgemiddle_plus_x', text="", icon_value=button_origin_right.icon_id)
 
-                button_origin_left = icons.get("icon_origin_left")
-                row.operator('tp_ops.cubefront_side_minus_x', text="", icon_value=button_origin_left.icon_id)
-               
-                if context.mode == 'OBJECT':
-                    button_origin_diagonal = icons.get("icon_origin_diagonal")
-                    row.operator('object.origin_set', text="", icon_value=button_origin_diagonal.icon_id).type='ORIGIN_GEOMETRY'
-                else:
-                    button_origin_diagonal = icons.get("icon_origin_diagonal")
-                    row.operator('tp_ops.origin_set_editcenter', text="", icon_value=button_origin_diagonal.icon_id)
-                
-                button_origin_right = icons.get("icon_origin_right")
-                row.operator('tp_ops.cubefront_side_plus_x', text="", icon_value=button_origin_right.icon_id)
+                    row.separator()
 
-                row.separator()
-                
-                button_origin_left = icons.get("icon_origin_left")
-                row.operator('tp_ops.cubefront_edgemiddle_minus_y', text="", icon_value=button_origin_left.icon_id)
-                
-                button_origin_cross = icons.get("icon_origin_cross")
-                row.operator('tp_ops.cubefront_side_minus_y', text="", icon_value=button_origin_cross.icon_id)
-                
-                button_origin_right = icons.get("icon_origin_right")
-                row.operator('tp_ops.cubefront_edgemiddle_plus_y', text="", icon_value=button_origin_right.icon_id)
+                    button_origin_left = icons.get("icon_origin_left")
+                    row.operator('tp_ops.cubefront_side_minus_x', text="", icon_value=button_origin_left.icon_id)
+                   
+                    if context.mode == 'OBJECT':
+                        button_origin_diagonal = icons.get("icon_origin_diagonal")
+                        row.operator('object.origin_set', text="", icon_value=button_origin_diagonal.icon_id).type='ORIGIN_GEOMETRY'
+                    else:
+                        button_origin_diagonal = icons.get("icon_origin_diagonal")
+                        row.operator('tp_ops.origin_set_editcenter', text="", icon_value=button_origin_diagonal.icon_id)
+                    
+                    button_origin_right = icons.get("icon_origin_right")
+                    row.operator('tp_ops.cubefront_side_plus_x', text="", icon_value=button_origin_right.icon_id)
 
-                #####
+                    row.separator()
+                    
+                    button_origin_left = icons.get("icon_origin_left")
+                    row.operator('tp_ops.cubefront_edgemiddle_minus_y', text="", icon_value=button_origin_left.icon_id)
+                    
+                    button_origin_cross = icons.get("icon_origin_cross")
+                    row.operator('tp_ops.cubefront_side_minus_y', text="", icon_value=button_origin_cross.icon_id)
+                    
+                    button_origin_right = icons.get("icon_origin_right")
+                    row.operator('tp_ops.cubefront_edgemiddle_plus_y', text="", icon_value=button_origin_right.icon_id)
 
-                row = box.row(1)
-                row.alignment ='CENTER' 
-                
-                button_origin_left_bottom = icons.get("icon_origin_left_bottom")
-                row.operator('tp_ops.cubeback_cornerbottom_minus_xy', text="", icon_value=button_origin_left_bottom.icon_id)
-                
-                button_origin_bottom = icons.get("icon_origin_bottom")
-                row.operator('tp_ops.cubefront_edgebottom_plus_y', text="", icon_value=button_origin_bottom.icon_id)
-                
-                button_origin_right_bottom = icons.get("icon_origin_right_bottom")
-                row.operator('tp_ops.cubeback_cornerbottom_plus_xy', text="", icon_value=button_origin_right_bottom.icon_id)
+                    #####
 
-                row.separator()
-                
-                button_origin_left_bottom = icons.get("icon_origin_left_bottom")
-                row.operator('tp_ops.cubefront_edgebottom_minus_x', text="", icon_value=button_origin_left_bottom.icon_id)
-                
-                button_origin_bottom = icons.get("icon_origin_bottom")
-                row.operator('tp_ops.cubefront_side_minus_z', text="", icon_value=button_origin_bottom.icon_id)
-                
-                button_origin_right_bottom = icons.get("icon_origin_right_bottom")
-                row.operator('tp_ops.cubefront_edgebottom_plus_x', text="", icon_value=button_origin_right_bottom.icon_id)    
+                    row = box.row(1)
+                    row.alignment ='CENTER' 
+                    
+                    button_origin_left_bottom = icons.get("icon_origin_left_bottom")
+                    row.operator('tp_ops.cubeback_cornerbottom_minus_xy', text="", icon_value=button_origin_left_bottom.icon_id)
+                    
+                    button_origin_bottom = icons.get("icon_origin_bottom")
+                    row.operator('tp_ops.cubefront_edgebottom_plus_y', text="", icon_value=button_origin_bottom.icon_id)
+                    
+                    button_origin_right_bottom = icons.get("icon_origin_right_bottom")
+                    row.operator('tp_ops.cubeback_cornerbottom_plus_xy', text="", icon_value=button_origin_right_bottom.icon_id)
 
-                row.separator()
+                    row.separator()
+                    
+                    button_origin_left_bottom = icons.get("icon_origin_left_bottom")
+                    row.operator('tp_ops.cubefront_edgebottom_minus_x', text="", icon_value=button_origin_left_bottom.icon_id)
+                    
+                    button_origin_bottom = icons.get("icon_origin_bottom")
+                    row.operator('tp_ops.cubefront_side_minus_z', text="", icon_value=button_origin_bottom.icon_id)
+                    
+                    button_origin_right_bottom = icons.get("icon_origin_right_bottom")
+                    row.operator('tp_ops.cubefront_edgebottom_plus_x', text="", icon_value=button_origin_right_bottom.icon_id)    
 
-                button_origin_left_bottom = icons.get("icon_origin_left_bottom")
-                row.operator('tp_ops.cubefront_cornerbottom_minus_xy', text="", icon_value=button_origin_left_bottom.icon_id)
-                
-                button_origin_bottom = icons.get("icon_origin_bottom")
-                row.operator('tp_ops.cubefront_edgebottom_minus_y', text="", icon_value=button_origin_bottom.icon_id)
-                
-                button_origin_right_bottom = icons.get("icon_origin_right_bottom")
-                row.operator('tp_ops.cubefront_cornerbottom_plus_xy', text="", icon_value=button_origin_right_bottom.icon_id)
+                    row.separator()
 
-                box.separator()
+                    button_origin_left_bottom = icons.get("icon_origin_left_bottom")
+                    row.operator('tp_ops.cubefront_cornerbottom_minus_xy', text="", icon_value=button_origin_left_bottom.icon_id)
+                    
+                    button_origin_bottom = icons.get("icon_origin_bottom")
+                    row.operator('tp_ops.cubefront_edgebottom_minus_y', text="", icon_value=button_origin_bottom.icon_id)
+                    
+                    button_origin_right_bottom = icons.get("icon_origin_right_bottom")
+                    row.operator('tp_ops.cubefront_cornerbottom_plus_xy', text="", icon_value=button_origin_right_bottom.icon_id)
 
-   
+                    box.separator()
 
-    box = col.box().row()   
-    
-    row = box.column(1) 
-    row.label("Align") 
-    row.label("to..") 
-    row.label("Axis") 
 
-    row = box.column(1)
+    # ALIGN TO #
+    Display_Align = context.user_preferences.addons[addon_key].preferences.tab_align_to 
+    if Display_Align == True:    
 
-    button_align_xy = icons.get("icon_align_xy") 
-    row.operator("tp_ops.align_transform", "Xy", icon_value=button_align_xy.icon_id).tp_axis='axis_xy'
-
-    button_align_zx = icons.get("icon_align_zx")
-    row.operator("tp_ops.align_transform", "Zx", icon_value=button_align_zx.icon_id).tp_axis='axis_zx'
-
-    button_align_zy = icons.get("icon_align_zy") 
-    row.operator("tp_ops.align_transform", "Zy", icon_value=button_align_zy.icon_id).tp_axis='axis_zy'           
-
-    row = box.column(1)
-
-    button_align_x = icons.get("icon_align_x") 
-    row.operator("tp_ops.align_transform", "X", icon_value=button_align_x.icon_id).tp_axis='axis_x'
-
-    button_align_y = icons.get("icon_align_y") 
-    row.operator("tp_ops.align_transform", "Y", icon_value=button_align_y.icon_id).tp_axis='axis_y'           
-
-    button_align_z = icons.get("icon_align_z") 
-    row.operator("tp_ops.align_transform", "Z", icon_value=button_align_z.icon_id).tp_axis='axis_z'
-
-    row.separator() 
-    
-
-    box = col.box().column(1)
-    
-    row = box.row(1) 
-    row.operator("mesh.align_operator", text = 'Store Edge').type_op = 1
-    align_op = row.operator("mesh.align_operator", text = 'Align Edges').type_op = 0
-
-    box.separator()      
- 
-    row = box.row(1) 
-    if tp_props.display_align_help:
-        row.prop(tp_props, "display_align_help", text="", icon='INFO')
-    else:
-        row.prop(tp_props, "display_align_help", text="", icon='INFO')
-
-    row.prop(bpy.context.window_manager.paul_manager, 'align_dist_z', text = 'Superpose')
-    row.prop(bpy.context.window_manager.paul_manager, 'align_lock_z', text = 'lock Z')
-
-    if tp_props.display_align_help:
-
-        box.separator() 
-                      
-        row = box.column(1)         
-        row.label("This Tool need stored edge in the target:")         
-        row.label("1. go into the editmode of the target") 
-        row.label("2. select one edge as active") 
-        row.label("3. and press Store Edge") 
-       
-        row.separator()            
+        box = col.box().row()   
         
-        row.label("Now go into editmode of the object you want to align") 
-        row.label("1. select all mesh that needs to be align") 
-        row.label("2. select on edge as active") 
-        row.label("3. and press Align Edges")
+        row = box.column(1) 
+        row.label("Align") 
+        row.label("to..") 
+        row.label("Axis") 
+        row.label(" ") 
+
+        row = box.column(1)
+
+        button_align_xy = icons.get("icon_align_xy") 
+        row.operator("tp_ops.align_transform", "Xy", icon_value=button_align_xy.icon_id).tp_axis='axis_xy'
+
+        button_align_zx = icons.get("icon_align_zx")
+        row.operator("tp_ops.align_transform", "Zx", icon_value=button_align_zx.icon_id).tp_axis='axis_zx'
+
+        button_align_zy = icons.get("icon_align_zy") 
+        row.operator("tp_ops.align_transform", "Zy", icon_value=button_align_zy.icon_id).tp_axis='axis_zy'           
+
+        row.label(" ") 
+
+        row = box.column(1)
+
+        button_align_x = icons.get("icon_align_x") 
+        row.operator("tp_ops.align_transform", "X", icon_value=button_align_x.icon_id).tp_axis='axis_x'
+
+        button_align_y = icons.get("icon_align_y") 
+        row.operator("tp_ops.align_transform", "Y", icon_value=button_align_y.icon_id).tp_axis='axis_y'           
+
+        button_align_z = icons.get("icon_align_z") 
+        row.operator("tp_ops.align_transform", "Z", icon_value=button_align_z.icon_id).tp_axis='axis_z'
+
+        button_align_to_normal = icons.get("icon_align_to_normal") 
+        props = row.operator("tp_ops.align_transform", "N", icon_value=button_align_to_normal.icon_id)                
+        props.tp_axis='axis_z'
+        props.tp_orient='NORMAL'
+
+        row.separator() 
+
+
+
+
+
+    # ALIGN EDGE #
+    Display_Edger = context.user_preferences.addons[addon_key].preferences.tab_edger 
+    if Display_Edger == True:    
+
+        box = col.box().column(1)
         
-        row.separator()            
+        row = box.row(1) 
+        row.operator("mesh.align_operator", text = 'Store Edge').type_op = 1
+        align_op = row.operator("mesh.align_operator", text = 'Align Edges').type_op = 0
+
+        box.separator()      
+     
+        row = box.row(1) 
+        if tp_props.display_align_help:
+            row.prop(tp_props, "display_align_help", text="", icon='INFO')
+        else:
+            row.prop(tp_props, "display_align_help", text="", icon='INFO')
+
+        row.prop(bpy.context.window_manager.paul_manager, 'align_dist_z', text = 'Superpose')
+        row.prop(bpy.context.window_manager.paul_manager, 'align_lock_z', text = 'lock Z')
+
+        if tp_props.display_align_help:
+
+            box.separator() 
+                          
+            row = box.column(1)         
+            row.label("This Tool need stored edge in the target:")         
+            row.label("1. go into the editmode of the target") 
+            row.label("2. select one edge as active") 
+            row.label("3. and press Store Edge") 
+           
+            row.separator()            
+            
+            row.label("Now go into editmode of the object you want to align") 
+            row.label("1. select all mesh that needs to be align") 
+            row.label("2. select on edge as active") 
+            row.label("3. and press Align Edges")
+            
+            row.separator()            
+            
+            row.label("Superpose: edge jump to edge")                  
+            row.label("lock Z: preserve the z axis")                  
+
+        box.separator()     
+
+
+    # TOOLS #
+    Display_Aligner = context.user_preferences.addons[addon_key].preferences.tab_aligner
+    if Display_Aligner == True: 
+
+        box = col.box().column(1)              
         
-        row.label("Superpose: edge jump to edge")                  
-        row.label("lock Z: preserve the z axis")                  
+        row = box.column(1) 
 
-    box.separator()     
+        button_align_planar = icons.get("icon_align_planar") 
+        row.operator("mesh.face_make_planar", "Planar Faces", icon_value=button_align_planar.icon_id)   
+        
+        button_align_con_face = icons.get("icon_align_con_face") 
+        row.operator("mesh.rot_con", "Square Rotation", icon_value=button_align_con_face.icon_id)   
 
+        button_snap_offset = icons.get("icon_snap_offset")  
+        row.operator("view3d.xoffsets_main", "Xoffset & Xrotate", icon_value=button_snap_offset.icon_id)   
 
+        button_lattice_add = icons.get("icon_lattice_add") 
+        row.operator("tp_ops.easy_lattice", "Create Easy Lattice", icon_value=button_lattice_add.icon_id)   
 
-    box = col.box().column(1)              
-    
-    row = box.column(1) 
-
-    button_align_planar = icons.get("icon_align_planar") 
-    row.operator("mesh.face_make_planar", "Planar Faces", icon_value=button_align_planar.icon_id)   
-    
-    button_align_con_face = icons.get("icon_align_con_face") 
-    row.operator("mesh.rot_con", "Square Rotation", icon_value=button_align_con_face.icon_id)   
-
-    button_snap_offset = icons.get("icon_snap_offset")  
-    row.operator("view3d.xoffsets_main", "Xoffset & Xrotate", icon_value=button_snap_offset.icon_id)   
-
-    button_lattice_add = icons.get("icon_lattice_add") 
-    row.operator("tp_ops.easy_lattice", "Create Easy Lattice", icon_value=button_lattice_add.icon_id)   
-
-    box.separator()
+        box.separator()
 
 
-    box = col.box().column(1)              
+    # INTERPOLATE #
+    Display_Interpolate = context.user_preferences.addons[addon_key].preferences.tab_interpolate
+    if Display_Interpolate == True: 
 
-    row = box.column(1) 
-    row.label("Interpolate...")              
-  
-    row = box.column(1)    
-    row.operator("mesh.wplsmthdef_apply", text="Apply Smooth Deform", icon ="FRAME_NEXT")
+        box = col.box().column(1)              
 
-    box.separator()
-
-
-    box = col.box().column(1)              
-    
-    row = box.column(1)                                                         
-
-    button_align_straigten = icons.get("icon_align_straigten") 
-    row.operator("mesh.vertex_align",text="Straighten", icon_value=button_align_straigten.icon_id) 
-
-    button_align_distribute = icons.get("icon_align_distribute")  
-    row.operator("mesh.vertex_distribute",text="Distribute", icon_value=button_align_distribute.icon_id)                                        
-   
-    button_align_unbevel = icons.get("icon_align_unbevel") 
-    row.operator("tp_ops.unbevel", text="Unbevel", icon_value=button_align_unbevel.icon_id)
-
-    imdjs_tools_addon = "IMDJS_mesh_tools" 
-    state = addon_utils.check(imdjs_tools_addon)
-    if not state[0]:   
+        row = box.column(1) 
+        row.label("Interpolate...")              
       
-        button_align_radians = icons.get("icon_align_radians")  
-        row.operator("mesh.round_selected_points", text="Radians", icon_value=button_align_radians.icon_id)  
+        row = box.column(1)    
+        row.operator("mesh.wplsmthdef_apply", text="Apply Smooth Deform", icon ="FRAME_NEXT")
+
+        box.separator()
 
 
-    box.separator()
+    # SPACE #
+    Display_Space = context.user_preferences.addons[addon_key].preferences.tab_space
+    if Display_Space == True: 
+
+        box = col.box().column(1)              
+        
+        row = box.column(1)                                                         
+
+        imdjs_tools_addon = "IMDJS_mesh_tools" 
+        state = addon_utils.check(imdjs_tools_addon)
+        if not state[0]:   
+            pass
+        else:             
+            button_align_radians = icons.get("icon_align_radians")  
+            row.operator("mesh.round_selected_points", text="Radians", icon_value=button_align_radians.icon_id)  
+
+        button_align_straigten = icons.get("icon_align_straigten") 
+        row.operator("mesh.vertex_align",text="Straighten", icon_value=button_align_straigten.icon_id) 
+
+        button_align_distribute = icons.get("icon_align_distribute")  
+        row.operator("mesh.vertex_distribute",text="Distribute", icon_value=button_align_distribute.icon_id)                                        
+
+        box.separator()
+        
+        row = box.row(1)        
+        button_align_unbevel = icons.get("icon_align_unbevel") 
+        row.operator("tp_ops.unbevel", text="  Unbevel  ", icon_value=button_align_unbevel.icon_id)
+
+        box.separator()
+        
+
+
+    # MESHMACHINE # 
+    Display_MESHmachine = context.user_preferences.addons[addon_key].preferences.tab_machine
+    if Display_MESHmachine == True:
+
+        meshmaschine_addon = "MESHmachine" 
+        state = addon_utils.check(meshmaschine_addon)
+        if not state[0]:
+            pass
+        else:   
+            row = box.row(1) 
+            op = row.operator("machin3.fuse", text="Fuse")
+            op.width = 0
+            op.reverse = False
+
+            op = row.operator("machin3.change_width", text="Width")
+            op.width = 0
+
+            row = box.row(1)            
+            row.operator("machin3.flatten", text="Flatten")
+          
+            op = row.operator("machin3.unfuck", text="Unf*ck")
+            op.propagate = 0
+            op.width = 0
+
+            row = box.row(1) 
+            op = row.operator("machin3.unfuse", text="Unfuse")
+           
+            op = row.operator("machin3.refuse", text="Refuse")
+            op.width = 0
+            op.reverse = False
+            op.init = True
+
+            row = box.row(1) 
+          
+            op = row.operator("machin3.unbevel", text="Unbevel")
+            row.operator("machin3.unchamfer", text="Unchamfer")
+
+            row = box.row(1) 
+            row.operator("machin3.turn_corner", text="Turn Corner")
+            row.operator("machin3.quad_corner", text="Quad Corner")
+
+            box.separator()
+
+
   
- 
+    # LOOPTOOLS # 
     Display_Looptools = context.user_preferences.addons[addon_key].preferences.tab_looptools
-    if Display_Looptools == 'on':
+    if Display_Looptools == True:
             
         loop_tools_addon = "mesh_looptools" 
         state = addon_utils.check(loop_tools_addon)
@@ -350,13 +432,12 @@ def draw_edit_layout(self, context, layout):
             box.separator()
 
         else: 
- 
-  
+            box = col.box().column(1) 
+   
             row = box.row(1)          
             row.operator("tp_ops.surface_pencil", text="",icon="GREASEPENCIL")    
             row.operator("mesh.looptools_gstretch", text="Gstretch", icon='IPO_EASE_IN_OUT')    
             row.operator("remove.gp", text="", icon="PANEL_CLOSE")    
-
 
             box.separator()                        
            
@@ -378,7 +459,7 @@ def draw_edit_layout(self, context, layout):
             
             # space - settings
             if lt.display_space:
-                box = col.box().column(1)              
+                box.separator()       
                 
                 row = box.column(1) 
                 row.prop(lt, "space_interpolation")
@@ -420,7 +501,7 @@ def draw_edit_layout(self, context, layout):
 
             # curve - settings
             if lt.display_curve:
-                box = col.box().column(1)              
+                box.separator()           
                 
                 row = box.column(1) 
                 row.prop(lt, "curve_interpolation")
@@ -464,7 +545,7 @@ def draw_edit_layout(self, context, layout):
 
             # circle - settings
             if lt.display_circle:
-                box = col.box().column(1)              
+                box.separator()          
                 
                 row = box.column(1) 
                 row.prop(lt, "circle_fit")
@@ -517,7 +598,7 @@ def draw_edit_layout(self, context, layout):
 
             # flatten - settings
             if lt.display_flatten:
-                box = col.box().column(1)    
+                box.separator()
                  
                 row = box.column(1)  
                 row.prop(lt, "flatten_plane")
@@ -541,6 +622,42 @@ def draw_edit_layout(self, context, layout):
                 col_move.prop(lt, "flatten_influence")
 
                 box.separator() 
+                box = col.box().column(1)  
+
+
+            row = box.row(1)  
+            # bridge - first line
+            split = row.split(percentage=0.15, align=True)
+            if lt.display_bridge:
+                button_align_bridge = icons.get("icon_align_bridge")
+                split.prop(lt, "display_bridge", text="", icon_value=button_align_bridge.icon_id)
+                split.operator("mesh.looptools_bridge", text="LoopTool Bridge", icon='BLANK1').loft = False
+
+            else:
+                button_align_bridge = icons.get("icon_align_bridge")
+                split.prop(lt, "display_bridge", text="", icon_value=button_align_bridge.icon_id)
+                split.operator("mesh.looptools_bridge", text="LoopTool Bridge", icon='BLANK1').loft = False
+           
+            # bridge - settings
+            if lt.display_bridge:
+                box.separator() 
+                 
+                row = box.row(1)
+                row.prop(lt, "bridge_segments")
+                row.prop(lt, "bridge_min_width", text="")
+               
+                row = box.row(1)
+                row.prop(lt, "bridge_interpolation", text="")
+                row.prop(lt, "bridge_cubic_strength")
+               
+                row = box.row(1)
+                row.prop(lt, "bridge_remove_faces")
+
+                row = box.row(1)
+                row.prop(lt, "bridge_twist")
+
+                box.separator() 
+                box = col.box().column(1)  
 
 
             row = box.row(1)                                                  
@@ -549,33 +666,30 @@ def draw_edit_layout(self, context, layout):
             if lt.display_relax:
                 button_align_looptools = icons.get("icon_align_looptools")
                 split.prop(lt, "display_relax", text="", icon_value=button_align_looptools.icon_id)
-                split.operator("mesh.looptools_relax", text="  LoopTool Relax", icon='BLANK1')
+                split.operator("mesh.looptools_relax", text="LoopTool Relax", icon='BLANK1')
 
             else:
                 button_align_looptools = icons.get("icon_align_looptools")
                 split.prop(lt, "display_relax", text="", icon_value=button_align_looptools.icon_id)
-                split.operator("mesh.looptools_relax", text="  LoopTool Relax", icon='BLANK1')
+                split.operator("mesh.looptools_relax", text="LoopTool Relax", icon='BLANK1')
 
             # relax - settings
             if lt.display_relax:
-                box = col.box().column(1)    
+                box.separator() 
                  
                 row = box.column(1)  
                 row.prop(lt, "relax_interpolation")
                 row.prop(lt, "relax_input")
                 row.prop(lt, "relax_iterations")
                 row.prop(lt, "relax_regular")
-
-                box.separator()    
-
-
+   
 
             box.separator()                 
 
 
-
+    # RELAX MESH # 
     Display_Relax = context.user_preferences.addons[addon_key].preferences.tab_relax 
-    if Display_Relax == 'on':
+    if Display_Relax == True:
 
         box = col.box().column(1)    
 
@@ -594,46 +708,49 @@ def draw_edit_layout(self, context, layout):
 
 
 
+    # MIRROR # 
+    Display_Mirror = context.user_preferences.addons[addon_key].preferences.tab_mirror
+    if Display_Mirror == True: 
+
+        box = col.box().column(1)   
+                     
+        row = box.row(1)             
+        button_align_mirror_edm = icons.get("icon_align_mirror_edm")              
+        row.label("Mirror", icon_value=button_align_mirror_edm.icon_id) 
+
+        sub = row.row(1)
+        sub.scale_x = 0.3    
+        sub.operator("tp_ops.mirror1",text="X")
+        sub.operator("tp_ops.mirror2",text="Y")
+        sub.operator("tp_ops.mirror3",text="Z")      
+
+        box.separator() 
+
+        row = box.row(1)               
+        button_align_mirror_edge = icons.get("icon_align_mirror_edge")   
+        row.label("Turn", icon_value=button_align_mirror_edge.icon_id)    
+       
+        sub = row.row(1)
+        sub.scale_x = 0.9          
+        sub.operator("tp_ops.mirror_over_edge", "Over Edge")
+
+        box.separator() 
+
+        row = box.row(1)               
+        row.label("Mody", icon ="MOD_MIRROR")                 
+
+        sub = row.row(1)
+        sub.scale_x = 0.3                               
+        sub.operator("tp_ops.mod_mirror_x",text="X")
+        sub.operator("tp_ops.mod_mirror_y",text="Y")
+        sub.operator("tp_ops.mod_mirror_z",text="Z")      
+
+        box.separator()   
 
 
-    box = col.box().column(1)   
-                 
-    row = box.row(1)             
-    button_align_mirror_edm = icons.get("icon_align_mirror_edm")              
-    row.label("Mirror", icon_value=button_align_mirror_edm.icon_id) 
-
-    sub = row.row(1)
-    sub.scale_x = 0.3    
-    sub.operator("tp_ops.mirror1",text="X")
-    sub.operator("tp_ops.mirror2",text="Y")
-    sub.operator("tp_ops.mirror3",text="Z")      
-
-    box.separator() 
-
-    row = box.row(1)               
-    button_align_mirror_edge = icons.get("icon_align_mirror_edge")   
-    row.label("Turn", icon_value=button_align_mirror_edge.icon_id)    
-   
-    sub = row.row(1)
-    sub.scale_x = 0.9          
-    sub.operator("tp_ops.mirror_over_edge", "Over Edge")
-
-    box.separator() 
-
-    row = box.row(1)               
-    row.label("Mody", icon ="MOD_MIRROR")                 
-
-    sub = row.row(1)
-    sub.scale_x = 0.3                               
-    sub.operator("tp_ops.mod_mirror_x",text="X")
-    sub.operator("tp_ops.mod_mirror_y",text="Y")
-    sub.operator("tp_ops.mod_mirror_z",text="Z")      
-
-    box.separator()   
-
-
+    # AUTO MIRROR # 
     Display_AutoMirror = context.user_preferences.addons[addon_key].preferences.tab_automirror
-    if Display_AutoMirror == 'on':
+    if Display_AutoMirror == True:
         
         auto_mirror_addon = "mesh_auto_mirror" 
         state = addon_utils.check(auto_mirror_addon)

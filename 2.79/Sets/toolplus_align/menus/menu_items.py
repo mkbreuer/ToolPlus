@@ -25,6 +25,7 @@ from bpy import *
 from bpy.props import *
 from .. icons.icons import load_icons    
 
+import addon_utils
 
 # LOAD MENU # 
 from toolplus_align.menus.menu_normals        import (VIEW3D_TP_Translate_Normal_Menu)
@@ -55,4 +56,17 @@ def draw_item_transform_normal(self,context):
     col.separator()     
 
 
-        
+from toolplus_align.menus.menu_machine        import (VIEW3D_TP_Machine_Align_Menu)
+
+# UI: SUB MENU # 
+def draw_item_machine(self,context):
+    layout = self.layout
+
+    meshmaschine_addon = "MESHmachine" 
+    state = addon_utils.check(meshmaschine_addon)
+    if not state[0]:   
+        pass  
+    else:   
+        layout.menu("VIEW3D_TP_Machine_Align_Menu", text="MESHmachine")
+
+        layout.separator()     

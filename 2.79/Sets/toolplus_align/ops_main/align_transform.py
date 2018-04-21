@@ -426,6 +426,40 @@ class VIEW3D_TP_Align_Node(bpy.types.Operator):
         align_function_node(self.tp_axis)                               
         return {'FINISHED'} 
 
+class VIEW3D_TP_Clear_Location(bpy.types.Operator):
+    """Clear Location"""
+    bl_label = "Clear Location"
+    bl_idname = "tp_ops.location_clear"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    # EXECUTE MAIN OPERATOR #
+    def execute(self, context):                                 
+        bpy.ops.object.location_clear()                       
+        return {'FINISHED'} 
+
+class VIEW3D_TP_Clear_Rotation(bpy.types.Operator):
+    """Clear Rotation"""
+    bl_label = "Clear Rotation"
+    bl_idname = "tp_ops.rotation_clear"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    # EXECUTE MAIN OPERATOR #
+    def execute(self, context):                                 
+        bpy.ops.object.rotation_clear()                  
+        return {'FINISHED'} 
+
+class VIEW3D_TP_Clear_Scale(bpy.types.Operator):
+    """Clear Scale"""
+    bl_label = "Clear Scale"
+    bl_idname = "tp_ops.scale_clear"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    # EXECUTE MAIN OPERATOR #
+    def execute(self, context):                                 
+        bpy.ops.object.scale_clear()                    
+        return {'FINISHED'} 
+
+
 
 
 

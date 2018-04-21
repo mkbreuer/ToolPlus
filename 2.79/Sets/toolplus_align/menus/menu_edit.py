@@ -84,6 +84,8 @@ class VIEW3D_TP_Align_Menu_LoopTools(bpy.types.Menu):
         button_align_flatten = icons.get("icon_align_flatten")                
         layout.operator("mesh.looptools_flatten", text="LpT  Circle", icon_value=button_align_flatten.icon_id)
  
+        button_align_bridge = icons.get("icon_align_bridge")
+        layout.operator("mesh.looptools_bridge", text="LpT  Bridge", icon_value=button_align_bridge.icon_id).loft = False        
 
 
 
@@ -100,8 +102,7 @@ class VIEW3D_TP_Align_Menu_Relax(bpy.types.Menu):
       
         addon_key = __package__.split(".")[0]    
         panel_prefs = context.user_preferences.addons[addon_key].preferences
-        expand = panel_prefs.expand_panel_tools
-
+        
         layout.operator_context = 'INVOKE_REGION_WIN'
 
         button_align_vertices = icons.get("icon_align_vertices") 
@@ -114,7 +115,7 @@ class VIEW3D_TP_Align_Menu_Relax(bpy.types.Menu):
         layout.operator("mesh.shrinkwrap_smooth","Smooth Shrinkwrap", icon_value=button_align_shrinkwrap.icon_id)                 
                
         Display_Looptools = context.user_preferences.addons[addon_key].preferences.tab_looptools
-        if Display_Looptools == 'on':
+        if Display_Looptools == True:
                 
             loop_tools_addon = "mesh_looptools" 
             state = addon_utils.check(loop_tools_addon)

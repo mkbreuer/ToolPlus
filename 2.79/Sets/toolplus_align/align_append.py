@@ -60,3 +60,23 @@ def update_submenu_normal(self, context):
 
 
 
+
+from toolplus_align.menus.menu_items        import (draw_item_machine)
+
+
+def update_submenu_machine(self, context):
+    try:
+        bpy.types.VIEW3D_MT_edit_mesh_specials.remove(draw_item_machine)
+    except:
+        pass
+    
+    if context.user_preferences.addons[__package__].preferences.tab_submenu_machine == 'menu':
+
+        bpy.types.VIEW3D_MT_edit_mesh_specials.prepend(draw_item_machine)    
+
+    if context.user_preferences.addons[__package__].preferences.tab_submenu_machine == 'off':
+        pass
+
+
+
+

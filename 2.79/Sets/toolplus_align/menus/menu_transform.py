@@ -45,7 +45,7 @@ class VIEW3D_TP_Location_Menu(bpy.types.Menu):
         props.tp_axis= 'axis_xyz'         
         props.tp_transform= 'LOCATION'   
      
-        col.operator("object.location_clear", text="", icon="PANEL_CLOSE")
+        col.operator("tp_ops.location_clear", text="", icon="PANEL_CLOSE")
 
         button_align_baply = icons.get("icon_align_baply") 
         props = col.operator("object.transform_apply", text="", icon_value=button_align_baply.icon_id)
@@ -116,7 +116,7 @@ class VIEW3D_TP_Rotation_Menu(bpy.types.Menu):
         props.tp_axis= 'axis_xyz'         
         props.tp_transform= 'ROTATION'     
 
-        col.operator("object.rotation_clear", text="", icon="PANEL_CLOSE")
+        col.operator("tp_ops.rotation_clear", text="", icon="PANEL_CLOSE")
         
         button_align_baply = icons.get("icon_align_baply") 
         props = col.operator("object.transform_apply", text="", icon_value=button_align_baply.icon_id)
@@ -186,7 +186,7 @@ class VIEW3D_TP_Scale_Menu(bpy.types.Menu):
         props.tp_axis= 'axis_xyz'         
         props.tp_transform= 'SCALE'    
 
-        col.operator("object.scale_clear", text="", icon="PANEL_CLOSE")        
+        col.operator("tp_ops.scale_clear", text="", icon="PANEL_CLOSE")        
 
         button_align_baply = icons.get("icon_align_baply") 
         props = col.operator("object.transform_apply", text="", icon_value=button_align_baply.icon_id)

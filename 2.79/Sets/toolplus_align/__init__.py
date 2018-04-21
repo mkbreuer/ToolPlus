@@ -20,7 +20,7 @@
 bl_info = {
     "name": "Align",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 4),
+    "version": (0, 2, 5),
     "blender": (2, 7, 9),
     "location": "VIEW 3D, UV Image-, Graph and Node Editor",
     "description": "align tools collection",
@@ -32,6 +32,8 @@ bl_info = {
 
 # LOAD MANUAL #
 from toolplus_align.align_manual  import (VIEW3D_TP_Align_Manual)
+from toolplus_align.align_manual  import (VIEW3D_TP_Machine_Manual)
+from toolplus_align.align_manual  import (VIEW3D_TP_LoopTools_Manual)
 
 # LOAD PROPERTIES #
 from toolplus_align.ops_auxiliary.oned_scripts   import (paul_managerProps)
@@ -151,6 +153,7 @@ else:
 import bpy
 from bpy import *
 from bpy.props import*
+import addon_utils
 
 import bpy.utils.previews
 from bpy.types import AddonPreferences, PropertyGroup
@@ -202,13 +205,14 @@ class TP_Panels_Preferences(AddonPreferences):
                ('off',      'Off',                  'hide panel')),
                default='tools', update = update_panel_position)
 
+    tools_category_align = StringProperty(name = "TAB", description = "add name for a new category tab", default = 'Align', update = update_panel_position)
 
     #----------------------------------------------------------------------------------------
 
 
     # MENU PROPS #    
     tab_menu_align = EnumProperty(
-        name = 'Pie Menu',
+        name = 'Align Menu',
         description = 'save user settings and restart blender after switching the panel location',
         items=(('menu', 'Menu on',  'enable menu'),
                ('pie',  'Pie on',   'enable pie menu'),
@@ -224,10 +228,14 @@ class TP_Panels_Preferences(AddonPreferences):
 
     tab_menu_view_origin = EnumProperty(
         name = 'Origin Menu',
-        description = 'save user settings and restart blender after switching the panel location',
+        description = 'menu for 3d view',
         items=(('menu', 'Menu on', 'enable menu'),
                ('off', 'Menu off', 'disable menu')),
                default='off', update = update_menu_origin)
+
+    tab_origin_adv = bpy.props.BoolProperty(name="Advanced Origin Menu", description="show or hide tools in menu layout", default=True)    
+
+
                
     tab_menu_normal = EnumProperty(
         name = 'Translate Normal Menu',
@@ -237,29 +245,55 @@ class TP_Panels_Preferences(AddonPreferences):
                default='off', update = update_submenu_normal)               
 
 
-    #----------------------------------------------------------------------------------------
+    tab_menu_machine = EnumProperty(
+        name = 'MESHmachine',
+        description = 'menu for 3d view',
+        items=(('menu', 'Menu on', 'enable menu'),
+               ('off', 'Menu off', 'disable menu')),
+               default='off', update = update_menu_machine)               
 
-
-    # TOOLS UI #    
-    expand_panel_tools = bpy.props.BoolProperty(name="Expand", description="Expand, to display the settings", default=False)    
-
-    tab_origin_advanced = EnumProperty(name = 'Advanced',  description = 'on / off', 
-                  items=(('on', 'Advanced on', 'enable tools in panel'),  ('off', 'Advanced off', 'disable tools in panel')), default='on', update = update_display_tools)
-   
-    tab_looptools = EnumProperty(name = 'Display Tools', description = 'on / off',
-                  items=(('on', 'Looptools on', 'enable tools in panel'), ('off', 'Looptols off', 'disable tools in panel')), default='off', update = update_display_tools)
-
-    tab_relax = EnumProperty(name = 'Display Tools', description = 'on / off',
-                  items=(('on', 'Relax on', 'enable tools in panel'), ('off', 'Relax off', 'disable tools in panel')), default='off', update = update_display_tools)
-
-    tab_automirror = EnumProperty(name = 'Display Tools', description = 'on / off',
-                  items=(('on', 'AutoMirror on', 'enable tools in panel'), ('off', 'AutoMirror off', 'disable tools in panel')), default='off', update = update_display_tools)
+    tab_submenu_machine = EnumProperty(
+        name = 'MESHmachine',
+        description = 'menu for editmode special [W]',
+        items=(('menu', 'Menu on', 'enable menu'),
+               ('off', 'Menu off', 'disable menu')),
+               default='off', update = update_submenu_machine)  
 
     #----------------------------------------------------------------------------------------
 
 
-    tools_category_align = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'Align', update = update_panel_position)
-    tools_category_menu = bpy.props.BoolProperty(name = "Menu: Align", description = "enable or disable menu", default=True, update = update_menu)
+    # TOOLS PANEL #    
+    tab_pivot = bpy.props.BoolProperty(name="Pivot", description="show or hide tools in panel layout", default=True)    
+    tab_origin = bpy.props.BoolProperty(name="Origin", description="show or hide tools in panel layout", default=True)    
+    tab_align_to = bpy.props.BoolProperty(name="Align to", description="show or hide tools in panel layout", default=True)    
+    tab_zero_to = bpy.props.BoolProperty(name="Zero to", description="show or hide tools in panel layout", default=True)    
+    tab_aligner = bpy.props.BoolProperty(name="Tools", description="show or hide tools in panel layout", default=True)    
+    tab_station = bpy.props.BoolProperty(name="NP Station", description="show or hide tools in panel layout", default=True)    
+    tab_interpolate = bpy.props.BoolProperty(name="Interpolate", description="show or hide tools in panel layout", default=True)    
+    tab_mirror = bpy.props.BoolProperty(name="Mirror", description="show or hide tools in panel layout", default=True)    
+    tab_automirror = bpy.props.BoolProperty(name="AutoMirror", description="show or hide tools in panel layout", default=True)    
+    tab_looptools = bpy.props.BoolProperty(name="Looptools", description="show or hide tools in panel layout", default=True)    
+    tab_relax = bpy.props.BoolProperty(name="Relax Mesh", description="show or hide tools in panel layout", default=True)    
+    tab_edger = bpy.props.BoolProperty(name="Edge Align", description="show or hide tools in panel layout", default=True)    
+    tab_space = bpy.props.BoolProperty(name="Space Align", description="show or hide tools in panel layout", default=True)    
+    tab_machine = bpy.props.BoolProperty(name="MESHmachine", description="show or hide tools in panel layout", default=True)    
+
+    # TOOLS MENU #    
+    tab_pivot_menu = bpy.props.BoolProperty(name="Pivot", description="show or hide tools in panel layout", default=True)    
+    tab_origin_menu = bpy.props.BoolProperty(name="Origin", description="show or hide tools in panel layout", default=True)    
+    tab_align_to_menu = bpy.props.BoolProperty(name="Align to", description="show or hide tools in panel layout", default=True)    
+    tab_zero_to_menu = bpy.props.BoolProperty(name="Zero to", description="show or hide tools in panel layout", default=True)    
+    tab_aligner_menu = bpy.props.BoolProperty(name="Tools", description="show or hide tools in panel layout", default=True)    
+    tab_station_menu = bpy.props.BoolProperty(name="NP Station", description="show or hide tools in panel layout", default=True)    
+    tab_interpolate_menu = bpy.props.BoolProperty(name="Interpolate", description="show or hide tools in panel layout", default=True)    
+    tab_mirror_menu = bpy.props.BoolProperty(name="Mirror", description="show or hide tools in panel layout", default=True)    
+    tab_automirror_menu = bpy.props.BoolProperty(name="AutoMirror", description="show or hide tools in panel layout", default=True)    
+    tab_tinycad_menu = bpy.props.BoolProperty(name="TinyCAD", description="show or hide tools in panel layout", default=True)    
+    tab_looptools_menu = bpy.props.BoolProperty(name="Looptools", description="show or hide tools in panel layout", default=True)    
+    tab_relax_menu = bpy.props.BoolProperty(name="Relax Mesh", description="show or hide tools in panel layout", default=True)    
+    tab_edger_menu = bpy.props.BoolProperty(name="Edge Align", description="show or hide tools in panel layout", default=True)    
+    tab_space_menu= bpy.props.BoolProperty(name="Mesh Align", description="show or hide tools in panel layout", default=True)    
+    tab_machine_menu= bpy.props.BoolProperty(name="MESHmachine", description="show or hide tools in panel layout", default=True)    
 
 
     #----------------------------------------------------------------------------------------
@@ -508,39 +542,57 @@ class TP_Panels_Preferences(AddonPreferences):
                 row.prop(self, "tools_category_align")
 
 
-        #Tools
+        # TOOLS #
         if self.prefs_tabs == 'tools':
           
             box = layout.box().column(1)
-            row = box.row()
-            row.label("Advance Tools > Panel & Menu):", icon ="COLLAPSEMENU")   
             
             row = box.row()
-            row.prop(self, 'tab_looptools', expand=True)
-            row.prop(self, 'tab_relax', expand=True)
-            row.prop(self, 'tab_automirror', expand=True)
-           
+            row.label("Panel Tools:", icon ="COLLAPSEMENU")   
+            
+            row = box.column_flow(2)
+
+            row.prop(self, 'tab_origin')
+            row.prop(self, 'tab_align_to')
+            row.prop(self, 'tab_aligner')
+            row.prop(self, 'tab_zero_to')
+            row.prop(self, 'tab_station')
+            row.prop(self, 'tab_interpolate')
+            row.prop(self, 'tab_mirror')
+            row.prop(self, 'tab_automirror')
+            row.prop(self, 'tab_looptools')
+            row.prop(self, 'tab_relax')
+            row.prop(self, 'tab_edger')
+            row.prop(self, 'tab_space')
+            row.prop(self, 'tab_machine')
+
             box.separator()  
-
-            box = layout.box().column(1)
-             
-            row = box.column(1)  
-            row.label("Normal Translate Menu:", icon ="COLLAPSEMENU") 
+            box.separator()  
+           
+           
+            row = box.row()
+            row.label("Menu Tools:", icon ="COLLAPSEMENU")   
             
-            row.separator()           
-            row.label("Toolshelf [T] > Tools > Transform")
+            row = box.column_flow(2)
 
-            row = box.row(1)          
-            row.prop(self, 'tab_menu_normal', expand=True)
-            
-            if self.tab_menu_normal == 'off':
-                
-                box.separator() 
-                
-                row = box.row(1) 
-                row.label(text="! durably hidden with next reboot!", icon ="INFO")
-       
-            box.separator()   
+            row.prop(self, 'tab_pivot_menu')
+            row.prop(self, 'tab_origin_menu')
+            row.prop(self, 'tab_align_to_menu')
+            row.prop(self, 'tab_aligner_menu')
+            row.prop(self, 'tab_zero_to_menu')
+            row.prop(self, 'tab_station_menu')
+            row.prop(self, 'tab_interpolate_menu')
+            row.prop(self, 'tab_mirror_menu')
+            row.prop(self, 'tab_automirror_menu')
+            row.prop(self, 'tab_tinycad_menu')
+            row.prop(self, 'tab_looptools_menu')
+            row.prop(self, 'tab_relax_menu')
+            row.prop(self, 'tab_edger_menu')
+            row.prop(self, 'tab_space_menu')
+            row.prop(self, 'tab_machine_menu')
+
+            box.separator()         
+
 
    
         # KEYMAP #
@@ -587,7 +639,7 @@ class TP_Panels_Preferences(AddonPreferences):
                 
                 row = box.row(1)          
                 row.label(" ", icon ="BLANK1")    
-                row.prop(self, 'tab_origin_advanced', expand=True)                
+                row.prop(self, 'tab_origin_adv')                
                                     
         
             box.separator()  
@@ -606,6 +658,53 @@ class TP_Panels_Preferences(AddonPreferences):
                 row = box.row(1) 
                 row.label(text="! durably hidden with next reboot!", icon ="INFO")
 
+
+            box.separator()
+
+            # NORMALS #
+            box = layout.box().column(1)
+             
+            row = box.row(1)  
+            row.label("Normal Translate Menu:", icon ="COLLAPSEMENU")              
+            row.prop(self, 'tab_menu_normal', expand=True)
+            
+            if self.tab_menu_normal == 'off':
+                
+                box.separator() 
+                
+                row = box.row(1) 
+                row.label(text="! durably hidden with next reboot!", icon ="INFO")
+
+            row = box.row(1)        
+            row.label("Toolshelf [T] > Tools > Transform")   
+       
+            box.separator()   
+
+            meshmaschine_addon = "MESHmachine" 
+            state = addon_utils.check(meshmaschine_addon)
+            if not state[0]:
+                pass
+            else:   
+
+                # MESHmachine #
+                box = layout.box().column(1)
+                 
+                row = box.row(1)         
+                row.label("MESHmachine Menu: [SHIFT+X] ", icon ="COLLAPSEMENU")       
+                row.prop(self, 'tab_menu_machine', expand=True)
+                
+                if self.tab_menu_machine == 'off':
+                    
+                    box.separator() 
+                    
+                    row = box.row(1) 
+                    row.label(text="! durably hidden with next reboot!", icon ="INFO")
+
+                box.separator()         
+             
+                row = box.row(1)
+                row.label("Add to Special-Edit-Menu [W]")
+                row.prop(self, 'tab_submenu_machine', expand=True)
 
             box.separator()
             box.separator()
@@ -789,19 +888,8 @@ class TP_Panels_Preferences(AddonPreferences):
 
         # WEB #
         if self.prefs_tabs == 'url':
-            row = layout.column_flow(2)
-            row.operator('wm.url_open', text = 'Advanced Align', icon = 'INFO').url = "https://blenderartists.org/forum/showthread.php?256114-Add-on-Advanced-align-tools"
-            row.operator('wm.url_open', text = 'Rotate Constraine', icon = 'INFO').url = "http://blendscript.blogspot.de/2013/05/rotate-constraint-script.html?showComment=1367746477883#c794165451806396278"
-            row.operator('wm.url_open', text = 'Distribute Objects', icon = 'INFO').url = "http://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/3D_interaction/Oscurart_Tools"
-            row.operator('wm.url_open', text = 'Align by Faces', icon = 'INFO').url = "https://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/3D_interaction/Align_by_faces"
-            row.operator('wm.url_open', text = 'Kjartans Scripts', icon = 'INFO').url = "http://www.kjartantysdal.com/scripts"
-            row.operator('wm.url_open', text = 'Vertex Tools', icon = 'INFO').url = "http://airplanes3d.net/scripts-254_e.xml"
-            row.operator('wm.url_open', text = 'Drop to Ground', icon = 'INFO').url = "https://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/Object/Drop_to_ground"
-            row.operator('wm.url_open', text = '1D Scripts', icon = 'INFO').url = "https://blenderartists.org/forum/showthread.php?399882-1D_Scripts-Bargool_1D_tools-main-thread&highlight="
-            row.operator('wm.url_open', text = 'NP Station', icon = 'INFO').url = "https://blenderartists.org/forum/showthread.php?418540-AddOn-NP-Station"
-            row.operator('wm.url_open', text = 'Smooth Deformation', icon = 'INFO').url = "https://blenderartists.org/forum/showthread.php?439842-Addon-Deformation-smoothing"
-            row.operator('wm.url_open', text = 'Yadoob Scripts', icon = 'INFO').url = "http://blenderlounge.fr/forum/viewtopic.php?f=18&t=1438"
-            row.operator('wm.url_open', text = 'Nikitron Tools', icon = 'INFO').url = "http://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/Object/Nikitron_tools"
+            row = layout.row()
+            row.label("List of Addon on Wiki Page")
             row.operator('wm.url_open', text = 'BlenderArtist', icon = 'BLENDER').url = "https://blenderartists.org/forum/showthread.php?409510-Addon-T-Align&p=3114519#post3114519"
             row.operator('wm.url_open', text = 'GitHub', icon = 'BLENDER').url = "https://github.com/mkbreuer/ToolPlus"
 
@@ -815,6 +903,7 @@ class Dropdown_Align_Props(bpy.types.PropertyGroup):
     display_display = bpy.props.BoolProperty(name="Display", description="open / close", default=False)
     display_apply = bpy.props.BoolProperty(name="Apply", description="open / close", default=False)
 
+    display_align_options = bpy.props.BoolProperty(name="Open / Close", description="open / close", default=False)
     display_axis_toggle = bpy.props.BoolProperty(name="Open / Close", description="open / close", default=False)
     display_snap_toggle = bpy.props.BoolProperty(name="Open / Close", description="open / close", default=False)
     display_station_toggle = bpy.props.BoolProperty(name="Open / Close", description="open / close", default=False)
@@ -844,6 +933,11 @@ class Dropdown_Align_Props(bpy.types.PropertyGroup):
 
     active_too = bpy.props.BoolProperty(name="Active too!",  description="align active origin too", default=False, options={'SKIP_SAVE'})    
     
+
+    types_align =  [("tp_01"    ,"Panel"  ,"panel tools"  ,"" ,0),
+                    ("tp_02"    ,"Menus"  ,"menu tools"   ,"" ,1), 
+                    ("tp_03"    ,"KeyMap" ,"keymap    "   ,"" ,2)]                   
+    bpy.types.Scene.tp_align = bpy.props.EnumProperty(name = " ", default = "tp_01", items = types_align)
 
 
 
@@ -894,8 +988,10 @@ def register():
     update_menu(None, bpy.context) 
     update_menu_relax(None, bpy.context)
     update_menu_origin(None, bpy.context)
+    update_menu_machine(None, bpy.context)
 
     update_submenu_normal(None, bpy.context)
+    update_submenu_machine(None, bpy.context)
 
         
     # ALIGN #
@@ -977,6 +1073,8 @@ def register():
 
     # MANUAL #
     bpy.utils.register_manual_map(VIEW3D_TP_Align_Manual)
+    bpy.utils.register_manual_map(VIEW3D_TP_LoopTools_Manual)
+    bpy.utils.register_manual_map(VIEW3D_TP_Machine_Manual)
 
 
 
@@ -993,6 +1091,8 @@ def unregister():
     
     # MANUAL #
     bpy.utils.unregister_manual_map(VIEW3D_TP_Align_Manual)
+    bpy.utils.unregister_manual_map(VIEW3D_TP_LoopTools_Manual)
+    bpy.utils.unregister_manual_map(VIEW3D_TP_Machine_Manual)
 
 
 
@@ -1000,6 +1100,7 @@ if __name__ == "__main__":
     register()
         
         
+
 
 
 

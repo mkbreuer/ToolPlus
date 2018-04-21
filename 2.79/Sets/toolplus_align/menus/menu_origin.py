@@ -80,7 +80,6 @@ class VIEW3D_TP_Origin_Menu(bpy.types.Menu):
 
         addon_key = __package__.split(".")[0]    
         panel_prefs = context.user_preferences.addons[addon_key].preferences
-        expand = panel_prefs.expand_panel_tools
   
         ob = context
         if ob.mode == 'OBJECT':
@@ -105,8 +104,8 @@ class VIEW3D_TP_Origin_Menu(bpy.types.Menu):
                 layout.operator("tp_ops.origin_modal", text="Origin to Snap", icon_value=button_origin_tosnap.icon_id)
       
 
-            display_advanced = context.user_preferences.addons[addon_key].preferences.tab_origin_advanced
-            if display_advanced == 'on':
+            display_advanced = context.user_preferences.addons[addon_key].preferences.tab_origin_menu
+            if display_advanced == True:
                 pass
             else:  
                 if len(bpy.context.selected_objects) == 2: 
@@ -140,8 +139,8 @@ class VIEW3D_TP_Origin_Menu(bpy.types.Menu):
                         layout.operator("tp_ops.bbox_origin_set","X-BBox Bound", icon_value=button_origin_bbox.icon_id)
       
 
-            display_advanced = context.user_preferences.addons[addon_key].preferences.tab_origin_advanced
-            if display_advanced == 'on':  
+            display_advanced = context.user_preferences.addons[addon_key].preferences.tab_origin_menu
+            if display_advanced == True:  
 
                 layout.separator()
 
@@ -189,8 +188,8 @@ class VIEW3D_TP_Origin_Menu(bpy.types.Menu):
 
         if ob.mode in EDIT:   
                
-            display_advanced = context.user_preferences.addons[addon_key].preferences.tab_origin_advanced
-            if display_advanced == 'on':  
+            display_advanced = context.user_preferences.addons[addon_key].preferences.tab_origin_menu
+            if display_advanced == True:  
 
                 layout.separator()
 

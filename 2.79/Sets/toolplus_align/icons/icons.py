@@ -50,6 +50,7 @@ def load_icons():
     mkb_icons.load("icon_align_curve", os.path.join(icons_dir, "align_curve.png"), 'IMAGE')    
     mkb_icons.load("icon_align_distribute", os.path.join(icons_dir, "align_distribute.png"), 'IMAGE')    
     mkb_icons.load("icon_align_flatten", os.path.join(icons_dir, "align_flatten.png"), 'IMAGE')       
+    mkb_icons.load("icon_align_bridge", os.path.join(icons_dir, "align_bridge.png"), 'IMAGE')       
     mkb_icons.load("icon_align_space", os.path.join(icons_dir, "align_space.png"), 'IMAGE')    
     mkb_icons.load("icon_align_straigten", os.path.join(icons_dir, "align_straigten.png"), 'IMAGE')    
 
@@ -150,6 +151,9 @@ def load_icons():
     mkb_icons.load("icon_snap_scale", os.path.join(icons_dir, "snap_scale.png"), 'IMAGE')
     mkb_icons.load("icon_snap_ruler", os.path.join(icons_dir, "snap_ruler.png"), 'IMAGE')
     mkb_icons.load("icon_snap_set", os.path.join(icons_dir, "snap_set.png"), 'IMAGE')
+
+
+    mkb_icons.load("icon_tinycad", os.path.join(icons_dir, "tinycad.png"), 'IMAGE')
     
 
 

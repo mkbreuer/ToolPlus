@@ -103,9 +103,7 @@ def update_menu(self, context):
         pass
     
     if context.user_preferences.addons[__package__].preferences.tab_menu_align == 'menu':
-     
-        VIEW3D_TP_Align_Menu.bl_category = context.user_preferences.addons[__package__].preferences.tools_category_menu
-    
+
         bpy.utils.register_class(VIEW3D_TP_Align_Menu)
         bpy.utils.register_class(VIEW3D_TP_Align_Menu_Graph)
         bpy.utils.register_class(VIEW3D_TP_Align_Menu_UV)
@@ -157,8 +155,7 @@ def update_menu_relax(self, context):
         pass
     
     if context.user_preferences.addons[__package__].preferences.tab_menu_view_relax == 'menu':
-     
-        VIEW3D_TP_Relax_Menu.bl_category = context.user_preferences.addons[__package__].preferences.tools_category_menu    
+         
         bpy.utils.register_class(VIEW3D_TP_Relax_Menu)
 
         wm = bpy.context.window_manager        
@@ -187,8 +184,7 @@ def update_menu_origin(self, context):
         pass
     
     if context.user_preferences.addons[__package__].preferences.tab_menu_view_origin == 'menu':
-     
-        VIEW3D_TP_Origin_Menu.bl_category = context.user_preferences.addons[__package__].preferences.tools_category_menu    
+
         bpy.utils.register_class(VIEW3D_TP_Origin_Menu)
 
         wm = bpy.context.window_manager        
@@ -201,3 +197,29 @@ def update_menu_origin(self, context):
 
 
 
+# LOAD MENU #
+from toolplus_align.menus.menu_machine    import (VIEW3D_TP_Machine_Menu)
+
+def update_menu_machine(self, context):
+    try:
+        bpy.utils.unregister_class(VIEW3D_TP_Machine_Menu)
+
+        wm = bpy.context.window_manager
+        for km in addon_keymaps_menu:
+            wm.keyconfigs.addon.keymaps.remove(km)
+        del addon_keymaps_menu[:]
+        
+    except:
+        pass
+    
+    if context.user_preferences.addons[__package__].preferences.tab_menu_machine == 'menu':
+
+        bpy.utils.register_class(VIEW3D_TP_Machine_Menu)
+
+        wm = bpy.context.window_manager        
+        km = wm.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')        
+        kmi = km.keymap_items.new('wm.call_menu', 'X', 'PRESS', shift=True) #,alt=True, ctrl=True, 
+        kmi.properties.name = "VIEW3D_TP_Machine_Menu"
+
+    if context.user_preferences.addons[__package__].preferences.tab_menu_machine == 'off':
+        pass

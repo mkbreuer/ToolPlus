@@ -238,7 +238,7 @@ class VIEW3D_TP_Align_PIE(bpy.types.Menu):
 
   
                 Display_Looptools = context.user_preferences.addons[addon_key].preferences.tab_looptools
-                if Display_Looptools == 'on':
+                if Display_Looptools == True:
                         
                     loop_tools_addon = "mesh_looptools" 
                     state = addon_utils.check(loop_tools_addon)
@@ -266,7 +266,7 @@ class VIEW3D_TP_Align_PIE(bpy.types.Menu):
 
 
                 Display_Relax = context.user_preferences.addons[addon_key].preferences.tab_relax 
-                if Display_Relax == 'on':
+                if Display_Relax == True:
              
                     row = box.row(1)                                    
              
@@ -282,7 +282,7 @@ class VIEW3D_TP_Align_PIE(bpy.types.Menu):
 
                
                 Display_Looptools = context.user_preferences.addons[addon_key].preferences.tab_looptools
-                if Display_Looptools == 'on':
+                if Display_Looptools == True:
                         
                     loop_tools_addon = "mesh_looptools" 
                     state = addon_utils.check(loop_tools_addon)
