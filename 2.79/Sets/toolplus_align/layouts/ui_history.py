@@ -51,7 +51,7 @@ def draw_history_tools(context, layout):
     row.operator("view3d.ruler", text="Ruler", icon_value=button_ruler_triangle.icon_id)  
 
     row.operator("ed.undo", text="", icon="FRAME_PREV")
-    row.operator("ed.undo_history", text="History", icon="COLLAPSEMENU")
+    row.operator("ed.undo_history", text="", icon="COLLAPSEMENU")
     row.operator("ed.redo", text="", icon="FRAME_NEXT") 
 
     if tp_props.display_align_options: 
