@@ -274,8 +274,8 @@ class TP_Panels_Preferences(AddonPreferences):
            
             row.separator()           
            
-            row.label(text="The Panels are adaptable can be place in the toolshelf [T] or property shelf [N]")
-            row.label(text="A included Menu and Tools for Properties Modifier can also be activated")
+            row.label(text="The Panels are adaptable and can be placed in the toolshelf [T] or property shelf [N]")
+            row.label(text="A included Menu and Tools for Properties: Modifier can also be activated")
            
             row.separator()        
                         

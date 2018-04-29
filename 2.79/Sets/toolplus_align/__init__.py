@@ -508,7 +508,7 @@ class TP_Panels_Preferences(AddonPreferences):
 
             row.label(text="This is a collection of align tools for 3D View, UV Image-, Graph and Node Editor")   
             row.label(text="Location in 3D View: tool shelf [T], property Shelf [N], properties data and header line")   
-            row.label(text="Location in UV Image-, Graph and Node Editor: [CTRL+D]")
+            row.label(text="Menu in UV Image-, Graph and Node Editor: [CTRL+D]")
             
             row.separator()
             

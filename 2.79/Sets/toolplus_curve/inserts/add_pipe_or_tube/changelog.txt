@@ -1,0 +1,10 @@
+Tubes and Pipes
+Blender addon
+by Roman Sychev
+
+********************* Changelog ***************************
+___________________________________________________________
+
+v1.1
+Added taper options for the Pipe.
+If enabled, creates a taper curve object alongside the pipe, with an initial taper ratio. The curve can then be edited to control the pipe's shape along its length.
