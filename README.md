@@ -40,9 +40,6 @@ Install Instruction
 
 * The Addons on my ToolPlus GitHub are tool collections for Blender.
 
-=======
-* The Addons on my ToolPlus GitHub are tool collections for Blender.
-
 * I created them for my personal workflow in my private time.
 
 * And i try to update them continuously, because it makes fun and save time at the end
