@@ -79,6 +79,8 @@ def ImportFunction(path, only_cardinal, ppu, size, opacity):
                                 #bpy.context.space_data.context = 'SCENE'
                                 if (bpy.data.scenes[0].unit_settings.system == 'IMPERIAL'):
                                     set_size /= 3.281
+                                if (bpy.data.scenes[0].unit_settings.system == 'METRIC'):
+                                    set_size /= 0.1
                             else:
                                 set_size = size
                             bg.size = set_size
