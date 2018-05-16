@@ -363,7 +363,7 @@ def draw_callback_px_text_mkb(self, context):
         # APPLY PREFERENCES #               
         if panel_prefs.tab_center_mkb == 'middle':                
             blf.position(font_id_3_mkb, (self.REALx/2-self.line_3_width_mkb/2+text_3_array_x_mkb+text_all_x_mkb),     
-                                          (self.REALy/2-self.line_1_height_mkb/2+text_3_array_y_mkb-text_spread_y_mkb*3+text_all_y_mkb), 0)   
+                                          (self.REALy/2-self.line_3_height_mkb/2+text_3_array_y_mkb-text_spread_y_mkb*3+text_all_y_mkb), 0)   
         else:
             if panel_prefs.tab_center_left_mkb == True:                 
                 blf.position(font_id_3_mkb, (self.REALx/2-text_3_array_x_mkb+text_all_x_mkb),          
@@ -440,7 +440,7 @@ def draw_callback_px_text_mkb(self, context):
         # APPLY PREFERENCES #                      
         if panel_prefs.tab_center_mkb == 'middle':                
             blf.position(font_id_4_mkb, (self.REALx/2-self.line_4_width_mkb/2+text_4_array_x_mkb+text_all_x_mkb),        
-                                          (self.REALy/2-self.line_1_height_mkb/2+text_4_array_y_mkb-text_spread_y_mkb*4+text_all_y_mkb), 0)   
+                                          (self.REALy/2-self.line_4_height_mkb/2+text_4_array_y_mkb-text_spread_y_mkb*4+text_all_y_mkb), 0)   
         else:
             if panel_prefs.tab_center_left_mkb == True:                 
                 blf.position(font_id_4_mkb, (self.REALx/2-text_4_array_x_mkb+text_all_x_mkb),           
@@ -517,7 +517,7 @@ def draw_callback_px_text_mkb(self, context):
         # APPLY PREFERENCES #          
         if panel_prefs.tab_center_mkb == 'middle':                
             blf.position(font_id_5_mkb, (self.REALx/2-self.line_5_width_mkb/2+text_5_array_x_mkb+text_all_x_mkb),        
-                                          (self.REALy/2-self.line_1_height_mkb/2+text_5_array_y_mkb-text_spread_y_mkb*5+text_all_y_mkb), 0)   
+                                          (self.REALy/2-self.line_5_height_mkb/2+text_5_array_y_mkb-text_spread_y_mkb*5+text_all_y_mkb), 0)   
         else:
             if panel_prefs.tab_center_left_mkb == True:                 
                 blf.position(font_id_5_mkb, (self.REALx/2-text_5_array_x_mkb+text_all_x_mkb),           
@@ -594,7 +594,7 @@ def draw_callback_px_text_mkb(self, context):
         # APPLY PREFERENCES #          
         if panel_prefs.tab_center_mkb == 'middle':                
             blf.position(font_id_6_mkb, (self.REALx/2-self.line_6_width_mkb/2+text_6_array_x_mkb+text_all_x_mkb),         
-                                          (self.REALy/2-self.line_1_height_mkb/2+text_6_array_y_mkb-text_spread_y_mkb*6+text_all_y_mkb), 0)   
+                                          (self.REALy/2-self.line_6_height_mkb/2+text_6_array_y_mkb-text_spread_y_mkb*6+text_all_y_mkb), 0)   
         else:
             if panel_prefs.tab_center_left_mkb == True:                 
                 blf.position(font_id_6_mkb, (self.REALx/2-text_6_array_x_mkb+text_all_x_mkb),            
@@ -671,7 +671,7 @@ def draw_callback_px_text_mkb(self, context):
         # APPLY PREFERENCES #          
         if panel_prefs.tab_center_mkb == 'middle':                
             blf.position(font_id_7_mkb, (self.REALx/2-self.line_7_width_mkb/2+text_7_array_x_mkb+text_all_x_mkb),        
-                                          (self.REALy/2-self.line_1_height_mkb/2+text_7_array_y_mkb-text_spread_y_mkb*7+text_all_y_mkb), 0)   
+                                          (self.REALy/2-self.line_7_height_mkb/2+text_7_array_y_mkb-text_spread_y_mkb*7+text_all_y_mkb), 0)   
         else:
             if panel_prefs.tab_center_left_mkb == True:                 
                 blf.position(font_id_7_mkb, (self.REALx/2-text_7_array_x_mkb+text_all_x_mkb),          
