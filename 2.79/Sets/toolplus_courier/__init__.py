@@ -22,7 +22,7 @@
 bl_info = {
     "name": "T+Courier",
     "author": "marvin.k.breuer (MKB)",
-    "version": (1, 0),
+    "version": (1, 0, 1),
     "blender": (2, 7, 9),
     "location": "View3D",
     "description": "text draw on 3D viewport",
