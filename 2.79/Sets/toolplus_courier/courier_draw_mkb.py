@@ -286,7 +286,7 @@ def draw_callback_px_text_mkb(self, context):
         # APPLY PREFERENCES #               
         if panel_prefs.tab_center_mkb == 'middle':                    
             blf.position(font_id_2_mkb, (self.REALx/2-self.line_2_width_mkb/2+text_2_array_x_mkb+text_all_x_mkb),     
-                                          (self.REALy/2-self.line_1_height_mkb/2+text_2_array_y_mkb-text_spread_y_mkb*2+text_all_y_mkb), 0)   
+                                          (self.REALy/2-self.line_2_height_mkb/2+text_2_array_y_mkb-text_spread_y_mkb*2+text_all_y_mkb), 0)   
 
         else:
             if panel_prefs.tab_center_left_mkb == True:                 
