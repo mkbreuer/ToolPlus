@@ -84,9 +84,23 @@ def draw_draw_ui(self, context, layout):
         
     row.label("Settings")
 
-    button_curve_extrude = icons.get("icon_curve_extrude")     
+    row.operator("tp_ops.origin_2d", text="", icon='LAYER_ACTIVE')   
+
+    button_curve_extrude = icons.get("icon_curve_extrude")        
     row.operator("tp_ops.curve_extrude", text="", icon_value=button_curve_extrude.icon_id)      
-    row.prop(scene, "add_bevel", text ="", icon="MOD_WARP")   
+
+    obj = context.active_object     
+    if obj:
+       obj_type = obj.type
+       if obj_type in {'CURVE'}:
+
+        active_bevel = bpy.context.object.data.bevel_depth            
+        if active_bevel == 0.0:              
+            row.operator("tp_ops.enable_bevel", text="", icon='MOD_WARP')
+        else:   
+            row.operator("tp_ops.enable_bevel", text="", icon='MOD_WARP')    
+
+    #row.prop(scene, "add_bevel", text ="", icon="MOD_WARP")   
 
     box.separator()
 
@@ -101,7 +115,7 @@ def draw_draw_ui(self, context, layout):
     box.separator()                           
                                                          
     row = box.row(1)
-    row.scale_y = 1.2                              
+    row.scale_y = 1                             
     row.prop(scene.tp_props_insert, "add_mat", text ="")                 
     row.label(text="Add Color:")  
    
@@ -154,7 +168,7 @@ def draw_draw_ui(self, context, layout):
             box.separator()
             
             row = box.row(1)
-            row.scale_y = 1.2                                  
+            row.scale_y = 1                                 
             row.label("Obj-Color")            
             if bpy.context.scene.render.engine == 'CYCLES':
                 row.prop(context.object.active_material, "diffuse_color", text="")  

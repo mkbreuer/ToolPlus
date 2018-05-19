@@ -46,86 +46,94 @@ class VIEW3D_TP_Draw_Curve(bpy.types.Operator):
 
     def execute(self, context):
 
-        add_mat = bpy.context.scene.tp_props_insert.add_mat
-        add_objmat = bpy.context.scene.tp_props_insert.add_objmat  
-        add_random = bpy.context.scene.tp_props_insert.add_random
-        add_color = bpy.context.scene.tp_props_insert.add_color
-        add_cyclcolor = bpy.context.scene.tp_props_insert.add_cyclcolor
-
-        scene = bpy.context.scene
-
+    
         obj = context.active_object     
         if obj:
-           obj_type = obj.type
-           if obj_type in {'CURVE'}:
-               pass                 
-           else:
-                bpy.ops.view3d.snap_cursor_to_selected()             
-                bpy.ops.curve.primitive_bezier_curve_add(view_align=True, enter_editmode=True)
+            
+            add_mat = bpy.context.scene.tp_props_insert.add_mat
+            add_objmat = bpy.context.scene.tp_props_insert.add_objmat  
+            add_random = bpy.context.scene.tp_props_insert.add_random
+            add_color = bpy.context.scene.tp_props_insert.add_color
+            add_cyclcolor = bpy.context.scene.tp_props_insert.add_cyclcolor
 
-                
-        if bpy.context.object.data.bevel_depth == 0 and scene.add_bevel == True: 
-            bpy.context.object.data.fill_mode = 'FULL'
-            bpy.context.object.data.bevel_depth = 3
-            bpy.context.object.data.bevel_resolution = 3
+            scene = bpy.context.scene
+
+            obj = context.active_object     
+            if obj:
+               obj_type = obj.type
+               if obj_type in {'CURVE'}:
+                   pass                 
+               else:
+                    bpy.ops.view3d.snap_cursor_to_selected()             
+                    bpy.ops.curve.primitive_bezier_curve_add(view_align=True, enter_editmode=True)
+
+                    
+            if bpy.context.object.data.bevel_depth == 0 and scene.add_bevel == True: 
+                bpy.context.object.data.fill_mode = 'FULL'
+                bpy.context.object.data.bevel_depth = 3
+                bpy.context.object.data.bevel_resolution = 3
 
 
-        bpy.ops.object.mode_set(mode = 'OBJECT')            
+            bpy.ops.object.mode_set(mode = 'OBJECT')            
 
-        # add material with enabled object color
-        for i in range(add_mat):
+            # add material with enabled object color
+            for i in range(add_mat):
 
-            active = bpy.context.active_object
-            # Get material
-            mat = bpy.data.materials.get("Mat_Curve")
-            if mat is None:
-                # create material
-                mat = bpy.data.materials.new(name="Mat_Curve")
-            else:
-                bpy.ops.object.material_slot_remove()
-                mat = bpy.data.materials.new(name="Mat_Curve")
-                     
-            # Assign it to object
-            if len(active.data.materials):
-                # assign to 1st material slot
-                active.data.materials[0] = mat
-            else:
-                # no slots
-                active.data.materials.append(mat)
-                        
-            if add_random == False:                            
-                if add_objmat == False: 
-                    if bpy.context.scene.render.engine == 'CYCLES':
-                        mat.diffuse_color = (add_cyclcolor)                        
+                active = bpy.context.active_object
+                # Get material
+                mat = bpy.data.materials.get("Mat_Curve")
+                if mat is None:
+                    # create material
+                    mat = bpy.data.materials.new(name="Mat_Curve")
+                else:
+                    bpy.ops.object.material_slot_remove()
+                    mat = bpy.data.materials.new(name="Mat_Curve")
+                         
+                # Assign it to object
+                if len(active.data.materials):
+                    # assign to 1st material slot
+                    active.data.materials[0] = mat
+                else:
+                    # no slots
+                    active.data.materials.append(mat)
+                            
+                if add_random == False:                            
+                    if add_objmat == False: 
+                        if bpy.context.scene.render.engine == 'CYCLES':
+                            mat.diffuse_color = (add_cyclcolor)                        
+                        else:
+                            mat.use_object_color = True
+                            bpy.context.object.color = (add_color)
                     else:
-                        mat.use_object_color = True
-                        bpy.context.object.color = (add_color)
-                else:
-                     pass                    
-            else: 
-                if bpy.context.scene.render.engine == 'CYCLES':
-                    node=mat.node_tree.nodes['Diffuse BSDF']
-                    for i in range(3):
-                        node.inputs['Color'].default_value[i] *= random.random()             
-                else:
-                    for i in range(3):
-                        mat.diffuse_color[i] *= random.random()   
+                         pass                    
+                else: 
+                    if bpy.context.scene.render.engine == 'CYCLES':
+                        node=mat.node_tree.nodes['Diffuse BSDF']
+                        for i in range(3):
+                            node.inputs['Color'].default_value[i] *= random.random()             
+                    else:
+                        for i in range(3):
+                            mat.diffuse_color[i] *= random.random()   
 
 
-        # go to edit and draw curve
-        bpy.ops.object.mode_set(mode = 'EDIT')        
-        bpy.ops.curve.select_all(action='SELECT')
-        bpy.ops.curve.delete(type='VERT')
-        bpy.context.object.data.show_normal_face = False
-        bpy.context.scene.tool_settings.curve_paint_settings.use_corners_detect = True        
+            # go to edit and draw curve
+            bpy.ops.object.mode_set(mode = 'EDIT')        
+            bpy.ops.curve.select_all(action='SELECT')
+            bpy.ops.curve.delete(type='VERT')
+            bpy.context.object.data.show_normal_face = False
+            bpy.context.scene.tool_settings.curve_paint_settings.use_corners_detect = True        
 
-        if "surface" in self.mode:  
-            bpy.context.scene.tool_settings.curve_paint_settings.depth_mode = 'SURFACE'
-        
-        if "cursor" in self.mode:          
-            bpy.context.scene.tool_settings.curve_paint_settings.depth_mode = 'CURSOR'
-        
-        bpy.ops.curve.draw('INVOKE_DEFAULT')
+            if "surface" in self.mode:  
+                bpy.context.scene.tool_settings.curve_paint_settings.depth_mode = 'SURFACE'
+            
+            if "cursor" in self.mode:          
+                bpy.context.scene.tool_settings.curve_paint_settings.depth_mode = 'CURSOR'
+            
+            bpy.ops.curve.draw('INVOKE_DEFAULT')
+
+        else:
+            print(self)
+            self.report({'INFO'}, "Need Active Object!") 
 
         return {'FINISHED'}
 

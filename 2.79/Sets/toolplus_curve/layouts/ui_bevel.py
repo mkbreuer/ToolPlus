@@ -49,16 +49,17 @@ def draw_bevel_ui(self, context, layout):
          
          row = box.row(1)        
          row.scale_y = 1    
-         row.prop(context.object.data, "fill_mode", text="")           
-
-         show = bpy.context.object.data.dimensions
-         if show == '3D':             
-             active_bevel = bpy.context.object.data.bevel_depth            
-             if active_bevel == 0.0:              
-                row.operator("tp_ops.enable_bevel", text="Bevel on", icon='MOD_WARP')
-             else:   
-                row.operator("tp_ops.enable_bevel", text="Bevel off", icon='MOD_WARP')  
-             
+         row.prop(context.object.data, "fill_mode", text="")                        
+         
+         button_curve_extrude = icons.get("icon_curve_extrude")     
+         row.operator("tp_ops.curve_extrude", text="2d", icon_value=button_curve_extrude.icon_id)    
+          
+         active_bevel = bpy.context.object.data.bevel_depth            
+         if active_bevel == 0.0:              
+            row.operator("tp_ops.enable_bevel", text="on", icon='MOD_WARP')
+         else:   
+            row.operator("tp_ops.enable_bevel", text="off", icon='MOD_WARP')  
+         
          box.separator()      
          box.separator()      
          
@@ -83,46 +84,52 @@ def draw_bevel_ui(self, context, layout):
          row.prop(context.object.data, "offset")
          row.prop(context.object.data, "extrude","Height") 
               
+         act_spline = context.object.data.splines.active 
+         if act_spline:
 
-         data = context.active_object.data
-         points = data.splines.active.bezier_points
-         selected_points = [idx for idx, p in enumerate(points) if p.select_control_point]
-         if len(selected_points) == 1:
-             idx = selected_points[0]
-             point = points[idx]
-
-             row = box.row(1) 
-             row.scale_y = 1.3  
-             row.prop(context.object.data, "twist_smooth", text="Twist")      
-             row.prop(point, "tilt", text='Tilt')
-
-             row = box.row(1)  
-             #row.active = (context.object.data.dimensions == '2D' or (context.object.data.bevel_object is None and context.object.data.dimensions == '3D'))
-             row.prop(context.object.data,"twist_mode", text="")
-             act_spline = context.object.data.splines.active 
-             row.prop(act_spline, "tilt_interpolation", text="")  
-
-         
-         else:
-             row = box.row(1) 
-             row.prop(context.object.data,"twist_mode", text="")  
-             row.prop(context.object.data, "twist_smooth", text="Twist")      
-
-
-         data = context.active_object.data
-         points = data.splines.active.bezier_points
-         selected_points = [idx for idx, p in enumerate(points) if p.select_control_point]
-         if len(selected_points) == 1:
-             idx = selected_points[0]
-             point = points[idx]
+             show = bpy.context.object.data.dimensions
+             if show == '3D': 
              
-             box.separator()
-             
-             row = box.column(1) 
-             row.scale_y = 1.3              
-             row.label("1-Point")
-             row.prop(point, "weight_softbody", text='Weight')
-             row.prop(point, "radius", text='Radius')
+                 data = context.active_object.data
+                 points = data.splines.active.bezier_points
+                 selected_points = [idx for idx, p in enumerate(points) if p.select_control_point]
+
+                 if len(selected_points) == 1:
+                     idx = selected_points[0]
+                     point = points[idx]
+
+                     row = box.row(1) 
+                     row.scale_y = 1.3  
+                     row.prop(context.object.data, "twist_smooth", text="Twist")      
+                     row.prop(point, "tilt", text='Tilt')
+
+                     row = box.row(1)  
+                     #row.active = (context.object.data.dimensions == '2D' or (context.object.data.bevel_object is None and context.object.data.dimensions == '3D'))
+                     row.prop(context.object.data,"twist_mode", text="")
+                     act_spline = context.object.data.splines.active 
+                     row.prop(act_spline, "tilt_interpolation", text="")  
+
+                 
+                 else:
+                     row = box.row(1) 
+                     row.prop(context.object.data,"twist_mode", text="")  
+                     row.prop(context.object.data, "twist_smooth", text="Twist")      
+
+
+             data = context.active_object.data
+             points = data.splines.active.bezier_points
+             selected_points = [idx for idx, p in enumerate(points) if p.select_control_point]
+             if len(selected_points) == 1:
+                 idx = selected_points[0]
+                 point = points[idx]
+                 
+                 box.separator()
+                 
+                 row = box.column(1) 
+                 row.scale_y = 1.3              
+                 row.label("1-Point")
+                 row.prop(point, "weight_softbody", text='Weight')
+                 row.prop(point, "radius", text='Radius')
 
 
         
@@ -177,10 +184,21 @@ def draw_bevel_ui(self, context, layout):
 
          box = col.box().column(1)
 
+         box.separator()
+
          row = box.row(1)              
-         row.alignment = 'CENTER'
-         button_curve_open = icons.get("icon_curve_open") 
-         row.operator("curve.cyclic_toggle","", icon_value=button_curve_open.icon_id)                           
+         row.alignment = 'CENTER'         
+         
+         act_spline = context.object.data.splines.active 
+         if act_spline:                    
+             if context.object.data.splines.active.use_cyclic_u == True:
+                button_curve_open = icons.get("icon_curve_open") 
+                ico_value=button_curve_open
+             else:
+                button_curve_close = icons.get("icon_curve_close") 
+                ico_value=button_curve_close
+             row.prop(context.object.data.splines.active, "use_cyclic_u", text="", icon_value=ico_value.icon_id)                       
+         
          row.label("Bevel Factor")    
         
          box.separator()
@@ -246,16 +264,13 @@ def draw_bevel_ui(self, context, layout):
          row = box.row(1)        
          row.scale_y = 1   
          row.prop(context.object.data, "fill_mode", text="")           
-        
-         show = bpy.context.object.data.dimensions
-         if show == '3D':
-             
-             active_bevel = bpy.context.object.data.bevel_depth            
-             if active_bevel == 0.0:              
-                row.operator("tp_ops.enable_bevel", text="Bevel on", icon='MOD_WARP')
-             else:   
-                row.operator("tp_ops.enable_bevel", text="Bevel off", icon='MOD_WARP')                 
-                      
+
+         active_bevel = bpy.context.object.data.bevel_depth            
+         if active_bevel == 0.0:              
+            row.operator("tp_ops.enable_bevel", text="Bevel on", icon='MOD_WARP')
+         else:   
+            row.operator("tp_ops.enable_bevel", text="Bevel off", icon='MOD_WARP')                 
+                  
 
          box.separator() 
          box.separator()  
@@ -282,11 +297,14 @@ def draw_bevel_ui(self, context, layout):
          row.prop(context.object.data, "offset")
          row.prop(context.object.data, "extrude","Height")
         
-         row = box.row(1) 
-         row.scale_y = 1    
-         #row.active = (context.object.data.dimensions == '2D' or (context.object.data.bevel_object is None and context.object.data.dimensions == '3D'))
-         row.prop(context.object.data,"twist_mode", text="")
-         row.prop(context.object.data, "twist_smooth", text="Twist")
+         show = bpy.context.object.data.dimensions
+         if show == '3D': 
+
+             row = box.row(1) 
+             row.scale_y = 1    
+             #row.active = (context.object.data.dimensions == '2D' or (context.object.data.bevel_object is None and context.object.data.dimensions == '3D'))
+             row.prop(context.object.data,"twist_mode", text="")
+             row.prop(context.object.data, "twist_smooth", text="Twist")
           
          box.separator()  
 
@@ -321,6 +339,8 @@ def draw_bevel_ui(self, context, layout):
 
          box = col.box().column(1)
 
+         box.separator()
+
          row = box.row(1)              
          row.alignment = 'CENTER'
          row.label("Bevel & Taper")    
@@ -343,11 +363,21 @@ def draw_bevel_ui(self, context, layout):
          
          box = col.box().column(1)
 
+         box.separator()
+
          row = box.row(1)              
          row.alignment = 'CENTER'
-         button_curve_open = icons.get("icon_curve_open") 
-         
-         row.prop(context.object.data.splines.active, "use_cyclic_u", text="", icon_value=button_curve_open.icon_id)      
+
+         act_spline = context.object.data.splines.active 
+         if act_spline:      
+             if context.object.data.splines.active.use_cyclic_u == True:
+                button_curve_open = icons.get("icon_curve_open") 
+                ico_value=button_curve_open
+             else:
+                button_curve_close = icons.get("icon_curve_close") 
+                ico_value=button_curve_close
+             row.prop(context.object.data.splines.active, "use_cyclic_u", text="", icon_value=ico_value.icon_id)     
+      
          row.label("Bevel Factor")    
         
          box.separator()
@@ -378,6 +408,8 @@ def draw_bevel_ui(self, context, layout):
 
 
          box = col.box().column(1)  
+
+         box.separator()
 
          row = box.row(1) 
          row.alignment = 'CENTER'

@@ -34,8 +34,10 @@ def load_icons():
 
     mkb_icons.load("icon_curve_extrude", os.path.join(icons_dir, "curve_extrude.png"), 'IMAGE')  
     mkb_icons.load("icon_curve_open", os.path.join(icons_dir, "curve_open.png"), 'IMAGE')  
+    mkb_icons.load("icon_curve_close", os.path.join(icons_dir, "curve_close.png"), 'IMAGE')  
     mkb_icons.load("icon_curve_smooth", os.path.join(icons_dir, "curve_smooth.png"), 'IMAGE')  
     mkb_icons.load("icon_curve_start", os.path.join(icons_dir, "curve_start.png"), 'IMAGE')  
+    mkb_icons.load("icon_curve_simplify", os.path.join(icons_dir, "curve_simplify.png"), 'IMAGE')
 
     mkb_icons.load("icon_draw_bevel", os.path.join(icons_dir, "draw_bevel.png"), 'IMAGE')  
     mkb_icons.load("icon_draw_brush", os.path.join(icons_dir, "draw_brush.png"), 'IMAGE')  

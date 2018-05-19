@@ -64,14 +64,12 @@ class VIEW3D_TP_Bevel_Properties(bpy.types.Operator):
              row = box.row(1)        
              row.scale_y = 1    
              row.prop(context.object.data, "fill_mode", text="")           
-
-             show = bpy.context.object.data.dimensions
-             if show == '3D':             
-                 active_bevel = bpy.context.object.data.bevel_depth            
-                 if active_bevel == 0.0:              
-                    row.operator("tp_ops.enable_bevel", text="Bevel on", icon='MOD_WARP')
-                 else:   
-                    row.operator("tp_ops.enable_bevel", text="Bevel off", icon='MOD_WARP')  
+           
+             active_bevel = bpy.context.object.data.bevel_depth            
+             if active_bevel == 0.0:              
+                row.operator("tp_ops.enable_bevel", text="Bevel on", icon='MOD_WARP')
+             else:   
+                row.operator("tp_ops.enable_bevel", text="Bevel off", icon='MOD_WARP')  
                  
              box.separator()      
              box.separator()      
@@ -214,16 +212,13 @@ class VIEW3D_TP_Bevel_Properties(bpy.types.Operator):
              row = box.row(1)        
              row.scale_y = 1   
              row.prop(context.object.data, "fill_mode", text="")           
-            
-             show = bpy.context.object.data.dimensions
-             if show == '3D':
-                 
-                 active_bevel = bpy.context.object.data.bevel_depth            
-                 if active_bevel == 0.0:              
-                    row.operator("tp_ops.enable_bevel", text="Bevel on", icon='MOD_WARP')
-                 else:   
-                    row.operator("tp_ops.enable_bevel", text="Bevel off", icon='MOD_WARP')                 
-                          
+
+             active_bevel = bpy.context.object.data.bevel_depth            
+             if active_bevel == 0.0:              
+                row.operator("tp_ops.enable_bevel", text="Bevel on", icon='MOD_WARP')
+             else:   
+                row.operator("tp_ops.enable_bevel", text="Bevel off", icon='MOD_WARP')                 
+                      
 
              box.separator() 
              box.separator()  

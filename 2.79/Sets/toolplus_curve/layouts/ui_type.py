@@ -58,7 +58,7 @@ def draw_type_ui(self, context, layout):
          box.separator()   
 
          row = box.row(1)
-         row.scale_y = 1.2                 
+         row.scale_y = 1                
          row.prop(context.active_object.data, "show_normal_face", text="Normals:")                          
          row.operator("curve.switch_direction", text="", icon="ARROW_LEFTRIGHT")  
        

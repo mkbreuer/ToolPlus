@@ -44,6 +44,7 @@ def draw_pivot_ui(self, context, layout):
         box.separator()
                 
         row = box.row(1) 
+        row.alignment = 'CENTER'
         row.scale_x = 1.55
         row.scale_y = 1.4
         button_snap_place = icons.get("icon_snap_place")

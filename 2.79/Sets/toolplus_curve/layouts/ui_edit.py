@@ -213,53 +213,17 @@ def draw_edit_ui(self, context, layout):
                      box.separator()                   
 
 
+
+
              if len(vertex) > 0:
-
-                box.separator()  
-
-                box = col.box().column(1)   
-             
-                box.separator()                      
-           
-                row = box.column(1)
-                row.scale_y = 1.2    
-                                
-                if context.object.data.splines.active.type == 'POLY':
-                    row.prop(context.object.data.splines.active, "use_cyclic_u", text="U Cyclic")                        
-                    row.prop(context.object.data.splines.active, "use_smooth")
-                else:
-                    if context.object.data.splines.active.type == 'NURBS':
-                        row.prop(context.object.data.splines.active, "use_cyclic_u", text="U Cyclic")
-
-                    if context.object.data.splines.active.type == 'NURBS':
-                        row.prop(context.object.data.splines.active, "use_bezier_u", text="U Bezier")
-                        row.prop(context.object.data.splines.active, "use_endpoint_u", text="U Endpoint")
-                        row.prop(context.object.data.splines.active, "order_u", text="U Order")
-         
-                    if context.object.data.splines.active.type == 'SURFACE':
-                        row.prop(context.object.data.splines.active, "use_cyclic_v", text="V Cyclic")
-                        row.prop(context.object.data.splines.active, "use_bezier_v", text="V Bezier")
-                        row.prop(context.object.data.splines.active, "use_endpoint_v", text="V Endpoint")
-                        row.prop(context.object.data.splines.active, "order_v", text="V Order")
-
-                    if context.object.data.splines.active.type == 'BEZIER' and context.object.data.dimensions == '3D':
-
-                        row.alignment = 'CENTER'
-                        row.label(text="Interpolation:")
-                        
-                        box.separator()  
-                        
-                        row = box.column(1)
-                        row.scale_y = 1.2                                                          
-                        row.prop(context.object.data.splines.active, "tilt_interpolation", text="Tilt")
-                        row.prop(context.object.data.splines.active, "radius_interpolation", text="Radius")
-                    
-                    box.separator()          
-                    
-                    row = box.column(1) 
-                    row.scale_y = 1.2                                        
-                    row.prop(context.object.data.splines.active, "use_smooth")
-
+                     
+                box.separator()          
+                
+                row = box.row(1) 
+                row.scale_y = 1.2                                        
+                row.prop(context.object.data.splines.active, "use_smooth")
+                row.prop(context.object.data.splines.active, "use_cyclic_u")
+                
                 box.separator() 
 
              else:

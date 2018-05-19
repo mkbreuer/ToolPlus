@@ -452,12 +452,9 @@ def draw_insert_ui(self, context, layout):
             sub.operator("curve.primitive_nurbs_curve_add",icon='CURVE_NCURVE',text="")
             sub.operator("curve.primitive_nurbs_circle_add",icon='CURVE_NCIRCLE',text="")
             sub.operator("curve.primitive_nurbs_path_add",icon='CURVE_PATH',text="")  
-            sub.operator("curve.draw", icon='LINE_DATA',text="")
-         
-            box.separator() 
             
-            row = box.row(1) 
-            row.operator("curve.simplify", text="Simplify Curve", icon="BLANK1")
+            button_curve_simplify = icons.get("icon_curve_simplify")                                
+            sub.operator("curve.simplify",text="", icon_value=button_curve_simplify.icon_id) 
             
             box.separator() 
             

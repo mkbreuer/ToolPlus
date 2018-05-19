@@ -21,7 +21,7 @@
 bl_info = {
     "name": "T+ Curves",
     "author": "Marvin.K.Breuer (MKB)",
-    "version": (0, 1, 4),
+    "version": (0, 1, 5),
     "blender": (2, 79, 0),
     "location": "View3D > Toolshelf [T] > TAB > Curves",
     "description": "collection of curve object and tools",
@@ -617,7 +617,7 @@ class VIEW3D_TP_Curve_Addon_Preferences(bpy.types.AddonPreferences):
         if self.prefs_tabs == 'url':
             
             row = layout.column_flow(2)             
-            row.operator('wm.url_open', text = 'GitHubWiki', icon = 'HELP').url = "https://github.com/mkbreuer/ToolPlus/wiki"
+            row.operator('wm.url_open', text = 'Wiki', icon = 'HELP').url = "https://github.com/mkbreuer/ToolPlus/wiki"
             row.operator('wm.url_open', text = 'BlenderArtist', icon = 'HELP').url = "https://blenderartists.org/forum/showthread.php?409016-Addon-T-Curves&highlight="
 
 
@@ -706,6 +706,12 @@ class Dropdown_TP_Curve_Props(bpy.types.PropertyGroup):
 
 # PROPERTY INSERTS # 
 class Insert_Props(bpy.types.PropertyGroup):
+
+    local_z = bpy.props.FloatProperty(name="Local Z",  description="move along local z-axis", default=0, min=-100, max=100)
+    local_z_min = bpy.props.FloatProperty(name="Local -Z",  description="move along local minus z-axis", default=0, min=-100, max=0)
+    local_z_max = bpy.props.FloatProperty(name="Local +Z",  description="move along local plus z-axis", default=0, min=0, max=100)
+    
+    local_last = bpy.props.BoolProperty(name="Local Last",  description="go to last location", default=False, options={'SKIP_SAVE'})  
 
     radius = bpy.props.FloatProperty(name="Radius",  description=" ", default=10, min=0.01, max=1000)
     depth = bpy.props.FloatProperty(name="Bevel",  description=" ", default=1, min=0.00, max=1000)

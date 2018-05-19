@@ -27,7 +27,7 @@ import random
 
 # MAIN OPERATOR #
 class VIEW3D_TP_Draw_Curve(bpy.types.Operator):
-    bl_description = "create empty bezier object for curve draw on surface or to view"
+    bl_description = "create bezier object on surface or align to view"
     bl_idname = "tp_ops.curve_draw"
     bl_label = "C-Draw"
     bl_options = {'REGISTER', 'UNDO'}
@@ -58,13 +58,11 @@ class VIEW3D_TP_Draw_Curve(bpy.types.Operator):
            else:
                 bpy.ops.view3d.snap_cursor_to_selected()             
                 bpy.ops.curve.primitive_bezier_curve_add(view_align=True, enter_editmode=True)
-
                 
         if bpy.context.object.data.bevel_depth == 0 and scene.add_bevel == True: 
             bpy.context.object.data.fill_mode = 'FULL'
             bpy.context.object.data.bevel_depth = 3
             bpy.context.object.data.bevel_resolution = 3
-
 
         bpy.ops.object.mode_set(mode = 'OBJECT')            
 
@@ -107,7 +105,6 @@ class VIEW3D_TP_Draw_Curve(bpy.types.Operator):
                     for i in range(3):
                         mat.diffuse_color[i] *= random.random()   
 
-
         # go to edit and draw curve
         bpy.ops.object.mode_set(mode = 'EDIT')        
         bpy.ops.curve.select_all(action='SELECT')
@@ -124,8 +121,6 @@ class VIEW3D_TP_Draw_Curve(bpy.types.Operator):
         bpy.ops.curve.draw('INVOKE_DEFAULT')
 
         return {'FINISHED'}
-
-
 
 
 
@@ -146,7 +141,6 @@ def menu_curve(self, context):
     if context.mode =="OBJECT":
         
         self.layout.operator("tp_ops.draw_curve", text="Curve Draw", icon="LINE_DATA") 
-
 
 
 # REGISTRY #        

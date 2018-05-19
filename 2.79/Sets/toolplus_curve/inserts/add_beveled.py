@@ -415,7 +415,13 @@ class VIEW3D_TP_Enable_Bevel(bpy.types.Operator):
         active_bevel = bpy.context.object.data.bevel_depth
       
         if active_bevel == 0.0:              
-            bpy.context.object.data.fill_mode = 'FULL'
+            
+            show = bpy.context.object.data.dimensions
+            if show == '3D':                            
+                bpy.context.object.data.fill_mode = 'FULL'
+            else:
+                bpy.context.object.data.fill_mode = 'BOTH'
+
             bpy.context.object.data.bevel_resolution = self.loop
 
             bpy.context.object.data.bevel_depth = self.depth
@@ -428,13 +434,20 @@ class VIEW3D_TP_Enable_Bevel(bpy.types.Operator):
                 bpy.context.object.data.resolution_u = self.ring
 
         else:                   
-            bpy.context.object.data.fill_mode = 'HALF'
+
+            show = bpy.context.object.data.dimensions
+            if show == '3D':                            
+                bpy.context.object.data.fill_mode = 'HALF'
+            else:
+                bpy.context.object.data.fill_mode = 'NONE'
+            
             #bpy.context.object.data.bevel_resolution = 0
             #bpy.context.object.data.resolution_u = 0
             bpy.context.object.data.bevel_depth = 0.0
             bpy.context.object.data.extrude = 0
             bpy.context.object.data.offset = 0
-    
+
+
         if self.wire == True:
             bpy.context.object.show_axis = True
             bpy.context.object.show_wire = True            
@@ -664,9 +677,24 @@ class VIEW3D_TP_Curve_Origin_Start(bpy.types.Operator):
 
 
 
+class VIEW3D_TP_Curve_Origin_2d(bpy.types.Operator):
+    """2d extrude > set origin to curve to hold position"""
+    bl_idname = "tp_ops.origin_2d"
+    bl_label = "Origin for 2d"
+            
+    def execute(self, context):
+        
+        bpy.ops.view3d.snap_cursor_to_selected()
+        bpy.ops.object.mode_set(mode = 'OBJECT')
+        bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
+        bpy.ops.object.mode_set(mode = 'EDIT')
+    
+        return {'FINISHED'}
+
+
 
 class VIEW3D_TP_Curve_Extrude(bpy.types.Operator):
-    """create 2d bevel extrude on curve"""
+    """2d extrude > press 2x to apply 1x position (or property not works correctly)"""
     bl_idname = "tp_ops.curve_extrude"
     bl_label = "Curve Extrude"
     bl_options = {"REGISTER", "UNDO"}
@@ -719,6 +747,15 @@ class VIEW3D_TP_Curve_Extrude(bpy.types.Operator):
         row.prop(self, "add_mat", text ="")                    
         row.label(text="Color:") 
      
+
+        if len(context.object.material_slots) > 0:  
+  
+            active_objcolor = bpy.context.object.active_material.use_object_color
+            if active_objcolor == True:
+                row.prop(context.object.active_material, "use_object_color", text="", icon = 'OUTLINER_OB_LAMP')              
+            else:                       
+                row.prop(context.object.active_material, "use_object_color", text="", icon = 'OUTLINER_DATA_LAMP')  
+
         row.prop(self, "add_objmat", text ="", icon="GROUP_VCOL")
         if self.add_random == False:                   
             if self.add_objmat == False:
@@ -740,12 +777,12 @@ class VIEW3D_TP_Curve_Extrude(bpy.types.Operator):
     def invoke(self, context, event):        
         settings_load(self)
         return self.execute(context)
-
+ 
 
     def execute(self, context):
 
-        settings_write(self) 
- 
+        settings_write(self)   
+
         # add material
         for i in range(self.add_mat):
             bpy.ops.object.mode_set(mode = 'OBJECT')
@@ -813,31 +850,38 @@ class VIEW3D_TP_Curve_Extrude(bpy.types.Operator):
 
 
         # curve extrude    
-        if bpy.context.object.mode == "OBJECT":               
-            bpy.ops.object.mode_set(mode = 'EDIT')
-        
-        if bpy.context.object.data.splines.active.use_cyclic_u == True:         
-            pass
-        else:
-            bpy.ops.curve.cyclic_toggle()
 
-        bpy.context.object.data.dimensions = '2D'
-        bpy.context.object.data.fill_mode = 'BOTH'
-        bpy.context.object.data.bevel_depth = self.depth
-        bpy.context.object.data.bevel_resolution = self.ring         
-        bpy.context.object.data.resolution_u = self.loop
-        bpy.context.object.data.offset = self.offset            
-        bpy.context.object.data.extrude = self.height           
-        
+        obj = context.active_object     
+        if obj:
+           obj_type = obj.type
+           if obj_type in {'CURVE'}:
+
+            if bpy.context.object.mode == "OBJECT":               
+                bpy.ops.object.mode_set(mode = 'EDIT')        
+
+            if bpy.context.object.data.splines.active.use_cyclic_u == True:         
+                pass
+            else:
+                bpy.ops.curve.cyclic_toggle()
+
+
+            bpy.context.object.data.dimensions = '2D'
+            bpy.context.object.data.fill_mode = 'BOTH'
+            bpy.context.object.data.bevel_depth = self.depth
+            bpy.context.object.data.bevel_resolution = self.ring         
+            bpy.context.object.data.resolution_u = self.loop
+            bpy.context.object.data.offset = self.offset            
+            bpy.context.object.data.extrude = self.height           
+
 
         # wire visibility
         if self.wire == True:
             bpy.context.object.show_axis = True
             bpy.context.object.show_wire = True            
         else:
-            bpy.context.object.show_axis = False
+            bpy.context.object.show_axis = False 
             bpy.context.object.show_wire = False 
-                  
+
         return {"FINISHED"}
 
 
