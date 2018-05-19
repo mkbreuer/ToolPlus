@@ -296,9 +296,7 @@ class VIEW3D_TP_Curve_Draw_Panel_TOOLS(bpy.types.Panel):
         context.vertex_paint_object
         or context.weight_paint_object
         or context.image_paint_object)
-        if len(context.selected_objects) > 0:
-            obj = context.active_object
-            return obj != None and obj.type == 'CURVE' and isModelingMode
+        return isModelingMode
 
     def draw(self, context):
          layout = self.layout.column_flow(1)  
@@ -322,9 +320,7 @@ class VIEW3D_TP_Curve_Draw_Panel_UI(bpy.types.Panel):
         context.vertex_paint_object
         or context.weight_paint_object
         or context.image_paint_object)
-        if len(context.selected_objects) > 0:
-            obj = context.active_object
-            return obj != None and obj.type == 'CURVE' and isModelingMode
+        return isModelingMode
 
     def draw(self, context):
          layout = self.layout.column_flow(1)  
