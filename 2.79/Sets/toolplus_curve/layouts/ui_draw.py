@@ -82,7 +82,7 @@ def draw_draw_ui(self, context, layout):
     else:
         row.prop(tp_props, "display_curve_options", text="", icon="SCRIPTWIN", toggle=True)#, emboss = False)   
         
-    row.label("Settings")
+    row.prop(scene, 'spline_name', text="")  
 
     row.operator("tp_ops.origin_2d", text="", icon='LAYER_ACTIVE')   
 
@@ -99,8 +99,6 @@ def draw_draw_ui(self, context, layout):
             row.operator("tp_ops.enable_bevel", text="", icon='MOD_WARP')
         else:   
             row.operator("tp_ops.enable_bevel", text="", icon='MOD_WARP')    
-
-    #row.prop(scene, "add_bevel", text ="", icon="MOD_WARP")   
 
     box.separator()
 

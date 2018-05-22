@@ -536,124 +536,6 @@ class VIEW3D_TP_Convert_to_Mesh(bpy.types.Operator):
 
         return {'FINISHED'}
                 
-  
-        
-class VIEWD_TP_Curve_Lathe(bpy.types.Operator):
-    """draw a screw curve to 3d cursor"""
-    bl_idname = "tp_ops.curve_lathe"
-    bl_label = "Curve Lathe"
-    bl_options = {"REGISTER", "UNDO"}
-
-    @classmethod
-    def poll(cls, context):
-        return hasattr(bpy.types, "CURVE_OT_draw")
-    
-
-    def execute(self, context):
-
-        scene = bpy.context.scene
-
-        add_mat = bpy.context.scene.tp_props_insert.add_mat
-        add_objmat = bpy.context.scene.tp_props_insert.add_objmat  
-        add_random = bpy.context.scene.tp_props_insert.add_random
-        add_color = bpy.context.scene.tp_props_insert.add_color
-        add_cyclcolor = bpy.context.scene.tp_props_insert.add_cyclcolor
-     
-
-        obj = context.object 
-        if obj:
-          
-            active = context.active_object if context.object is not None else None
-            if active :
-                bpy.context.scene.obj1 = active.name
-                    
-            bpy.ops.object.mode_set(mode = 'OBJECT')
-                
-            # add curve          
-            bpy.ops.curve.primitive_bezier_curve_add(view_align=True) 
-            
-            bpy.ops.object.mode_set(mode = 'EDIT')
-            bpy.ops.curve.select_all(action='SELECT')            
-            bpy.ops.curve.delete(type='VERT')
-            bpy.context.object.data.show_normal_face = False
-
-            # add screw modifier to curve           
-            bpy.ops.object.modifier_add(type='SCREW')
-            bpy.context.object.modifiers["Screw"].steps = 40
-            bpy.context.object.modifiers["Screw"].use_normal_flip = False            
-            bpy.context.object.modifiers["Screw"].use_smooth_shade = True
-            
-            if active:
-                bpy.context.object.modifiers["Screw"].object = active
-
-        else:
-            
-            # add curve            
-            bpy.ops.curve.primitive_bezier_curve_add(view_align=True) 
-           
-            bpy.ops.object.mode_set(mode = 'EDIT')
-            bpy.ops.curve.select_all(action='SELECT')            
-            bpy.ops.curve.delete(type='VERT')
-            bpy.context.object.data.show_normal_face = False
-
-            # add screw modifier to curve           
-            bpy.ops.object.modifier_add(type='SCREW')
-            bpy.context.object.modifiers["Screw"].steps = 40
-            bpy.context.object.modifiers["Screw"].use_normal_flip = False          
-            bpy.context.object.modifiers["Screw"].use_smooth_shade = True
-
-        
-        bpy.ops.object.mode_set(mode = 'OBJECT')            
-        bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
-
-
-        # add material with enabled object color
-        for i in range(add_mat):
-
-            active = bpy.context.active_object
-            # Get material
-            mat = bpy.data.materials.get("Mat_Lathe")
-            if mat is None:
-                # create material
-                mat = bpy.data.materials.new(name="Mat_Lathe")
-            else:
-                bpy.ops.object.material_slot_remove()
-                mat = bpy.data.materials.new(name="Mat_Lathe")
-                     
-            # Assign it to object
-            if len(active.data.materials):
-                # assign to 1st material slot
-                active.data.materials[0] = mat
-            else:
-                # no slots
-                active.data.materials.append(mat)
-                        
-            if add_random == False:                            
-                if add_objmat == False: 
-                    if bpy.context.scene.render.engine == 'CYCLES':
-                        mat.diffuse_color = (add_cyclcolor)                        
-                    else:
-                        mat.use_object_color = True
-                        bpy.context.object.color = (add_color)
-                else:
-                     pass                    
-            else: 
-                if bpy.context.scene.render.engine == 'CYCLES':
-                    node=mat.node_tree.nodes['Diffuse BSDF']
-                    for i in range(3):
-                        node.inputs['Color'].default_value[i] *= random.random()             
-                else:
-                    for i in range(3):
-                        mat.diffuse_color[i] *= random.random()   
-
-
-        # go to edit and draw curve
-        bpy.ops.object.mode_set(mode = 'EDIT')        
-        bpy.ops.curve.draw('INVOKE_DEFAULT')
-
-        return {"FINISHED"}
-
-
 
 
 class VIEW3D_TP_Curve_Origin_Start(bpy.types.Operator):
@@ -694,7 +576,7 @@ class VIEW3D_TP_Curve_Origin_2d(bpy.types.Operator):
 
 
 class VIEW3D_TP_Curve_Extrude(bpy.types.Operator):
-    """2d extrude > press 2x to apply 1x position (or property not works correctly)"""
+    """2d extrude > press 2x times to apply for properties or use tools under cascade menu: bevel"""
     bl_idname = "tp_ops.curve_extrude"
     bl_label = "Curve Extrude"
     bl_options = {"REGISTER", "UNDO"}

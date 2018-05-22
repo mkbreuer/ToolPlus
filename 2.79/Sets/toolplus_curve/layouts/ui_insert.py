@@ -157,12 +157,14 @@ def draw_insert_ui(self, context, layout):
                     obj_type = obj.type                
                     if obj.type in {'CURVE'}: 
                         
-                        box.separator() 
-
+                        box.separator()                         
+                        
                         row = box.column(1)
                         row.scale_y = 1.2                     
                         row.operator("curve.simplify", text="Simplify")              
 
+                #runs an error with first execution on simple curves
+             
                 box.separator() 
                 box.separator() 
                 box = col.box().column(1) 

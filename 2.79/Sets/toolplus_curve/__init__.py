@@ -21,10 +21,10 @@
 bl_info = {
     "name": "T+ Curves",
     "author": "Marvin.K.Breuer (MKB)",
-    "version": (0, 1, 5),
+    "version": (1, 5,1),
     "blender": (2, 79, 0),
     "location": "View3D > Toolshelf [T] > TAB > Curves",
-    "description": "collection of curve object and tools",
+    "description": "collection of curve addons for curve objects and tools",
     "warning": "",
     "wiki_url": "",
     "category": "ToolPlus"}
@@ -622,8 +622,62 @@ class VIEW3D_TP_Curve_Addon_Preferences(bpy.types.AddonPreferences):
 
 
 
+# ------------------------------------------------------------
 
-# CURVETOOLS # 
+
+# PROPERTY SIMPLE # 
+def StartLocationUpdate(self, context):
+
+    bpy.context.scene.cursor_location = self.Simple_startlocation
+    return
+
+class Simple_Variables(bpy.types.PropertyGroup):
+
+    Simple = BoolProperty()
+    Simple_Change = BoolProperty()
+
+    # general properties
+    Types = [('Point', "Point", "Construct a Point"),
+             ('Line', "Line", "Construct a Line"),
+             ('Distance', "Distance", "Contruct a two point Distance"),
+             ('Angle', "Angle", "Construct an Angle"),
+             ('Circle', "Circle", "Construct a Circle"),
+             ('Ellipse', "Ellipse", "Construct an Ellipse"),
+             ('Arc', "Arc", "Construct an Arc"),
+             ('Sector', "Sector", "Construct a Sector"),
+             ('Segment', "Segment", "Construct a Segment"),
+             ('Rectangle', "Rectangle", "Construct a Rectangle"),
+             ('Rhomb', "Rhomb", "Construct a Rhomb"),
+             ('Polygon', "Polygon", "Construct a Polygon"),
+             ('Polygon_ab', "Polygon ab", "Construct a Polygon ab"),
+             ('Trapezoid', "Trapezoid", "Construct a Trapezoid")
+            ]
+    Simple_Type = EnumProperty(name="Type",description="Form of Curve to create",items=Types)
+    
+    # Line properties
+    Simple_startlocation = FloatVectorProperty(name="Start location",description="Start location",default=(0.0, 0.0, 0.0),subtype='TRANSLATION', update=StartLocationUpdate)
+    Simple_endlocation = FloatVectorProperty(name="End location",description="End location",default=(2.0, 2.0, 2.0),subtype='TRANSLATION')
+    Simple_rotation_euler = FloatVectorProperty(name="Rotation",description="Rotation",default=(0.0, 0.0, 0.0),subtype='EULER')
+   
+    # Trapezoid properties
+    Simple_a = FloatProperty(name="Side a",default=2.0,min=0.0, soft_min=0.0,unit='LENGTH',description="a side Value")
+    Simple_b = FloatProperty(name="Side b",default=1.0,min=0.0, soft_min=0.0,unit='LENGTH',description="b side Value")
+    Simple_h = FloatProperty(name="Height",default=1.0,unit='LENGTH',description="Height of the Trapezoid - distance between a and b")
+    Simple_angle = FloatProperty(name="Angle",default=45.0,description="Angle")
+    Simple_startangle = FloatProperty(name="Start angle",default=0.0,min=-360.0, soft_min=-360.0,max=360.0, soft_max=360.0,description="Start angle")
+    Simple_endangle = FloatProperty(name="End angle",default=45.0,min=-360.0, soft_min=-360.0,max=360.0, soft_max=360.0,description="End angle")
+    Simple_sides = IntProperty(name="Sides",default=3,min=3, soft_min=3,description="Number of Sides")
+    Simple_radius = FloatProperty(name="Radius",default=1.0,min=0.0, soft_min=0.0,unit='LENGTH',description="Radius")
+    Simple_center = BoolProperty(name="Length center",default=True,description="Length center")
+    
+    # Rectangle properties
+    Simple_width = FloatProperty(name="Width",default=2.0,min=0.0, soft_min=0.0,unit='LENGTH',description="Width")
+    Simple_length = FloatProperty(name="Length",default=2.0, min=0.0, soft_min=0.0,unit='LENGTH',description="Length")
+    Simple_rounded = FloatProperty(name="Rounded",default=0.0,unit='LENGTH',description="Rounded corners")
+
+
+
+# PROPERTY CURVETOOLS # 
 def UpdateDummy(object, context):
     pass
    
@@ -746,6 +800,7 @@ class Insert_Props(bpy.types.PropertyGroup):
     convert = bpy.props.BoolProperty(name="Convert to Mesh",  description=" ", default=False, options={'SKIP_SAVE'})   
 
 
+# ------------------------------------------------------------
 
 
 # REGISTRY #  
@@ -776,6 +831,9 @@ def register():
     bpy.types.Scene.tp_props_insert = bpy.props.PointerProperty(type=Insert_Props)   
     bpy.types.WindowManager.tp_props_insert = bpy.props.PointerProperty(type=Insert_Props)
 
+    # SIMPLE #
+    bpy.types.Object.s_curve = PointerProperty(type=Simple_Variables)    
+
     # MANUAL #
     bpy.utils.register_manual_map(VIEW3D_TP_Curve_Manual)
 
@@ -796,6 +854,9 @@ def unregister():
     # INSERT #
     del bpy.types.Scene.tp_props_insert 
     del bpy.types.WindowManager.tp_props_insert 
+
+    # SIMPLE #
+    del bpy.types.Object.s_curve
 
     # MANUAL #
     bpy.utils.unregister_manual_map(VIEW3D_TP_Curve_Manual)
