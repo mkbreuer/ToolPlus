@@ -26,8 +26,6 @@ def load_icons():
     # ICONS BOUNDINGS # 
     mkb_icons.load("icon_linked", os.path.join(icons_dir, "linked.png"), 'IMAGE')
 
-
-
     mkb_icons.load("icon_baply", os.path.join(icons_dir, "baply.png"), 'IMAGE')    
     mkb_icons.load("icon_bbox", os.path.join(icons_dir, "bbox.png"), 'IMAGE')    
     mkb_icons.load("icon_bcyl", os.path.join(icons_dir, "bcyl.png"), 'IMAGE')    

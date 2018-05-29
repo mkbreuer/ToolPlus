@@ -38,6 +38,7 @@ class View3D_TP_KeyMap(bpy.types.Operator):
         bpy.data.texts.load(path)
         return {"FINISHED"}
     
+
     
 class VIEW3D_TP_UnLock_All(bpy.types.Operator):
     """lock and unloak all selected objects"""
@@ -93,9 +94,6 @@ class VIEW3D_TP_UnLock_All(bpy.types.Operator):
 
 
 
-
-
-
 class View3D_TP_Purge_Mesh(bpy.types.Operator):
     '''Purge all orphaned meshdata'''
     bl_idname="tp_ops.purge_mesh_data"
@@ -114,16 +112,62 @@ class View3D_TP_Purge_Mesh(bpy.types.Operator):
  
 
 
-def register():
-    bpy.utils.register_module(__name__)
- 
-def unregister():
+class VIEW3D_TP_Visual_Normals(bpy.types.Operator):
+    """Recalculate Normals for all selected Objects in Objectmode"""
+    bl_idname = "tp_ops.rec_normals"
+    bl_label = "Recalculate Normals"     
 
+    def execute(self, context):
+                
+        for obj in bpy.context.selected_objects:
+            bpy.context.scene.objects.active = obj 
+                
+            if obj:
+                obj_type = obj.type
+
+                if obj_type in {'MESH'}:                 
+                    bpy.ops.object.editmode_toggle()
+                    bpy.ops.mesh.select_all(action='SELECT')
+                    bpy.ops.mesh.normals_make_consistent()
+                    bpy.ops.object.editmode_toggle()            
+
+                    print(self)
+                    self.report({'INFO'}, "Done!")      
+                else:
+                    print(self)
+                    self.report({'INFO'}, "Not possible!")   
+
+        return {'FINISHED'} 
+
+
+
+import os, sys
+import subprocess
+
+class RestartBlender(bpy.types.Operator):
+    #"author" : "(saidenka) meta-androcto"
+	bl_idname = "wm.restart_blender"
+	bl_label = "Reboot Blender"
+	bl_description = "Blender Restart"
+	bl_options = {'REGISTER'}
+	
+	def execute(self, context):
+		py = os.path.join(os.path.dirname(__file__), "console_toggle.py")
+		filepath = bpy.data.filepath
+		if (filepath != ""):
+			subprocess.Popen([sys.argv[0], filepath, '-P', py])
+		else:
+			subprocess.Popen([sys.argv[0],'-P', py])
+		bpy.ops.wm.quit_blender()
+		return {'FINISHED'}
+
+
+# REGISTRY #        
+def register():    
+    bpy.utils.register_module(__name__)
+
+def unregister():   
     bpy.utils.unregister_module(__name__)
- 
+
 if __name__ == "__main__":
     register()
-
-
-
-

@@ -69,6 +69,24 @@ class VIEW3D_TP_BTube(bpy.types.Operator):
                default = "tp_add_sph",    
                description = "change mesh type")
 
+    # RENAME #
+    tp_rename_spheres = BoolProperty(name="ReName", default=False, description="uncheckt: use name from active / checkt: use custom name")
+    
+    bsph_prefix = bpy.props.StringProperty(name="Name", default="")
+    bico_prefix = bpy.props.StringProperty(name="Name", default="")
+
+    bsph_name = bpy.props.StringProperty(name="Name", default="_custom")
+    bico_name = bpy.props.StringProperty(name="Name", default="_custom")
+
+    bsph_shaded_suffix = bpy.props.StringProperty(name="Name", default="_sphere_shaded")
+    bsph_shadeless_suffix = bpy.props.StringProperty(name="Name", default="_sphere_shadeless")
+    bsph_wired_suffix = bpy.props.StringProperty(name="Name", default="_sphere_wired")
+
+    bico_shaded_suffix = bpy.props.StringProperty(name="Name", default="_ico_shaded")
+    bico_shadeless_suffix = bpy.props.StringProperty(name="Name", default="_ico_shadeless")
+    bico_wired_suffix = bpy.props.StringProperty(name="Name", default="_ico_wired")
+
+
     # SPHERE #
     bsph_seg = bpy.props.IntProperty(name="Segments",  description="set value", min=1, max=100, default=32) 
     bsph_rig = bpy.props.IntProperty(name="Rings",  description="set value",  min=1, max=100, default=16) 
@@ -132,6 +150,45 @@ class VIEW3D_TP_BTube(bpy.types.Operator):
     # DRAW PROPS [F6] # 
     def draw(self, context):
         layout = self.layout
+
+        col = layout.column(1)                                                
+
+        box = col.box().column(1)
+
+        row = box.row(1)        
+        row.label("ReName:")          
+        row.prop(self, "tp_rename_spheres", text="")
+
+        box.separator()  
+
+        row = box.column(1)          
+        if self.tp_geom_sphere == "tp_add_sph":
+            row.prop(self, "bsph_prefix", text="prefix")
+            row.prop(self, "bsph_name", text="custom")
+
+            if self.sphere_meshtype == "tp_00":    
+                row.prop(self, "bsph_shaded_suffix", text="suffix")
+
+            if self.sphere_meshtype == "tp_01":    
+                row.prop(self, "bsph_shadeless_suffix", text="suffix")
+
+            if self.sphere_meshtype == "tp_02":    
+                row.prop(self, "bsph_wired_suffix", text="suffix")
+
+        else:
+            row.prop(self, "bico_prefix", text="prefix")
+            row.prop(self, "bico_name", text="rename")
+            
+            if self.sphere_meshtype == "tp_00":            
+                row.prop(self, "bico_shaded_suffix", text="suffix")
+            
+            if self.sphere_meshtype == "tp_01":
+                row.prop(self, "bico_shadeless_suffix", text="suffix")
+            
+            if self.sphere_meshtype == "tp_02":
+                row.prop(self, "bico_wired_suffix", text="suffix")
+        
+
         box = layout.box().column(1)   
 
         row = box.row(1)
@@ -204,7 +261,6 @@ class VIEW3D_TP_BTube(bpy.types.Operator):
         box.separator()
 
 
-
         box = layout.box().column(1)      
         
         row = box.row(1) 
@@ -232,7 +288,6 @@ class VIEW3D_TP_BTube(bpy.types.Operator):
                 row.prop(self, "bico_rota_z")   
 
         box.separator()
-
 
 
         box = layout.box().column(1)   
@@ -302,22 +357,48 @@ class VIEW3D_TP_BTube(bpy.types.Operator):
                 if self.tp_geom_sphere == "tp_add_sph":
                     bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')                
                     add_sphere(self.bsph_seg, self.bsph_rig, self.bsph_siz, self.bsph_rota_x, self.bsph_rota_y, self.bsph_rota_z)           
-                    bpy.context.object.name = obj.name + "_shaded_sphere"
-                    bpy.context.object.data.name = obj.name + "_shaded_sphere"
+
+                    # first rename 
+                    if self.tp_rename_spheres == True:
+                       
+                        bpy.context.object.name = self.bsph_prefix + obj.name + self.bsph_shaded_suffix
+                        bpy.context.object.data.name = self.bsph_prefix + obj.name + self.bsph_shaded_suffix
                     
-                    # add new object to dummy name list
-                    new_object_name = obj.name + "_shaded_sphere"
-                    dummy_list.append(new_object_name) 
+                        # add new object to dummy name list
+                        new_object_name = self.bsph_prefix + obj.name + self.bsph_shaded_suffix
+                        dummy_list.append(new_object_name) 
+
+                    else:
+                       
+                        bpy.context.object.name = self.bsph_prefix + self.bsph_name + self.bsph_shaded_suffix
+                        bpy.context.object.data.name = self.bsph_prefix + self.bsph_name + self.bsph_shaded_suffix
+                        
+                        # add new object to dummy name list
+                        new_object_name = self.bsph_prefix + self.bsph_name + self.bsph_shaded_suffix
+                        dummy_list.append(new_object_name) 
 
                 else:            
                     bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')  
                     add_ico(self.bico_div, self.bico_siz, self.bico_rota_x, self.bico_rota_y, self.bico_rota_z)
-                    bpy.context.object.name = obj.name + "_shaded_ico"
-                    bpy.context.object.data.name = obj.name + "_shaded_ico"
+                    
+                    # first rename 
+                    if self.tp_rename_spheres == True: 
+                                           
+                        bpy.context.object.name =  self.bico_prefix + obj.name + self.bico_shaded_suffix
+                        bpy.context.object.data.name = self.bico_prefix + obj.name + self.bico_shaded_suffix   
 
-                    # add new object to dummy name list
-                    new_object_name = obj.name + "_shaded_ico"
-                    dummy_list.append(new_object_name) 
+                        # add new object to dummy name list
+                        new_object_name = self.bico_prefix + obj.name + self.bico_shaded_suffix  
+                        dummy_list.append(new_object_name) 
+
+                    else: 
+                                           
+                        bpy.context.object.name =  self.bico_prefix + self.bico_name + self.bico_shaded_suffix
+                        bpy.context.object.data.name = self.bico_prefix + self.bico_name + self.bico_shaded_suffix   
+
+                        # add new object to dummy name list
+                        new_object_name = self.bico_prefix + self.bico_name + self.bico_shaded_suffix 
+                        dummy_list.append(new_object_name) 
 
 
 
@@ -338,6 +419,7 @@ class VIEW3D_TP_BTube(bpy.types.Operator):
                     else:
                         bpy.context.object.active_material.use_object_color = True
                         bpy.context.object.color = (self.sph_color)
+
 
 
                 # copy data from to new object
@@ -385,8 +467,7 @@ class VIEW3D_TP_BTube(bpy.types.Operator):
 
                 # display: draw all edges
                 for i in range(self.sphere_edges):
-                    bpy.context.object.show_wire = True
-                    bpy.context.object.show_all_edges = True     
+                    bpy.ops.tp_ops.wire_on()
                
                 # stay shaded
                 if self.sphere_meshtype == "tp_00":
@@ -397,13 +478,26 @@ class VIEW3D_TP_BTube(bpy.types.Operator):
                     bpy.context.object.draw_type = 'WIRE'
 
                     # second rename 
-                    if self.tp_geom_sphere == "tp_add_sph":          
-                        bpy.context.object.name = obj.name + "_shadless_sphere"
-                        bpy.context.object.data.name = obj.name + "_shadless_sphere"
+                    if self.tp_rename_spheres == True:
 
-                    if self.tp_geom_sphere == "tp_add_ico":              
-                        bpy.context.object.name =  obj.name +"_shadless_ico"
-                        bpy.context.object.data.name = obj.name + "_shadless_ico"                                
+                        if self.tp_geom_sphere == "tp_add_sph":          
+                            bpy.context.object.name = self.bsph_prefix + obj.name + self.bsph_shadeless_suffix
+                            bpy.context.object.data.name = self.bsph_prefix + obj.name + self.bsph_shadeless_suffix
+
+                        if self.tp_geom_sphere == "tp_add_ico":              
+                            bpy.context.object.name =  self.bico_prefix + obj.name + self.bico_shadeless_suffix
+                            bpy.context.object.data.name = self.bico_prefix + obj.name + self.bico_shadeless_suffix                               
+
+                    else:
+
+                        if self.tp_geom_sphere == "tp_add_sph":          
+                            bpy.context.object.name = self.bsph_prefix + self.bsph_name + self.bsph_shadeless_suffix
+                            bpy.context.object.data.name = self.bsph_prefix + self.bsph_name + self.bsph_shadeless_suffix
+
+                        if self.tp_geom_sphere == "tp_add_ico":              
+                            bpy.context.object.name =  self.bico_prefix + self.bico_name + self.bico_shadeless_suffix
+                            bpy.context.object.data.name = self.bico_prefix + self.bico_name + self.bico_shadeless_suffix    
+
                     
                 # display: smooth
                 for i in range(self.sphere_smooth):
@@ -416,15 +510,27 @@ class VIEW3D_TP_BTube(bpy.types.Operator):
                     bpy.ops.mesh.delete(type='ONLY_FACE')
                     bpy.ops.object.editmode_toggle()
           
-                    # third rename 
-                    if self.tp_geom_sphere == "tp_add_sph":          
-                        bpy.context.object.name = obj.name + "_wire_sphere"
-                        bpy.context.object.data.name = obj.name + "_wire_sphere"
+                    # third rename
+                    if self.tp_rename_spheres == True:
+                        
+                        if self.tp_geom_sphere == "tp_add_sph":          
+                            bpy.context.object.name = self.bsph_prefix + obj.name + self.bsph_wired_suffix
+                            bpy.context.object.data.name = self.bsph_prefix + obj.name + self.bsph_wired_suffix
 
-                    if self.tp_geom_sphere == "tp_add_ico":              
-                        bpy.context.object.name = obj.name + "_wire_ico"
-                        bpy.context.object.data.name = obj.name + "_wire_ico"
+                        if self.tp_geom_sphere == "tp_add_ico":              
+                            bpy.context.object.name = self.bico_prefix + obj.name + self.bico_wired_suffix
+                            bpy.context.object.data.name = self.bico_prefix + obj.name + self.bico_wired_suffix
                                     
+                    else:
+
+                        if self.tp_geom_sphere == "tp_add_sph":          
+                            bpy.context.object.name = self.bsph_prefix+ self.bsph_name + self.bsph_wired_suffix
+                            bpy.context.object.data.name = self.bsph_prefix+ self.bsph_name + self.bsph_wired_suffix
+
+                        if self.tp_geom_sphere == "tp_add_ico":              
+                            bpy.context.object.name = self.bico_prefix + self.bico_name + self.bico_wired_suffix
+                            bpy.context.object.data.name = self.bico_prefix + self.bico_name + self.bico_wired_suffix
+
 
         # set widget orientation
         if self.sph_get_local == "tp_w0":

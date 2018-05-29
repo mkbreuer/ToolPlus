@@ -56,10 +56,10 @@ class VIEW3D_TP_BBoxSelection(bpy.types.Operator):
                      ("tp_03"   ,"Wired"       ,"select wired mesh" )]
          
     tp_sel_meshtype = bpy.props.EnumProperty(name = "Select Boundings", default = "tp_01", description = "select choosen meshtype", items = types_meshtype)
-
     tp_extend = bpy.props.BoolProperty(name="Extend Selection",  description="extend selection", default=False) 
-
     tp_link = bpy.props.BoolProperty(name="LinkData",  description="activate link object data", default=False) 
+    tp_select_rename = BoolProperty(name="Select ReName", default=False, description="uncheckt: select by default names / checkt: select by custom names")
+    tp_select_custom = bpy.props.StringProperty(name="Pattern", default="*custom*", description="select by pattern / *everything / starting* / *contains* / ?singel / [abc] / [! non-abc]")
 
     # LOAD CUSTOM SETTTINGS #
     def invoke(self, context, event):        
@@ -69,99 +69,110 @@ class VIEW3D_TP_BBoxSelection(bpy.types.Operator):
     # EXECUTE MAIN OPERATOR #    
     def execute(self, context): 
         
+        addon_key = __package__.split(".")[0]    
+        panel_prefs = context.user_preferences.addons[addon_key].preferences
+ 
         settings_write(self) # custom props  
 
         selected = bpy.context.selected_objects        
 
         for obj in selected:
 
-            if self.tp_sel == "tp_01":
+            if self.tp_select_rename == False:
 
-                if self.tp_sel_meshtype == "tp_01":
-                    bpy.ops.object.select_pattern(pattern= "*_shaded_box", extend=self.tp_extend)           
 
-                elif self.tp_sel_meshtype == "tp_02":
-                    bpy.ops.object.select_pattern(pattern="*_shadeless_box", extend=self.tp_extend)      
+                if self.tp_sel == "tp_01":
 
-                elif self.tp_sel_meshtype == "tp_03":
-                    bpy.ops.object.select_pattern(pattern="*_wire_box", extend=self.tp_extend)   
+                    if self.tp_sel_meshtype == "tp_01":
+                        bpy.ops.object.select_pattern(pattern= "*_box_shaded", extend=self.tp_extend)           
 
-            elif self.tp_sel == "tp_02":
-                
-                if self.tp_sel_meshtype == "tp_01":
-                    bpy.ops.object.select_pattern(pattern="*_shaded_grid", extend=self.tp_extend)
+                    elif self.tp_sel_meshtype == "tp_02":
+                        bpy.ops.object.select_pattern(pattern="*_box_shadeless", extend=self.tp_extend)      
 
-                elif self.tp_sel_meshtype == "tp_02":
-                    bpy.ops.object.select_pattern(pattern="*_shadeless_grid", extend=self.tp_extend)
+                    elif self.tp_sel_meshtype == "tp_03":
+                        bpy.ops.object.select_pattern(pattern="*_box_wired", extend=self.tp_extend)   
 
-                elif self.tp_sel_meshtype == "tp_03":
-                    bpy.ops.object.select_pattern(pattern="*_wire_grid", extend=self.tp_extend)
+                elif self.tp_sel == "tp_02":
+                    
+                    if self.tp_sel_meshtype == "tp_01":
+                        bpy.ops.object.select_pattern(pattern="*_grid_shaded", extend=self.tp_extend)
 
-            elif self.tp_sel == "tp_03":
-                
-                if self.tp_sel_meshtype == "tp_01":
-                    bpy.ops.object.select_pattern(pattern="*_shaded_circle", extend=self.tp_extend)
-      
-                elif self.tp_sel_meshtype == "tp_02":
-                    bpy.ops.object.select_pattern(pattern="*_shadeless_circle", extend=self.tp_extend)
+                    elif self.tp_sel_meshtype == "tp_02":
+                        bpy.ops.object.select_pattern(pattern="*_grid_shadeless", extend=self.tp_extend)
 
-                elif self.tp_sel_meshtype == "tp_03":
-                    bpy.ops.object.select_pattern(pattern="*_wire_circle", extend=self.tp_extend)
+                    elif self.tp_sel_meshtype == "tp_03":
+                        bpy.ops.object.select_pattern(pattern="*_grid_wired", extend=self.tp_extend)
 
-            elif self.tp_sel == "tp_04":
+                elif self.tp_sel == "tp_03":
+                    
+                    if self.tp_sel_meshtype == "tp_01":
+                        bpy.ops.object.select_pattern(pattern="*_circle_shaded", extend=self.tp_extend)
+          
+                    elif self.tp_sel_meshtype == "tp_02":
+                        bpy.ops.object.select_pattern(pattern="*_circle_shadeless", extend=self.tp_extend)
 
-                if self.tp_sel_meshtype == "tp_01":
-                    bpy.ops.object.select_pattern(pattern="*_shaded_tube", extend=self.tp_extend)
+                    elif self.tp_sel_meshtype == "tp_03":
+                        bpy.ops.object.select_pattern(pattern="*_circle_wired", extend=self.tp_extend)
 
-                elif self.tp_sel_meshtype == "tp_02":
-                    bpy.ops.object.select_pattern(pattern="*_shadeless_tube", extend=self.tp_extend)
+                elif self.tp_sel == "tp_04":
 
-                elif self.tp_sel_meshtype == "tp_03":
-                    bpy.ops.object.select_pattern(pattern="*_wire_tube", extend=self.tp_extend)
+                    if self.tp_sel_meshtype == "tp_01":
+                        bpy.ops.object.select_pattern(pattern="*_tube_shaded", extend=self.tp_extend)
 
-            elif self.tp_sel == "tp_05":
-                
-                if self.tp_sel_meshtype == "tp_01":
-                    bpy.ops.object.select_pattern(pattern="*_shaded_cone", extend=self.tp_extend) 
+                    elif self.tp_sel_meshtype == "tp_02":
+                        bpy.ops.object.select_pattern(pattern="*_tube_shadeless", extend=self.tp_extend)
 
-                elif self.tp_sel_meshtype == "tp_02":
-                    bpy.ops.object.select_pattern(pattern="*_shadeless_cone", extend=self.tp_extend) 
+                    elif self.tp_sel_meshtype == "tp_03":
+                        bpy.ops.object.select_pattern(pattern="*_tube_wired", extend=self.tp_extend)
 
-                elif self.tp_sel_meshtype == "tp_03":
-                    bpy.ops.object.select_pattern(pattern="*_wire_cone", extend=self.tp_extend) 
+                elif self.tp_sel == "tp_05":
+                    
+                    if self.tp_sel_meshtype == "tp_01":
+                        bpy.ops.object.select_pattern(pattern="*_cone_shaded", extend=self.tp_extend) 
 
-            elif self.tp_sel == "tp_06":
-                
-                if self.tp_sel_meshtype == "tp_01":
-                    bpy.ops.object.select_pattern(pattern="*_shaded_sphere", extend=self.tp_extend)
+                    elif self.tp_sel_meshtype == "tp_02":
+                        bpy.ops.object.select_pattern(pattern="*_cone_shadeless", extend=self.tp_extend) 
 
-                elif self.tp_sel_meshtype == "tp_02":
-                    bpy.ops.object.select_pattern(pattern="*_shadeless_sphere", extend=self.tp_extend)
+                    elif self.tp_sel_meshtype == "tp_03":
+                        bpy.ops.object.select_pattern(pattern="*_cone_wired", extend=self.tp_extend) 
 
-                elif self.tp_sel_meshtype == "tp_03":
-                    bpy.ops.object.select_pattern(pattern="*_wire_sphere", extend=self.tp_extend)
+                elif self.tp_sel == "tp_06":
+                    
+                    if self.tp_sel_meshtype == "tp_01":
+                        bpy.ops.object.select_pattern(pattern="*_sphere_shaded", extend=self.tp_extend)
 
-            elif self.tp_sel == "tp_07":
+                    elif self.tp_sel_meshtype == "tp_02":
+                        bpy.ops.object.select_pattern(pattern="*_sphere_shadeless", extend=self.tp_extend)
 
-                if self.tp_sel_meshtype == "tp_01":
-                    bpy.ops.object.select_pattern(pattern="*_shaded_ico", extend=self.tp_extend)            
+                    elif self.tp_sel_meshtype == "tp_03":
+                        bpy.ops.object.select_pattern(pattern="*_sphere_wired", extend=self.tp_extend)
 
-                elif self.tp_sel_meshtype == "tp_02":
-                    bpy.ops.object.select_pattern(pattern="*_shadeless_ico", extend=self.tp_extend)    
+                elif self.tp_sel == "tp_07":
 
-                elif self.tp_sel_meshtype == "tp_03":
-                    bpy.ops.object.select_pattern(pattern="*_wire_ico", extend=self.tp_extend)    
+                    if self.tp_sel_meshtype == "tp_01":
+                        bpy.ops.object.select_pattern(pattern="*_ico_shaded", extend=self.tp_extend)            
 
-            elif self.tp_sel == "tp_08":
+                    elif self.tp_sel_meshtype == "tp_02":
+                        bpy.ops.object.select_pattern(pattern="*_ico_shadeless", extend=self.tp_extend)    
 
-                if self.tp_sel_meshtype == "tp_01":
-                    bpy.ops.object.select_pattern(pattern="*_shaded_torus", extend=self.tp_extend)
-                
-                elif self.tp_sel_meshtype == "tp_02":
-                    bpy.ops.object.select_pattern(pattern="*_shadeless_torus", extend=self.tp_extend)
+                    elif self.tp_sel_meshtype == "tp_03":
+                        bpy.ops.object.select_pattern(pattern="*_ico_wired", extend=self.tp_extend)    
 
-                elif self.tp_sel_meshtype == "tp_03":
-                    bpy.ops.object.select_pattern(pattern="*_wire_torus", extend=self.tp_extend)
+                elif self.tp_sel == "tp_08":
+
+                    if self.tp_sel_meshtype == "tp_01":
+                        bpy.ops.object.select_pattern(pattern="*_torus_shaded", extend=self.tp_extend)
+                    
+                    elif self.tp_sel_meshtype == "tp_02":
+                        bpy.ops.object.select_pattern(pattern="*_torus_shadeless", extend=self.tp_extend)
+
+                    elif self.tp_sel_meshtype == "tp_03":
+                        bpy.ops.object.select_pattern(pattern="*_torus_wired", extend=self.tp_extend)
+
+            
+            else:
+
+                bpy.ops.object.select_pattern(pattern = self.tp_select_custom, extend=self.tp_extend)  
 
 
             # display: link

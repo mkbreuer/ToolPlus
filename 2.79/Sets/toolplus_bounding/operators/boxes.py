@@ -139,6 +139,24 @@ class VIEW3D_TP_BBox_Cube(bpy.types.Operator):
                default = "tp_bb2",    
                description = "choose geometry for bounding")
 
+    # NAME #
+    tp_rename_boxes = BoolProperty(name="ReName", default=False, description="uncheckt: use name from active / checkt: use custom name")
+
+    box_prefix = bpy.props.StringProperty(name="Name", default="")
+    grid_prefix = bpy.props.StringProperty(name="Name", default="")
+
+    box_name = bpy.props.StringProperty(name="Name", default="_custom")
+    grid_name = bpy.props.StringProperty(name="Name", default="_custom")
+
+    box_shaded_suffix = bpy.props.StringProperty(name="Name", default="_box_shaded")
+    box_shadeless_suffix = bpy.props.StringProperty(name="Name", default="_box_shadeless")
+    box_wired_suffix = bpy.props.StringProperty(name="Name", default="_box_wired")
+
+    grid_shaded_suffix = bpy.props.StringProperty(name="Name", default="_grid_shaded")
+    grid_shadeless_suffix = bpy.props.StringProperty(name="Name", default="_grid_shadeless")
+    grid_wired_suffix = bpy.props.StringProperty(name="Name", default="_grid_wired")
+
+
     # GRID #
     subX = bpy.props.IntProperty(name="X Subdiv", description="set vertices value",  min=2, max=100, default=0, step=1)
     subY = bpy.props.IntProperty(name="Y Subdiv", description="set vertices value",  min=2, max=100, default=0, step=1)
@@ -226,7 +244,40 @@ class VIEW3D_TP_BBox_Cube(bpy.types.Operator):
     def draw(self, context):
         layout = self.layout
 
-        box = layout.box().column(1)   
+        box = layout.box().column(1)         
+        
+        row = box.column(1) 
+        row.label("Object Name:")               
+
+        if self.tp_geom_box == "tp_bb2":
+            row.prop(self, "box_prefix", text="prefix")
+            row.prop(self, "box_name", text="custom")
+
+            if self.box_meshtype == "tp_00":    
+                row.prop(self, "box_shaded_suffix", text="suffix")
+
+            if self.box_meshtype == "tp_01":    
+                row.prop(self, "box_shadeless_suffix", text="suffix")
+
+            if self.box_meshtype == "tp_02":    
+                row.prop(self, "box_wired_suffix", text="suffix")
+
+        else:
+            row.prop(self, "grid_prefix", text="prefix")
+            row.prop(self, "grid_name", text="custom")
+            
+            if self.box_meshtype == "tp_00":            
+                row.prop(self, "grid_shaded_suffix", text="suffix")
+            
+            if self.box_meshtype == "tp_01":
+                row.prop(self, "grid_shadeless_suffix", text="suffix")
+            
+            if self.box_meshtype == "tp_02":
+                row.prop(self, "grid_wired_suffix", text="suffix")
+
+        box.separator()   
+
+        box = layout.box().column(1)         
            
         row = box.row(1) 
         row.label("Object Type:")               
@@ -238,8 +289,7 @@ class VIEW3D_TP_BBox_Cube(bpy.types.Operator):
         row.label("Mesh Type:")               
         row.prop(self, "box_meshtype", text="")
 
-        box.separator()         
-
+        box.separator()                 
 
         box = layout.box().column(1)   
        
@@ -315,9 +365,6 @@ class VIEW3D_TP_BBox_Cube(bpy.types.Operator):
 
         box.separator()
 
-
-
-        box = layout.box().column(1)      
         
         row = box.row(1) 
         row.label("Copy Rotation:") 
@@ -433,7 +480,10 @@ class VIEW3D_TP_BBox_Cube(bpy.types.Operator):
     def execute(self, context): 
     
         settings_write(self) # custom props        
-     
+        
+        #grid_name = "_grid"     
+        #box_name = "_box"         
+       
         selected = bpy.context.selected_objects
 
         # set 3d cursor     
@@ -454,14 +504,26 @@ class VIEW3D_TP_BBox_Cube(bpy.types.Operator):
                 # add geometry
                 if self.tp_geom_box == "tp_bb1":
                     bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')                
-                    build_grid(self.subX, self.subY, self.subR, self.bgrid_rota_x, self.bgrid_rota_y, self.bgrid_rota_z)                          
+                    build_grid(self.subX, self.subY, self.subR, self.bgrid_rota_x, self.bgrid_rota_y, self.bgrid_rota_z)                                              
 
-                    bpy.context.object.name = "_shaded_grid"  
-                    bpy.context.object.data.name = "_shaded_grid"     
-                    
-                    # add new object to dummy name list
-                    new_object_name = "_shaded_grid"
-                    dummy_list.append(new_object_name) 
+                    if self.tp_rename_boxes == False:
+
+                        bpy.context.object.name = self.grid_prefix + obj.name + self.grid_shaded_suffix
+                        bpy.context.object.data.name = self.grid_prefix + obj.name + self.grid_shaded_suffix  
+                        
+                        # add new object to dummy name list
+                        new_object_name = self.grid_prefix + obj.name + self.grid_shaded_suffix
+                        dummy_list.append(new_object_name) 
+                      
+                    else:
+
+                        bpy.context.object.name = self.grid_prefix + self.grid_name + self.grid_shaded_suffix
+                        bpy.context.object.data.name = self.grid_prefix + self.grid_name + self.grid_shaded_suffix  
+                        
+                        # add new object to dummy name list
+                        new_object_name = self.grid_prefix + self.grid_name + self.grid_shaded_suffix
+                        dummy_list.append(new_object_name) 
+
 
                 else:
                     
@@ -482,15 +544,26 @@ class VIEW3D_TP_BBox_Cube(bpy.types.Operator):
                         
                         # add defined mesh cube 
                         build_box(self, context)
+                     
+   
+                    if self.tp_rename_boxes == False:
+ 
+                        bpy.context.object.name = self.box_prefix + obj.name + self.box_shaded_suffix
+                        bpy.context.object.data.name = self.box_prefix + obj.name + self.box_shaded_suffix
+ 
+                        # add new object to dummy name list
+                        new_object_name = self.box_prefix + obj.name + self.box_shaded_suffix
+                        dummy_list.append(new_object_name) 
 
-                    bpy.context.object.name = obj.name + "_shaded_box" 
-                    bpy.context.object.data.name = obj.name + "_shaded_box" 
+                    else:
 
-                    # add new object to dummy name list
-                    new_object_name = obj.name + "_shaded_box"
-                    dummy_list.append(new_object_name) 
+                        bpy.context.object.name = self.box_prefix + self.box_name + self.box_shaded_suffix
+                        bpy.context.object.data.name = self.box_prefix + self.box_name + self.box_shaded_suffix
 
-
+                        # add new object to dummy name list
+                        new_object_name = self.box_prefix + self.box_name + self.box_shaded_suffix
+                        dummy_list.append(new_object_name) 
+                        
 
                 active = bpy.context.active_object             
                 
@@ -576,17 +649,30 @@ class VIEW3D_TP_BBox_Cube(bpy.types.Operator):
                 if self.box_meshtype == "tp_00":
                     pass
 
-                # create shadeless
+                # SHADLESS MESH
                 if self.box_meshtype == "tp_01":
                     bpy.context.object.draw_type = 'WIRE'
 
                     # second rename
-                    if self.tp_geom_box == "tp_bb1":                
-                        bpy.context.object.name = obj.name + "_shadeless_grid" 
-                        bpy.context.object.data.name = obj.name + "_shadeless_grid"             
-                    else:           
-                        bpy.context.object.name = obj.name + "_shadeless_box" 
-                        bpy.context.object.data.name = obj.name + "_shadeless_box"  
+                    if self.tp_rename_boxes == False:
+ 
+                        if self.tp_geom_box == "tp_bb1":               
+                            bpy.context.object.name = self.grid_prefix + obj.name + self.grid_shadeless_suffix
+                            bpy.context.object.data.name = self.grid_prefix + obj.name + self.grid_shadeless_suffix            
+                        else:          
+                            bpy.context.object.name = self.box_prefix + obj.name + self.box_shadeless_suffix
+                            bpy.context.object.data.name = self.box_prefix + obj.name + self.box_shadeless_suffix 
+
+                    else:
+                        
+                        if self.tp_geom_box == "tp_bb1":               
+                            bpy.context.object.name = self.grid_prefix + self.grid_name + self.grid_shadeless_suffix
+                            bpy.context.object.data.name = self.grid_prefix + self.grid_name + self.grid_shadeless_suffix             
+                        else:          
+                            bpy.context.object.name = self.box_prefix + self.box_name + self.box_shadeless_suffix
+                            bpy.context.object.data.name = self.box_prefix + self.box_name + self.box_shadeless_suffix  
+
+
 
                 # display: smooth
                 for i in range(self.box_smooth):                 
@@ -597,7 +683,7 @@ class VIEW3D_TP_BBox_Cube(bpy.types.Operator):
                     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
                     func_bevel_cube(self.box_offset, self.box_segment, self.box_profile, self.box_verts_use)
                     
-                # create wired 
+                # WIRED MESH
                 if self.box_meshtype == "tp_02":            
                     bpy.ops.object.editmode_toggle()
                     bpy.ops.mesh.select_all(action='SELECT')
@@ -605,12 +691,24 @@ class VIEW3D_TP_BBox_Cube(bpy.types.Operator):
                     bpy.ops.object.editmode_toggle()
      
                     # third rename
-                    if self.tp_geom_box == "tp_bb1":                
-                        bpy.context.object.name = obj.name + "_wire_grid" 
-                        bpy.context.object.data.name = obj.name + "_wire_grid"             
-                    else:           
-                        bpy.context.object.name = obj.name + "_wire_box" 
-                        bpy.context.object.data.name = obj.name + "_wire_box"  
+                    if self.tp_rename_boxes == False:
+
+                        if self.tp_geom_box == "tp_bb1":                
+                            bpy.context.object.name = self.grid_prefix + obj.name + self.grid_wired_suffix  
+                            bpy.context.object.data.name = self.grid_prefix + obj.name + self.grid_wired_suffix            
+                        else:            
+                            bpy.context.object.name = self.box_prefix + obj.name + self.box_wired_suffix
+                            bpy.context.object.data.name = self.box_prefix + obj.name + self.box_wired_suffix 
+                        
+                    else:
+
+                        if self.tp_geom_box == "tp_bb1":                
+                            bpy.context.object.name = self.grid_prefix + self.grid_name + self.grid_wired_suffix
+                            bpy.context.object.data.name = self.grid_prefix + self.grid_name + self.grid_wired_suffix            
+                        else:            
+                            bpy.context.object.name = self.box_prefix + self.box_name + self.box_wired_suffix
+                            bpy.context.object.data.name = self.box_prefix + self.box_name + self.box_wired_suffix
+
          
                 # fix normals
                 bpy.ops.tp_ops.rec_normals()

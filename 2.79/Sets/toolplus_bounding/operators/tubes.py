@@ -162,6 +162,35 @@ class VIEW3D_TP_BTube(bpy.types.Operator):
                default = "NGON",    
                description = "change fill type")
 
+    # RENAME #
+    tp_rename_tubes = BoolProperty(name="ReName", default=False, description="uncheckt: use name from active / checkt: use custom name")
+    
+    bcirc_prefix = bpy.props.StringProperty(name="Name", default="")
+    bcyl_prefix = bpy.props.StringProperty(name="Name", default="")
+    bcon_prefix = bpy.props.StringProperty(name="Name", default="")
+    btor_prefix = bpy.props.StringProperty(name="Name", default="")
+
+    bcirc_name = bpy.props.StringProperty(name="Name", default="_custom")
+    bcyl_name = bpy.props.StringProperty(name="Name", default="_custom")
+    bcon_name = bpy.props.StringProperty(name="Name", default="_custom")
+    btor_name = bpy.props.StringProperty(name="Name", default="_custom")
+
+    bcirc_shaded_suffix = bpy.props.StringProperty(name="Name", default="_circle_shaded")
+    bcirc_shadeless_suffix = bpy.props.StringProperty(name="Name", default="_circle_shadeless")
+    bcirc_wired_suffix = bpy.props.StringProperty(name="Name", default="_circle_wired")
+
+    bcyl_shaded_suffix = bpy.props.StringProperty(name="Name", default="_cylinder_shaded")
+    bcyl_shadeless_suffix = bpy.props.StringProperty(name="Name", default="_cylinder_shadeless")
+    bcyl_wired_suffix = bpy.props.StringProperty(name="Name", default="_cylinder_wired")
+
+    bcon_shaded_suffix = bpy.props.StringProperty(name="Name", default="_cone_shaded")
+    bcon_shadeless_suffix = bpy.props.StringProperty(name="Name", default="_cone_shadeless")
+    bcon_wired_suffix = bpy.props.StringProperty(name="Name", default="_cone_wired")
+
+    btor_shaded_suffix = bpy.props.StringProperty(name="Name", default="_torus_shaded")
+    btor_shadeless_suffix = bpy.props.StringProperty(name="Name", default="_torus_shadeless")
+    btor_wired_suffix = bpy.props.StringProperty(name="Name", default="_torus_wired")
+
     # CIRCLE #
     bcirc_res = bpy.props.IntProperty(name="Verts", description="set vertices value",  min=3, max=80, default=12)
     bcirc_rad = bpy.props.FloatProperty(name="Radius", description="set vertices value", default=1.0, min=0.01, max=100)
@@ -260,6 +289,77 @@ class VIEW3D_TP_BTube(bpy.types.Operator):
     # DRAW PROPS [F6] # 
     def draw(self, context):
         layout = self.layout
+
+        box = layout.box().column(1)   
+
+        row = box.row(1)      
+        row.label("ReName:")          
+        row.prop(self, "tp_rename_tubes", text="")
+
+        box.separator()  
+
+        row = box.column(1)          
+
+        if self.tp_geom_tube == "tp_add_cyl":   
+                     
+            row.prop(self, "bcyl_prefix", text="prefix")
+            row.prop(self, "bcyl_name", text="custom")
+
+            if self.tube_meshtype == "tp_00":    
+                row.prop(self, "bcyl_shaded_suffix", text="suffix")
+
+            if self.tube_meshtype == "tp_01":    
+                row.prop(self, "bcyl_shadeless_suffix", text="suffix")
+
+            if self.tube_meshtype == "tp_02":    
+                row.prop(self, "bcyl_wired_suffix", text="suffix")
+
+
+        if self.tp_geom_tube == "tp_add_cone":
+
+            row.prop(self, "bcon_prefix", text="prefix")
+            row.prop(self, "bcon_name", text="rename")
+            
+            if self.tube_meshtype == "tp_00":            
+                row.prop(self, "bcon_shaded_suffix", text="suffix")
+            
+            if self.tube_meshtype == "tp_01":
+                row.prop(self, "bcon_shadeless_suffix", text="suffix")
+            
+            if self.tube_meshtype == "tp_02":
+                row.prop(self, "bcon_wired_suffix", text="suffix")
+
+
+        if self.tp_geom_tube == "tp_add_circ":
+
+            row.prop(self, "bcirc_prefix", text="prefix")
+            row.prop(self, "bcirc_name", text="rename")
+            
+            if self.tube_meshtype == "tp_00":            
+                row.prop(self, "bcirc_shaded_suffix", text="suffix")
+            
+            if self.tube_meshtype == "tp_01":
+                row.prop(self, "bcirc_shadeless_suffix", text="suffix")
+            
+            if self.tube_meshtype == "tp_02":
+                row.prop(self, "bcirc_wired_suffix", text="suffix")
+      
+
+        if self.tp_geom_tube == "tp_add_tor":
+
+            row.prop(self, "btor_prefix", text="prefix")
+            row.prop(self, "btor_name", text="rename")
+            
+            if self.box_meshtype == "tp_00":            
+                row.prop(self, "btor_shaded_suffix", text="suffix")
+            
+            if self.tube_meshtype == "tp_01":
+                row.prop(self, "btor_shadeless_suffix", text="suffix")
+            
+            if self.tube_meshtype == "tp_02":
+                row.prop(self, "btor_wired_suffix", text="suffix")
+
+
 
         box = layout.box().column(1)   
 
@@ -548,46 +648,94 @@ class VIEW3D_TP_BTube(bpy.types.Operator):
                 # add source to name list
                 name_list.append(obj.name) 
                                       
-                # add geometry and first rename 
-                if self.tp_geom_tube == "tp_add_cyl":
-                    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')                
-                    add_cyl(self.bcyl_res, self.bcyl_rad, self.bcyl_dep, self.tube_fill, self.bcyl_rota_x, self.bcyl_rota_y, self.bcyl_rota_z)            
-                    bpy.context.object.name = obj.name + "_shaded_tube"
-                    bpy.context.object.data.name = obj.name + "_shaded_tube"
-                
-                    # add new object to dummy name list
-                    new_object_name = obj.name + "_shaded_tube"
-                    dummy_list.append(new_object_name) 
 
-                if self.tp_geom_tube == "tp_add_cone":              
-                    bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_MASS')
-                    add_cone(self.bcon_res, self.bcon_res1, self.bcon_res2, self.bcon_depth, self.tube_fill, self.bcon_rota_x, self.bcon_rota_y, self.bcon_rota_z)
-                    bpy.context.object.name = obj.name + "_shaded_cone"
-                    bpy.context.object.data.name = obj.name + "_shaded_cone"
+                # first rename
+                if self.tp_rename_tubes == False:
 
-                    # add new object to dummy name list
-                    new_object_name = obj.name + "_shaded_cone"
-                    dummy_list.append(new_object_name) 
+                    # add geometry and first rename 
+                    if self.tp_geom_tube == "tp_add_cyl":
+                        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')                
+                        add_cyl(self.bcyl_res, self.bcyl_rad, self.bcyl_dep, self.tube_fill, self.bcyl_rota_x, self.bcyl_rota_y, self.bcyl_rota_z)            
+                        bpy.context.object.name = self.bcyl_prefix + obj.name + self.bcyl_shaded_suffix
+                        bpy.context.object.data.name = self.bcyl_prefix + obj.name + self.bcyl_shaded_suffix
+                    
+                        # add new object to dummy name list
+                        new_object_name = self.bcyl_prefix + obj.name + self.bcyl_shaded_suffix
+                        dummy_list.append(new_object_name) 
 
-                if self.tp_geom_tube == "tp_add_circ":   
-                    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')                
-                    add_circ(self.bcirc_res, self.bcirc_rad, self.tube_fill, self.bcirc_rota_x, self.bcirc_rota_y, self.bcirc_rota_z)
-                    bpy.context.object.name = obj.name + "_shaded_circle"
-                    bpy.context.object.data.name = obj.name + "_shaded_circle"
-                
-                    # add new object to dummy name list
-                    new_object_name = obj.name + "_shaded_circle"
-                    dummy_list.append(new_object_name) 
+                    if self.tp_geom_tube == "tp_add_cone":              
+                        bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_MASS')
+                        add_cone(self.bcon_res, self.bcon_res1, self.bcon_res2, self.bcon_depth, self.tube_fill, self.bcon_rota_x, self.bcon_rota_y, self.bcon_rota_z)
+                        bpy.context.object.name = self.bcon_prefix + obj.name + self.bcon_shaded_suffix
+                        bpy.context.object.data.name = self.bcon_prefix + obj.name + self.bcon_shaded_suffix
 
-                if self.tp_geom_tube == "tp_add_tor":
-                    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')  
-                    add_torus(self.btor_seg1, self.btor_seg2, self.btor_siz1, self.btor_siz2, self.btor_rota_x, self.btor_rota_y, self.btor_rota_z)
-                    bpy.context.object.name = obj.name + "_shaded_torus"
-                    bpy.context.object.data.name = obj.name + "_shaded_torus"
+                        # add new object to dummy name list
+                        new_object_name = self.bcon_prefix + obj.name + self.bcon_shaded_suffix
+                        dummy_list.append(new_object_name) 
 
-                    # add new object to dummy name list
-                    new_object_name = obj.name + "_shaded_torus"
-                    dummy_list.append(new_object_name) 
+                    if self.tp_geom_tube == "tp_add_circ":   
+                        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')                
+                        add_circ(self.bcirc_res, self.bcirc_rad, self.tube_fill, self.bcirc_rota_x, self.bcirc_rota_y, self.bcirc_rota_z)
+                        bpy.context.object.name = self.bcirc_prefix + obj.name + self.bcirc_shaded_suffix
+                        bpy.context.object.data.name = self.bcirc_prefix + obj.name + self.bcirc_shaded_suffix
+                    
+                        # add new object to dummy name list
+                        new_object_name = self.bcirc_prefix + obj.name + self.bcirc_shaded_suffix
+                        dummy_list.append(new_object_name) 
+
+                    if self.tp_geom_tube == "tp_add_tor":
+                        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')  
+                        add_torus(self.btor_seg1, self.btor_seg2, self.btor_siz1, self.btor_siz2, self.btor_rota_x, self.btor_rota_y, self.btor_rota_z)
+                        bpy.context.object.name = self.btor_prefix + obj.name + self.btor_shaded_suffix
+                        bpy.context.object.data.name = self.bcyl_prefix + obj.name + self.btor_shaded_suffix
+
+                        # add new object to dummy name list
+                        new_object_name = self.bcyl_prefix + obj.name + self.btor_shaded_suffix
+                        dummy_list.append(new_object_name) 
+            
+
+                else:
+
+                    # add geometry and first rename 
+                    if self.tp_geom_tube == "tp_add_cyl":
+                        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')                
+                        add_cyl(self.bcyl_res, self.bcyl_rad, self.bcyl_dep, self.tube_fill, self.bcyl_rota_x, self.bcyl_rota_y, self.bcyl_rota_z)            
+                        bpy.context.object.name = self.bcyl_prefix + self.bcyl_name  + self.bcyl_shaded_suffix
+                        bpy.context.object.data.name = self.bcyl_prefix + self.bcyl_name + self.bcyl_shaded_suffix
+                    
+                        # add new object to dummy name list
+                        new_object_name = self.bcyl_prefix + self.bcyl_name + self.bcyl_shaded_suffix
+                        dummy_list.append(new_object_name) 
+
+                    if self.tp_geom_tube == "tp_add_cone":              
+                        bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_MASS')
+                        add_cone(self.bcon_res, self.bcon_res1, self.bcon_res2, self.bcon_depth, self.tube_fill, self.bcon_rota_x, self.bcon_rota_y, self.bcon_rota_z)
+                        bpy.context.object.name = self.bcon_prefix + self.bcon_name + self.bcon_shaded_suffix
+                        bpy.context.object.data.name = self.bcon_prefix + self.bcon_name + self.bcon_shaded_suffix
+
+                        # add new object to dummy name list
+                        new_object_name = self.bcon_prefix + self.bcon_name + self.bcon_shaded_suffix
+                        dummy_list.append(new_object_name) 
+
+                    if self.tp_geom_tube == "tp_add_circ":   
+                        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')                
+                        add_circ(self.bcirc_res, self.bcirc_rad, self.tube_fill, self.bcirc_rota_x, self.bcirc_rota_y, self.bcirc_rota_z)
+                        bpy.context.object.name = self.bcirc_prefix + self.bcirc_name  + self.bcirc_shaded_suffix
+                        bpy.context.object.data.name = self.bcirc_prefix + self.bcirc_name + self.bcirc_shaded_suffix
+                    
+                        # add new object to dummy name list
+                        new_object_name = self.bcirc_prefix + self.bcirc_name + self.bcirc_shaded_suffix
+                        dummy_list.append(new_object_name) 
+
+                    if self.tp_geom_tube == "tp_add_tor":
+                        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')  
+                        add_torus(self.btor_seg1, self.btor_seg2, self.btor_siz1, self.btor_siz2, self.btor_rota_x, self.btor_rota_y, self.btor_rota_z)
+                        bpy.context.object.name = self.btor_prefix + self.btor_name + self.btor_shaded_suffix
+                        bpy.context.object.data.name = self.bcyl_prefix + self.btor_name + self.btor_shaded_suffix
+
+                        # add new object to dummy name list
+                        new_object_name = self.bcyl_prefix + self.btor_name + self.btor_shaded_suffix
+                        dummy_list.append(new_object_name) 
                 
 
 
@@ -655,8 +803,7 @@ class VIEW3D_TP_BTube(bpy.types.Operator):
 
                 # display: draw all edges
                 for i in range(self.tube_edges):
-                    bpy.context.object.show_wire = True
-                    bpy.context.object.show_all_edges = True     
+                    bpy.ops.tp_ops.wire_on()
                
                 # stay shaded
                 if self.tube_meshtype == "tp_00":
@@ -667,21 +814,42 @@ class VIEW3D_TP_BTube(bpy.types.Operator):
                     bpy.context.object.draw_type = 'WIRE'
 
                     # second rename
-                    if self.tp_geom_tube == "tp_add_cyl":
-                        bpy.context.object.name = obj.name + "_shadless_tube"
-                        bpy.context.object.data.name = obj.name + "_shadless_tube"
-                    
-                    if self.tp_geom_tube == "tp_add_cone":              
-                        bpy.context.object.name = obj.name + "_shadless_cone"
-                        bpy.context.object.data.name = obj.name + "_shadless_cone"
+                    if self.tp_rename_tubes == False:
 
-                    if self.tp_geom_tube == "tp_add_circ": 
-                        bpy.context.object.name = obj.name + "_shadless_circle"
-                        bpy.context.object.data.name = obj.name + "_shadless_circle"
+                        if self.tp_geom_tube == "tp_add_cyl":
+                            bpy.context.object.name = self.bcyl_prefix + obj.name  + self.bcyl_shadeless_suffix
+                            bpy.context.object.data.name = self.bcyl_prefix + obj.name  + self.bcyl_shadeless_suffix
+                        
+                        if self.tp_geom_tube == "tp_add_cone":              
+                            bpy.context.object.name = self.bcon_prefix + obj.name  + self.bcon_shadeless_suffix
+                            bpy.context.object.data.name = self.bcon_prefix + obj.name  + self.bcon_shadeless_suffix
 
-                    if self.tp_geom_tube == "tp_add_torus":
-                        bpy.context.object.name = obj.name + "_shadless_torus"
-                        bpy.context.object.data.name = obj.name + "_shadless_torus"
+                        if self.tp_geom_tube == "tp_add_circ": 
+                            bpy.context.object.name = self.bcirc_prefix + obj.name  + self.bcirc_shadeless_suffix
+                            bpy.context.object.data.name = self.bcirc_prefix + obj.name + self.bcirc_shadeless_suffix
+
+                        if self.tp_geom_tube == "tp_add_torus":
+                            bpy.context.object.name = self.btor_prefix + obj.name + self.btor_shadeless_suffix
+                            bpy.context.object.data.name = self.bcyl_prefix + obj.name + self.btor_shadeless_suffix
+
+                    else:
+
+                        if self.tp_geom_tube == "tp_add_cyl":
+                            bpy.context.object.name = self.bcyl_prefix + self.bcyl_name  + self.bcyl_shadeless_suffix
+                            bpy.context.object.data.name = self.bcyl_prefix + self.bcyl_name  + self.bcyl_shadeless_suffix
+                        
+                        if self.tp_geom_tube == "tp_add_cone":              
+                            bpy.context.object.name = self.bcon_prefix + self.bcon_name  + self.bcon_shadeless_suffix
+                            bpy.context.object.data.name = self.bcon_prefix + self.bcon_name  + self.bcon_shadeless_suffix
+
+                        if self.tp_geom_tube == "tp_add_circ": 
+                            bpy.context.object.name = self.bcirc_prefix + self.bcirc_name  + self.bcirc_shadeless_suffix
+                            bpy.context.object.data.name = self.bcirc_prefix + self.bcirc_name + self.bcirc_shadeless_suffix
+
+                        if self.tp_geom_tube == "tp_add_torus":
+                            bpy.context.object.name = self.btor_prefix + self.btor_name + self.btor_shadeless_suffix
+                            bpy.context.object.data.name = self.bcyl_prefix + self.btor_name + self.btor_shadeless_suffix
+
 
 
                 # display: smooth
@@ -710,21 +878,44 @@ class VIEW3D_TP_BTube(bpy.types.Operator):
                     bpy.ops.object.editmode_toggle()
           
                     # third rename
-                    if self.tp_geom_tube == "tp_add_cyl":
-                        bpy.context.object.name = obj.name + "_wire_tube"
-                        bpy.context.object.data.name = obj.name + "_wire_tube"
-                    
-                    if self.tp_geom_tube == "tp_add_cone":              
-                        bpy.context.object.name = obj.name + "_wire_cone"
-                        bpy.context.object.data.name = obj.name + "_wire_cone"
+                    if self.tp_rename_tubes == False:
 
-                    if self.tp_geom_tube == "tp_add_circ": 
-                        bpy.context.object.name = obj.name + "_wire_circle"
-                        bpy.context.object.data.name = obj.name + "_wire_circle"
+                        if self.tp_geom_tube == "tp_add_cyl":
+                            bpy.context.object.name = self.bcyl_prefix + obj.name  + self.bcyl_wired_suffix
+                            bpy.context.object.data.name = self.bcyl_prefix + obj.name  + self.bcyl_wired_suffix
+                        
+                        if self.tp_geom_tube == "tp_add_cone":              
+                            bpy.context.object.name = self.bcon_prefix + obj.name  + self.bcon_wired_suffix
+                            bpy.context.object.data.name = self.bcon_prefix + obj.name  + self.bcon_wired_suffix
 
-                    if self.tp_geom_tube == "tp_add_torus":
-                        bpy.context.object.name = obj.name + "_wire_torus"
-                        bpy.context.object.data.name = obj.name + "_wire_torus"
+                        if self.tp_geom_tube == "tp_add_circ": 
+                            bpy.context.object.name = self.bcirc_prefix + obj.name  + self.bcirc_wired_suffix
+                            bpy.context.object.data.name = self.bcirc_prefix + obj.name + self.bcirc_wired_suffix
+
+                        if self.tp_geom_tube == "tp_add_torus":
+                            bpy.context.object.name = self.btor_prefix + obj.name + self.btor_wired_suffix
+                            bpy.context.object.data.name = self.bcyl_prefix + obj.name + self.btor_wired_suffix
+
+                    else:
+
+                        if self.tp_geom_tube == "tp_add_cyl":
+                            bpy.context.object.name = self.bcyl_prefix + self.bcyl_name  + self.bcyl_wired_suffix
+                            bpy.context.object.data.name = self.bcyl_prefix + self.bcyl_name  + self.bcyl_wired_suffix
+                        
+                        if self.tp_geom_tube == "tp_add_cone":              
+                            bpy.context.object.name = self.bcon_prefix + self.bcon_name  + self.bcon_wired_suffix
+                            bpy.context.object.data.name = self.bcon_prefix + self.bcon_name  + self.bcon_wired_suffix
+
+                        if self.tp_geom_tube == "tp_add_circ": 
+                            bpy.context.object.name = self.bcirc_prefix + self.bcirc_name  + self.bcirc_wired_suffix
+                            bpy.context.object.data.name = self.bcirc_prefix + self.bcirc_name + self.bcirc_wired_suffix
+
+                        if self.tp_geom_tube == "tp_add_torus":
+                            bpy.context.object.name = self.btor_prefix + self.btor_name + self.btor_wired_suffix
+                            bpy.context.object.data.name = self.bcyl_prefix + self.btor_name + self.btor_wired_suffix
+
+
+
 
         # set widget orientation
         if self.tube_get_local == "tp_w0":

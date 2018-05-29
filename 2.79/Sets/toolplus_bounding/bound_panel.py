@@ -31,6 +31,20 @@ from toolplus_bounding.bound_history    import draw_history_layout
 from toolplus_bounding.bound_main       import draw_panel_layout
 
 
+
+def draw_bounding_panel_layout(context, layout):
+
+    layout.operator_context = 'INVOKE_REGION_WIN'
+                                                  
+    draw_panel_layout(context, layout)   
+
+    panel_prefs = context.user_preferences.addons[__package__].preferences
+    if panel_prefs.tab_display_history == True:
+        
+        draw_history_layout(context, layout)     
+
+
+
 EDIT = ["EDIT_MESH", "EDIT_CURVE", "EDIT_SURFACE", "EDIT_LATTICE", "EDIT_METABALL", "EDIT_TEXT", "EDIT_ARMATURE", "POSE"]
 GEOM = ['POSE', 'LAMP', 'CAMERA', 'EMPTY', 'SPEAKER']
 
@@ -90,16 +104,4 @@ class VIEW3D_TP_BBOX_MESHES_UI(bpy.types.Panel):
         draw_bounding_panel_layout(context, layout) 
 
 
-
-
-def draw_bounding_panel_layout(context, layout):
-
-    layout.operator_context = 'INVOKE_REGION_WIN'
-                                                  
-    draw_panel_layout(context, layout)   
-
-    display_history = context.user_preferences.addons[__package__].preferences.tab_display_history 
-    if display_history == 'on':
-        
-        draw_history_layout(context, layout)     
 

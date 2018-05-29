@@ -1,4 +1,4 @@
-# ##### BEGIN GPL LICENSE BLOCK #####
+##### BEGIN GPL LICENSE BLOCK #####
 #
 #  This program is free software; you can redistribute it and / or
 #  modify it under the terms of the GNU General Public License
@@ -20,7 +20,7 @@
 bl_info = {
 "name": "T+ Bounding", 
 "author": "Marvin.K.Breuer (MKB)",
-"version": (2, 8),
+"version": (2, 9),
 "blender": (2, 79, 0),
 "location": "View3D > Panel: Bounding",
 "description": "create bounding geometry on selected objects",
@@ -145,18 +145,17 @@ class TP_Panels_Preferences(AddonPreferences):
     prefs_tabs = EnumProperty(
         items=(('info',       "Info",       "Info"),
                ('location',   "Location",   "Location"),
-               ('tools',      "Tools",      "Tools"),
                ('keymap',     "Keymap",     "Keymap"),
                ('url',        "URLs",       "URLs")),
                default='info')
 
     # LOACATION #           
     tab_location = EnumProperty(
-        name = 'Panel Location',
+        name = 'Panel Location: Shelfs',
         description = 'location switch',
-        items=(('tools', 'Tool Shelf', 'place panel in the tool shelf [T]'),
-               ('ui', 'Property Shelf', 'place panel in the property shelf [N]'),
-               ('off', 'Off', 'on or off for panel in the shelfs')),
+        items=(('tools', 'Tools [T]', 'place panel in the tool shelf [T]'),
+               ('ui', 'Property [N]', 'place panel in the property shelf [N]'),
+               ('off', 'off', 'on or off for panel in the shelfs')),
                default='tools', update = update_panel_location)
 
     # MENU # 
@@ -169,22 +168,14 @@ class TP_Panels_Preferences(AddonPreferences):
 
 
     # TOOLSETS #
-    tab_display_apply = EnumProperty(name = 'Display Tools', description = 'on / off',
-                  items=(('on', 'ReCoplanar on', 'enable more tools in panel'), ('off', 'ReCoplanar off', 'disable more tools in panel')), default='off', update = update_display_tools)
-
-    tab_display_select = EnumProperty(name = 'Display Tools', description = 'on / off',
-                  items=(('on', 'Select on', 'enable bound select in panel'), ('off', 'Select off', 'disable bound select in panel')), default='off', update = update_display_tools)
-
-    tab_display_history = EnumProperty(name = 'Display Tools', description = 'on / off',
-                  items=(('on', 'History on', 'enable more tools in panel'), ('off', 'History off', 'disable more tools in panel')), default='off', update = update_display_tools)
+    tab_recoplanar_ui = BoolProperty(name="Display ReCoplanar UI", default=True, description="switch ui for recoplanar")
+    tab_display_apply = BoolProperty(name="Display ReCoplanar", default=True, description="enable/disable tools in panel")
+    tab_display_select = BoolProperty(name="Display Selction", default=True, description="enable/disable tools in panel")
+    tab_display_history = BoolProperty(name="Display History", default=True, description="enable/disable tools in panel")
 
     # TO MENU #
-    tab_display_bbox_menu = EnumProperty(name = 'Display Tools', description = 'on / off',
-                  items=(('on', 'Bounding on', 'enable tools in default add menu > [SHIFT+A]'), ('off', 'Bounding off', 'disable tools in default add menu > [SHIFT+A]')), default='on', update = update_display_tools)
-
-    tab_display_recoplanar_menu = EnumProperty(name = 'Display Tools', description = 'on / off',
-                  items=(('on', 'ReCoplanar on', 'enable tools default special menu > [W]'), ('off', 'ReCoplanar off', 'disable tools in default special menu > [W]')), default='off', update = update_display_tools)
-
+    tab_display_bbox_menu = BoolProperty(name="Display Bounding", default=True, description="enable/disable tools in default add menu > [SHIFT+A]")
+    tab_display_recoplanar_menu = BoolProperty(name="Display ReCoplanar", default=True, description="enable/disable tools default special menu > [W]")
 
     # PANEL #
     tools_category = StringProperty(name = "TAB Category", description = "add name for a new category tab", default = 'T+', update = update_panel_location)
@@ -212,10 +203,16 @@ class TP_Panels_Preferences(AddonPreferences):
 
         # LOACATION #
         if self.prefs_tabs == 'location':
-            box = layout.box().column(1)
-             
+
+            col = layout.column(1)  
+            box = col.box().column(1)  
+
+            box.separator()                    
+
             row = box.row(1)  
-            row.label("Location: MainPanel ")
+            row.label("Panel Location: Shelfs")
+
+            box.separator()
             
             row= box.row(1)
             row.prop(self, 'tab_location', expand=True)
@@ -225,47 +222,57 @@ class TP_Panels_Preferences(AddonPreferences):
             if self.tab_location == 'tools':
                 
                 row = box.row(1)                                                
-                row.prop(self, "tools_category")
+                row.prop(self, "tools_category", text="TAB")
          
+            box.separator()                    
+            box = col.box().column(1) 
+            box.separator()      
+            
+            row = box.row()
+            row.label(text="ToolSet in Panel", icon ="TRIA_RIGHT")
+
             box.separator()
 
-
-        # TOOLS #
-        if self.prefs_tabs == 'tools':
-
-            box = layout.box().column(1)
-
-            row = box.row()
-            row.label(text="ToolSet in Panel", icon ="INFO")
-
-            row = box.column_flow(4)
-            row.prop(self, 'tab_display_apply', expand=True) 
-            row.prop(self, 'tab_display_select', expand=True) 
-            row.prop(self, 'tab_display_history', expand=True) 
+            row = box.row(1)
+            row.label(text="(Un-)Hide Selection:")     
+            row.prop(self, 'tab_display_select', text="") 
 
             box.separator()                      
+          
+            row = box.row(1)      
+            row.label(text="(Un-)Hide ReCoplanar:")       
+            row.prop(self, 'tab_display_apply', text="") 
+
+            if self.tab_display_apply == True:
+
+                box.separator()                      
+              
+                row = box.row(1)      
+                row.label(text="ReCoplanar UI:")    
+                row.prop(self, 'tab_recoplanar_ui', text="") 
+
+            box.separator()                    
+            box = col.box().column(1) 
+            box.separator()      
 
             row = box.row()        
-            row.label(text="Add Tools to default Menus", icon ="INFO")
+            row.label(text="Add Tools to default Menus", icon ="TRIA_RIGHT")
+
+            box.separator()   
 
             row = box.row(1)           
-            row.label(text="Add Menu >")       
-            row.prop(self, 'tab_display_bbox_menu', expand=True) 
+            row.label(text="Add Bounding to Add Menu:")       
+            row.prop(self, 'tab_display_bbox_menu', text="") 
            
             box.separator()           
            
             row = box.row(1)
-            row.label(text="Special Menu >")   
-            row.prop(self, 'tab_display_recoplanar_menu', expand=True)    
+            row.label(text="ReCoplanar to Special Menu:")   
+            row.prop(self, 'tab_display_recoplanar_menu', text="")    
+         
+            box.separator()                    
 
-            box.separator()
-
-            row = layout.row()
-            row.label(text="! save user settings for permant on/off !", icon ="INFO")
-
-            box.separator() 
-
-
+            
         # KEYMAP #
         if self.prefs_tabs == 'keymap':
 
@@ -277,7 +284,7 @@ class TP_Panels_Preferences(AddonPreferences):
             row = box.row(1)          
             row.prop(self, 'tab_menu_bound', expand=True)
             
-            if self.tab_menu_bound == 'off':
+            if self.tab_menu_bound == True:
                 
                 box.separator() 
                 
@@ -320,12 +327,17 @@ class TP_Panels_Preferences(AddonPreferences):
 
 
 
+
 # PROPS #
 class Dropdown_BBox_Props(bpy.types.PropertyGroup):
 
+    display_ui_options = bpy.props.BoolProperty(name = "Display Setting", description = "Display Setting", default = False)
     display_bbox_set = bpy.props.BoolProperty(name = "Display Setting", description = "Display Setting", default = False)
+    display_bbox_settings = bpy.props.BoolProperty(name = "Display Setting", description = "Display Setting", default = False)
     display_bcyl_set = bpy.props.BoolProperty(name = "Display Setting", description = "Display Setting", default = False)
+    display_bcyl_settings = bpy.props.BoolProperty(name = "Display Setting", description = "Display Setting", default = False)
     display_bext_set = bpy.props.BoolProperty(name = "Display Setting", description = "Display Setting", default = False)
+    display_bext_settings = bpy.props.BoolProperty(name = "Display Setting", description = "Display Setting", default = False)
 
     display_visual = bpy.props.BoolProperty(name="Open / Close", description="Open / Close", default=False)    
     display_grid = bpy.props.BoolProperty(name="Open / Close", description="Open / Close", default=False)    
@@ -352,6 +364,23 @@ class Dropdown_BBox_Panel_Props(bpy.types.PropertyGroup):
                name = "ObjectType",
                default = "tp_bb2",    
                description = "choose objecttype")
+
+    # RENAME #
+    tp_rename_boxes = BoolProperty(name="ReName", default=False, description="uncheckt: use name from active / checkt: use custom name")
+
+    box_prefix = bpy.props.StringProperty(name="Name", default="")
+    grid_prefix = bpy.props.StringProperty(name="Name", default="")
+
+    box_name = bpy.props.StringProperty(name="Name", default="_custom")
+    grid_name = bpy.props.StringProperty(name="Name", default="_custom")
+
+    box_shaded_suffix = bpy.props.StringProperty(name="Name", default="_box_shaded")
+    box_shadeless_suffix = bpy.props.StringProperty(name="Name", default="_box_shadeless")
+    box_wired_suffix = bpy.props.StringProperty(name="Name", default="_box_wired")
+
+    grid_shaded_suffix = bpy.props.StringProperty(name="Name", default="_grid_shaded")
+    grid_shadeless_suffix = bpy.props.StringProperty(name="Name", default="_grid_shadeless")
+    grid_wired_suffix = bpy.props.StringProperty(name="Name", default="_grid_wired")
 
     # GRID #
     subX = bpy.props.IntProperty(name="X Subdiv", description="set vertices value",  min=2, max=100, default=0, step=1)
@@ -455,6 +484,36 @@ class Dropdown_BBox_Panel_Props(bpy.types.PropertyGroup):
                default = "NGON",    
                description = "change fill type")
                    
+
+    # RENAME #
+    tp_rename_tubes = BoolProperty(name="ReName", default=False, description="uncheckt: use name from active / checkt: use custom name")
+    
+    bcirc_prefix = bpy.props.StringProperty(name="Name", default="")
+    bcyl_prefix = bpy.props.StringProperty(name="Name", default="")
+    bcon_prefix = bpy.props.StringProperty(name="Name", default="")
+    btor_prefix = bpy.props.StringProperty(name="Name", default="")
+
+    bcirc_name = bpy.props.StringProperty(name="Name", default="_custom")
+    bcyl_name = bpy.props.StringProperty(name="Name", default="_custom")
+    bcon_name = bpy.props.StringProperty(name="Name", default="_custom")
+    btor_name = bpy.props.StringProperty(name="Name", default="_custom")
+
+    bcirc_shaded_suffix = bpy.props.StringProperty(name="Name", default="_circle_shaded")
+    bcirc_shadeless_suffix = bpy.props.StringProperty(name="Name", default="_circle_shadeless")
+    bcirc_wired_suffix = bpy.props.StringProperty(name="Name", default="_circle_wired")
+
+    bcyl_shaded_suffix = bpy.props.StringProperty(name="Name", default="_cylinder_shaded")
+    bcyl_shadeless_suffix = bpy.props.StringProperty(name="Name", default="_cylinder_shadeless")
+    bcyl_wired_suffix = bpy.props.StringProperty(name="Name", default="_cylinder_wired")
+
+    bcon_shaded_suffix = bpy.props.StringProperty(name="Name", default="_cone_shaded")
+    bcon_shadeless_suffix = bpy.props.StringProperty(name="Name", default="_cone_shadeless")
+    bcon_wired_suffix = bpy.props.StringProperty(name="Name", default="_cone_wired")
+
+    btor_shaded_suffix = bpy.props.StringProperty(name="Name", default="_torus_shaded")
+    btor_shadeless_suffix = bpy.props.StringProperty(name="Name", default="_torus_shadeless")
+    btor_wired_suffix = bpy.props.StringProperty(name="Name", default="_torus_wired")
+
     # CIRCLE #
     bcirc_res = bpy.props.IntProperty(name="Verts", description="set vertices value",  min=3, max=80, default=12)
     bcirc_rad = bpy.props.FloatProperty(name="Radius", description="set vertices value", default=1.0, min=0.01, max=100)
@@ -557,6 +616,25 @@ class Dropdown_BBox_Panel_Props(bpy.types.PropertyGroup):
                default = "tp_add_sph",    
                description = "change objectype")
 
+
+    # RENAME #
+    tp_rename_spheres = BoolProperty(name="ReName", default=False, description="uncheckt: use name from active / checkt: use custom name")
+    
+    bsph_prefix = bpy.props.StringProperty(name="Name", default="")
+    bico_prefix = bpy.props.StringProperty(name="Name", default="")
+
+    bsph_name = bpy.props.StringProperty(name="Name", default="_custom")
+    bico_name = bpy.props.StringProperty(name="Name", default="_custom")
+
+    bsph_shaded_suffix = bpy.props.StringProperty(name="Name", default="_sphere_shaded")
+    bsph_shadeless_suffix = bpy.props.StringProperty(name="Name", default="_sphere_shadeless")
+    bsph_wired_suffix = bpy.props.StringProperty(name="Name", default="_sphere_wired")
+
+    bico_shaded_suffix = bpy.props.StringProperty(name="Name", default="_ico_shaded")
+    bico_shadeless_suffix = bpy.props.StringProperty(name="Name", default="_ico_shadeless")
+    bico_wired_suffix = bpy.props.StringProperty(name="Name", default="_ico_wired")
+
+
     # SPHERE #
     bsph_seg = bpy.props.IntProperty(name="Segments",  description="set value", min=1, max=100, default=32) 
     bsph_rig = bpy.props.IntProperty(name="Rings",  description="set value",  min=1, max=100, default=16) 
@@ -633,10 +711,10 @@ class Dropdown_BBox_Panel_Props(bpy.types.PropertyGroup):
                      ("tp_03"   ,"Wired"       ,"select wired mesh" )]
          
     tp_sel_meshtype = bpy.props.EnumProperty(name = "Select MeshType", default = "tp_01", description = "select choosen meshtype", items = types_meshtype)
-
     tp_extend = bpy.props.BoolProperty(name="Extend Selection",  description="extend selection", default=False) 
-
     tp_link = bpy.props.BoolProperty(name="LinkData",  description="activate link object data", default=False) 
+    tp_select_rename = BoolProperty(name="Select ReName", default=False, description="uncheckt: select by default names / checkt: select by custom names")
+    tp_select_custom = bpy.props.StringProperty(name="Pattern", default="*custom*", description="select by pattern / *everything / starting* / *contains* / ?singel / [abc] / [! non-abc]")
 
     ### BOUNDING ACTIONS ###
     lock_mode = bpy.props.StringProperty(default="")

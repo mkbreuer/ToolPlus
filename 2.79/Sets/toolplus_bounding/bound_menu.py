@@ -50,8 +50,8 @@ class VIEW3D_TP_Bound_Menu(bpy.types.Operator):
 
         draw_panel_layout(context, layout)    
 
-        display_history = context.user_preferences.addons[__package__].preferences.tab_display_history 
-        if display_history == 'on':
+        panel_prefs = context.user_preferences.addons[__package__].preferences
+        if panel_prefs.tab_display_history == True:
             
             draw_history_layout(context, layout)    
         

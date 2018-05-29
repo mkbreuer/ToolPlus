@@ -43,7 +43,8 @@ def update_menu(self, context):
     except:
         pass
     
-    if context.user_preferences.addons[__package__].preferences.tab_menu_bound == 'menu':
+    panel_prefs = context.user_preferences.addons[__package__].preferences
+    if panel_prefs.tab_menu_bound == True:
 
         bpy.utils.register_class(VIEW3D_TP_Bound_Menu)
     
@@ -58,8 +59,7 @@ def update_menu(self, context):
        
         #kmi.properties.name = "VIEW3D_TP_Bound_Menu"
 
-
-    if context.user_preferences.addons[__package__].preferences.tab_menu_bound == 'off':
+    else:
         pass
 
 

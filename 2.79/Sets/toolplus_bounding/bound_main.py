@@ -30,6 +30,7 @@ from . icons.icons import load_icons
 def draw_panel_layout(context, layout):
     tp_props = context.window_manager.bbox_window
     tp = context.window_manager.tp_props_bbox
+    panel_prefs = context.user_preferences.addons[__package__].preferences
     
     icons = load_icons()     
     
@@ -37,10 +38,10 @@ def draw_panel_layout(context, layout):
     
     col = layout.column(1)                                                
 
+    # BOXES #    
     box = col.box().column(1)
 
     row = box.row(1)                 
-
     button_bbox = icons.get("icon_bbox") 
     if tp_props.display_bbox_set: 
         row.prop(tp_props, "display_bbox_set", text="", icon_value=button_bbox.icon_id) 
@@ -61,14 +62,65 @@ def draw_panel_layout(context, layout):
     if tp_props.display_bbox_set: 
 
         box = col.box().column(1)
+      
+        box.separator()   
 
         row = box.row(1)
-        row.operator("tp_ops.help_bbox", text="", icon="INFO")          
-        row.label("Representing Redo Last [F6] Settings")          
-         
+        row.operator("tp_ops.help_bounding_rename", text="", icon="INFO")          
+        row.label("ReName:")          
+        row.prop(tp, "tp_rename_boxes", text="", icon="SCRIPT")
+
+        box.separator()  
+
+        row = box.column(1)          
+        if tp.tp_geom_box == "tp_bb2":
+            row.prop(tp, "box_prefix", text="prefix")
+
+            if tp.tp_rename_boxes == True:
+                row.prop(tp, "box_name", text="custom")
+
+            if tp.box_meshtype == "tp_00":    
+                row.prop(tp, "box_shaded_suffix", text="suffix")
+
+            if tp.box_meshtype == "tp_01":    
+                row.prop(tp, "box_shadeless_suffix", text="suffix")
+
+            if tp.box_meshtype == "tp_02":    
+                row.prop(tp, "box_wired_suffix", text="suffix")
+
+        else:
+            row.prop(tp, "grid_prefix", text="prefix")
+
+            if tp.tp_rename_boxes == True:
+                row.prop(tp, "grid_name", text="rename")
+            
+            if tp.box_meshtype == "tp_00":            
+                row.prop(tp, "grid_shaded_suffix", text="suffix")
+            
+            if tp.box_meshtype == "tp_01":
+                row.prop(tp, "grid_shadeless_suffix", text="suffix")
+            
+            if tp.box_meshtype == "tp_02":
+                row.prop(tp, "grid_wired_suffix", text="suffix")
+
+       
+        box.separator()              
+        box = col.box().column(1)
+        box.separator()   
+
+        row = box.row(1)
+        row.operator("tp_ops.help_bounding_settings", text="", icon="INFO")          
+        row.label("Settings [F6]:")          
+
+        if tp_props.display_bbox_settings: 
+            row.prop(tp_props, "display_bbox_settings", text="", icon="SCRIPTWIN") 
+            box.separator()
+        else:                  
+            row.prop(tp_props, "display_bbox_settings", text="", icon="SCRIPTWIN")    
+
         box.separator()          
-        box.separator()          
-           
+        box.separator()  
+                    
         row = box.row(1) 
         row.label("Object Type:")               
         row.prop(tp, "tp_geom_box", text="")
@@ -78,159 +130,168 @@ def draw_panel_layout(context, layout):
         row = box.row(1) 
         row.label("Mesh Type:")               
         row.prop(tp, "box_meshtype", text="")
+         
+        box.separator()              
+        box = col.box().column(1)
+        box.separator()    
 
-        box.separator()         
-        box.separator()         
-       
-        row = box.row(1) 
-        row.prop(tp, "box_dim", text="") 
-        row.label("Copy Scale")              
-                       
-        row.separator()
-        
-        row.prop(tp, "box_dim_apply", text="")     
-        row.label("Apply Scale") 
-  
-        box.separator()
-
-        if tp.tp_geom_box == "tp_bb2":
-
+        if tp_props.display_bbox_settings: 
+           
+            row = box.row(1) 
+            row.prop(tp, "box_dim", text="") 
+            row.label("Copy Scale")              
+                           
+            row.separator()
+            
+            row.prop(tp, "box_dim_apply", text="")     
+            row.label("Apply Scale") 
+      
             box.separator()
 
-            row = box.row(1) 
-            row.prop(tp, "box_subdiv_use", text="")
-            row.label("Subdivide:") 
-
-            sub = row.row(1)
-            sub.scale_x = 1.175
-            sub.prop(tp, "box_subdiv")
-     
-            row = box.row(1)        
-            row.label("", icon ="BLANK1") 
-            row.label(" ") 
-            
-            sub = row.row(1)
-            sub.scale_x = 1.175         
-            sub.prop(tp, "box_subdiv_smooth")
-
-
-        if tp.tp_geom_box == "tp_bb1": 
-
-            box.separator()
-          
-            row = box.row(1) 
-            row.label("Resolution:") 
-            
-            sub0 = row.column(1)
-            sub0.scale_x = 1
-
-            sub0.prop(tp, "subX")
-            sub0.prop(tp, "subY")           
-            if tp.box_dim == False:  
-
-                box.separator()  
-
-                row = box.row(1) 
-                row.label("Dimension:") 
-              
-                sub0 = row.column(1)
-                sub0.prop(tp, "subR")
-
-        else:
-            if tp.box_dim == False:
+            if tp.tp_geom_box == "tp_bb2":
 
                 box.separator()
 
                 row = box.row(1) 
-                row.label("Dimension:") 
+                row.prop(tp, "box_subdiv_use", text="")
+                row.label("Subdivide:") 
+
+                sub = row.row(1)
+                sub.scale_x = 1.175
+                sub.prop(tp, "box_subdiv")
+         
+                row = box.row(1)        
+                row.label("", icon ="BLANK1") 
+                row.label(" ") 
+                
+                sub = row.row(1)
+                sub.scale_x = 1.175         
+                sub.prop(tp, "box_subdiv_smooth")
+
+
+            if tp.tp_geom_box == "tp_bb1": 
+
+                box.separator()
+              
+                row = box.row(1) 
+                row.label("Resolution:") 
                 
                 sub0 = row.column(1)
                 sub0.scale_x = 1
 
-                if context.space_data.local_view is not None:                
-                    sub0.prop(tp, "bcube_rad", text="")
-                else:                
-                    sub0.prop(tp, "scale", text="")
+                sub0.prop(tp, "subX")
+                sub0.prop(tp, "subY")           
+                if tp.box_dim == False:  
 
-        box.separator()
-        box.separator()
-         
-        row = box.row(1) 
-        row.label("Copy Rotation:") 
-        row.prop(tp, "box_rota", text="") 
-            
+                    box.separator()  
 
-        if tp.tp_geom_box == "tp_bb1":
+                    row = box.row(1) 
+                    row.label("Dimension:") 
+                  
+                    sub0 = row.column(1)
+                    sub0.prop(tp, "subR")
 
-            if tp.box_rota == True:
-                pass
             else:
-                row = box.row(1)             
-                row.prop(tp, "bgrid_rota_x")             
-                row.prop(tp, "bgrid_rota_y")             
-                row.prop(tp, "bgrid_rota_z")    
-     
-        else:
+                if tp.box_dim == False:
 
-            if tp.box_rota == True:
-                pass
-            else:
+                    box.separator()
 
-                if context.space_data.local_view is not None:
-                    #bpy.ops.view3d.localview()
-                    row = box.row(1)             
-                    row.prop(tp, "bcube_rota_x")             
-                    row.prop(tp, "bcube_rota_y")             
-                    row.prop(tp, "bcube_rota_z")   
+                    row = box.row(1) 
+                    row.label("Dimension:") 
+                    
+                    sub0 = row.column(1)
+                    sub0.scale_x = 1
 
+                    if context.space_data.local_view is not None:                
+                        sub0.prop(tp, "bcube_rad", text="")
+                    else:                
+                        sub0.prop(tp, "scale", text="")
+
+            box.separator()
+            box.separator()
+             
+            row = box.row(1) 
+            row.label("Copy Rotation:") 
+            row.prop(tp, "box_rota", text="") 
+                
+            if tp.tp_geom_box == "tp_bb1":
+
+                if tp.box_rota == True:
+                    pass
                 else:
                     row = box.row(1)             
-                    row.prop(tp, "rotation", text="")  
+                    row.prop(tp, "bgrid_rota_x")             
+                    row.prop(tp, "bgrid_rota_y")             
+                    row.prop(tp, "bgrid_rota_z")    
+         
+            else:
 
-        box.separator()
-        box.separator()
+                if tp.box_rota == True:
+                    pass
+                else:
 
-        row = box.row(1)   
-        row.prop(tp, "box_origin", icon="BLANK1", text="")
-        row.prop(tp, "box_xray", icon="BLANK1")   
+                    if context.space_data.local_view is not None:
+                        #bpy.ops.view3d.localview()
+                        row = box.row(1)             
+                        row.prop(tp, "bcube_rota_x")             
+                        row.prop(tp, "bcube_rota_y")             
+                        row.prop(tp, "bcube_rota_z")   
 
-        row = box.row(1)        
-        row.prop(tp, "box_smooth", icon="BLANK1")
-        row.prop(tp, "box_edges", icon="BLANK1")     
+                    else:
+                        row = box.row(1)             
+                        row.prop(tp, "rotation", text="")  
 
-        box.separator() 
-        box.separator() 
+                
+            box.separator()              
+            box = col.box().column(1)
+            box.separator()       
 
-        if tp.tp_geom_box == "tp_bb1":
+            row = box.row(1)   
+            row.prop(tp, "box_origin", icon="BLANK1", text="")
+            row.prop(tp, "box_xray", icon="BLANK1")   
+
+            row = box.row(1)        
+            row.prop(tp, "box_smooth", icon="BLANK1")
+            row.prop(tp, "box_edges", icon="BLANK1")     
+
+
+            if tp.tp_geom_box == "tp_bb1":
+
+                box.separator()   
+                box = col.box().column(1)      
+                box.separator()  
+
+                row = box.row(1) 
+                row.prop(tp, "box_sphere_use")
+
+                row = box.row(1) 
+                row.prop(tp, "box_sphere")
+                            
+              
+            box.separator()   
+            box = col.box().column(1)      
+            box.separator()  
 
             row = box.row(1) 
-            row.prop(tp, "box_sphere_use")
-
+            row.prop(tp, "box_bevel_use")
+            row.prop(tp, "box_verts_use")
+                
             row = box.row(1) 
-            row.prop(tp, "box_sphere")
-
-            box.separator()
-            box.separator()
-
-
-        row = box.row(1) 
-        row.prop(tp, "box_bevel_use")
-        row.prop(tp, "box_verts_use")
+            row.prop(tp, "box_segment")
             
-        row = box.row(1) 
-        row.prop(tp, "box_segment")
-        
-        row = box.row(1)           
-        row.prop(tp, "box_offset")
-        
-        row = box.row(1)            
-        row.prop(tp, "box_profile")
+            row = box.row(1)           
+            row.prop(tp, "box_offset")
+            
+            row = box.row(1)            
+            row.prop(tp, "box_profile")
 
-        box.separator()
-        box = col.box().column(1)  
-    
+            box.separator()
+            box = col.box().column(1)      
+
     box.separator()
-    
+
+
+    # TUBES #    
     row = box.row(1)
     button_bcyl = icons.get("icon_bcyl") 
     if tp_props.display_bcyl_set: 
@@ -251,12 +312,100 @@ def draw_panel_layout(context, layout):
      
     if tp_props.display_bcyl_set: 
 
+        box.separator() 
         box = col.box().column(1)
+        box.separator() 
 
         row = box.row(1)
-        row.operator("tp_ops.help_bcyl", text="", icon="INFO")          
-        row.label("Representing Redo Last [F6] Settings")          
+        row.operator("tp_ops.help_bounding_rename", text="", icon="INFO")          
+        row.label("ReName:")          
+        row.prop(tp, "tp_rename_tubes", text="", icon="SCRIPT")
+
+        box.separator()  
+
+        row = box.column(1)          
+        if tp.tp_geom_tube == "tp_add_cyl":   
+                     
+            row.prop(tp, "bcyl_prefix", text="prefix")
+
+            if tp.tp_rename_tubes == True:   
+                row.prop(tp, "bcyl_name", text="custom")
+
+            if tp.tube_meshtype == "tp_00":    
+                row.prop(tp, "bcyl_shaded_suffix", text="suffix")
+
+            if tp.tube_meshtype == "tp_01":    
+                row.prop(tp, "bcyl_shadeless_suffix", text="suffix")
+
+            if tp.tube_meshtype == "tp_02":    
+                row.prop(tp, "bcyl_wired_suffix", text="suffix")
+
+
+        if tp.tp_geom_tube == "tp_add_cone":
+
+            row.prop(tp, "bcon_prefix", text="prefix")
+
+            if tp.tp_rename_tubes == True:   
+                row.prop(tp, "bcon_name", text="rename")
+            
+            if tp.tube_meshtype == "tp_00":            
+                row.prop(tp, "bcon_shaded_suffix", text="suffix")
+            
+            if tp.tube_meshtype == "tp_01":
+                row.prop(tp, "bcon_shadeless_suffix", text="suffix")
+            
+            if tp.tube_meshtype == "tp_02":
+                row.prop(tp, "bcon_wired_suffix", text="suffix")
+
+
+        if tp.tp_geom_tube == "tp_add_circ":
+
+            row.prop(tp, "bcirc_prefix", text="prefix")
+
+            if tp.tp_rename_tubes == True:       
+                row.prop(tp, "bcirc_name", text="rename")
+            
+            if tp.tube_meshtype == "tp_00":            
+                row.prop(tp, "bcirc_shaded_suffix", text="suffix")
+            
+            if tp.tube_meshtype == "tp_01":
+                row.prop(tp, "bcirc_shadeless_suffix", text="suffix")
+            
+            if tp.tube_meshtype == "tp_02":
+                row.prop(tp, "bcirc_wired_suffix", text="suffix")
+      
+
+        if tp.tp_geom_tube == "tp_add_tor":
+
+            row.prop(tp, "btor_prefix", text="prefix")
+           
+            if tp.tp_rename_tubes == True:   
+                row.prop(tp, "btor_name", text="rename")
+            
+            if tp.tube_meshtype == "tp_00":            
+                row.prop(tp, "btor_shaded_suffix", text="suffix")
+            
+            if tp.tube_meshtype == "tp_01":
+                row.prop(tp, "btor_shadeless_suffix", text="suffix")
+            
+            if tp.tube_meshtype == "tp_02":
+                row.prop(tp, "btor_wired_suffix", text="suffix")
+
+
+        box.separator()   
+        box = col.box().column(1)      
+        box.separator()   
         
+        row = box.row(1)
+        row.operator("tp_ops.help_bounding_settings", text="", icon="INFO")          
+        row.label("Settings [F6]:")          
+        
+        if tp_props.display_bcyl_settings: 
+            row.prop(tp_props, "display_bcyl_settings", text="", icon="SCRIPTWIN") 
+            box.separator()
+        else:                  
+            row.prop(tp_props, "display_bcyl_settings", text="", icon="SCRIPTWIN")    
+
         box.separator()          
         box.separator()          
        
@@ -279,221 +428,231 @@ def draw_panel_layout(context, layout):
             row.label("Fill Type:") 
             row.prop(tp, "tube_fill", text="")
         
-        box.separator()         
-        box.separator()         
+        box.separator()   
+        box = col.box().column(1)      
+        box.separator()    
 
-        row = box.row(1) 
-        row.label("Copy Scale:")              
-        row.prop(tp, "tube_dim", text="")           
-
-        row.label("Apply Scale:") 
-        row.prop(tp, "tube_dim_apply", text="")   
-
-        box.separator()                
-
-        if tp.tp_geom_tube == "tp_add_cyl":
-
-            box.separator() 
+        if tp_props.display_bcyl_settings: 
 
             row = box.row(1) 
-            row.label("Resolution:") 
+            row.label("Copy Scale:")              
+            row.prop(tp, "tube_dim", text="")           
 
-            sub1 = row.column(1)
-            sub1.scale_x = 1
-            sub1.prop(tp, "bcyl_res")
+            row.label("Apply Scale:") 
+            row.prop(tp, "tube_dim_apply", text="")   
 
-            if tp.tube_dim == True:
-                pass
-            else:            
+            box.separator()                
 
-                box.separator()  
+            if tp.tp_geom_tube == "tp_add_cyl":
+
+                box.separator() 
 
                 row = box.row(1) 
-                row.label("Dimension:") 
+                row.label("Resolution:") 
 
                 sub1 = row.column(1)
+                sub1.scale_x = 1
+                sub1.prop(tp, "bcyl_res")
 
-                sub1.prop(tp, "bcyl_rad")
-                sub1.prop(tp, "bcyl_dep")
+                if tp.tube_dim == True:
+                    pass
+                else:            
 
-        if tp.tp_geom_tube == "tp_add_cone":
-            
-            box.separator() 
+                    box.separator()  
 
-            row = box.row(1) 
-            row.label("Resolution:") 
+                    row = box.row(1) 
+                    row.label("Dimension:") 
 
-            sub0 = row.column(1)
-            sub0.scale_x = 1
-            sub0.prop(tp, "bcon_res")
+                    sub1 = row.column(1)
 
-            box.separator()  
+                    sub1.prop(tp, "bcyl_rad")
+                    sub1.prop(tp, "bcyl_dep")
 
-            row = box.row(1) 
-            row.label("Dimension:") 
-
-            sub0 = row.column(1)
-            sub0.prop(tp, "bcon_res2")
-            sub0.prop(tp, "bcon_res1")  
-
-            if tp.tube_dim == True:
-                pass
-            else:            
-                sub0.prop(tp, "bcon_depth")
-
-        if tp.tp_geom_tube == "tp_add_circ":
-
-            box.separator() 
-
-            row = box.row(1) 
-            row.label("Resolution:") 
-
-            sub1 = row.column(1)
-            sub1.scale_x = 1
-            sub1.prop(tp, "bcirc_res")
-
-            if tp.tube_dim == True:
-                pass
-            else:            
-                box.separator()  
-
-                row = box.row(1) 
-                row.label("Dimension:") 
-
-                sub1 = row.column(1)
-
-                sub1.prop(tp, "bcirc_rad")
-
-
-        if tp.tp_geom_tube == "tp_add_tor":
-                
-            box.separator() 
-
-            row = box.row(1) 
-            row.label("Resolution:") 
-
-            row = box.column(1) 
-            row.prop(tp, "btor_seg1")
-            row.prop(tp, "btor_seg2")
-
-            if tp.tube_dim == True:
-                pass
-            else:            
+            if tp.tp_geom_tube == "tp_add_cone":
                 
                 box.separator() 
 
                 row = box.row(1) 
+                row.label("Resolution:") 
+
+                sub0 = row.column(1)
+                sub0.scale_x = 1
+                sub0.prop(tp, "bcon_res")
+
+                box.separator()  
+
+                row = box.row(1) 
                 row.label("Dimension:") 
 
-                row = box.column(1)         
-                row.prop(tp, "btor_siz1")
-                row.prop(tp, "btor_siz2")
+                sub0 = row.column(1)
+                sub0.prop(tp, "bcon_res2")
+                sub0.prop(tp, "bcon_res1")  
 
+                if tp.tube_dim == True:
+                    pass
+                else:            
+                    sub0.prop(tp, "bcon_depth")
 
-        box.separator()
-        box.separator()    
-        
-        row = box.row(1) 
-        row.label("Copy Rotation:") 
-        row.prop(tp, "tube_rota", text="") 
-        
-        if tp.tp_geom_tube == "tp_add_cyl":
+            if tp.tp_geom_tube == "tp_add_circ":
 
-            if tp.tube_rota == True:
-                pass
-            else:
-                row = box.row(1)             
-                row.prop(tp, "bcyl_rota_x")             
-                row.prop(tp, "bcyl_rota_y")             
-                row.prop(tp, "bcyl_rota_z")    
-
- 
-        if tp.tp_geom_tube == "tp_add_cone":
-
-            if tp.tube_rota == True:
-                pass
-            else:
-                row = box.row(1)             
-                row.prop(tp, "bcon_rota_x")             
-                row.prop(tp, "bcon_rota_y")             
-                row.prop(tp, "bcon_rota_z")   
- 
-
-        if tp.tp_geom_tube == "tp_add_circ":
-
-            if tp.tube_rota == True:
-                pass
-            else:
-                row = box.row(1)             
-                row.prop(tp, "bcirc_rota_x")             
-                row.prop(tp, "bcirc_rota_y")             
-                row.prop(tp, "bcirc_rota_z")  
-
-
-        if tp.tp_geom_tube == "tp_add_tor":
-
-            if tp.tube_rota == True:
-                pass
-            else:
-                row = box.row(1)             
-                row.prop(tp, "btor_rota_x")             
-                row.prop(tp, "btor_rota_y")             
-                row.prop(tp, "btor_rota_z") 
-
-
-
-        box.separator()
-        box.separator()
-        
-
-        row = box.row(1)   
-        row.prop(tp, "tube_origin", icon="BLANK1", text="")
-        row.prop(tp, "tube_xray", icon="BLANK1")   
-
-        row = box.row(1)        
-        row.prop(tp, "tube_smooth", icon="BLANK1")
-        row.prop(tp, "tube_edges", icon="BLANK1")               
-
-        box.separator()
-        box.separator()
-
-        if tp.tp_geom_tube == "tp_add_cyl" or tp.tp_geom_tube == "tp_add_cone":
-
-            if tp.tube_fill == "NGON": 
+                box.separator() 
 
                 row = box.row(1) 
-                row.prop(tp, "bvl_extrude_use")
+                row.label("Resolution:") 
+
+                sub1 = row.column(1)
+                sub1.scale_x = 1
+                sub1.prop(tp, "bcirc_res")
+
+                if tp.tube_dim == True:
+                    pass
+                else:            
+                    box.separator()  
+
+                    row = box.row(1) 
+                    row.label("Dimension:") 
+
+                    sub1 = row.column(1)
+
+                    sub1.prop(tp, "bcirc_rad")
+
+
+            if tp.tp_geom_tube == "tp_add_tor":
+                    
+                box.separator() 
 
                 row = box.row(1) 
-                row.prop(tp, "bvl_extrude_offset")
+                row.label("Resolution:") 
 
-                box.separator()
-                box.separator()
-             
-                row = box.row(1) 
-                row.prop(tp, "bvl_pipe_use")
-                row.prop(tp, "bvl_pipe_offset")
-     
-                box.separator()
-                box.separator()
-
-                row = box.row(1) 
-
-                row.prop(tp, "bvl_bevel_use")
-                row.prop(tp, "bvl_select_all")                
-                row.prop(tp, "bvl_verts_use")
-                
                 row = box.column(1) 
-                row.prop(tp, "bvl_segment")         
-                row.prop(tp, "bvl_offset")           
-                row.prop(tp, "bvl_profile")
-              
-        box.separator()
-        box = col.box().column(1)  
+                row.prop(tp, "btor_seg1")
+                row.prop(tp, "btor_seg2")
 
+                if tp.tube_dim == True:
+                    pass
+                else:            
+                    
+                    box.separator() 
+
+                    row = box.row(1) 
+                    row.label("Dimension:") 
+
+                    row = box.column(1)         
+                    row.prop(tp, "btor_siz1")
+                    row.prop(tp, "btor_siz2")
+
+            box.separator()   
+            box.separator()  
+            
+            row = box.row(1) 
+            row.label("Copy Rotation:") 
+            row.prop(tp, "tube_rota", text="") 
+            
+            if tp.tp_geom_tube == "tp_add_cyl":
+
+                if tp.tube_rota == True:
+                    pass
+                else:
+                    row = box.row(1)             
+                    row.prop(tp, "bcyl_rota_x")             
+                    row.prop(tp, "bcyl_rota_y")             
+                    row.prop(tp, "bcyl_rota_z")    
+
+     
+            if tp.tp_geom_tube == "tp_add_cone":
+
+                if tp.tube_rota == True:
+                    pass
+                else:
+                    row = box.row(1)             
+                    row.prop(tp, "bcon_rota_x")             
+                    row.prop(tp, "bcon_rota_y")             
+                    row.prop(tp, "bcon_rota_z")   
+     
+
+            if tp.tp_geom_tube == "tp_add_circ":
+
+                if tp.tube_rota == True:
+                    pass
+                else:
+                    row = box.row(1)             
+                    row.prop(tp, "bcirc_rota_x")             
+                    row.prop(tp, "bcirc_rota_y")             
+                    row.prop(tp, "bcirc_rota_z")  
+
+
+            if tp.tp_geom_tube == "tp_add_tor":
+
+                if tp.tube_rota == True:
+                    pass
+                else:
+                    row = box.row(1)             
+                    row.prop(tp, "btor_rota_x")             
+                    row.prop(tp, "btor_rota_y")             
+                    row.prop(tp, "btor_rota_z") 
+
+
+            box.separator()   
+            box = col.box().column(1)      
+            box.separator()  
+            
+            row = box.row(1)   
+            row.prop(tp, "tube_origin", icon="BLANK1", text="")
+            row.prop(tp, "tube_xray", icon="BLANK1")   
+
+            row = box.row(1)        
+            row.prop(tp, "tube_smooth", icon="BLANK1")
+            row.prop(tp, "tube_edges", icon="BLANK1")               
+
+
+
+            if tp.tp_geom_tube == "tp_add_cyl" or tp.tp_geom_tube == "tp_add_cone":
+
+                if tp.tube_fill == "NGON": 
+
+                    box.separator()   
+                    box = col.box().column(1)      
+                    box.separator()  
+
+                    row = box.row(1) 
+                    row.prop(tp, "bvl_extrude_use")
+
+                    row = box.row(1) 
+                    row.prop(tp, "bvl_extrude_offset")
+
+                    box.separator()   
+                    box = col.box().column(1)      
+                    box.separator()  
+                 
+                    row = box.row(1) 
+                    row.prop(tp, "bvl_pipe_use")
+                    row.prop(tp, "bvl_pipe_offset")
+         
+                    box.separator()   
+                    box = col.box().column(1)      
+                    box.separator()  
+
+                    row = box.row(1) 
+
+                    row.prop(tp, "bvl_bevel_use")
+                    row.prop(tp, "bvl_select_all")                
+                    row.prop(tp, "bvl_verts_use")
+                    
+                    row = box.column(1) 
+                    row.prop(tp, "bvl_segment")         
+                    row.prop(tp, "bvl_offset")           
+                    row.prop(tp, "bvl_profile")
+                   
+                    box.separator()
+                  
+            box.separator()
+            box = col.box().column(1)  
 
     box.separator() 
 
+
+
+    # SPHERE #
     row = box.row(1)
     button_bsph = icons.get("icon_bsph") 
     if tp_props.display_bcyl_set: 
@@ -514,13 +673,62 @@ def draw_panel_layout(context, layout):
      
     if tp_props.display_bext_set: 
 
-        box.separator()
-        
+        box.separator() 
         box = col.box().column(1)
+        box.separator() 
 
         row = box.row(1)
-        row.operator("tp_ops.help_bsph", text="", icon="INFO")          
-        row.label("Representing Redo Last [F6] Settings")          
+        row.operator("tp_ops.help_bounding_rename", text="", icon="INFO")          
+        row.label("ReName:")          
+        row.prop(tp, "tp_rename_spheres", text="", icon="SCRIPT")
+           
+        box.separator()  
+        
+        row = box.column(1)          
+       
+        if tp.tp_geom_sphere == "tp_add_sph":
+            row.prop(tp, "bsph_prefix", text="prefix")
+
+            if tp.tp_rename_spheres == True:
+                row.prop(tp, "bsph_name", text="custom")
+
+            if tp.sphere_meshtype == "tp_00":    
+                row.prop(tp, "bsph_shaded_suffix", text="suffix")
+
+            if tp.sphere_meshtype == "tp_01":    
+                row.prop(tp, "bsph_shadeless_suffix", text="suffix")
+
+            if tp.sphere_meshtype == "tp_02":    
+                row.prop(tp, "bsph_wired_suffix", text="suffix")
+
+        else:
+            row.prop(tp, "bico_prefix", text="prefix")
+
+            if tp.tp_rename_spheres == True:
+                row.prop(tp, "bico_name", text="rename")
+            
+            if tp.sphere_meshtype == "tp_00":            
+                row.prop(tp, "bico_shaded_suffix", text="suffix")
+            
+            if tp.sphere_meshtype == "tp_01":
+                row.prop(tp, "bico_shadeless_suffix", text="suffix")
+            
+            if tp.sphere_meshtype == "tp_02":
+                row.prop(tp, "bico_wired_suffix", text="suffix")
+        
+        box.separator() 
+        box = col.box().column(1)
+        box.separator() 
+        
+        row = box.row(1)
+        row.operator("tp_ops.help_bounding_settings", text="", icon="INFO")          
+        row.label("Settings [F6]:")          
+
+        if tp_props.display_bext_settings: 
+            row.prop(tp_props, "display_bext_settings", text="", icon="SCRIPTWIN") 
+            box.separator()
+        else:                  
+            row.prop(tp_props, "display_bext_settings", text="", icon="SCRIPTWIN")    
         
         box.separator()          
         box.separator()          
@@ -534,113 +742,119 @@ def draw_panel_layout(context, layout):
         row = box.row(1)  
         row.label("Mesh Type:") 
         row.prop(tp, "sphere_meshtype", text="")
-        
-        box.separator()         
-        box.separator()         
 
-        row = box.row(1) 
-        row.label("Copy Scale:")              
-        row.prop(tp, "sphere_dim", text="")           
-
-        row.label("Apply Scale:") 
-        row.prop(tp, "sphere_dim_apply", text="")  
-
-        box.separator()
-
-        if tp.tp_geom_sphere == "tp_add_sph":
+        box.separator()  
+        box = col.box().column(1)      
+        box.separator()   
+         
+        if tp_props.display_bext_settings: 
 
             row = box.row(1) 
-            row.label("Resolution:") 
+            row.label("Copy Scale:")              
+            row.prop(tp, "sphere_dim", text="")           
 
-            sub1 = row.column(1)
-            sub1.scale_x = 1
-            sub1.prop(tp, "bsph_seg")
-            sub1.prop(tp, "bsph_rig")
+            row.label("Apply Scale:") 
+            row.prop(tp, "sphere_dim_apply", text="")  
 
-            if tp.sphere_dim == True:
-                pass
-            else:            
-           
-                box.separator()  
+            box.separator()
+
+            if tp.tp_geom_sphere == "tp_add_sph":
 
                 row = box.row(1) 
-                row.label("Dimension:") 
+                row.label("Resolution:") 
 
                 sub1 = row.column(1)
+                sub1.scale_x = 1
+                sub1.prop(tp, "bsph_seg")
+                sub1.prop(tp, "bsph_rig")
 
-                sub1.prop(tp, "bsph_siz")
+                if tp.sphere_dim == True:
+                    pass
+                else:            
+               
+                    box.separator()  
 
-        if tp.tp_geom_sphere == "tp_add_ico":
+                    row = box.row(1) 
+                    row.label("Dimension:") 
 
-            row = box.row(1) 
-            row.label("Resolution:") 
+                    sub1 = row.column(1)
 
-            sub0 = row.column(1)
-            sub0.scale_x = 1
-            sub0.prop(tp, "bico_div") 
+                    sub1.prop(tp, "bsph_siz")
 
-            if tp.sphere_dim == True:
-                pass
-            else:            
-
-                box.separator()  
+            if tp.tp_geom_sphere == "tp_add_ico":
 
                 row = box.row(1) 
-                row.label("Dimension:") 
+                row.label("Resolution:") 
 
                 sub0 = row.column(1)
-                sub0.prop(tp, "bico_siz")
+                sub0.scale_x = 1
+                sub0.prop(tp, "bico_div") 
 
-        box.separator()
-        box.separator()
+                if tp.sphere_dim == True:
+                    pass
+                else:            
 
-        row = box.row(1) 
-        row.label("Copy Rotation:") 
-        row.prop(tp, "sphere_rota", text="") 
-        
-        if tp.tp_geom_sphere == "tp_add_sph":
+                    box.separator()  
 
-            if tp.sphere_rota == True:
-                pass
+                    row = box.row(1) 
+                    row.label("Dimension:") 
+
+                    sub0 = row.column(1)
+                    sub0.prop(tp, "bico_siz")
+
+            box.separator()
+            box.separator()
+
+            row = box.row(1) 
+            row.label("Copy Rotation:") 
+            row.prop(tp, "sphere_rota", text="") 
+            
+            if tp.tp_geom_sphere == "tp_add_sph":
+
+                if tp.sphere_rota == True:
+                    pass
+                else:
+                    row = box.row(1)             
+                    row.prop(tp, "bsph_rota_x")             
+                    row.prop(tp, "bsph_rota_y")             
+                    row.prop(tp, "bsph_rota_z")    
+     
             else:
-                row = box.row(1)             
-                row.prop(tp, "bsph_rota_x")             
-                row.prop(tp, "bsph_rota_y")             
-                row.prop(tp, "bsph_rota_z")    
- 
-        else:
 
-            if tp.sphere_rota == True:
-                pass
-            else:
-                row = box.row(1)             
-                row.prop(tp, "bico_rota_x")             
-                row.prop(tp, "bico_rota_y")             
-                row.prop(tp, "bico_rota_z")   
+                if tp.sphere_rota == True:
+                    pass
+                else:
+                    row = box.row(1)             
+                    row.prop(tp, "bico_rota_x")             
+                    row.prop(tp, "bico_rota_y")             
+                    row.prop(tp, "bico_rota_z")   
 
-        box.separator()
-        box.separator()
+            box.separator()   
+            box = col.box().column(1)      
+            box.separator()  
 
-        row = box.row(1)   
-        row.prop(tp, "sphere_origin", icon="BLANK1", text="")
-        row.prop(tp, "sphere_xray", icon="BLANK1")   
-   
-        if tp.sphere_meshtype == "tp_00":
+            row = box.row(1)   
+            row.prop(tp, "sphere_origin", icon="BLANK1", text="")
+            row.prop(tp, "sphere_xray", icon="BLANK1")   
+       
+            if tp.sphere_meshtype == "tp_00":
 
-            row = box.row(1)        
-            row.prop(tp, "sphere_smooth", icon="BLANK1")
-            row.prop(tp, "sphere_edges", icon="BLANK1")                                   
+                row = box.row(1)        
+                row.prop(tp, "sphere_smooth", icon="BLANK1")
+                row.prop(tp, "sphere_edges", icon="BLANK1")                                   
 
-        box.separator()
-        box = col.box().column(1)  
-
+            box.separator()
+            
+            # SELECT #
+            if panel_prefs.tab_display_select == True: 
+                box = col.box().column(1)  
 
     box.separator() 
 
-    display_select = context.user_preferences.addons[__package__].preferences.tab_display_select
-    if display_select == 'on': 
-                                                       
 
+    # SELECT #
+    if panel_prefs.tab_display_select == True: 
+                                                       
         row = box.row(1)                 
 
         button_bsel = icons.get("icon_bsel") 
@@ -660,11 +874,33 @@ def draw_panel_layout(context, layout):
         button_baply = icons.get("icon_baply")       
         row.operator("tp_ops.bbox_select_box",text="", icon_value=button_baply.icon_id) 
 
-        if tp_props.display_select:  
+        box.separator() 
+        if tp_props.display_select == True:  
+     
+            box = col.box().column(1)
+            box.separator() 
 
             row = box.row(1) 
+            row.operator("tp_ops.help_bounding_select", text="", icon="INFO")          
+            row.label("Settings:")          
+        
+            box.separator() 
 
+            row = box.row(1)
+            row.prop(tp, "tp_extend", text="Extend")
+            row.prop(tp, "tp_link", text="Linked")      
 
+            box.separator()    
+ 
+            row = box.row(1)
+            row.prop(tp, "tp_select_rename", text="")
+            row.label(text="Pattern")
+            row.prop(tp, "tp_select_custom", text="")      
+
+            box.separator() 
+            box.separator() 
+
+            row = box.row(1) 
             row.operator_menu_enum("object.select_linked", "type", text="Linked", icon ="LINKED")                     
             row.operator("tp_ops.unfreeze_restrict", text="Unfreeze", icon="RESTRICT_SELECT_OFF")           
             row.operator("tp_ops.freeze_restrict", text="Freeze", icon="RESTRICT_SELECT_ON") 
@@ -718,7 +954,6 @@ def draw_panel_layout(context, layout):
        
             box.separator() 
 
-
             if tp_props.display_rename: 
                             
                 box = col.box().column(1)                     
@@ -753,40 +988,93 @@ def draw_panel_layout(context, layout):
             box.separator()        
 
 
-
-    display_apply = context.user_preferences.addons[__package__].preferences.tab_display_apply
-    if display_apply == 'on': 
+    if panel_prefs.tab_display_apply == True: 
         
-        box = col.box().column(1)
 
-        row = box.row(1)                       
-        if tp_props.display_transform: 
-            row.prop(tp_props, "display_transform", text="", icon="COLLAPSEMENU")  
-            box.separator()
-        else:                  
-            row.prop(tp_props, "display_transform", text="", icon="COLLAPSEMENU")  
+        if panel_prefs.tab_recoplanar_ui == True: 
 
-  
-        row.operator("tp_ops.set_new_local", text = "ReLocal") 
-        row.operator("tp_ops.recenter")             
-        row.operator("tp_ops.reposition")             
+            box = col.box().column(1)
 
-        button_bloc = icons.get("icon_bloc") 
-        row.operator("tp_ops.copy_local_transform",text="", icon_value=button_bloc.icon_id ) 
+            row = box.row(1)                       
+            if tp_props.display_transform: 
+                row.prop(tp_props, "display_transform", text="", icon="COLLAPSEMENU")  
+                box.separator()
+            else:                  
+                row.prop(tp_props, "display_transform", text="", icon="COLLAPSEMENU")  
 
-        if tp_props.display_transform: 
+      
+            row.operator("tp_ops.set_new_local", text = "ReLocal") 
+            row.operator("tp_ops.recenter")             
+            row.operator("tp_ops.reposition")             
 
+            button_bloc = icons.get("icon_bloc") 
+            row.operator("tp_ops.copy_local_transform",text="", icon_value=button_bloc.icon_id ) 
+
+            if tp_props.display_transform: 
+
+                row = box.row(1)                                        
+                row.operator("tp_ops.delete_dummy", text=" ", icon="PANEL_CLOSE")       
+
+                row.operator("tp_ops.lock_all", text=" ", icon="LOCKED").lock_mode = "lock"        
+                row.operator("tp_ops.lock_all", text=" ", icon="UNLOCKED").lock_mode = "unlock"   
+
+                button_deltas = icons.get("icon_deltas") 
+                row.operator("object.transforms_to_deltas", text=" ", icon_value=button_deltas.icon_id).mode='ALL'          
+
+                button_center = icons.get("icon_center") 
+                row.operator("tp_ops.relocate", text=" ", icon_value=button_center.icon_id)
+
+                button_move = icons.get("icon_apply_move") 
+                row.operator("object.transform_apply", text=" ", icon_value=button_move.icon_id).location=True
+
+                button_rota = icons.get("icon_apply_rota") 
+                row.operator("object.transform_apply", text=" ", icon_value=button_rota.icon_id).rotation=True                
+
+                button_scale = icons.get("icon_apply_scale") 
+                row.operator("object.transform_apply", text=" ", icon_value=button_scale.icon_id).scale=True  
+
+            box.separator()   
+
+        else:                                            
+        
+            box = col.box().column(1)
+
+            box.separator()   
+            
+            row = box.row(1) 
+            button_relocal = icons.get("icon_relocal") 
+            row.operator("tp_ops.set_new_local", icon_value=button_relocal.icon_id) 
+
+            button_recenter = icons.get("icon_recenter") 
+            row.operator("tp_ops.recenter", icon_value=button_recenter.icon_id)   
+        
+            row = box.row(1) 
+         
+            button_center = icons.get("icon_center") 
+            row.operator("tp_ops.relocate", text="ReLocate", icon_value=button_center.icon_id)    
+
+            button_reposition = icons.get("icon_reposition") 
+            row.operator("tp_ops.reposition", icon_value=button_reposition.icon_id)
+        
             row = box.row(1)                                        
-            row.operator("tp_ops.delete_dummy", text=" ", icon="PANEL_CLOSE")       
-
-            row.operator("tp_ops.lock_all", text=" ", icon="LOCKED").lock_mode = "lock"        
-            row.operator("tp_ops.lock_all", text=" ", icon="UNLOCKED").lock_mode = "unlock"   
+            row.operator("tp_ops.delete_dummy", text="Delete", icon="PANEL_CLOSE")      
 
             button_deltas = icons.get("icon_deltas") 
-            row.operator("object.transforms_to_deltas", text=" ", icon_value=button_deltas.icon_id).mode='ALL'          
+            row.operator("object.transforms_to_deltas", text="DeltaAll", icon_value=button_deltas.icon_id).mode='ALL'          
 
-            button_center = icons.get("icon_center") 
-            row.operator("tp_ops.relocate", text=" ", icon_value=button_center.icon_id)
+            box.separator()   
+
+                                                   
+            box = col.box().column(1)
+            
+            box.separator()   
+            
+            row = box.row(1)                                        
+            button_bloc = icons.get("icon_bloc") 
+            row.operator("tp_ops.copy_local_transform",text=" ", icon_value=button_bloc.icon_id )  
+
+            row.operator("tp_ops.lock_all", text=" ", icon="LOCKED").lock_mode = "lock"        
+            row.operator("tp_ops.lock_all", text=" ", icon="UNLOCKED").lock_mode = "unlock"         
 
             button_move = icons.get("icon_apply_move") 
             row.operator("object.transform_apply", text=" ", icon_value=button_move.icon_id).location=True
@@ -797,5 +1085,6 @@ def draw_panel_layout(context, layout):
             button_scale = icons.get("icon_apply_scale") 
             row.operator("object.transform_apply", text=" ", icon_value=button_scale.icon_id).scale=True  
 
-        box.separator()   
+
+            box.separator()
 
