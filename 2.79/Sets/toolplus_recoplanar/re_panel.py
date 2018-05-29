@@ -57,35 +57,93 @@ class draw_panel_layout:
         layout.operator_context = 'INVOKE_REGION_WIN'
 
         col = layout.column(1)                                                
-        box = col.box().column(1)
+         
+        panel_prefs = context.user_preferences.addons[__package__].preferences
 
-        row = box.row(1)                       
-        if tp_props.display_alter: 
-            row.prop(tp_props, "display_alter", text="", icon="COLLAPSEMENU")  
-            box.separator()
-        else:                  
-            row.prop(tp_props, "display_alter", text="", icon="COLLAPSEMENU")  
-           
-        row.operator("tp_ops.set_new_local")                         
-        row.operator("tp_ops.recenter")                         
-        row.operator("tp_ops.reposition")             
+        if panel_prefs.tab_recoplanar_layout == True: 
 
-        button_bloc = icons.get("icon_bloc") 
-        row.operator("tp_ops.copy_local_transform",text="", icon_value=button_bloc.icon_id ) 
+            box = col.box().column(1)
 
-        if tp_props.display_alter: 
+            row = box.row(1)                       
+            if tp_props.display_alter: 
+                row.prop(tp_props, "display_alter", text="", icon="COLLAPSEMENU")  
+                box.separator()
+            else:                  
+                row.prop(tp_props, "display_alter", text="", icon="COLLAPSEMENU")  
 
+      
+            row.operator("tp_ops.set_new_local", text = "ReLocal") 
+            row.operator("tp_ops.recenter")             
+            row.operator("tp_ops.reposition")             
+
+            button_bloc = icons.get("icon_bloc") 
+            row.operator("tp_ops.copy_local_transform",text="", icon_value=button_bloc.icon_id ) 
+
+            if tp_props.display_alter: 
+
+                row = box.row(1)                                        
+                row.operator("tp_ops.delete_dummy", text=" ", icon="PANEL_CLOSE")       
+
+                row.operator("tp_ops.lock_all", text=" ", icon="LOCKED").lock_mode = "lock"        
+                row.operator("tp_ops.lock_all", text=" ", icon="UNLOCKED").lock_mode = "unlock"   
+
+                button_deltas = icons.get("icon_deltas") 
+                row.operator("object.transforms_to_deltas", text=" ", icon_value=button_deltas.icon_id).mode='ALL'          
+
+                button_center = icons.get("icon_center") 
+                row.operator("tp_ops.relocate", text=" ", icon_value=button_center.icon_id)
+
+                button_move = icons.get("icon_apply_move") 
+                row.operator("object.transform_apply", text=" ", icon_value=button_move.icon_id).location=True
+
+                button_rota = icons.get("icon_apply_rota") 
+                row.operator("object.transform_apply", text=" ", icon_value=button_rota.icon_id).rotation=True                
+
+                button_scale = icons.get("icon_apply_scale") 
+                row.operator("object.transform_apply", text=" ", icon_value=button_scale.icon_id).scale=True  
+
+            box.separator()   
+
+        else:                                            
+        
+            box = col.box().column(1)
+
+            box.separator()   
+            
+            row = box.row(1) 
+            button_relocal = icons.get("icon_relocal") 
+            row.operator("tp_ops.set_new_local", icon_value=button_relocal.icon_id) 
+
+            button_recenter = icons.get("icon_recenter") 
+            row.operator("tp_ops.recenter", icon_value=button_recenter.icon_id)   
+        
+            row = box.row(1) 
+         
+            button_center = icons.get("icon_center") 
+            row.operator("tp_ops.relocate", text="ReLocate", icon_value=button_center.icon_id)    
+
+            button_reposition = icons.get("icon_reposition") 
+            row.operator("tp_ops.reposition", icon_value=button_reposition.icon_id)
+        
             row = box.row(1)                                        
-            row.operator("tp_ops.delete_dummy", text=" ", icon="PANEL_CLOSE")       
-
-            row.operator("tp_ops.lock_all", text=" ", icon="LOCKED").lock_mode = "lock"        
-            row.operator("tp_ops.lock_all", text=" ", icon="UNLOCKED").lock_mode = "unlock"   
+            row.operator("tp_ops.delete_dummy", text="Delete", icon="PANEL_CLOSE")      
 
             button_deltas = icons.get("icon_deltas") 
-            row.operator("object.transforms_to_deltas", text=" ", icon_value=button_deltas.icon_id).mode='ALL'          
+            row.operator("object.transforms_to_deltas", text="DeltaAll", icon_value=button_deltas.icon_id).mode='ALL'          
 
-            button_center = icons.get("icon_center") 
-            row.operator("tp_ops.relocate", text=" ", icon_value=button_center.icon_id)
+            box.separator()   
+
+                                                   
+            box = col.box().column(1)
+            
+            box.separator()   
+            
+            row = box.row(1)                                        
+            button_bloc = icons.get("icon_bloc") 
+            row.operator("tp_ops.copy_local_transform",text=" ", icon_value=button_bloc.icon_id )  
+
+            row.operator("tp_ops.lock_all", text=" ", icon="LOCKED").lock_mode = "lock"        
+            row.operator("tp_ops.lock_all", text=" ", icon="UNLOCKED").lock_mode = "unlock"         
 
             button_move = icons.get("icon_apply_move") 
             row.operator("object.transform_apply", text=" ", icon_value=button_move.icon_id).location=True
@@ -95,8 +153,10 @@ class draw_panel_layout:
 
             button_scale = icons.get("icon_apply_scale") 
             row.operator("object.transform_apply", text=" ", icon_value=button_scale.icon_id).scale=True  
-                   
-        box.separator() 
+
+
+            box.separator()
+
     
     
     

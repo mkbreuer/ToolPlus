@@ -23,7 +23,7 @@
 bl_info = {
 "name": "ReCoPlanar", 
 "author": "marvink.k.breuer (MKB)",
-"version": (1, 1),
+"version": (1, 2),
 "blender": (2, 7, 9),
 "location": "View3D > Panel: Recenter",
 "description": "center and reposition an selected object",
@@ -150,6 +150,7 @@ class TP_Panels_Preferences(AddonPreferences):
     tab_display_recoplanar_menu = EnumProperty(name = 'Display Tools', description = 'on / off',
                   items=(('on', 'ReCoplanar on', 'enable tools default special menu > [W]'), ('off', 'ReCoplanar off', 'disable tools in default special menu > [W]')), default='off', update = update_display_tools)
 
+    tab_recoplanar_layout = BoolProperty(name="Layout Switch", default=True, description="switch panel layout")
 
     def draw(self, context):
         layout = self.layout
@@ -188,7 +189,13 @@ class TP_Panels_Preferences(AddonPreferences):
                 row = box.row(1)                                                
                 row.prop(self, "tools_category")
          
-            box.separator()
+            box.separator()                      
+          
+            row = box.row(1)      
+            row.prop(self, 'tab_recoplanar_layout', text="") 
+            row.label(text="< Panel Layout Switch: compact or cascade")     
+            row.label(text="")  
+            box.separator()    
 
 
         # KEYMAP #
