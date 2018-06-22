@@ -119,6 +119,11 @@ def draw_insert_ui(self, context, layout):
 
                 row = box.row(1)
                 row.scale_y = 1.2
+                row.operator("tp_ops.edge_profil", text="Profils")
+                row.operator("mesh.curveaceous_galore", text="Galore")
+
+                row = box.row(1)
+                row.scale_y = 1.2
                 row.operator("curve.simple", text="Point").Simple_Type="Point"
                 row.operator("curve.simple", text="Line").Simple_Type="Line"
                 
@@ -151,6 +156,7 @@ def draw_insert_ui(self, context, layout):
                 row.scale_y = 1.2
                 row.operator("curve.simple", text="PolygonAB").Simple_Type="Polygon_ab"
                 row.operator("curve.simple", text="Trapezoid").Simple_Type="Trapezoid"
+
                             
                 obj = context.active_object
                 if obj:
@@ -185,33 +191,29 @@ def draw_insert_ui(self, context, layout):
                
                 row = box.row(1)
                 row.scale_y = 1.2
-                row.operator("mesh.curveaceous_galore", text="Galore")
                 row.operator("curve.spirals", text="Spirals")
-
+                row.operator("curve.curlycurve", text="Curly")
+                
                 row = box.row(1)
                 row.scale_y = 1.2
-                row.operator("curve.curlycurve", text="Curly")
                 row.operator("curve.formulacurves", text="Formula")
-
+                row.operator("curve.dial_scale", text="Dial/Scale")  
+            
                 row = box.row(1)
                 row.scale_y = 1.2
                 row.operator("curve.wires", text="Wires")
-                row.operator("curve.dial_scale", text="Dial/Scale")            
+                row.operator("object.pipe_nightmare", text="PipeTech")          
                 
                 
                 row = box.row(1)     
                 row.scale_y = 1.2                
-                row.operator("object.pipe_nightmare", text="PipeTech")
+                row.operator("mesh.primitive_tube_add", text="Tupe")   
                 sub = row.row(1)
                 sub.scale_x = 0.5
                 sub.scale_y = 1.2                
                 sub.operator("mesh.primitive_pipe_add", text="Pipe")
                 button_baply = icons.get("icon_baply")     
                 sub.operator("mesh.convert_pipe_to_mesh", text=" ", icon_value=button_baply.icon_id)               
-             
-#                row = box.row(1)     
-#                row.scale_y = 1.2    
-#                row.operator("mesh.primitive_tube_add", text="Tupe")   
  
                                            
                 box.separator() 
@@ -363,9 +365,6 @@ def draw_insert_ui(self, context, layout):
             if tp_props.display_curve_material:                       
 
                 box.separator()  
-              
-                box = col.box().column(1)  
-
                 box.separator() 
 
                 row = box.row(1)                                                                                                                                  

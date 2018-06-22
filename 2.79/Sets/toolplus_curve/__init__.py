@@ -21,7 +21,7 @@
 bl_info = {
     "name": "T+ Curves",
     "author": "Marvin.K.Breuer (MKB)",
-    "version": (1, 5,1),
+    "version": (1, 5,2),
     "blender": (2, 79, 0),
     "location": "View3D > Toolshelf [T] > TAB > Curves",
     "description": "collection of curve addons for curve objects and tools",
@@ -61,6 +61,7 @@ if "bpy" in locals():
     importlib.reload(add_iterative_tree)
     importlib.reload(add_ivygen)
     importlib.reload(add_nikitron)
+    importlib.reload(add_profils)
     importlib.reload(add_simple)
     importlib.reload(add_spirals)  
     importlib.reload(add_spirofit_bouncespline)
@@ -128,6 +129,7 @@ else:
     from .inserts import add_iterative_tree
     from .inserts import add_ivygen
     from .inserts import add_nikitron
+    from .inserts import add_profils
     from .inserts import add_simple
     from .inserts import add_spirals  
     from .inserts import add_spirofit_bouncespline

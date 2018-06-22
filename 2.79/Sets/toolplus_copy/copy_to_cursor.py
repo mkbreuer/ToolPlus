@@ -32,19 +32,39 @@ def draw_operator(self, context):
     cursor = scene.cursor_location
     obj = scene.objects.active
 
-    for i in range(self.total):
-        obj_new = obj.copy()
-        scene.objects.link(obj_new)
+    if context.mode =='OBJECT':
 
-        factor = i / self.total
-        obj_new.location = (obj.location * factor) + (cursor * (1.0 - factor))
+        obj = scene.objects.active
+        for i in range(self.total):
+            obj_new = obj.copy()
+            scene.objects.link(obj_new)
 
-    if self.join == True:
+            factor = i / self.total
+            obj_new.location = (obj.location * factor) + (cursor * (1.0 - factor))
+
+        if self.join == True:
+            bpy.ops.object.select_linked(type='OBDATA') 
+            bpy.ops.object.join()
+
+        if self.unlink == True: 
+            bpy.ops.object.make_single_user(type='SELECTED_OBJECTS', object=True, obdata=True)
+
+    else:
+        bpy.ops.object.editmode_toggle()
+    
+        obj = scene.objects.active
+        for i in range(self.total):
+            obj_new = obj.copy()
+            scene.objects.link(obj_new)
+
+            factor = i / self.total
+            obj_new.location = (obj.location * factor) + (cursor * (1.0 - factor))
+
         bpy.ops.object.select_linked(type='OBDATA') 
         bpy.ops.object.join()
+    
+        bpy.ops.object.editmode_toggle()
 
-    if self.unlink == True: 
-        bpy.ops.object.make_single_user(type='SELECTED_OBJECTS', object=True, obdata=True)
 
     return {'FINISHED'}
 

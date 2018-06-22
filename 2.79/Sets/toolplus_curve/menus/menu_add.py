@@ -40,6 +40,7 @@ class VIEW3D_TP_Curve_Add_2D_Curves(bpy.types.Menu):
 
         col = split.column()
         col.scale_y = 1.2     
+        col.operator("tp_ops.edge_profil", text="Profils")
         col.operator("curve.simple", text="Point").Simple_Type="Point"
         col.operator("curve.simple", text="Distance").Simple_Type="Distance"    
         col.operator("curve.simple", text="Circle").Simple_Type="Circle"        
@@ -51,6 +52,7 @@ class VIEW3D_TP_Curve_Add_2D_Curves(bpy.types.Menu):
 
         col = split.column()
         col.scale_y = 1.2    
+        col.operator("mesh.curveaceous_galore", text="Galore")
         col.operator("curve.simple", text="Line").Simple_Type="Line"    
         col.operator("curve.simple", text="Angle").Simple_Type="Angle"        
         col.operator("curve.simple", text="Ellipse").Simple_Type="Ellipse"
@@ -58,6 +60,42 @@ class VIEW3D_TP_Curve_Add_2D_Curves(bpy.types.Menu):
         col.operator("curve.simple", text="Rectangle").Simple_Type="Rectangle"
         col.operator("curve.simple", text="Polygon").Simple_Type="Polygon"
         col.operator("curve.simple", text="Trapezoid").Simple_Type="Trapezoid"
+
+
+class VIEW3D_TP_Curve_Add_2D_Curves_Profils(bpy.types.Menu):
+    bl_idname = "tp_menu.curve_add_2d_profils"
+    bl_label = "2D Profils"
+
+    def draw(self, context):
+        layout = self.layout        
+        layout.operator_context = 'INVOKE_REGION_WIN'
+
+        split = layout.split()       
+
+        col = split.column()
+        col.scale_y = 1.2     
+        col.operator("tp_ops.edge_profil", text="Bevel_1").profil_typ="profil_01"
+        col.operator("tp_ops.edge_profil", text="Car").profil_typ="profil_03"
+        col.operator("tp_ops.edge_profil", text="Double").profil_typ="profil_05"        
+        col.operator("tp_ops.edge_profil", text="Inlay_2").profil_typ="profil_07"       
+        col.operator("tp_ops.edge_profil", text="Norman").profil_typ="profil_09"    
+        col.operator("tp_ops.edge_profil", text="Nose_2").profil_typ="profil_11"
+        col.operator("tp_ops.edge_profil", text="Round_50").profil_typ="profil_13"
+        col.operator("tp_ops.edge_profil", text="Round_100").profil_typ="profil_15"
+        col.operator("tp_ops.edge_profil", text="Shoe").profil_typ="profil_17"
+
+
+        col = split.column()
+        col.scale_y = 1.2    
+        col.operator("tp_ops.edge_profil", text="Bevel_2").profil_typ="profil_02"
+        col.operator("tp_ops.edge_profil", text="Cornice").profil_typ="profil_04"    
+        col.operator("tp_ops.edge_profil", text="Inlay_1").profil_typ="profil_06"        
+        col.operator("tp_ops.edge_profil", text="Inlay_3").profil_typ="profil_08"
+        col.operator("tp_ops.edge_profil", text="Nose_1").profil_typ="profil_10"
+        col.operator("tp_ops.edge_profil", text="Quad").profil_typ="profil_12"
+        col.operator("tp_ops.edge_profil", text="Round_75").profil_typ="profil_14"
+        col.operator("tp_ops.edge_profil", text="Round_Up").profil_typ="profil_16"
+        col.operator("tp_ops.edge_profil", text="Smooth").profil_typ="profil_18"
 
 
 
@@ -75,20 +113,18 @@ class VIEW3D_TP_Curve_Add_3D_Curves(bpy.types.Menu):
 
         col = split.column()
         col.scale_y = 1.2     
-        col.operator("mesh.curveaceous_galore", text="Galore")
-        col.operator("curve.curlycurve", text="Curly") 
+        col.operator("curve.spirals", text="Spirals")
         col.operator("curve.wires", text="Wires")
         col.operator("object.pipe_nightmare", text="PipeTech")
         col.operator("object.add_catenary_curve", text="Catenary")
-   
+        col.operator("mesh.primitive_tube_add", text="Tupe")  
+            
         col = split.column()
         col.scale_y = 1.2   
-        col.operator("curve.spirals", text="Spirals")
+        col.operator("curve.curlycurve", text="Curly") 
         col.operator("curve.formulacurves", text="Formula")
         col.operator("curve.dial_scale", text="Dial/Scale")            
-        col.operator("mesh.primitive_pipe_add", text="Pipe")
-
-        button_baply = icons.get("icon_baply")     
+        col.operator("mesh.primitive_pipe_add", text="Pipe")    
         col.operator("mesh.convert_pipe_to_mesh", text="Apply Pipe")    
 
 
