@@ -19,7 +19,7 @@
 bl_info = {
     "name": "T+ Copy",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 1, 5),
+    "version": (0, 1, 6),
     "blender": (2, 7, 9),
     "location": "View3D > Panel: Copy",
     "description": "collection of duplication tools",
@@ -444,6 +444,19 @@ class ToCursor_Properties(bpy.types.PropertyGroup):
     unlink = bpy.props.BoolProperty(name="Unlink Copies", description ="Unlink Copies" , default = False)
     join = bpy.props.BoolProperty(name="Join Copies", description ="Join Copies" , default = False)
 
+    # TRANSFORM CURSOR #
+    transform_cursor = bpy.props.BoolProperty(name="Use Cursor Transform", description ="!destructive: loss of first cursor position" , default = False)
+
+    cursor_x = bpy.props.FloatProperty(name="Cursor X",  description=" ", default=0.0, min=-1000, max=1000)
+    cursor_y = bpy.props.FloatProperty(name="Cursor Y",  description=" ", default=0.0, min=-1000, max=1000)
+    cursor_z = bpy.props.FloatProperty(name="Cursor Z",  description=" ", default=0.0, min=-1000, max=1000)
+
+    # TRANSFORM COPIES #
+    transform_copies = bpy.props.BoolProperty(name="Use Copy Transform", description ="" , default = False)
+
+    distance = bpy.props.FloatVectorProperty(name="Distance", description="Distance between the elements in BUs", default = (0.0, 0.0, 0.0))    
+    rotation = bpy.props.FloatVectorProperty(name="Rotation", description="Delta rotation of the elements in radians", default = (0.0, 0.0, 0.0))
+    scale = bpy.props.FloatVectorProperty(name="Scale", description="Delta scale of the elements in BUs", default = (0.0, 0.0, 0.0))
 
 
 # PROPERTY GROUP: DUPLISET #

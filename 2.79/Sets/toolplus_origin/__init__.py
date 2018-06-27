@@ -23,7 +23,7 @@
 bl_info = {
     "name": "T+ Origin",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 1, 8),
+    "version": (0, 1, 9),
     "blender": (2, 7, 9),
     "location": "Editor: View 3D > Panel or Menu: Origin",
     "description": "set origin",

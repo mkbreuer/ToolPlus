@@ -156,143 +156,147 @@ class draw_origin_panel_layout:
                 
                 row.operator("object.bbox_origin_modal_ops", text="1-BBox")
                             
-            if bpy.context.object.type == 'MESH':
+            obj = context.active_object     
+            if obj:
+                obj_type = obj.type
+                                                                      
+                if obj_type in {'MESH'}: 
                 
-                
-                if tp_props.display_origin_bbox: 
-                 
-                    box.separator()                   
+                    
+                    if tp_props.display_origin_bbox: 
                      
-                    box.scale_x = 0.1
-                    
-                    row = box.row(1)                                     
-                    row.alignment ='CENTER'         
-                    row.label(" +Y Axis")
-                    row.separator() 
-                    row.label("   xY Axis")
-                    row.separator()   
-                    row.label("--Y Axis")
+                        box.separator()                   
+                         
+                        box.scale_x = 0.1
+                        
+                        row = box.row(1)                                     
+                        row.alignment ='CENTER'         
+                        row.label(" +Y Axis")
+                        row.separator() 
+                        row.label("   xY Axis")
+                        row.separator()   
+                        row.label("--Y Axis")
 
-                    #####                  
-                    row = box.row(1)                                     
-                    row.alignment ='CENTER'
-                     
-                    button_origin_left_top = icons.get("icon_origin_left_top")   
-                    row.operator('tp_ops.cubeback_cornertop_minus_xy', text="", icon_value=button_origin_left_top.icon_id)
-                   
-                    button_origin_top = icons.get("icon_origin_top")  
-                    row.operator('tp_ops.cubeback_edgetop_minus_y', text="", icon_value=button_origin_top.icon_id)
-                    
-                    button_origin_right_top = icons.get("icon_origin_right_top")
-                    row.operator('tp_ops.cubeback_cornertop_plus_xy', text="", icon_value=button_origin_right_top.icon_id)
+                        #####                  
+                        row = box.row(1)                                     
+                        row.alignment ='CENTER'
+                         
+                        button_origin_left_top = icons.get("icon_origin_left_top")   
+                        row.operator('tp_ops.cubeback_cornertop_minus_xy', text="", icon_value=button_origin_left_top.icon_id)
+                       
+                        button_origin_top = icons.get("icon_origin_top")  
+                        row.operator('tp_ops.cubeback_edgetop_minus_y', text="", icon_value=button_origin_top.icon_id)
+                        
+                        button_origin_right_top = icons.get("icon_origin_right_top")
+                        row.operator('tp_ops.cubeback_cornertop_plus_xy', text="", icon_value=button_origin_right_top.icon_id)
 
-                    row.separator()
-                    
-                    button_origin_left_top = icons.get("icon_origin_left_top")   
-                    row.operator('tp_ops.cubefront_edgetop_minus_x', text="", icon_value=button_origin_left_top.icon_id)
-                    
-                    button_origin_top = icons.get("icon_origin_top")  
-                    row.operator('tp_ops.cubefront_side_plus_z', text="", icon_value=button_origin_top.icon_id)
-                    
-                    button_origin_right_top = icons.get("icon_origin_right_top")
-                    row.operator('tp_ops.cubefront_edgetop_plus_x', text="", icon_value=button_origin_right_top.icon_id)
+                        row.separator()
+                        
+                        button_origin_left_top = icons.get("icon_origin_left_top")   
+                        row.operator('tp_ops.cubefront_edgetop_minus_x', text="", icon_value=button_origin_left_top.icon_id)
+                        
+                        button_origin_top = icons.get("icon_origin_top")  
+                        row.operator('tp_ops.cubefront_side_plus_z', text="", icon_value=button_origin_top.icon_id)
+                        
+                        button_origin_right_top = icons.get("icon_origin_right_top")
+                        row.operator('tp_ops.cubefront_edgetop_plus_x', text="", icon_value=button_origin_right_top.icon_id)
 
-                    row.separator()
-                    
-                    button_origin_left_top = icons.get("icon_origin_left_top")   
-                    row.operator('tp_ops.cubefront_cornertop_minus_xy', text="", icon_value=button_origin_left_top.icon_id)
-                    
-                    button_origin_top = icons.get("icon_origin_top")  
-                    row.operator('tp_ops.cubeback_edgetop_plus_y', text="", icon_value=button_origin_top.icon_id)
-                    
-                    button_origin_right_top = icons.get("icon_origin_right_top")
-                    row.operator('tp_ops.cubefront_cornertop_plus_xy', text="", icon_value=button_origin_right_top.icon_id)
-                    
-                    #####
+                        row.separator()
+                        
+                        button_origin_left_top = icons.get("icon_origin_left_top")   
+                        row.operator('tp_ops.cubefront_cornertop_minus_xy', text="", icon_value=button_origin_left_top.icon_id)
+                        
+                        button_origin_top = icons.get("icon_origin_top")  
+                        row.operator('tp_ops.cubeback_edgetop_plus_y', text="", icon_value=button_origin_top.icon_id)
+                        
+                        button_origin_right_top = icons.get("icon_origin_right_top")
+                        row.operator('tp_ops.cubefront_cornertop_plus_xy', text="", icon_value=button_origin_right_top.icon_id)
+                        
+                        #####
 
-                    row = box.row(1)                          
-                    row.alignment ='CENTER' 
-                    
-                    button_origin_left = icons.get("icon_origin_left")
-                    row.operator('tp_ops.cubefront_edgemiddle_minus_x', text="", icon_value=button_origin_left.icon_id)
-                   
-                    button_origin_cross = icons.get("icon_origin_cross")
-                    row.operator('tp_ops.cubefront_side_plus_y', text="", icon_value=button_origin_cross.icon_id)
-                    
-                    button_origin_right = icons.get("icon_origin_right")
-                    row.operator('tp_ops.cubefront_edgemiddle_plus_x', text="", icon_value=button_origin_right.icon_id)
+                        row = box.row(1)                          
+                        row.alignment ='CENTER' 
+                        
+                        button_origin_left = icons.get("icon_origin_left")
+                        row.operator('tp_ops.cubefront_edgemiddle_minus_x', text="", icon_value=button_origin_left.icon_id)
+                       
+                        button_origin_cross = icons.get("icon_origin_cross")
+                        row.operator('tp_ops.cubefront_side_plus_y', text="", icon_value=button_origin_cross.icon_id)
+                        
+                        button_origin_right = icons.get("icon_origin_right")
+                        row.operator('tp_ops.cubefront_edgemiddle_plus_x', text="", icon_value=button_origin_right.icon_id)
 
-                    row.separator()
+                        row.separator()
 
-                    button_origin_left = icons.get("icon_origin_left")
-                    row.operator('tp_ops.cubefront_side_minus_x', text="", icon_value=button_origin_left.icon_id)
-                   
-                    if context.mode == 'OBJECT':
-                        button_origin_diagonal = icons.get("icon_origin_diagonal")
-                        row.operator('object.origin_set', text="", icon_value=button_origin_diagonal.icon_id).type='ORIGIN_GEOMETRY'
-                    else:
-                        button_origin_diagonal = icons.get("icon_origin_diagonal")
-                        row.operator('tp_ops.origin_set_editcenter', text="", icon_value=button_origin_diagonal.icon_id)
-                    
-                    button_origin_right = icons.get("icon_origin_right")
-                    row.operator('tp_ops.cubefront_side_plus_x', text="", icon_value=button_origin_right.icon_id)
+                        button_origin_left = icons.get("icon_origin_left")
+                        row.operator('tp_ops.cubefront_side_minus_x', text="", icon_value=button_origin_left.icon_id)
+                       
+                        if context.mode == 'OBJECT':
+                            button_origin_diagonal = icons.get("icon_origin_diagonal")
+                            row.operator('object.origin_set', text="", icon_value=button_origin_diagonal.icon_id).type='ORIGIN_GEOMETRY'
+                        else:
+                            button_origin_diagonal = icons.get("icon_origin_diagonal")
+                            row.operator('tp_ops.origin_set_editcenter', text="", icon_value=button_origin_diagonal.icon_id)
+                        
+                        button_origin_right = icons.get("icon_origin_right")
+                        row.operator('tp_ops.cubefront_side_plus_x', text="", icon_value=button_origin_right.icon_id)
 
-                    row.separator()
-                    
-                    button_origin_left = icons.get("icon_origin_left")
-                    row.operator('tp_ops.cubefront_edgemiddle_minus_y', text="", icon_value=button_origin_left.icon_id)
-                    
-                    button_origin_cross = icons.get("icon_origin_cross")
-                    row.operator('tp_ops.cubefront_side_minus_y', text="", icon_value=button_origin_cross.icon_id)
-                    
-                    button_origin_right = icons.get("icon_origin_right")
-                    row.operator('tp_ops.cubefront_edgemiddle_plus_y', text="", icon_value=button_origin_right.icon_id)
+                        row.separator()
+                        
+                        button_origin_left = icons.get("icon_origin_left")
+                        row.operator('tp_ops.cubefront_edgemiddle_minus_y', text="", icon_value=button_origin_left.icon_id)
+                        
+                        button_origin_cross = icons.get("icon_origin_cross")
+                        row.operator('tp_ops.cubefront_side_minus_y', text="", icon_value=button_origin_cross.icon_id)
+                        
+                        button_origin_right = icons.get("icon_origin_right")
+                        row.operator('tp_ops.cubefront_edgemiddle_plus_y', text="", icon_value=button_origin_right.icon_id)
 
-                    #####
+                        #####
 
-                    row = box.row(1)
-                    row.alignment ='CENTER' 
-                    
-                    button_origin_left_bottom = icons.get("icon_origin_left_bottom")
-                    row.operator('tp_ops.cubeback_cornerbottom_minus_xy', text="", icon_value=button_origin_left_bottom.icon_id)
-                    
-                    button_origin_bottom = icons.get("icon_origin_bottom")
-                    row.operator('tp_ops.cubefront_edgebottom_plus_y', text="", icon_value=button_origin_bottom.icon_id)
-                    
-                    button_origin_right_bottom = icons.get("icon_origin_right_bottom")
-                    row.operator('tp_ops.cubeback_cornerbottom_plus_xy', text="", icon_value=button_origin_right_bottom.icon_id)
+                        row = box.row(1)
+                        row.alignment ='CENTER' 
+                        
+                        button_origin_left_bottom = icons.get("icon_origin_left_bottom")
+                        row.operator('tp_ops.cubeback_cornerbottom_minus_xy', text="", icon_value=button_origin_left_bottom.icon_id)
+                        
+                        button_origin_bottom = icons.get("icon_origin_bottom")
+                        row.operator('tp_ops.cubefront_edgebottom_plus_y', text="", icon_value=button_origin_bottom.icon_id)
+                        
+                        button_origin_right_bottom = icons.get("icon_origin_right_bottom")
+                        row.operator('tp_ops.cubeback_cornerbottom_plus_xy', text="", icon_value=button_origin_right_bottom.icon_id)
 
-                    row.separator()
-                    
-                    button_origin_left_bottom = icons.get("icon_origin_left_bottom")
-                    row.operator('tp_ops.cubefront_edgebottom_minus_x', text="", icon_value=button_origin_left_bottom.icon_id)
-                    
-                    button_origin_bottom = icons.get("icon_origin_bottom")
-                    row.operator('tp_ops.cubefront_side_minus_z', text="", icon_value=button_origin_bottom.icon_id)
-                    
-                    button_origin_right_bottom = icons.get("icon_origin_right_bottom")
-                    row.operator('tp_ops.cubefront_edgebottom_plus_x', text="", icon_value=button_origin_right_bottom.icon_id)    
+                        row.separator()
+                        
+                        button_origin_left_bottom = icons.get("icon_origin_left_bottom")
+                        row.operator('tp_ops.cubefront_edgebottom_minus_x', text="", icon_value=button_origin_left_bottom.icon_id)
+                        
+                        button_origin_bottom = icons.get("icon_origin_bottom")
+                        row.operator('tp_ops.cubefront_side_minus_z', text="", icon_value=button_origin_bottom.icon_id)
+                        
+                        button_origin_right_bottom = icons.get("icon_origin_right_bottom")
+                        row.operator('tp_ops.cubefront_edgebottom_plus_x', text="", icon_value=button_origin_right_bottom.icon_id)    
 
-                    row.separator()
+                        row.separator()
 
-                    button_origin_left_bottom = icons.get("icon_origin_left_bottom")
-                    row.operator('tp_ops.cubefront_cornerbottom_minus_xy', text="", icon_value=button_origin_left_bottom.icon_id)
-                    
-                    button_origin_bottom = icons.get("icon_origin_bottom")
-                    row.operator('tp_ops.cubefront_edgebottom_minus_y', text="", icon_value=button_origin_bottom.icon_id)
-                    
-                    button_origin_right_bottom = icons.get("icon_origin_right_bottom")
-                    row.operator('tp_ops.cubefront_cornerbottom_plus_xy', text="", icon_value=button_origin_right_bottom.icon_id)
+                        button_origin_left_bottom = icons.get("icon_origin_left_bottom")
+                        row.operator('tp_ops.cubefront_cornerbottom_minus_xy', text="", icon_value=button_origin_left_bottom.icon_id)
+                        
+                        button_origin_bottom = icons.get("icon_origin_bottom")
+                        row.operator('tp_ops.cubefront_edgebottom_minus_y', text="", icon_value=button_origin_bottom.icon_id)
+                        
+                        button_origin_right_bottom = icons.get("icon_origin_right_bottom")
+                        row.operator('tp_ops.cubefront_cornerbottom_plus_xy', text="", icon_value=button_origin_right_bottom.icon_id)
 
-                    box.separator()
-                    box.separator()
+                        box.separator()
+                        box.separator()
 
-                    row = box.row(1)
-                    row.prop(context.object, "show_bounds", text="Show Bounds") 
-                    row.prop(context.object, "draw_bounds_type", text="") 
+                        row = box.row(1)
+                        row.prop(context.object, "show_bounds", text="Show Bounds") 
+                        row.prop(context.object, "draw_bounds_type", text="") 
 
-                    box.separator()
-                    box = col.box().column(1) 
+                        box.separator()
+                        box = col.box().column(1) 
 
 
 

@@ -56,25 +56,32 @@ class VIEW3D_TP_Visual_Purge_Mesh(bpy.types.Operator):
  
 
 class VIEW3D_TP_Visual_Remove_Doubles(bpy.types.Operator):
-    """Removes doubles on all selected objects"""
+    """Removes doubles on all selected objects / optional: join  & separate selected"""
     bl_idname = "tp_ops.remove_doubles"
     bl_label = "Remove Doubles"
     bl_options = {'REGISTER', 'UNDO'}
-    
+
+    do_join_separate = bpy.props.BoolProperty(name="Join  & Separate",  description="join  & separate selected", default=False, options={'SKIP_SAVE'})  
+            
     def execute(self, context):             
         for obj in bpy.context.selected_objects:
             bpy.context.scene.objects.active = obj                 
             if obj:
                 obj_type = obj.type
                 if obj_type in {'MESH'}:   
-                    bpy.ops.object.join()
-                    bpy.ops.object.editmode_toggle()
-                    bpy.ops.mesh.remove_doubles()
-                    bpy.ops.mesh.separate(type='LOOSE')
-                    bpy.ops.object.editmode_toggle()
-                    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY')
-                    print(self)
-                    self.report({'INFO'}, "Done!")      
+                  
+                    if self.do_join_separate == False:
+                        bpy.ops.object.editmode_toggle()
+                        bpy.ops.mesh.select_all(action='SELECT')
+                        bpy.ops.mesh.remove_doubles()
+                        bpy.ops.object.editmode_toggle()
+                    else:
+                        bpy.ops.object.join()
+                        bpy.ops.object.editmode_toggle()
+                        bpy.ops.mesh.remove_doubles()
+                        bpy.ops.mesh.separate(type='LOOSE')
+                        bpy.ops.object.editmode_toggle()
+                        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY')
                 else:
                     print(self)
                     self.report({'INFO'}, "Not possible!")      
