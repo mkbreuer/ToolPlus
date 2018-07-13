@@ -20,7 +20,7 @@
 bl_info = {
     "name": "Align",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 5),
+    "version": (0, 2, 6),
     "blender": (2, 7, 9),
     "location": "VIEW 3D, UV Image-, Graph and Node Editor",
     "description": "align tools collection",
@@ -889,7 +889,6 @@ class TP_Panels_Preferences(AddonPreferences):
         # WEB #
         if self.prefs_tabs == 'url':
             row = layout.row()
-            row.label("List of Addon on Wiki Page")
             row.operator('wm.url_open', text = 'BlenderArtist', icon = 'BLENDER').url = "https://blenderartists.org/forum/showthread.php?409510-Addon-T-Align&p=3114519#post3114519"
             row.operator('wm.url_open', text = 'GitHub', icon = 'BLENDER').url = "https://github.com/mkbreuer/ToolPlus"
 
@@ -938,6 +937,28 @@ class Dropdown_Align_Props(bpy.types.PropertyGroup):
                     ("tp_02"    ,"Menus"  ,"menu tools"   ,"" ,1), 
                     ("tp_03"    ,"KeyMap" ,"keymap    "   ,"" ,2)]                   
     bpy.types.Scene.tp_align = bpy.props.EnumProperty(name = " ", default = "tp_01", items = types_align)
+
+
+
+# PROPERTIES # 
+class Dropdown_Zero_ToolProps(bpy.types.PropertyGroup):
+
+    tp_switch = bpy.props.EnumProperty(
+        items=[("tp_obj"    ,"Object"    ,"01"),
+               ("tp_org"    ,"Origin"    ,"02"),
+               ("tp_crs"    ,"Cursor"    ,"03")],
+               name = "ZeroFor",
+               default = "tp_org",    
+               description = "zero object or cursor")
+
+    align_x = BoolProperty (name = "X", default= False, description= "enable X axis alignment")
+    align_y = BoolProperty (name = "Y", default= False, description= "enable Y axis alignment")                               
+    align_z = BoolProperty (name = "Z", default= False, description= "enable Z axis alignment")
+
+    tp_origin_offset = FloatVectorProperty(name="Offset", description="offset align position", default=(0.0, 0.0, 0.0), subtype='XYZ', size=3)
+    tp_align_offset = FloatVectorProperty(name="Offset", description="offset align position", default=(0.0, 0.0, 0.0), subtype='XYZ', size=3)
+
+
 
 
 
@@ -996,7 +1017,8 @@ def register():
         
     # ALIGN #
     bpy.types.WindowManager.tp_collapse_align = bpy.props.PointerProperty(type = Dropdown_Align_Props)    
- 
+    bpy.types.WindowManager.tp_props_zero = bpy.props.PointerProperty(type = Dropdown_Zero_ToolProps) 
+
     # 1D SCRIPTS #
     bpy.types.WindowManager.paul_manager = bpy.props.PointerProperty(type = paul_managerProps) 
     bpy.context.window_manager.paul_manager.display_align = False
@@ -1085,6 +1107,7 @@ def unregister():
 
     # ALIGN #
     del bpy.types.WindowManager.tp_collapse_align  
+    del bpy.types.WindowManager.tp_props_zero 
 
     try: bpy.utils.unregister_module(__name__)
     except: traceback.print_exc()

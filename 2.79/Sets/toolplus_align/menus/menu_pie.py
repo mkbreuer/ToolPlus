@@ -386,7 +386,7 @@ class VIEW3D_TP_Align_PIE(bpy.types.Menu):
                     row.operator("tp_origin.align_tools", " ", icon_value=button_align_advance.icon_id)  
 
             button_origin_distribute = icons.get("icon_origin_distribute")  
-            row.operator("object.distribute_osc", " ", icon_value=button_origin_distribute.icon_id)      
+            row.operator("tp_ops.distribute_objects_menu", " ", icon_value=button_origin_distribute.icon_id)      
 
             button_align_zero = icons.get("icon_align_zero")                
             row.operator("tp_ops.zero_axis", " ", icon_value=button_align_zero.icon_id)   

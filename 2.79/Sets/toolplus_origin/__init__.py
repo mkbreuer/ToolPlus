@@ -23,7 +23,7 @@
 bl_info = {
     "name": "T+ Origin",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 1, 9),
+    "version": (0, 2, 0),
     "blender": (2, 7, 9),
     "location": "Editor: View 3D > Panel or Menu: Origin",
     "description": "set origin",
@@ -61,6 +61,7 @@ if "bpy" in locals():
     imp.reload(origin_bbox)
     imp.reload(origin_bbox_modal)
     imp.reload(origin_center)
+    imp.reload(origin_cursor)
     imp.reload(origin_distribute)
     imp.reload(origin_modal)
     imp.reload(origin_operators)
@@ -75,6 +76,7 @@ else:
     from . import origin_bbox               
     from . import origin_bbox_modal               
     from . import origin_center                 
+    from . import origin_cursor                 
     from . import origin_distribute                 
     from . import origin_modal         
     from . import origin_operators                 
@@ -322,6 +324,32 @@ class Dropdown_Origin_ToolProps(bpy.types.PropertyGroup):
 
     active_too = bpy.props.BoolProperty(name="Active too!",  description="align active origin too", default=False, options={'SKIP_SAVE'})    
 
+    loc_x = BoolProperty (name = "Align to X axis", default= False, description= "Enable X axis alignment")
+    loc_y = BoolProperty (name = "Align to Y axis", default= False, description= "Enable Y axis alignment")                               
+    loc_z = BoolProperty (name = "Align to Z axis", default= False, description= "Enable Z axis alignment")
+
+    loc_offset = FloatVectorProperty(name="Location Offset", description="Offset for location align position", default=(0.0, 0.0, 0.0), subtype='XYZ', size=3)       
+
+
+
+# PROPERTIES # 
+class Dropdown_Zero_ToolProps(bpy.types.PropertyGroup):
+
+    tp_switch = bpy.props.EnumProperty(
+        items=[("tp_obj"    ,"Object"    ,"01"),
+               ("tp_org"    ,"Origin"    ,"02"),
+               ("tp_crs"    ,"Cursor"    ,"03")],
+               name = "ZeroFor",
+               default = "tp_org",    
+               description = "zero object or cursor")
+
+    align_x = BoolProperty (name = "X", default= False, description= "enable X axis alignment")
+    align_y = BoolProperty (name = "Y", default= False, description= "enable Y axis alignment")                               
+    align_z = BoolProperty (name = "Z", default= False, description= "enable Z axis alignment")
+
+    tp_origin_offset = FloatVectorProperty(name="Offset", description="offset align position", default=(0.0, 0.0, 0.0), subtype='XYZ', size=3)
+    tp_align_offset = FloatVectorProperty(name="Offset", description="offset align position", default=(0.0, 0.0, 0.0), subtype='XYZ', size=3)
+
 
 
 # REGISTRY #
@@ -334,6 +362,7 @@ def register():
     except: traceback.print_exc()
 
     bpy.types.WindowManager.tp_props_origin = bpy.props.PointerProperty(type = Dropdown_Origin_ToolProps)
+    bpy.types.WindowManager.tp_props_zero = bpy.props.PointerProperty(type = Dropdown_Zero_ToolProps)
     
     update_tools(None, bpy.context)
     update_menu_origin(None, bpy.context)
@@ -349,6 +378,7 @@ def unregister():
     except: traceback.print_exc()
 
     del bpy.types.WindowManager.tp_props_origin
+    del bpy.types.WindowManager.tp_props_zero
  
     # MANUAL #
     bpy.utils.unregister_manual_map(VIEW3D_Origin_Manual) 

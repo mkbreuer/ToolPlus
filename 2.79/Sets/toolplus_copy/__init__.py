@@ -438,7 +438,7 @@ class MFTCloneProperties(bpy.types.PropertyGroup):
 
 
 # PROPERTY GROUP: COPY TO CURSOR #
-class ToCursor_Properties(bpy.types.PropertyGroup):
+class VIEW3D_TP_ToCursor_Properties(bpy.types.PropertyGroup):
     
     total = bpy.props.IntProperty(name="Steps", default=2, min=1, max=100)
     unlink = bpy.props.BoolProperty(name="Unlink Copies", description ="Unlink Copies" , default = False)
@@ -451,12 +451,6 @@ class ToCursor_Properties(bpy.types.PropertyGroup):
     cursor_y = bpy.props.FloatProperty(name="Cursor Y",  description=" ", default=0.0, min=-1000, max=1000)
     cursor_z = bpy.props.FloatProperty(name="Cursor Z",  description=" ", default=0.0, min=-1000, max=1000)
 
-    # TRANSFORM COPIES #
-    transform_copies = bpy.props.BoolProperty(name="Use Copy Transform", description ="" , default = False)
-
-    distance = bpy.props.FloatVectorProperty(name="Distance", description="Distance between the elements in BUs", default = (0.0, 0.0, 0.0))    
-    rotation = bpy.props.FloatVectorProperty(name="Rotation", description="Delta rotation of the elements in radians", default = (0.0, 0.0, 0.0))
-    scale = bpy.props.FloatVectorProperty(name="Scale", description="Delta scale of the elements in BUs", default = (0.0, 0.0, 0.0))
 
 
 # PROPERTY GROUP: DUPLISET #
@@ -484,7 +478,7 @@ def register():
     bpy.types.WindowManager.tp_collapse_copyshop_props = bpy.props.PointerProperty(type = Dropdown_TP_CopyShop_Props)
     
     # PROPS TO CURSOR # 
-    bpy.types.WindowManager.tocursor_props = PointerProperty(type = ToCursor_Properties)
+    bpy.types.WindowManager.tocursor_props = PointerProperty(type = VIEW3D_TP_ToCursor_Properties)
 
     # PROPS DUPLISET # 
     bpy.types.WindowManager.dupliset_props = PointerProperty(type = DupliSet_Properties)

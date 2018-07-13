@@ -30,6 +30,7 @@ import addon_utils
 
 def draw_object_layout(self, context, layout):
     tp_props = context.window_manager.tp_collapse_align   
+    tp_props_zero = context.window_manager.tp_props_zero   
 
     addon_key = __package__.split(".")[0]    
     panel_prefs = context.user_preferences.addons[addon_key].preferences
@@ -347,7 +348,7 @@ def draw_object_layout(self, context, layout):
         row.operator("tp_ops.xy_spread", text="DXF-Spread", icon="AXIS_TOP")  
        
         button_origin_distribute = icons.get("icon_origin_distribute")  
-        row.operator("object.distribute_osc", "Distribute", icon_value=button_origin_distribute.icon_id)       
+        row.operator("tp_ops.distribute_objects", "Distribute", icon_value=button_origin_distribute.icon_id)       
      
         box.separator() 
         
@@ -374,13 +375,17 @@ def draw_object_layout(self, context, layout):
 
         row.label("Zero to...")  
         row = box.row()
-        row.prop(context.scene, 'tp_switch_axis', expand=True)      
+        row.prop(tp_props_zero, 'tp_switch', expand=True)      
+       
+        box.separator()  
 
         row = box.row(1)
-        row.prop(context.scene, 'tp_switch', expand=True)              
+        row.prop(tp_props_zero, 'align_x')              
+        row.prop(tp_props_zero, 'align_y')              
+        row.prop(tp_props_zero, 'align_z')              
       
         button_align_zero = icons.get("icon_align_zero") 
-        row.operator("tp_ops.zero_axis_panel", text="Run", icon_value=button_align_zero.icon_id)  
+        row.operator("tp_ops.zero_axis", text="Run", icon_value=button_align_zero.icon_id)  
 
         box.separator()  
 

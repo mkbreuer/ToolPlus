@@ -288,7 +288,7 @@ class View3D_TP_Origin_Batch(bpy.types.Operator):
                 row = box.column(1)
 
                 button_origin_distribute = icons.get("icon_origin_distribute")  
-                row.operator("object.distribute_osc", "Distribute", icon_value=button_origin_distribute.icon_id)
+                row.operator("tp_ops.distribute_objects", "Distribute", icon_value=button_origin_distribute.icon_id)
 
                 button_origin_align = icons.get("icon_origin_align")                
                 row.operator("tp_origin.align_tools", "Advanced", icon_value=button_origin_align.icon_id)    

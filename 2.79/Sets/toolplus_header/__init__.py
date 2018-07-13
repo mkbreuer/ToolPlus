@@ -19,8 +19,8 @@
 bl_info = {
     "name": "T+ Header",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 1, 3),
-    "blender": (2, 79, 0),
+    "version": (0, 1, 4),
+    "blender": (2, 7, 9),
     "location": "3D View > Header",
     "description": "tools for 3d view header",
     "warning": "",
@@ -861,6 +861,27 @@ class Dropdown_Header_Props(bpy.types.PropertyGroup):
 
 
 
+# PROPERTIES # 
+class Dropdown_Zero_ToolProps(bpy.types.PropertyGroup):
+
+    tp_switch = bpy.props.EnumProperty(
+        items=[("tp_obj"    ,"Object"    ,"01"),
+               ("tp_org"    ,"Origin"    ,"02"),
+               ("tp_crs"    ,"Cursor"    ,"03")],
+               name = "ZeroFor",
+               default = "tp_org",    
+               description = "zero object or cursor")
+
+    align_x = BoolProperty (name = "X", default= False, description= "enable X axis alignment")
+    align_y = BoolProperty (name = "Y", default= False, description= "enable Y axis alignment")                               
+    align_z = BoolProperty (name = "Z", default= False, description= "enable Z axis alignment")
+
+    tp_origin_offset = FloatVectorProperty(name="Offset", description="offset align position", default=(0.0, 0.0, 0.0), subtype='XYZ', size=3)
+    tp_align_offset = FloatVectorProperty(name="Offset", description="offset align position", default=(0.0, 0.0, 0.0), subtype='XYZ', size=3)
+
+
+
+
 # OPEN FILE IN TEXT EDITOR #
 from os.path import dirname
 from . menus import menu_custom
@@ -894,6 +915,7 @@ def register():
     # PROPS #
     bpy.types.WindowManager.tp_props_header = bpy.props.PointerProperty(type = Dropdown_Header_Props)
     bpy.types.WindowManager.tp_props_origin = bpy.props.PointerProperty(type = Dropdown_Origin_ToolProps)
+    bpy.types.WindowManager.tp_props_zero = bpy.props.PointerProperty(type = Dropdown_Zero_ToolProps)
 
     # MANUAL #
     bpy.utils.register_manual_map(VIEW3D_TP_Header_Manual)
@@ -966,6 +988,7 @@ def unregister():
     # PROPS #
     del bpy.types.WindowManager.tp_props_header
     del bpy.types.WindowManager.tp_props_origin
+    del bpy.types.WindowManager.tp_props_zero
 
     # MANUAL #
     bpy.utils.unregister_manual_map(VIEW3D_TP_Header_Manual)    

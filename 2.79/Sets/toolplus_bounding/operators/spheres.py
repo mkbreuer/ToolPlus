@@ -347,8 +347,7 @@ class VIEW3D_TP_BTube(bpy.types.Operator):
                         
             rv3d = v3d.region_3d
             current_cloc = v3d.cursor_location.xyz         
-            #v3d.cursor_location = ()
-        
+
             for obj in selected:
                 # add source to name list
                 name_list.append(obj.name)                                       

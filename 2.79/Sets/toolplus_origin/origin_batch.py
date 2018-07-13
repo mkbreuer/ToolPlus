@@ -37,6 +37,7 @@ class View3D_TP_Origin_Batch(bpy.types.Operator):
         layout = self.layout
         
         tp_props = context.window_manager.tp_props_origin     
+        tp_props_zero = context.window_manager.tp_props_zero     
           
         icons = load_icons()
 
@@ -287,7 +288,7 @@ class View3D_TP_Origin_Batch(bpy.types.Operator):
                 row = box.column(1)
 
                 button_origin_distribute = icons.get("icon_origin_distribute")  
-                row.operator("object.distribute_osc", "Distribute", icon_value=button_origin_distribute.icon_id)
+                row.operator("tp_ops.distribute_objects", "Distribute", icon_value=button_origin_distribute.icon_id)
 
                 button_origin_align = icons.get("icon_origin_align")                
                 row.operator("tp_origin.align_tools", "Advanced", icon_value=button_origin_align.icon_id)    
@@ -311,17 +312,19 @@ class View3D_TP_Origin_Batch(bpy.types.Operator):
                 box.separator()   
 
                 row = box.row(1)
-                row.prop(context.scene, 'tp_switch_axis', expand=True)
+                row.prop(tp_props_zero, 'tp_switch', expand=True)
 
                 box.separator() 
                 
                 row = box.row()
-                row.prop(context.scene, 'tp_switch', expand=True)
+                row.prop(tp_props_zero, 'align_x')              
+                row.prop(tp_props_zero, 'align_y')              
+                row.prop(tp_props_zero, 'align_z')   
 
                 sub = row.row(1)
                 sub.scale_x = 0.95         
                 button_origin_apply = icons.get("icon_origin_apply")  
-                sub.operator("tp_ops.zero_axis_panel", "RUN")#, icon_value=button_origin_apply.icon_id)  
+                sub.operator("tp_ops.zero_axis", "RUN")#, icon_value=button_origin_apply.icon_id)  
 
 
             box.separator()    
@@ -528,17 +531,19 @@ class View3D_TP_Origin_Batch(bpy.types.Operator):
                 box.separator()   
 
                 row = box.row(1)
-                row.prop(context.scene, 'tp_switch_axis', expand=True)       
+                row.prop(tp_props_zero, 'tp_switch', expand=True)       
             
                 box.separator() 
 
                 row = box.row()
-                row.prop(context.scene, 'tp_switch', expand=True)
+                row.prop(tp_props_zero, 'align_x')              
+                row.prop(tp_props_zero, 'align_y')              
+                row.prop(tp_props_zero, 'align_z')   
                 
                 sub = row.row(1)
                 sub.scale_x = 0.95         
                 button_origin_apply = icons.get("icon_origin_apply")  
-                sub.operator("tp_ops.zero_axis_panel", "RUN")#, icon_value=button_origin_apply.icon_id)  
+                sub.operator("tp_ops.zero_axis", "RUN")#, icon_value=button_origin_apply.icon_id)  
 
             box.separator()
 

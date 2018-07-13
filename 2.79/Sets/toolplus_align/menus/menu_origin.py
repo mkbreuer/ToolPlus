@@ -145,7 +145,7 @@ class VIEW3D_TP_Origin_Menu(bpy.types.Menu):
                 layout.separator()
 
                 button_origin_distribute = icons.get("icon_origin_distribute")  
-                layout.operator("object.distribute_osc", "Distribute", icon_value=button_origin_distribute.icon_id)
+                layout.operator("tp_ops.distribute_objects_menu", "Distribute", icon_value=button_origin_distribute.icon_id)
 
                 button_origin_align = icons.get("icon_origin_align")                
                 layout.operator("tp_origin.align_tools", "Advanced", icon_value=button_origin_align.icon_id)    
@@ -200,7 +200,7 @@ class VIEW3D_TP_Origin_Menu(bpy.types.Menu):
         layout.separator()
        
         button_align_zero = icons.get("icon_align_zero")                
-        layout.operator("tp_ops.zero_axis", "Zero to Axis", icon_value=button_align_zero.icon_id)      
+        layout.operator("tp_ops.zero_axis_menu", "Zero to Axis", icon_value=button_align_zero.icon_id)      
 
 
 
