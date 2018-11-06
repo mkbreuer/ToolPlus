@@ -38,7 +38,7 @@ Install Instruction
   
 -----------
 
-* T+ Addons on this GitHub are collections of my own and free addons from allover. [GNU General Public License](https://en.wikipedia.org/wiki/GNU_General_Public_License) for more information
+* T+ Addons on this GitHub are collections of my own and free addons from allover. [GNU General Public License](https://en.wikipedia.org/wiki/GNU_General_Public_License)
 
 * This collections will be updated continuously, because it boost my own workflow, save time at the end and makes fun. :)
 
