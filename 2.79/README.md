@@ -6,7 +6,7 @@
 
 * T+ Addons on this GitHub are collections of my own scripts, free uncommercial scripts and addons from allover.
 
-* This collections will be updated continuously, because it boost my own workflow, save time at the end and makes fun. :)
+* I try to updated it continuously, because it boost my knowledge, workflow and save time to have more fun. :)
 
 * If you like the collections and want to support it for further updates, place a smile :)
 
