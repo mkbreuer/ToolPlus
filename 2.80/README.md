@@ -12,7 +12,7 @@
 
 * https://github.com/mkbreuer/TP-Courier :)
 
-* Or get some special stuff from me, take a look "here": https://gumroad.com/l/tp_courier ... > more upcoming... 
+* Need special stuff? Look here: https://gumroad.com/l/tp_courier ... > more upcoming... 
 
 * Have fun! :)
 
