@@ -27,6 +27,7 @@ def load_icons():
     mkb_icons.load("icon_origin_ccc", os.path.join(icons_dir, "origin_ccc.png"), 'IMAGE')
     mkb_icons.load("icon_origin_center", os.path.join(icons_dir, "origin_center.png"), 'IMAGE')
     mkb_icons.load("icon_origin_center_view", os.path.join(icons_dir, "origin_center_view.png"), 'IMAGE')
+    mkb_icons.load("icon_origin_center_loc", os.path.join(icons_dir, "origin_center_loc.png"), 'IMAGE')
     mkb_icons.load("icon_origin_cross", os.path.join(icons_dir, "origin_cross.png"), 'IMAGE')
     mkb_icons.load("icon_origin_cursor", os.path.join(icons_dir, "origin_cursor.png"), 'IMAGE')
     mkb_icons.load("icon_origin_diagonal", os.path.join(icons_dir, "origin_diagonal.png"), 'IMAGE')
@@ -48,6 +49,7 @@ def load_icons():
     mkb_icons.load("icon_origin_tosnap", os.path.join(icons_dir, "origin_tosnap.png"), 'IMAGE')
     mkb_icons.load("icon_origin_toactive", os.path.join(icons_dir, "origin_toactive.png"), 'IMAGE')
     mkb_icons.load("icon_origin_mesh", os.path.join(icons_dir, "origin_mesh.png"), 'IMAGE')
+    mkb_icons.load("icon_origin_to_active", os.path.join(icons_dir, "origin_to_active.png"), 'IMAGE')
     
     toolplus_icon_collections["main"] = mkb_icons
     toolplus_icons_loaded = True

@@ -24,6 +24,9 @@ def load_icons():
     mkb_icons.load("icon_snap_retopo", os.path.join(icons_dir, "snap_retopo.png"), 'IMAGE')
     mkb_icons.load("icon_snap_place", os.path.join(icons_dir, "snap_place.png"), 'IMAGE')
     mkb_icons.load("icon_snap_set", os.path.join(icons_dir, "snap_set.png"), 'IMAGE')
+    mkb_icons.load("icon_snap_measure", os.path.join(icons_dir, "snap_measure.png"), 'IMAGE')
+    mkb_icons.load("icon_snap_annotate", os.path.join(icons_dir, "snap_annotate.png"), 'IMAGE')
+
 
     #--------------------------------------------
 
