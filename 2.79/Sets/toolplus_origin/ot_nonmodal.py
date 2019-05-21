@@ -9,7 +9,6 @@ class VIEW3D_OT_Set_Origin_To(bpy.types.Operator):
     bl_label = "Set Origin"
     bl_options = {"REGISTER", 'UNDO'}   
   
-    set_cursor = bpy.props.BoolProperty(name="Set 3D Cursor",  description="set pivot to 3d cursor", default = False)   
     mode = bpy.props.StringProperty(default="")    
 
 #    place_origin = bpy.props.EnumProperty(
@@ -36,6 +35,7 @@ class VIEW3D_OT_Set_Origin_To(bpy.types.Operator):
         row.separator()
 
         row.prop(self, 'set_cursor')
+        #row.prop(self, 'toggle_snap_cursor')
 
         if "LINKED_FACE" in self.mode: 
     
@@ -56,14 +56,15 @@ class VIEW3D_OT_Set_Origin_To(bpy.types.Operator):
                 bpy.ops.mesh.select_linked(delimit=set())
                 bpy.ops.view3d.snap_cursor_to_selected() 
        
-            if "SELECTED_MESH" in self.mode:          
+            if "SELECTED_MESH" in self.mode:     
                 bpy.ops.view3d.snap_cursor_to_selected() 
 
             if "ORIGIN_CURSOR" in self.mode:
                 pass
-            else:
+            else:        
                 bpy.ops.view3d.snap_cursor_to_selected() 
-       
+
+
         bpy.ops.object.mode_set(mode='OBJECT')  
 
         if "COPY_ORIGIN" in self.mode:
@@ -87,7 +88,6 @@ class VIEW3D_OT_Set_Origin_To(bpy.types.Operator):
         
         if "ORIGIN_CENTER_OF_VOLUME" in self.mode:              
             bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_VOLUME')
-
     
         if "COPY_ORIGIN" in self.mode:                    
             bpy.context.space_data.pivot_point = current_pivot   
@@ -100,23 +100,57 @@ class VIEW3D_OT_Set_Origin_To(bpy.types.Operator):
 
 
 
-def register():
-    bpy.utils.register_class(VIEW3D_OT_Set_Origin_To)
 
 
-def unregister():
-    bpy.utils.unregister_class(VIEW3D_OT_Set_Origin_To)
+class VIEW3D_OT_Origin_to_Edit(bpy.types.Operator):
+    """set origin to selected or active / stay in edit or objectmode"""                 
+    bl_idname = "tpc_ot.origin_to_edit_selected"          
+    bl_label = "Origin to Edit Selected"                 
+    bl_options = {'REGISTER', 'UNDO'}   
+  
+    mode = bpy.props.StringProperty(default="", options={'SKIP_SAVE'})   
+    #toggle_snap_cursor = bpy.props.BoolProperty(name="to selected or active",  description="change cursor snap", default = False)   
+
+# ???
+#    set_cursor=bpy.props.EnumProperty(
+#        name = "3d Cursor to...", 
+#        items=[("tpc_active" ,"Active"   ,"Active"   ,"" , 1),                                     
+#               ("tpc_select" ,"Selected" ,"Selected" ,"" , 2)],
+#        default = "tpc_active")
+
+#    def draw(self, layout):
+#        layout = self.layout
+#        
+#        box = layout.box().column(1)  
+#        
+#        row = box.column(1)     
+#        row.label(text="3d Cursor to...")   
+#        row.prop(self, 'set_cursor',text=" ", expand =True)   
+  
+    def execute(self, context):
+       
+        #oldmode = bpy.context.object.mode
+      
+        if self.set_cursor == 'tpc_active':
+            bpy.ops.view3d.snap_cursor_to_active()
+                        
+        if self.set_cursor == 'tpc_select':
+     
+     
+        bpy.ops.view3d.snap_cursor_to_selected()     
+
+        bpy.ops.object.mode_set(mode='OBJECT')  
+        bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
 
 
-if __name__ == "__main__":
-    register()
-
-    
-
+        #if "SET_EDIT" in self.mode:   
+        #bpy.context.object.mode = oldmode
+        bpy.ops.object.editmode_toggle()
 
 
-
-
-
+        if "SET_OBJECT" in self.mode:   
+            bpy.ops.object.editmode_toggle()
+   
+        return {'FINISHED'}
 
 

@@ -23,7 +23,7 @@
 bl_info = {
     "name": "SnapSet",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 2),
+    "version": (0, 2, 3),
     "blender": (2, 79, 0),
     "location": "3D View > Tool- or Propertyshelf Panel [N], Menus [SHIFT+W], Special Menu [W], Shortcut [F], Header",
     "description": "fully customizable buttons for snapping",
@@ -290,7 +290,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                ('ACTIVE_ELEMENT',       'Active Element',      'transform pivot point')), 
         default='BOUNDING_BOX_CENTER') 
 
-    prop_bta_use_pivot=BoolProperty(name= 'Origin Only', description = '', default=True)  
+    prop_bta_use_pivot=BoolProperty(name= 'Origin Only', description = '', default=False)  
 
     prop_bta_elements=EnumProperty(
         name = 'Snap Elements', 
@@ -336,7 +336,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                ('ACTIVE_ELEMENT',       'Active Element',      'transform pivot point')), 
         default='ACTIVE_ELEMENT') 
 
-    prop_btb_use_pivot=BoolProperty(name= 'Origin Only', description = '', default=True)  
+    prop_btb_use_pivot=BoolProperty(name= 'Origin Only', description = '', default=False)  
 
     prop_btb_elements=EnumProperty(
         name = 'Snap Elements', 
@@ -382,7 +382,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                ('ACTIVE_ELEMENT',       'Active Element',      'transform pivot point')), 
         default='CURSOR') 
 
-    prop_btc_use_pivot=BoolProperty(name= 'Origin Only', description = '', default=True)  
+    prop_btc_use_pivot=BoolProperty(name= 'Origin Only', description = '', default=False)  
 
     prop_btc_elements=EnumProperty(
         name = 'Snap Elements', 
@@ -436,7 +436,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                ('ACTIVE_ELEMENT',       'Active Element',      'transform pivot point')), 
         default='ACTIVE_ELEMENT') 
 
-    prop_btd_use_pivot=BoolProperty(name= 'Origin Only', description = '', default=True)  
+    prop_btd_use_pivot=BoolProperty(name= 'Origin Only', description = '', default=False)  
 
     prop_btd_elements=EnumProperty(
         name = 'Snap Elements', 
@@ -481,7 +481,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                ('ACTIVE_ELEMENT',       'Active Element',      'transform pivot point')), 
         default='MEDIAN_POINT') 
 
-    prop_bte_use_pivot=BoolProperty(name= 'Origin Only', description = '', default=True)  
+    prop_bte_use_pivot=BoolProperty(name= 'Origin Only', description = '', default=False)  
 
     prop_bte_elements=EnumProperty(
         name = 'Snap Elements', 
@@ -527,7 +527,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                ('ACTIVE_ELEMENT',       'Active Element',      'transform pivot point')), 
         default='BOUNDING_BOX_CENTER') 
 
-    prop_btf_use_pivot=BoolProperty(name= 'Origin Only', description = '', default=True)  
+    prop_btf_use_pivot=BoolProperty(name= 'Origin Only', description = '', default=False)  
 
 
     prop_btf_elements=EnumProperty(
@@ -572,7 +572,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                ('ACTIVE_ELEMENT',       'Active Element',      'transform pivot point')), 
         default='ACTIVE_ELEMENT') 
 
-    prop_btM_use_pivot=BoolProperty(name= 'Origin Only', description = '', default=True)  
+    prop_btM_use_pivot=BoolProperty(name= 'Origin Only', description = '', default=False)  
 
     prop_btM_elements=EnumProperty(
         name = 'Snap Elements', 

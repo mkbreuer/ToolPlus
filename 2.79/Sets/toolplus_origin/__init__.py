@@ -23,7 +23,7 @@
 bl_info = {
     "name": "T+ Origin",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 1),
+    "version": (0, 2, 2),
     "blender": (2, 79, 0),
     "location": "3D View > Tool [T] or Property [N] Shelf Panel, Menus [CTRL+D], Special Menu [W], Header",
     "description": "collection of origin modal operators",

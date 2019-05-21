@@ -153,7 +153,7 @@ class VIEW3D_MT_Origin_Menu_Pie(bpy.types.Menu):
                 row.operator("tpc_ot.set_origin_to", text="Selected Mesh", icon ="EDIT").mode = "SELECTED_MESH, ORIGIN_CURSOR"  
             else:
                 button_origin_obj = icons.get("icon_origin_obj")   
-                row.operator("tpc_ot.set_origin_to","Select-ObM", icon_value=button_origin_obj.icon_id).mode = "cursor, obm"  
+                row.operator("tpc_ot.origin_to_edit_selected","Select-ObM", icon_value=button_origin_obj.icon_id).mode="SET_OBJECT"           
 
         button_align_zero = icons.get("icon_align_zero")          
         row.operator("tpc_ot.zero_axis_menu", text="Zero to Axis", icon_value=button_align_zero.icon_id)      
@@ -178,7 +178,7 @@ class VIEW3D_MT_Origin_Menu_Pie(bpy.types.Menu):
                 row.operator("tpc_ot.set_origin_to", text="Linked Mesh", icon ="LINKED").mode = "LINKED_MESH, ORIGIN_CURSOR" 
             else:
                 button_origin_edm = icons.get("icon_origin_edm")   
-                row.operator("tpc_ot.set_origin_to","Select-EdM", icon_value=button_origin_edm.icon_id).mode = "cursor, obm, edm"       
+                row.operator("tpc_ot.origin_to_edit_selected","Select-EdM", icon_value=button_origin_edm.icon_id)   
 
             button_origin_mesh = icons.get("icon_origin_mesh")                
             row.operator("tpc_ot.origin_transform", "Advanced", icon_value=button_origin_mesh.icon_id)    

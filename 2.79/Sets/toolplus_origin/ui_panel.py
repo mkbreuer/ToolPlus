@@ -323,12 +323,14 @@ def draw_origin_ui(self, context, layout):
             box.separator()  
 
             row = box.column(align=True)          
+
             button_origin_edm = icons.get("icon_origin_edm")   
-            row.operator("tpc_ot.set_origin_to","Select-EdM", icon_value=button_origin_edm.icon_id).mode = "cursor, obm, edm"       
+            row.operator("tpc_ot.origin_to_edit_selected","Select-EdM", icon_value=button_origin_edm.icon_id)     
             
             button_origin_obj = icons.get("icon_origin_obj")   
-            row.operator("tpc_ot.set_origin_to","Select-ObM", icon_value=button_origin_obj.icon_id).mode = "cursor, obm"    
-         
+            row.operator("tpc_ot.origin_to_edit_selected","Select-ObM", icon_value=button_origin_obj.icon_id).mode="SET_OBJECT"           
+
+            
         box.separator()  
         
         row = box.column(align=True)          
