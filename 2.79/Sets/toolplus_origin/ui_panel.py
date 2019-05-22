@@ -325,7 +325,7 @@ def draw_origin_ui(self, context, layout):
             row = box.column(align=True)          
 
             button_origin_edm = icons.get("icon_origin_edm")   
-            row.operator("tpc_ot.origin_to_edit_selected","Select-EdM", icon_value=button_origin_edm.icon_id)     
+            row.operator("tpc_ot.origin_to_edit_selected","Select-EdM", icon_value=button_origin_edm.icon_id).mode="SET_EDIT"       
             
             button_origin_obj = icons.get("icon_origin_obj")   
             row.operator("tpc_ot.origin_to_edit_selected","Select-ObM", icon_value=button_origin_obj.icon_id).mode="SET_OBJECT"           

@@ -44,7 +44,7 @@ def draw_origin_menu_layout(self, context, layout):
                  
         if panel_prefs.display_select_edm == True:
             button_origin_edm = icons.get("icon_origin_edm")   
-            layout.operator("tpc_ot.origin_to_edit_selected","Select-EdM", icon_value=button_origin_edm.icon_id)       
+            layout.operator("tpc_ot.origin_to_edit_selected","Select-EdM", icon_value=button_origin_edm.icon_id).mode="SET_EDIT"         
             
         if panel_prefs.display_select_obm == True:
             button_origin_obj = icons.get("icon_origin_obj")   
@@ -122,28 +122,6 @@ class VIEW3D_MT_Origin_Menu(bpy.types.Menu):
         if panel_prefs.display_layout_separator_d == True:       
             layout.separator() 
 
-        if context.mode == 'EDIT_MESH':
-
-            if panel_prefs.display_linked_mesh == True:            
-                layout.operator("tpc_ot.set_origin_to", text="Linked Mesh", icon ="LINKED").mode = "LINKED_MESH, ORIGIN_CURSOR"
-           
-            if panel_prefs.display_selected_mesh == True:             
-                layout.operator("tpc_ot.set_origin_to", text="Selected Mesh", icon ="EDIT").mode = "SELECTED_MESH, ORIGIN_CURSOR"   
-
-            if panel_prefs.display_layout_separator_e == True: 
-                layout.separator()
-
-            if panel_prefs.display_mselect_edm == True:  
-                button_origin_edm = icons.get("icon_origin_edm")   
-                layout.operator("tpc_ot.snaporigin_modal", text="M-Select-Edm", icon_value=button_origin_edm.icon_id).mode = "cursor, obm, edm"
-
-            if panel_prefs.display_mselect_obm == True:  
-                button_origin_obj = icons.get("icon_origin_obj")   
-                layout.operator("tpc_ot.snaporigin_modal", text="M-Select-Obm", icon_value=button_origin_obj.icon_id).mode = "cursor, obm"
-
-            if panel_prefs.display_layout_separator_f == True: 
-                layout.separator()
-           
 
         if context.mode == 'OBJECT':
 
@@ -169,15 +147,38 @@ class VIEW3D_MT_Origin_Menu(bpy.types.Menu):
                     layout.operator("tpc_ot.set_origin_to", text="Origin to Active", icon_value=button_origin_to_active.icon_id).mode = "COPY_ORIGIN, ORIGIN_CURSOR"   
 
 
-            if panel_prefs.display_layout_separator_g == True: 
+            if panel_prefs.display_layout_separator_e == True: 
                 layout.separator()         
 
+
+
         if context.mode == 'EDIT_MESH':
+
+            if panel_prefs.display_linked_mesh == True:            
+                layout.operator("tpc_ot.set_origin_to", text="Linked Mesh", icon ="LINKED").mode = "LINKED_MESH, ORIGIN_CURSOR"
+           
+            if panel_prefs.display_selected_mesh == True:             
+                layout.operator("tpc_ot.set_origin_to", text="Selected Mesh", icon ="EDIT").mode = "SELECTED_MESH, ORIGIN_CURSOR"   
+
+            if panel_prefs.display_layout_separator_f == True: 
+                layout.separator()
+
+            if panel_prefs.display_mselect_edm == True:  
+                button_origin_edm = icons.get("icon_origin_edm")   
+                layout.operator("tpc_ot.snaporigin_modal", text="M-Select-Edm", icon_value=button_origin_edm.icon_id).mode = "cursor, obm, edm"
+
+            if panel_prefs.display_mselect_obm == True:  
+                button_origin_obj = icons.get("icon_origin_obj")   
+                layout.operator("tpc_ot.snaporigin_modal", text="M-Select-Obm", icon_value=button_origin_obj.icon_id).mode = "cursor, obm"
+
+            if panel_prefs.display_layout_separator_g == True: 
+                layout.separator()
            
             if panel_prefs.display_3_point_circle == True:           
                 button_origin_ccc = icons.get("icon_origin_ccc")            
                 layout.operator("tpc_ot.origin_ccc","3P-Circle", icon_value=button_origin_ccc.icon_id)      
 
+  
         if context.mode == 'OBJECT':        
                   
             if panel_prefs.display_boundbox_m == True:  

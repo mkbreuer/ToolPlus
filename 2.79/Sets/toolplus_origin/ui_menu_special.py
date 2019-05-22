@@ -41,7 +41,7 @@ def draw_origin_menu_layout_special(self, context, layout):
             layout.separator()
                  
         button_origin_edm = icons.get("icon_origin_edm")   
-        layout.operator("tpc_ot.origin_to_edit_selected","Select-EdM", icon_value=button_origin_edm.icon_id)     
+        layout.operator("tpc_ot.origin_to_edit_selected","Select-EdM", icon_value=button_origin_edm.icon_id).mode="SET_EDIT"       
         
         button_origin_obj = icons.get("icon_origin_obj")   
         layout.operator("tpc_ot.origin_to_edit_selected","Select-ObM", icon_value=button_origin_obj.icon_id).mode="SET_OBJECT"                  

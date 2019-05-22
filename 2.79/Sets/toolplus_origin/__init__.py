@@ -23,7 +23,7 @@
 bl_info = {
     "name": "T+ Origin",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 2),
+    "version": (0, 2, 3),
     "blender": (2, 79, 0),
     "location": "3D View > Tool [T] or Property [N] Shelf Panel, Menus [CTRL+D], Special Menu [W], Header",
     "description": "collection of origin modal operators",
@@ -142,7 +142,7 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
     prefs_tabs=EnumProperty(
         items=(('info',  "Info",   "Info"),
                ('panel', "Panel",  "Panel"),
-               ('menus', "KeyMap", "KeyMap"),
+               ('menus', "Menus",  "Menus"),
                ('header',"Header", "Header")),
         default='info')
 
@@ -300,194 +300,27 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
             box.separator() 
  
             row = box.column(align=False)
-            row.label(text="Set Origin Collection")               
-          
-            row.separator() 
-
-            row.label(text="> (*) Modal Operator = click on a vertex, edge or face to place the origin.")   
-            row.label(text="> Checkbox = toggle tools in the cascade menu on or off.")    
- 
-            box.separator() 
-            
-            box.separator() 
-            box = layout.box().column(align=True)
-            box.separator() 
-           
-            row = box.column(align=False)           
-            row.label(text="Default Operators from [CTRL+ALT+SHIFT+C]")            
-          
-            box.separator()           
-           
-            row = box.row(align=False)            
-            row.prop(self, 'display_origin_to_cursor', text="")
-            row.label(text="> Origin to Cursor = set origin to cursor.")
-  
-            row = box.row(align=False)  
-            row.prop(self, 'display_origin_to_center', text="")              
-            row.label(text="> Origin to Center = set origin to 3D view center.")
-
-            row = box.row(align=False)  
-            row.prop(self, 'display_origin_to_object', text="")            
-            row.label(text="> Origin to Object = set origin to geometry.")
-         
-            row = box.row(align=False)  
-            row.prop(self, 'display_object_to_origin', text="")               
-            row.label(text="> Object to Origin = set geometry to origin. ")
-
-            row = box.row(align=False)  
-            row.prop(self, 'display_mass_surface', text="")            
-            row.label(text="> Mass (Surface) = set origin to center of surface mass.")
-
-            row = box.row(align=False)  
-            row.prop(self, 'display_mass_volume', text="")            
-            row.label(text="> Mass (Volume) = set origin to center of volume mass.")
-           
-
-            box.separator() 
-            box = layout.box().column(align=True)
-            box.separator() 
-         
-            row = box.column(align=False)
-            row.label(text="Available for Object and Edit Mode:")
-
-            box.separator() 
-
-            row = box.row(align=False)
-            row.prop(self, 'display_origin_to_select', text="")            
-            row.label(text="> Origin to Select: snap origin to mesh geometry (*)")
-           
-            row = box.row(align=False)
-            row.prop(self, 'display_object_to_center', text="")
-            row.label(text="> Object to Center: set origin to mesh and relocate object to 3D view center. (*)")   
-
-            row = box.row(align=False)  
-            row.prop(self, 'display_origin_to_active', text="")                        
-            row.label(text="> Origin to Active: align origin for all selected to a active object.")
-
-            row = box.row(align=False)  
-            row.prop(self, 'display_boundbox_x', text="")              
-            row.label(text="> BoundBoxX = set origin to a point on the bounding box for all selected.")          
-
-            row = box.row(align=False)  
-            row.prop(self, 'display_zero_to_axis', text="")            
-            row.label(text="> Zero to Axis = align object, origin or cursor to one of the 3d view axis.")
-
-          
-            box.separator() 
-            box = layout.box().column(align=True)
-            box.separator() 
-           
-            row = box.column(align=False)
-            row.label(text="Only in Object Mode: ")
-
-            box.separator() 
-
-            row = box.row(align=False)
-            row.prop(self, 'display_origin_to_snap', text="")
-            row.label(text="> Object to Snap: snap origin with a emtpty to snap point [CTRL]. (*)")  
-
-            row = box.row(align=False)  
-            row.prop(self, 'display_boundbox_m', text="")            
-            row.label(text="> BoundBoxM = set origin to a point on a wrapped bounding box. (*)")
-
-            row = box.row(align=False)  
-            row.prop(self, 'display_distribute', text="")            
-            row.label(text="> Distribute: even spacing between selected objects origin with xyz axis and offset.")   
-
-            row = box.row(align=False)  
-            row.prop(self, 'display_advance_obm', text="")
-            row.label(text="> Advanced: align object, origin or cursor to active with max, mid or min values and offset.")   
-
-            box.separator() 
-            box = layout.box().column(align=True)           
-            box.separator() 
+            row.label(text="Welcom to T+ Origin!")               
+    
+            box.separator()
 
             row = box.column(align=False)
-            row.label(text="Only in Edit Mode: Mesh")
-
-            box.separator() 
-
-            row = box.row(align=False)  
-            row.prop(self, 'display_linked_mesh', text="")            
-            row.label(text="> Linked Mesh = select linked mesh and set origin to selected.")
-
-            row = box.row(align=False)  
-            row.prop(self, 'display_selected_mesh', text="")
-            row.label(text="> Selected Mesh = set origin to selected geometry, vertices, edges or faces.")            
-
-            row = box.row(align=False)  
-            row.prop(self, 'display_mselect_edm', text="")            
-            row.label(text="> M-Select-EdM = set origin to active or selected mesh and stay in editmode. (*)")                   
-
-            row = box.row(align=False)  
-            row.prop(self, 'display_mselect_obm', text="")            
-            row.label(text="> M-Select-ObM = set origin to active or selected mesh and stay in editmode. (*)")                   
-
-            row = box.row(align=False)  
-            row.prop(self, 'display_3_point_circle', text="")            
-            row.label(text="> 3P-Circle = set origin to a circle center of 3 selected vertices")
-
-            row = box.row(align=False)  
-            row.prop(self, 'display_advance_edm', text="")
-            row.label(text="> Advanced: align vertices, edges or faces to axis or normal direction, etc.")   
-                    
-            box.separator() 
-            box = layout.box().column(align=True)           
-            box.separator() 
-            
-            row = box.column(align=False)
-            row.label(text="Only in Edit Mode:")
-
-            box.separator() 
-
-            row = box.row(align=False) 
-            row.prop(self, 'display_select_edm', text="")
-            row.label(text="> Edm-Select = set origin to active or selected mesh and stay in editmode.")
-
-            row = box.row(align=False) 
-            row.prop(self, 'display_select_obm', text="")
-            row.label(text="> Obm-Select = set origin to active or selected mesh and toggle to objectmode.")
-
-            row = box.row(align=False) 
-            row.prop(self, 'display_advance_edm', text="")            
-            row.label(text="> Advanced: align vertices, edges or faces to axis or normal direction, etc.")   
-                    
-            box.separator() 
-            box = layout.box().column(align=True)           
-            box.separator() 
+            row.label(text="> this collection of set origin tools")               
+            row.label(text="  allows the place the origin in object mode")               
+            row.label(text="  and in edit mode as well.")               
         
-            row = box.column(align=False) 
-            row.label(text="Checkbox = toggle menu layout separator on or off.")   
-          
-            box.separator() 
-            
-            row = box.column_flow(2) 
-            row.prop(self, 'display_layout_separator_a', text="Separator 01")
-            row.prop(self, 'display_layout_separator_b', text="Separator 02")
-            row.prop(self, 'display_layout_separator_c', text="Separator 03")
-            row.prop(self, 'display_layout_separator_d', text="Separator 04")
-            row.prop(self, 'display_layout_separator_e', text="Separator 05")
-            row.prop(self, 'display_layout_separator_f', text="Separator 06")
-            row.prop(self, 'display_layout_separator_g', text="Separator 07")
-            row.prop(self, 'display_layout_separator_h', text="Separator 08")
-            row.prop(self, 'display_layout_separator_i', text="Separator 09")
-            row.prop(self, 'display_layout_separator_j', text="Separator 10")
-            row.prop(self, 'display_layout_separator_k', text="Separator 11")
-                    
-            box.separator()       
-            box = layout.box().column(align=True)         
-            box.separator()
-         
-            row = box.row(align=True)  
-            row.label(text="Menu Layout Scale Y", icon ="COLLAPSEMENU")         
-            
-            box.separator()   
-           
-            row = box.column(align=True)               
-            row.prop(self, 'scale_y')            
-         
-            box.separator()
+            row.separator()
 
+            row.label(text="> There are different interface layouts")               
+            row.label(text="  to run the operators.")               
+            row.label(text="> From panel, piemenu, header or")               
+            row.label(text="  from a full customizable context menu!")               
+        
+            row.separator()
+
+            row.label(text="> Have Fun! ;)")               
+    
+            box.separator()
 
 
         # LOCATION #
@@ -523,11 +356,29 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
             col = layout.column(align=True)   
 
             box = col.box().column(align=True)
+         
+            box.separator()
+         
+            row = box.row(align=True)  
+            row.label(text="Add to Special Menu [W]", icon ="COLLAPSEMENU")         
+
+            box.separator() 
+
+            row = box.row(align=True)  
+            row.prop(self, 'tab_origin_special', expand=True)
+
+            box.separator()
+            box.separator()
+
+            #-----------------------------------------------------
+
+
+            box = col.box().column(align=True)
 
             box.separator()
             
             row = box.row(align=True)  
-            row.label(text="Cascade Menu: [CTRL+D] ", icon ="COLLAPSEMENU")        
+            row.label(text="Context Menu: [CTRL+D] ", icon ="COLLAPSEMENU")        
 
             box.separator() 
 
@@ -539,39 +390,227 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
                 box.separator()   
               
                 row = box.column(align=True)                                                  
-                row.label(text="> This menu is work in progress and always a proposal.")
+                row.label(text="> This menu is always a proposal.")
                 row.label(text="> Left or right, up or down, there are too many preferences,")
                 row.label(text="> to create a pie menu for everyone.")
                 row.label(text="> But it would be handy if you work with a bigger screen.")
-
+      
+            
+            if self.tab_origin_menu == 'menu': 
  
-            box.separator()
-            box.separator()
+                box.separator()
+                box.separator()
+             
+                row = box.row(align=True)  
+                row.label(text="Menu Layout Scale Y", icon ="COLLAPSEMENU")                   
+                row.prop(self, 'scale_y')            
+                
+                box.separator() 
+                box = layout.box().column(align=True)
+                box.separator()          
+
+                row = box.column(align=True)     
+                row.label(text="Checkbox Tools = toggle tools in menu on or off.")    
+                row.label(text="Checkbox Separator = toggle layout separator on or off.")   
+
+                box.separator() 
+               
+                row = box.column(align=False)                          
+                row.label(text="(dft) > default operators like in [CTRL+ALT+SHIFT+C]")
+                row.label(text="(obm) > only in object mode available")           
+                row.label(text="(edm) > only in edit mode available")
+                row.label(text="(edit) > in all edit mode except mesh edit mode available")
+                row.label(text="(mesh) > only for mesh objects: obm-edm")
+               
+                box.separator() 
+               
+                row = box.column(align=False)                  
+                row.label(text="(*) > Modal Operator = click on a vertex, edge or face to place the origin.")   
+              
+                box.separator()
+                box.separator() 
+               
+                row = box.column(align=False)           
+                row.label(text="Order of tools in menu")            
+              
+                box.separator()           
+               
+                row = box.row(align=False)            
+                row.prop(self, 'display_origin_to_cursor', text="")
+                row.label(text="(dft) > Origin to Cursor = set origin to cursor.")
+           
+                box.separator()              
+            
+                row = box.row(align=False)         
+                row.prop(self, 'display_layout_separator_a', text="Separator 01")
+           
+                box.separator()  
+              
+                row = box.row(align=False)  
+                row.prop(self, 'display_origin_to_center', text="")              
+                row.label(text="(dft) > Origin to Center = set origin to 3D view center.")
+      
+                row = box.row(align=False)
+                row.prop(self, 'display_object_to_center', text="")
+                row.label(text="(obm) > Object to Center: set origin to mesh and relocate object to 3D view center. (*)")   
+           
+                box.separator()               
+              
+                row = box.row(align=False)         
+                row.prop(self, 'display_layout_separator_b', text="Separator 02")  
+           
+                box.separator()  
+
+                row = box.row(align=False)  
+                row.prop(self, 'display_origin_to_object', text="")            
+                row.label(text="(dft) > Origin to Object = set origin to geometry.")
+
+                row = box.row(align=False)  
+                row.prop(self, 'display_object_to_origin', text="")               
+                row.label(text="(dft) > Object to Origin = set geometry to origin. ")
+           
+                box.separator()                  
+                
+                row = box.row(align=False)         
+                row.prop(self, 'display_layout_separator_c', text="Separator 03")  
+           
+                box.separator()       
+     
+                row = box.row(align=False)  
+                row.prop(self, 'display_mass_surface', text="")            
+                row.label(text="(dft) > Mass (Surface) = set origin to center of surface mass.")
+
+                row = box.row(align=False)  
+                row.prop(self, 'display_mass_volume', text="")            
+                row.label(text="(dft) > Mass (Volume) = set origin to center of volume mass.")
+           
+                box.separator()        
+                          
+                row = box.row(align=False)         
+                row.prop(self, 'display_layout_separator_d', text="Separator 04")  
+                      
+                box.separator()            
+              
+                row = box.row(align=False)
+                row.prop(self, 'display_origin_to_snap', text="")
+                row.label(text="(obm) > Object to Snap: snap origin with a emtpty to snap point [CTRL]. (*)")               
+             
+                row = box.row(align=False)
+                row.prop(self, 'display_origin_to_select', text="")            
+                row.label(text="(obm) > Origin to Select: snap origin to mesh geometry (*)")             
+             
+                row = box.row(align=False)  
+                row.prop(self, 'display_origin_to_active', text="")                        
+                row.label(text="(obm) > Origin to Active: align origin for all selected to a active object.")
+           
+                box.separator()  
+     
+                row = box.row(align=False)         
+                row.prop(self, 'display_layout_separator_e', text="Separator 06")  
+           
+                box.separator()  
+         
+                row = box.row(align=False)  
+                row.prop(self, 'display_linked_mesh', text="")            
+                row.label(text="(edm) > Linked Mesh = select linked mesh and set origin to selected.")
+
+                row = box.row(align=False)  
+                row.prop(self, 'display_selected_mesh', text="")
+                row.label(text="(edm) > Selected Mesh = set origin to selected geometry: vertices, edges or faces. (*)")         
+           
+                box.separator()        
+              
+                row = box.row(align=False)         
+                row.prop(self, 'display_layout_separator_f', text="Separator 06")  
+           
+                box.separator()  
+
+                row = box.row(align=False)  
+                row.prop(self, 'display_mselect_edm', text="")            
+                row.label(text="(edm) > M-Select-EdM = set origin to active or selected mesh and stay in editmode. (*)")                   
+
+                row = box.row(align=False)  
+                row.prop(self, 'display_mselect_obm', text="")            
+                row.label(text="(edm) > M-Select-ObM = set origin to active or selected mesh and stay in editmode. (*)")                   
+           
+                box.separator()                 
+                
+                row = box.row(align=False)         
+                row.prop(self, 'display_layout_separator_g', text="Separator 07")  
+
+                box.separator()  
+
+                row = box.row(align=False)  
+                row.prop(self, 'display_3_point_circle', text="")            
+                row.label(text="(edm) > 3P-Circle = set origin to a circle center of 3 selected vertices")
+
+                row = box.row(align=False)  
+                row.prop(self, 'display_boundbox_m', text="")            
+                row.label(text="(obm) > BoundBoxM = set origin to a point on a wrapped bounding box. (*)")
+
+                row = box.row(align=False)  
+                row.prop(self, 'display_boundbox_x', text="")              
+                row.label(text="(mesh) > BoundBoxX = set origin to a point on the bounding box for all selected.")          
+           
+                box.separator()  
+                
+                row = box.row(align=False)         
+                row.prop(self, 'display_layout_separator_h', text="Separator 08")  
+           
+                box.separator()  
+
+                row = box.row(align=False)  
+                row.prop(self, 'display_distribute', text="")            
+                row.label(text="(obm) > Distribute: even spacing between selected objects origin with xyz axis and offset.")   
+
+                row = box.row(align=False)  
+                row.prop(self, 'display_advance_obm', text="")
+                row.label(text="(obm) > Advanced: align object, origin or cursor to active with max, mid or min values and offset.")   
+           
+                box.separator()              
+           
+                row = box.row(align=False)        
+                row.prop(self, 'display_layout_separator_i', text="Separator 09")
+           
+                box.separator()          
+               
+                row = box.row(align=False) 
+                row.prop(self, 'display_select_edm', text="")
+                row.label(text="(edit) > Edm-Select = set origin to active or selected mesh and stay in editmode.")
+
+                row = box.row(align=False) 
+                row.prop(self, 'display_select_obm', text="")
+                row.label(text="(edit) > Obm-Select = set origin to active or selected mesh and toggle to objectmode.")     
+           
+                box.separator()              
+            
+                row = box.row(align=False)        
+                row.prop(self, 'display_layout_separator_j', text="Separator 10")
+           
+                box.separator()                          
+
+                row = box.row(align=False)  
+                row.prop(self, 'display_advance_edm', text="")
+                row.label(text="(edit) > Advanced: align vertices, edges or faces to axis or normal direction, etc.")   
+           
+                box.separator()          
+            
+                row = box.row(align=False)        
+                row.prop(self, 'display_layout_separator_k', text="Separator 11")
+           
+                box.separator()       
+      
+                row = box.row(align=False)  
+                row.prop(self, 'display_zero_to_axis', text="")            
+                row.label(text="> Zero to Axis = align object, origin or cursor to one of the 3d view axis.")
+                        
+                box.separator() 
+
+
 
             #-----------------------------------------------------
 
-            box = col.box().column(align=True)
-         
-            box.separator()
-         
-            row = box.row(align=True)  
-            row.label(text="Special Menu [W]", icon ="COLLAPSEMENU")         
-
-            box.separator()            
-         
-            row = box.column(align=True)          
-            row.label(text="A origin menu will be added to the default special menu.")
-
-            box.separator() 
-
-            row = box.row(align=True)  
-            row.prop(self, 'tab_origin_special', expand=True)
-
-            box.separator()
-            box.separator()
-
-
-            #-----------------------------------------------------
+            col = layout.column(align=True)   
 
             box = col.box().column(align=True)
            
