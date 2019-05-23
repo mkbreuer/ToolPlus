@@ -23,7 +23,7 @@
 bl_info = {
     "name": "SnapSet",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 3),
+    "version": (0, 2, 4),
     "blender": (2, 79, 0),
     "location": "3D View > Tool- or Propertyshelf Panel [N], Menus [SHIFT+W], Special Menu [W], Shortcut [F], Header",
     "description": "fully customizable buttons for snapping",
@@ -140,7 +140,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     prefs_tabs=EnumProperty(
         items=(('info',  "Info",   "Info"),
                ('panel', "Panel",  "Panel"),
-               ('menus', "KeyMap", "KeyMap"),
+               ('menus', "Menus",  "Menus"),
                ('tools', "Tools",  "Tools")),
         default='info')
 
@@ -190,7 +190,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
         default='menu', update = update_snapset_menu)
 
 
-    # SUBMENUS #    
+    # SPECIAL W SUBMENUS #    
     tab_snapset_special=EnumProperty(
         name = 'Append to Special Menu',
         description = 'menu for special menu',
@@ -199,6 +199,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                ('remove',  'Menu Remove', 'remove menus from default menus')),
         default='remove', update = update_snapset_special)               
 
+    toggle_special_snapset_separator = bpy.props.BoolProperty(name="Toggle SubSeparator", description="on / off", default=True)   
+    toggle_special_snapset_icon = bpy.props.BoolProperty(name="Toggle SubMenu Icon", description="on / off", default=False)   
 
     #----------------------------
 
@@ -261,7 +263,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     tpc_use_retopo_modal_panel=BoolProperty(name= 'Retopo Modal', description = 'botton in menu', default=False) 
     tpc_use_custom_modal_panel=BoolProperty(name= 'Custom Modal', description = 'botton in menu', default=True)   
 
-    tab_snapset_add_tools=BoolProperty(name= 'Append shortcut [F] to preferences keymap', description = 'append to keymap', default=False)   
+    tab_snapset_add_tools=BoolProperty(name= 'Append hotkey [F] for button m to the preference keymap', description = 'append to keymap', default=False)   
 
     tpc_use_snap=BoolProperty(name= 'Toggle permanent Snap', description = 'toggle snap on or off', default=True)    
     tpc_use_emposs=BoolProperty(name= 'Toggle transparent for button backround', description = 'toggle emboss on or off', default=False)    
@@ -613,35 +615,80 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
         row.prop(self, "prefs_tabs", expand=True)
 
 
+
         # INFO #
         if self.prefs_tabs == 'info':
 
             box = layout.box().column(align=True)
             box.separator() 
  
+            row = box.column(align=False)            
+            row.label(text="Welcome to SnapSet!")   
+           
+            box.separator() 
+
+            row = box.column(1)       
+            row.label(text="> This addon contains snap setting presets for the 3d view.")       
+            row.label(text="> They change the pivot and snap functions for respective task at the same time.")                     
+                       
+            row.separator()             
+          
+            row.label(text="> Have Fun! ;)")  
+
+        
+            box.separator() 
+            box = layout.box().column(align=True)
+            box.separator() 
+          
             row = box.column(align=False)
-            row.label(text="Default Snap Setting")   
+            row.label(text="Order of tools in menu:")   
 
             box.separator() 
  
             row = box.row(align=False)
             row.alignment = 'LEFT'
+            row.prop(self, "tpc_use_grid", text='')  
+            
             button_snap_grid = icons.get("icon_snap_grid")
             row.label(text="Grid", icon_value=button_snap_grid.icon_id)
             row.label(text="> snap pivot with absolute grid alignment")   
-           
+         
+            box.separator() 
+
+            row = box.row(align=False)
+            row.alignment = 'LEFT'
+            row.prop(self, "tpc_use_grid_modal", text='')  
+            
+            button_snap_grid = icons.get("icon_snap_grid")
+            row.label(text="GridM (*)", icon_value=button_snap_grid.icon_id)
+            row.label(text="> snap pivot with absolute grid alignment til release")              
+
             box.separator()            
            
             row = box.row(align=False)
             row.alignment = 'LEFT'
+            row.prop(self, "tpc_use_place", text='')   
+           
             button_snap_place = icons.get("icon_snap_place")
             row.label(text="Place", icon_value=button_snap_place.icon_id)             
             row.label(text="> snap pivot to surface of other objects")   
+
+            box.separator() 
            
+            row = box.row(align=False)
+            row.alignment = 'LEFT'
+            row.prop(self, "tpc_use_place_modal", text='')   
+           
+            button_snap_place = icons.get("icon_snap_place")
+            row.label(text="PlaceM (*)", icon_value=button_snap_place.icon_id)             
+            row.label(text="> snap pivot to surface of other objects til release")   
+
             box.separator()            
            
             row = box.row(align=False)
             row.alignment = 'LEFT'
+            row.prop(self, "tpc_use_cursor", text='') 
+
             button_snap_cursor = icons.get("icon_snap_cursor")           
             row.label(text="Cursor", icon_value=button_snap_cursor.icon_id) 
             row.label(text="> set 3d cursor to active or selected")   
@@ -650,6 +697,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
            
             row = box.row(align=False)
             row.alignment = 'LEFT' 
+            row.prop(self, "tpc_use_closest", text='')  
+
             button_snap_closest = icons.get("icon_snap_closest")
             row.label(text="Closest", icon_value=button_snap_closest.icon_id)            
             row.label(text="> snap closest point onto target")   
@@ -658,6 +707,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
            
             row = box.row(align=False)
             row.alignment = 'LEFT'  
+            row.prop(self, "tpc_use_active", text='')
+          
             button_snap_active = icons.get("icon_snap_active")            
             row.label(text="Active", icon_value=button_snap_active.icon_id) 
             row.label(text="> snap active pivot onto target")   
@@ -666,21 +717,40 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
            
             row = box.row(align=False)
             row.alignment = 'LEFT'
+            row.prop(self, "tpc_use_retopo", text='')  
+          
             button_snap_retopo = icons.get("icon_snap_retopo")
             row.label(text="Retopo", icon_value=button_snap_retopo.icon_id) 
-            row.label(text="> snap point onto target in editmode")   
+            row.label(text="> snap selected onto target in editmode")   
+          
+            box.separator()           
+           
+            row = box.row(align=False)
+            row.alignment = 'LEFT'
+            row.prop(self, "tpc_use_retopo_modal", text='')  
+          
+            button_snap_retopo = icons.get("icon_snap_retopo")
+            row.label(text="RetopoM (*)", icon_value=button_snap_retopo.icon_id) 
+            row.label(text="> snap selected onto target in editmode til release")  
 
             box.separator() 
             box = layout.box().column(align=True)
             box.separator() 
-           
-            row = box.column(align=False)
-            row.alignment = 'LEFT'
-            row.label(text="Modals: Grid / Place / Retopo / Button M") 
-            row.label(text="> switch settings to called function")   
-            row.label(text="> and back to the previous settings when finished.")   
-
+      
+            row = box.column(align=False)              
+            row.label(text="(*) Modal Tools:")   
+            row.label(text="> After execute the snap setting toggle to the needed preference.")   
+            row.label(text="> When finished the settings switch back to the previous one.")   
+            
             box.separator() 
+      
+            row = box.column(align=False)              
+            row.label(text="Checkbox:", icon='CHECKBOX_HLT')   
+            row.label(text="> toggle the tools in the menus on or off.")   
+          
+            box.separator() 
+
+
 
         # TOOLS #
         if self.prefs_tabs == 'tools':
@@ -695,28 +765,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
 
             row = box.row(align=True)
             row.prop(self, "tpc_use_snap")           
-
-            box.separator() 
-            box = layout.box().column(align=True)
-            box.separator() 
-            
-            row = box.column(align=False)
-            row.label(text="Active Tools: Enable or disable tools in menu")   
-
-            box.separator() 
-            box.separator() 
-
-            row = box.column_flow(3)
-            row.prop(self, "tpc_use_grid")      
-            row.prop(self, "tpc_use_place")     
-            row.prop(self, "tpc_use_retopo")             
-            row.prop(self, "tpc_use_active")  
-            row.prop(self, "tpc_use_closest")             
-            row.prop(self, "tpc_use_cursor")               
-            row.prop(self, "tpc_use_grid_modal")  
-            row.prop(self, "tpc_use_place_modal")                                            
-            row.prop(self, "tpc_use_retopo_modal")            
-        
+                 
             box.separator() 
             box = layout.box().column(align=True)
             box.separator() 
@@ -1062,9 +1111,9 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 box.separator() 
 
                 row = box.column(align=True)  
-                row.label(text="when using the modal with shortcut, it keep the modal close to the selection, when running.")
+                row.label(text="This modal operator with shortcut, it keep the modal close to the selection, while running.")
                 row.label(text="This is important, because the modal are dependent to the position of the mouse pointer.")
-                row.label(text="Blender restart needed or it has no effect.")  
+                row.label(text="Blender need a restart after enabled the hotkey or it has no effect.")  
 
                 box.separator()
                 box.separator() 
@@ -1216,7 +1265,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
             box.separator()
             
             row = box.row(align=True)  
-            row.label(text="Cascade Menu: [SHIFT+W] ", icon ="COLLAPSEMENU")        
+            row.label(text="Conext Menu: [SHIFT+W] ", icon ="COLLAPSEMENU")        
 
             box.separator() 
 
@@ -1228,9 +1277,10 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 box.separator()   
               
                 row = box.column(align=True)                                                  
-                row.label(text="> this menu is work in progress and always a proposal.")
-                row.label(text="> left or right, up or down, there are too many preferences, to create a pie menu for everyone.")
-                row.label(text="> but it would be handy if you work with a bigger screen.")
+                row.label(text="> This menu is always a proposal.")
+                row.label(text="> Left or right, up or down, there are too many preferences,")
+                row.label(text="> to create a pie menu for everyone.")
+                row.label(text="> But it would be handy if you work with a bigger screen.")
             
                 box.separator() 
                 box.separator() 
@@ -1280,6 +1330,16 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
 
             row = box.row(align=True)  
             row.prop(self, 'tab_snapset_special', expand=True)
+
+            if self.tab_snapset_special == 'remove':
+                pass
+            else:
+
+                box.separator() 
+
+                row = box.column(align=True)  
+                row.prop(self, 'toggle_special_snapset_separator')
+                row.prop(self, 'toggle_special_snapset_icon')
 
             box.separator()
             box.separator()

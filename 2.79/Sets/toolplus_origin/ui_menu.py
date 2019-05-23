@@ -29,6 +29,7 @@ from . icons.icons import load_icons
 
 EDIT = ["EDIT_MESH", "EDIT_CURVE", "EDIT_SURFACE", "EDIT_LATTICE", "EDIT_METABALL", "EDIT_ARMATURE"]
 
+EDIT_REST = ["EDIT_CURVE", "EDIT_SURFACE", "EDIT_LATTICE", "EDIT_METABALL", "EDIT_ARMATURE"]
 
 def draw_origin_menu_layout(self, context, layout):
           
@@ -38,27 +39,47 @@ def draw_origin_menu_layout(self, context, layout):
 
         layout.scale_y = panel_prefs.scale_y
 
+ 
         if context.mode == 'EDIT_MESH':
-            if panel_prefs.display_layout_separator_i == True: 
+            if panel_prefs.display_layout_separator_iA == True: 
                 layout.separator()   
                  
-        if panel_prefs.display_select_edm == True:
-            button_origin_edm = icons.get("icon_origin_edm")   
-            layout.operator("tpc_ot.origin_to_edit_selected","Select-EdM", icon_value=button_origin_edm.icon_id).mode="SET_EDIT"         
-            
-        if panel_prefs.display_select_obm == True:
-            button_origin_obj = icons.get("icon_origin_obj")   
-            layout.operator("tpc_ot.origin_to_edit_selected","Select-ObM", icon_value=button_origin_obj.icon_id).mode="SET_OBJECT"     
+            if panel_prefs.display_select_edm_A == True:
+                button_origin_edm = icons.get("icon_origin_edm")   
+                layout.operator("tpc_ot.origin_to_edit_selected","Select-EdM", icon_value=button_origin_edm.icon_id).mode="SET_EDIT"         
+                
+            if panel_prefs.display_select_obm_A == True:
+                button_origin_obj = icons.get("icon_origin_obj")   
+                layout.operator("tpc_ot.origin_to_edit_selected","Select-ObM", icon_value=button_origin_obj.icon_id).mode="SET_OBJECT"     
+
+
+        if context.mode in EDIT_REST: 
+            #if panel_prefs.display_layout_separator_iB == True: 
+                #layout.separator()   
+                 
+            if panel_prefs.display_select_edm_B == True:
+                button_origin_edm = icons.get("icon_origin_edm")   
+                layout.operator("tpc_ot.origin_to_edit_selected","Select-EdM", icon_value=button_origin_edm.icon_id).mode="SET_EDIT"         
+                
+            if panel_prefs.display_select_obm_B == True:
+                button_origin_obj = icons.get("icon_origin_obj")   
+                layout.operator("tpc_ot.origin_to_edit_selected","Select-ObM", icon_value=button_origin_obj.icon_id).mode="SET_OBJECT"     
+
                 
         if panel_prefs.display_advance_edm == True:
-            if context.mode in EDIT:   
 
+            if context.mode in EDIT_REST: 
+                if panel_prefs.display_layout_separator_iB == True: 
+                    layout.separator()   
+            else:
                 if panel_prefs.display_layout_separator_j == True: 
                     layout.separator()   
+               
+            if context.mode in EDIT:   
 
                 button_origin_mesh = icons.get("icon_origin_mesh")                
                 layout.operator("tpc_ot.origin_transform", "Advanced", icon_value=button_origin_mesh.icon_id)   
-                
+  
 
 
 class VIEW3D_MT_Origin_Menu(bpy.types.Menu):
@@ -235,6 +256,7 @@ class VIEW3D_MT_Origin_Menu(bpy.types.Menu):
 
         if panel_prefs.display_layout_separator_k == True: 
             layout.separator()   
+
                        
         if panel_prefs.display_zero_to_axis == True:  
             button_align_zero = icons.get("icon_align_zero")          

@@ -19,6 +19,8 @@
 # ##### END GPL LICENSE BLOCK #####
 #
 
+# LOAD UI #   
+from toolplus_origin.ui_menu import (VIEW3D_MT_Origin_Menu)
 
 # LOAD MODUL #    
 import bpy
@@ -206,15 +208,29 @@ def draw_origin_item_special(self, context):
     layout = self.layout
 
     icons = load_icons()
-  
-    if context.user_preferences.addons[__package__].preferences.tab_origin_special == 'append':
-        layout.separator()      
-
-    button_origin_center_view = icons.get("icon_origin_center_view")
-    layout.menu("VIEW3D_MT_Origin_Menu_Special", text="Set Origin", icon_value=button_origin_center_view.icon_id)      
     
-    if context.user_preferences.addons[__package__].preferences.tab_origin_special == 'prepend':
-        layout.separator()
+    panel_prefs = context.user_preferences.addons[__package__].preferences
+          
+    if panel_prefs.tab_origin_special == 'append':
+        if panel_prefs.toggle_special_origin_separator == True:
+            layout.separator()      
+    
+    if panel_prefs.toggle_special_origin_menu_type == True:        
+        if panel_prefs.toggle_special_origin_icon == True:
+            button_origin_center_view = icons.get("icon_origin_center_view")
+            layout.menu("VIEW3D_MT_Origin_Menu_Special", text="Set Origin", icon_value=button_origin_center_view.icon_id)      
+        else:
+            layout.menu("VIEW3D_MT_Origin_Menu_Special", text="Set Origin")      
+    else:
+        if panel_prefs.toggle_special_origin_icon == True:
+            button_origin_center_view = icons.get("icon_origin_center_view")
+            layout.menu("VIEW3D_MT_Origin_Menu", text="Set Origin", icon_value=button_origin_center_view.icon_id)      
+        else:
+            layout.menu("VIEW3D_MT_Origin_Menu", text="Set Origin")      
+    
+    if panel_prefs.tab_origin_special == 'prepend':
+        if panel_prefs.toggle_special_origin_separator == True:
+            layout.separator()      
 
 
 

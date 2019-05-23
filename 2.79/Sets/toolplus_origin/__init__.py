@@ -23,7 +23,7 @@
 bl_info = {
     "name": "T+ Origin",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 3),
+    "version": (0, 2, 4),
     "blender": (2, 79, 0),
     "location": "3D View > Tool [T] or Property [N] Shelf Panel, Menus [CTRL+D], Special Menu [W], Header",
     "description": "collection of origin modal operators",
@@ -179,7 +179,7 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
         default='menu', update = update_origin_menu)
 
 
-    # SUBMENUS #    
+    # SPECIAL W SUBMENUS #    
     tab_origin_special=EnumProperty(
         name = 'Append to Special Menu',
         description = 'menu for special menu',
@@ -187,6 +187,11 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
                ('append',  'Menu Bottom', 'add menus to default special menus'),
                ('remove',  'Menu Remove', 'remove menus from default menus')),
         default='remove', update = update_origin_special)               
+
+    toggle_special_origin_menu_type = bpy.props.BoolProperty(name="Use Complete or Customziable Menu", description="on / off", default=False)   
+    toggle_special_origin_separator = bpy.props.BoolProperty(name="Toggle SubSeparator", description="on / off", default=True)   
+    toggle_special_origin_icon = bpy.props.BoolProperty(name="Toggle SubMenu Icon", description="on / off", default=False)   
+
 
     # HEADER #    
     tab_origin_header=EnumProperty(
@@ -261,8 +266,10 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
     display_selected_mesh = bpy.props.BoolProperty(name="selected mesh",  description="toggle button on or off", default=True) 
     display_mselect_edm = bpy.props.BoolProperty(name="mselect edm",  description="toggle button on or off", default=True) 
     display_mselect_obm = bpy.props.BoolProperty(name="mselect obm",  description="toggle button on or off", default=True) 
-    display_select_edm = bpy.props.BoolProperty(name="select edm",  description="toggle button on or off", default=True) 
-    display_select_obm = bpy.props.BoolProperty(name="select obm",  description="toggle button on or off", default=True) 
+    display_select_edm_A = bpy.props.BoolProperty(name="select edm",  description="toggle button on or off", default=True) 
+    display_select_obm_A = bpy.props.BoolProperty(name="select obm",  description="toggle button on or off", default=True) 
+    display_select_edm_B = bpy.props.BoolProperty(name="select edm",  description="toggle button on or off", default=True) 
+    display_select_obm_B = bpy.props.BoolProperty(name="select obm",  description="toggle button on or off", default=True)
     display_3_point_circle = bpy.props.BoolProperty(name="3point circle",  description="toggle button on or off", default=True) 
     display_advance_edm = bpy.props.BoolProperty(name="advance align to axis",  description="toggle button on or off", default=True) 
 
@@ -275,7 +282,8 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
     display_layout_separator_f = bpy.props.BoolProperty(name="Separator 06",  description="toggle layout separator on or off", default=True) 
     display_layout_separator_g = bpy.props.BoolProperty(name="Separator 07",  description="toggle layout separator on or off", default=True) 
     display_layout_separator_h = bpy.props.BoolProperty(name="Separator 08",  description="toggle layout separator on or off", default=True) 
-    display_layout_separator_i = bpy.props.BoolProperty(name="Separator 09",  description="toggle layout separator on or off", default=True) 
+    display_layout_separator_iA = bpy.props.BoolProperty(name="Separator 09",  description="toggle layout separator on or off", default=True) 
+    display_layout_separator_iB = bpy.props.BoolProperty(name="Separator 09",  description="toggle layout separator on or off", default=True) 
     display_layout_separator_j = bpy.props.BoolProperty(name="Separator 10",  description="toggle layout separator on or off", default=True) 
     display_layout_separator_k = bpy.props.BoolProperty(name="Separator 11",  description="toggle layout separator on or off", default=True) 
 
@@ -305,16 +313,10 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
             box.separator()
 
             row = box.column(align=False)
-            row.label(text="> this collection of set origin tools")               
-            row.label(text="  allows the place the origin in object mode")               
-            row.label(text="  and in edit mode as well.")               
-        
-            row.separator()
-
-            row.label(text="> There are different interface layouts")               
-            row.label(text="  to run the operators.")               
-            row.label(text="> From panel, piemenu, header or")               
-            row.label(text="  from a full customizable context menu!")               
+            row.label(text="> This collection of tools allows to place the object's origin")               
+            row.label(text="> in object mode and in edit mode as well.")               
+            row.label(text="> There are different interface layouts to run the operators.")               
+            row.label(text="> From panel, piemenu, header or from a full customizable context menu!")               
         
             row.separator()
 
@@ -366,6 +368,17 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
 
             row = box.row(align=True)  
             row.prop(self, 'tab_origin_special', expand=True)
+
+            if self.tab_origin_special == 'remove':
+                pass
+            else:
+
+                box.separator() 
+
+                row = box.column(align=True)  
+                row.prop(self, 'toggle_special_origin_menu_type')
+                row.prop(self, 'toggle_special_origin_separator')
+                row.prop(self, 'toggle_special_origin_icon')
 
             box.separator()
             box.separator()
@@ -570,17 +583,33 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
                 box.separator()              
            
                 row = box.row(align=False)        
-                row.prop(self, 'display_layout_separator_i', text="Separator 09")
+                row.prop(self, 'display_layout_separator_iA', text="Separator 09a")
            
                 box.separator()          
                
                 row = box.row(align=False) 
-                row.prop(self, 'display_select_edm', text="")
+                row.prop(self, 'display_select_edm_A', text="")
+                row.label(text="(edm) > Edm-Select = set origin to active or selected mesh and stay in editmode.")
+
+                row = box.row(align=False) 
+                row.prop(self, 'display_select_obm_A', text="")
+                row.label(text="(edm) > Obm-Select = set origin to active or selected mesh and toggle to objectmode.")     
+
+                box.separator()              
+           
+                row = box.row(align=False)        
+                row.prop(self, 'display_layout_separator_iB', text="Separator 09b")
+           
+                box.separator()          
+               
+                row = box.row(align=False) 
+                row.prop(self, 'display_select_edm_B', text="")
                 row.label(text="(edit) > Edm-Select = set origin to active or selected mesh and stay in editmode.")
 
                 row = box.row(align=False) 
-                row.prop(self, 'display_select_obm', text="")
+                row.prop(self, 'display_select_obm_B', text="")
                 row.label(text="(edit) > Obm-Select = set origin to active or selected mesh and toggle to objectmode.")     
+
            
                 box.separator()              
             

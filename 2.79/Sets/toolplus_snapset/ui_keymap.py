@@ -24,12 +24,16 @@ def update_snapset_menu(self, context):
         
     except:
         pass
+
+
     
     wm = bpy.context.window_manager
     kc = wm.keyconfigs.addon
     if kc:   
 
-        if context.user_preferences.addons[__package__].preferences.tab_snapset_menu == 'menu':
+        addon_prefs = context.user_preferences.addons[__package__].preferences
+
+        if addon_prefs.tab_snapset_menu == 'menu':
 
             bpy.utils.register_class(VIEW3D_MT_SnapSet_Menu)
 
@@ -38,7 +42,7 @@ def update_snapset_menu(self, context):
             kmi.properties.name = "VIEW3D_MT_SnapSet_Menu"    
 
 
-        if context.user_preferences.addons[__package__].preferences.tab_snapset_menu == 'pie':
+        if addon_prefs.tab_snapset_menu == 'pie':
 
             bpy.utils.register_class(VIEW3D_MT_SnapSet_Menu_Pie)
 
@@ -47,7 +51,7 @@ def update_snapset_menu(self, context):
             kmi.properties.name = "VIEW3D_MT_SnapSet_Menu_Pie"   
             
 
-        if context.user_preferences.addons[__package__].preferences.tab_snapset_menu == 'remove':
+        if addon_prefs.tab_snapset_menu == 'remove':
 
             km = kc.keymaps['3D View']
             for kmi in km.keymap_items:
@@ -71,7 +75,9 @@ def update_snapset_tools(self, context):
     kc = wm.keyconfigs.addon
     if kc:   
 
-        if context.user_preferences.addons[__name__].preferences.tab_snapset_add_tools == True:
+        addon_prefs = context.user_preferences.addons[__package__].preferences
+        
+        if addon_prefs.tab_snapset_add_tools == True:
 
             #km = kc.keymaps.new(name='Object Mode', space_type='EMPTY')
             km = kc.keymaps.new(name='3D View', space_type='VIEW_3D')
@@ -103,7 +109,9 @@ def update_snapset_special(self, context):
     except:
         pass
     
-    if context.user_preferences.addons[__package__].preferences.tab_snapset_special == 'append':
+    addon_prefs = context.user_preferences.addons[__package__].preferences    
+  
+    if addon_prefs.tab_snapset_special == 'append':
        
         # ADD TO MENUS: TOP #
         bpy.types.VIEW3D_MT_object_specials.append(draw_snapset_item_special)  
@@ -112,7 +120,7 @@ def update_snapset_special(self, context):
         bpy.types.VIEW3D_MT_armature_specials.append(draw_snapset_item_special)  
         bpy.types.VIEW3D_MT_particle_specials.append(draw_snapset_item_special)  
 
-    if context.user_preferences.addons[__package__].preferences.tab_snapset_special == 'prepend':
+    if addon_prefs.tab_snapset_special == 'prepend':
 
         # ADD TO MENUS: BOTTOM #
         bpy.types.VIEW3D_MT_object_specials.prepend(draw_snapset_item_special)  
@@ -121,7 +129,7 @@ def update_snapset_special(self, context):
         bpy.types.VIEW3D_MT_armature_specials.prepend(draw_snapset_item_special)  
         bpy.types.VIEW3D_MT_particle_specials.prepend(draw_snapset_item_special)  
 
-    if context.user_preferences.addons[__package__].preferences.tab_snapset_special == 'remove':  
+    if addon_prefs.tab_snapset_special == 'remove':  
         return None
 
 
@@ -138,11 +146,13 @@ def update_snapset_header(self, context):
     except:
         pass
     
-    if context.user_preferences.addons[__package__].preferences.tab_snapset_header == 'add':
+    addon_prefs = context.user_preferences.addons[__package__].preferences   
+
+    if addon_prefs.tab_snapset_header == 'add':
 
         bpy.utils.register_class(VIEW3D_HT_SnapSet_Header_Menu)
 
-    if context.user_preferences.addons[__package__].preferences.tab_snapset_header == 'remove':
+    if addon_prefs.tab_snapset_header == 'remove':
         return None  
 
 

@@ -41,65 +41,65 @@ class VIEW3D_MT_SnapSet_Menu(bpy.types.Menu):
 
         layout.scale_y = 1.5
 
-        menu_prefs = context.user_preferences.addons[__package__].preferences
+        addon_prefs = context.user_preferences.addons[__package__].preferences
 
-        if menu_prefs.tpc_use_grid == True:
-            if menu_prefs.use_internal_icon_bta == True:  
-                layout.operator("tpc_ot.snapset_button_a", text=menu_prefs.name_bta, icon=menu_prefs.icon_bta)
+        if addon_prefs.tpc_use_grid == True:
+            if addon_prefs.use_internal_icon_bta == True:  
+                layout.operator("tpc_ot.snapset_button_a", text=addon_prefs.name_bta, icon=addon_prefs.icon_bta)
             else:
                 button_snap_grid = icons.get("icon_snap_grid")
-                layout.operator("tpc_ot.snapset_button_a", text=menu_prefs.name_bta, icon_value=button_snap_grid.icon_id)
+                layout.operator("tpc_ot.snapset_button_a", text=addon_prefs.name_bta, icon_value=button_snap_grid.icon_id)
  
-        if menu_prefs.tpc_use_grid_modal == True:
+        if addon_prefs.tpc_use_grid_modal == True:
             button_snap_grid = icons.get("icon_snap_grid")
             layout.operator("tpc_ot.snapset_modal", text="GridM", icon_value=button_snap_grid.icon_id).mode = "grid"
 
                     
         if context.mode == 'OBJECT':
 
-            if menu_prefs.tpc_use_place == True:
-                if menu_prefs.use_internal_icon_btb == True:   
-                    layout.operator("tpc_ot.snapset_button_b", text=menu_prefs.name_btb, icon=menu_prefs.icon_btb)
+            if addon_prefs.tpc_use_place == True:
+                if addon_prefs.use_internal_icon_btb == True:   
+                    layout.operator("tpc_ot.snapset_button_b", text=addon_prefs.name_btb, icon=addon_prefs.icon_btb)
                 else:
                     button_snap_place = icons.get("icon_snap_place")
-                    layout.operator("tpc_ot.snapset_button_b", text=menu_prefs.name_btb, icon_value=button_snap_place.icon_id)
+                    layout.operator("tpc_ot.snapset_button_b", text=addon_prefs.name_btb, icon_value=button_snap_place.icon_id)
             
-            if menu_prefs.tpc_use_place_modal == True:
+            if addon_prefs.tpc_use_place_modal == True:
                 button_snap_place = icons.get("icon_snap_place")
                 layout.operator("tpc_ot.snapset_modal", text="PlaceM", icon_value=button_snap_place.icon_id).mode = "place"
 
         else:
-            if menu_prefs.tpc_use_retopo == True:
-                if menu_prefs.use_internal_icon_btf == True:   
-                    layout.operator("tpc_ot.snapset_button_f", text=menu_prefs.name_btf, icon=menu_prefs.icon_btf)    
+            if addon_prefs.tpc_use_retopo == True:
+                if addon_prefs.use_internal_icon_btf == True:   
+                    layout.operator("tpc_ot.snapset_button_f", text=addon_prefs.name_btf, icon=addon_prefs.icon_btf)    
                 else:
                     button_snap_retopo = icons.get("icon_snap_retopo")
-                    layout.operator("tpc_ot.snapset_button_f", text=menu_prefs.name_btf, icon_value=button_snap_retopo.icon_id)    
+                    layout.operator("tpc_ot.snapset_button_f", text=addon_prefs.name_btf, icon_value=button_snap_retopo.icon_id)    
            
-            if menu_prefs.tpc_use_retopo_modal == True:              
+            if addon_prefs.tpc_use_retopo_modal == True:              
                 button_snap_retopo = icons.get("icon_snap_retopo")
                 layout.operator("tpc_ot.snapset_modal", text="RetopoM", icon_value=button_snap_retopo.icon_id).mode = "retopo"   
           
 
-        if menu_prefs.use_internal_icon_btc == True:     
-            layout.operator("tpc_ot.snapset_button_c", text=menu_prefs.name_btc, icon=menu_prefs.icon_btc) 
+        if addon_prefs.use_internal_icon_btc == True:     
+            layout.operator("tpc_ot.snapset_button_c", text=addon_prefs.name_btc, icon=addon_prefs.icon_btc) 
         else:       
             button_snap_cursor = icons.get("icon_snap_cursor")           
-            layout.operator("tpc_ot.snapset_button_c", text=menu_prefs.name_btc, icon_value=button_snap_cursor.icon_id) 
+            layout.operator("tpc_ot.snapset_button_c", text=addon_prefs.name_btc, icon_value=button_snap_cursor.icon_id) 
 
 
-        if menu_prefs.use_internal_icon_bte == True:
-            layout.operator("tpc_ot.snapset_button_e", text=menu_prefs.name_bte, icon=menu_prefs.icon_bte)
+        if addon_prefs.use_internal_icon_bte == True:
+            layout.operator("tpc_ot.snapset_button_e", text=addon_prefs.name_bte, icon=addon_prefs.icon_bte)
         else:           
             button_snap_closest = icons.get("icon_snap_closest")
-            layout.operator("tpc_ot.snapset_button_e", text=menu_prefs.name_bte, icon_value=button_snap_closest.icon_id)
+            layout.operator("tpc_ot.snapset_button_e", text=addon_prefs.name_bte, icon_value=button_snap_closest.icon_id)
             
 
-        if menu_prefs.tpc_use_active == True: 
-            if menu_prefs.use_internal_icon_btd == True:
-                layout.operator("tpc_ot.snapset_button_d", text=menu_prefs.name_btd, icon=menu_prefs.icon_btd) 
+        if addon_prefs.tpc_use_active == True: 
+            if addon_prefs.use_internal_icon_btd == True:
+                layout.operator("tpc_ot.snapset_button_d", text=addon_prefs.name_btd, icon=addon_prefs.icon_btd) 
             else:
                 button_snap_active = icons.get("icon_snap_active")            
-                layout.operator("tpc_ot.snapset_button_d", text=menu_prefs.name_btd, icon_value=button_snap_active.icon_id) 
+                layout.operator("tpc_ot.snapset_button_d", text=addon_prefs.name_btd, icon_value=button_snap_active.icon_id) 
 
             
