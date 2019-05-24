@@ -1,5 +1,5 @@
  # T+ Addons   
- ### Tool Collections for Blender 2.78-2.79
+ ### Tool Collections for Blender 2.79
 
  #### Download
 
