@@ -7,7 +7,7 @@
 
    > complete collection: [ToolPlus-master.zip](https://github.com/mkbreuer/ToolPlus/archive/master.zip)
 
-   > set folder: [Zip Folder 2.79](https://github.com/mkbreuer/ToolPlus/tree/master/2.79/Sets/zip)  
+   > separated set folder: [Zip Folder 2.79](https://github.com/mkbreuer/ToolPlus/tree/master/2.79/Sets/zip)  
 
    > go to the [wiki-page](https://github.com/mkbreuer/ToolPlus/wiki) for more information
 
