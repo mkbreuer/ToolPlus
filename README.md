@@ -11,32 +11,7 @@
 
    > go to the [wiki-page](https://github.com/mkbreuer/ToolPlus/wiki) for more information
 
-----------
 
-Install Instruction
-
-* run blender
-
-* open the user preferences under [CTRL+ALT+U] or under files...
-
-* go to tab addons and press "Install from File..." at the bottom.
-
-* you can install a phyton script or zip file as well. (#___)
-
-* activate the addon and choose settings in the addon preferences
-
-* to have it on each blender start press "Save User Setting" at the bottom
-
-* all addons from this collection are in category toolplus
-
-
-(#___)
-
-* for a single pyhton script is no zip required, just add it to blender text editor 
-
-* be sure it have a bpy import, import of data types and his own registry and an press run 
-  
------------
 
 * T+ Addons on this GitHub are collections of my own and free-to-use addons from allover. [GNU General Public License](https://en.wikipedia.org/wiki/GNU_General_Public_License)
 
