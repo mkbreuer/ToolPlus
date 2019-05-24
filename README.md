@@ -12,7 +12,6 @@
    > go to the [wiki-page](https://github.com/mkbreuer/ToolPlus/wiki) for more information
 
 
-
 * T+ Addons on this GitHub are collections of my own and free-to-use addons from allover. [GNU General Public License](https://en.wikipedia.org/wiki/GNU_General_Public_License)
 
 * This collections will be updated continuously, because it boost my own workflow, save time at the end and makes fun. :)
