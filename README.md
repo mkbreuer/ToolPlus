@@ -10,7 +10,7 @@
    > go to the [wiki-page](https://github.com/mkbreuer/ToolPlus/wiki) for more information
 
 
-* This collections of free-to-use addons run under follwing licencens: [GNU General Public License](https://en.wikipedia.org/wiki/GNU_General_Public_License) 
+* This collections of free-to-use addons run under follwing licencens: [GNU General Public License](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) 
 
 * If you like this collections, consider to supporting my work and place a smile
 
