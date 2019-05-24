@@ -14,9 +14,9 @@
 
 * T+ Addons on this GitHub are collections of my own and free-to-use addons from allover. [GNU General Public License](https://en.wikipedia.org/wiki/GNU_General_Public_License)
 
-* This collections will be updated continuously, because it boost my own workflow, save time at the end and makes fun. :)
+* This collections will be updated continuously, because it boost my own workflow, save time at the end and makes fun.
 
-* If you like this collections, consider to supporting my work and place a smile :)
+* If you like this collections, consider to supporting my work and place a smile
 
 *  [![Donate](https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/Images/donate_patreon.png)](https://www.patreon.com/tpc_mkbreuer)   :)
 
