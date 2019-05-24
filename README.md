@@ -3,8 +3,6 @@
 
  #### Download
 
-   > single phyton script: rightclick and save target as...
-
    > complete collection: [ToolPlus-master.zip](https://github.com/mkbreuer/ToolPlus/archive/master.zip)
 
    > separated set folder: [Zip Folder 2.79](https://github.com/mkbreuer/ToolPlus/tree/master/2.79/Sets/zip)  
