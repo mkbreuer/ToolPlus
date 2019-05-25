@@ -124,9 +124,6 @@ def draw_snapset_ui(self, context, layout):
             row = box.row(align=True)
 
         #row.scale_y = 1.5
-    
-        button_snap_grid = icons.get("icon_snap_grid")
-        row.operator("tpc_ot.snapset_grid", text= tx_snapset_grid, icon_value=button_snap_grid.icon_id)
 
         if addon_prefs.tpc_use_grid == True:
             if addon_prefs.use_internal_icon_bta == True:  
