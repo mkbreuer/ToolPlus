@@ -36,9 +36,8 @@ class VIEW3D_MT_SnapFlat_Menu_Pie(bpy.types.Menu):
     def draw(self, context):
         layout = self.layout
        
-        addon_prefs = context.user_preferences.addons[__package__].preferences
-
         icons = load_icons()  
+        addon_prefs = context.user_preferences.addons[__package__].preferences
 
         layout.operator_context = 'INVOKE_REGION_WIN'
 
@@ -46,42 +45,42 @@ class VIEW3D_MT_SnapFlat_Menu_Pie(bpy.types.Menu):
 
         #Box 1 L
         row = pie.split().column()
-        row.operator("tpc_ot.snapflat_modal", text="Boundary UV Seams").mode="snap_for_uvs"
+        row.operator("tpc_ops.snapflat_modal", text="Boundary UV Seams").mode="snap_for_uvs"
         
        
         #Box 2 R
         row = pie.split().column()
-        row.operator("tpc_ot.snapflat_modal", text="Boundary Sharp Edges").mode="snap_for_sharp"
+        row.operator("tpc_ops.snapflat_modal", text="Boundary Sharp Edges").mode="snap_for_sharp"
         
        
         #Box 3 B
         row = pie.split().column()
-        row.operator("tpc_ot.snapflat_modal", text="Flatten Z-Axis").mode="flatten_z"     
+        row.operator("tpc_ops.snapflat_modal", text="Flatten Z-Axis").mode="flatten_z"     
 
        
         #Box 4 T 
         row = pie.split().column()
-        row.label(text="")
+        row.prop(addon_prefs, 'threshold')
        
       
         #Box 5 LT       
         row = pie.split().column()
-        row.operator("tpc_ot.snapflat_modal", text="Flatten LpT").mode="flatten_lpt"
+        row.operator("tpc_ops.snapflat_modal", text="Flatten LpT").mode="flatten_lpt"
        
         
         #Box 6 RT 
         row = pie.split().column()
-        row.operator("tpc_ot.snapflat_modal", text="Flatten Normal").mode="flatten_n"  
+        row.operator("tpc_ops.snapflat_modal", text="Flatten Normal").mode="flatten_n"  
 
        
         #Box 7 LB 
         row = pie.split().column()
-        row.operator("tpc_ot.snapflat_modal", text="Flatten X-Axis").mode="flatten_x"
+        row.operator("tpc_ops.snapflat_modal", text="Flatten X-Axis").mode="flatten_x"
       
       
         #Box 8 RB
         row = pie.split().column()
-        row.operator("tpc_ot.snapflat_modal", text="Flatten Y-Axis").mode="flatten_y"
+        row.operator("tpc_ops.snapflat_modal", text="Flatten Y-Axis").mode="flatten_y"
  
 
 

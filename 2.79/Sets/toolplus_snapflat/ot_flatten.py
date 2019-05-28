@@ -5,7 +5,7 @@ from bpy.props import IntProperty, FloatProperty
 
 class VIEW3D_OT_SnapFlat_Modal(bpy.types.Operator):
     """use linked faces and flatt them, after selecting a mesh face"""
-    bl_idname = "tpc_ot.snapflat_modal"
+    bl_idname = "tpc_ops.snapflat_modal"
     bl_label = "SnapFlat Modal"
     
     # print info in system console

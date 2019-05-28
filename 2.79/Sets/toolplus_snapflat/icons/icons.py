@@ -17,15 +17,8 @@ def load_icons():
 
     #--------------------------------------------
 
-    mkb_icons.load("icon_snap_active", os.path.join(icons_dir, "snap_active.png"), 'IMAGE')
-    mkb_icons.load("icon_snap_closest", os.path.join(icons_dir, "snap_closest.png"), 'IMAGE')
-    mkb_icons.load("icon_snap_cursor", os.path.join(icons_dir, "snap_cursor.png"), 'IMAGE')
-    mkb_icons.load("icon_snap_grid", os.path.join(icons_dir, "snap_grid.png"), 'IMAGE')
-    mkb_icons.load("icon_snap_retopo", os.path.join(icons_dir, "snap_retopo.png"), 'IMAGE')
-    mkb_icons.load("icon_snap_place", os.path.join(icons_dir, "snap_place.png"), 'IMAGE')
+
     mkb_icons.load("icon_snap_flat", os.path.join(icons_dir, "snap_flat.png"), 'IMAGE')
-    mkb_icons.load("icon_snap_measure", os.path.join(icons_dir, "snap_measure.png"), 'IMAGE')
-    mkb_icons.load("icon_snap_annotate", os.path.join(icons_dir, "snap_annotate.png"), 'IMAGE')
 
 
     #--------------------------------------------

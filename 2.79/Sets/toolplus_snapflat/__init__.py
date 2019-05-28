@@ -23,7 +23,7 @@
 bl_info = {
     "name": "SnapFlat",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 0, 2),
+    "version": (0, 0, 3),
     "blender": (2, 79, 0),
     "location": "3D View > Tool- or Propertyshelf Panel [N], Menus [SHIFT+W], Special Menu [W], Header",
     "description": "flat linked face",
@@ -63,6 +63,7 @@ class VIEW3D_PT_SnapFlat_Panel_TOOLS(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
     bl_category = 'T+'
+    bl_context = 'mesh_edit'
     bl_label = "SnapFlat"
     bl_options = {'DEFAULT_CLOSED'}
 
@@ -75,6 +76,7 @@ class VIEW3D_PT_SnapFlat_Panel_TOOLS(bpy.types.Panel):
 class VIEW3D_PT_SnapFlat_Panel_UI(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
+    bl_context = 'mesh_edit'
     bl_label = "SnapFlat"
     bl_options = {'DEFAULT_CLOSED'}
 
@@ -144,6 +146,9 @@ class Addon_Preferences_SnapFlat(bpy.types.AddonPreferences):
               update=update_panel
               )
 
+    show_snapflat_buttons = bpy.props.BoolProperty(name="Show Button in Panel", description="on / off", default=True)   
+
+
     #------------------------------
 
     # MENU #
@@ -173,7 +178,10 @@ class Addon_Preferences_SnapFlat(bpy.types.AddonPreferences):
 
     # TOOLS #
 
-    threshold = bpy.props.FloatProperty(name="Threshold",  description="select linked face", default=0.15, min=0.1, max=10)
+    # 1°= 0.0174533
+    # 180°= 3.14159
+
+    threshold = bpy.props.FloatProperty(name="Threshold",  description="angle value to select linked face", default=0.0174533, min=0.0174533, max=3.14159, subtype='ANGLE')
 
     mesh_select_mode = bpy.props.EnumProperty(
       items = [("vertices", "Vertex", "enable vertex selection", 1),
@@ -254,7 +262,7 @@ class Addon_Preferences_SnapFlat(bpy.types.AddonPreferences):
 
             row = box.column(align=True)
             row.prop(self, "mesh_select_mode", text ='Mode')           
-
+         
             box.separator() 
 
 
@@ -264,17 +272,17 @@ class Addon_Preferences_SnapFlat(bpy.types.AddonPreferences):
             
             box = layout.box().column(align=True)
              
-            row = box.row(1) 
+            row = box.row(align=True) 
             row.label("Panel Location:")
          
             box.separator()             
          
-            row = box.row(1)
+            row = box.row(align=True)
             row.prop(self, 'tab_snapflat_location', expand=True)
           
             box.separator() 
         
-            row = box.row(1)            
+            row = box.row(align=True)            
             if self.tab_snapflat_location == 'tools':
                 
                 box.separator() 
@@ -284,8 +292,15 @@ class Addon_Preferences_SnapFlat(bpy.types.AddonPreferences):
             box.separator() 
             box.separator() 
 
+            box.separator() 
 
-
+            row = box.column(align=True)
+            row.prop(self, "show_snapflat_buttons")           
+         
+            box.separator() 
+    
+    
+    
         # APPEND #
         if self.prefs_tabs == 'menus':
 
@@ -371,7 +386,7 @@ class Addon_Preferences_SnapFlat(bpy.types.AddonPreferences):
 
             row = box.row(align=True)  
             row.label(text="", icon ="BLANK1")
-            row.operator("tpc_ot.keymap_snapflat", text = 'Open KeyMap in Text Editor')
+            row.operator("tpc_ops.keymap_snapflat", text = 'Open KeyMap in Text Editor')
             row.operator('wm.url_open', text = 'Type of Events').url = "https://github.com/mkbreuer/Misc-Share-Archiv/blob/master/images/SHORTCUTS_Type%20of%20key%20event.png?raw=true"
             
             box.separator()
