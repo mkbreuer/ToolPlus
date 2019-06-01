@@ -36,7 +36,7 @@ def update_snapflat_menu(self, context):
             bpy.utils.register_class(VIEW3D_MT_SnapFlat_Menu)
 
             km = kc.keymaps.new(name='3D View', space_type='VIEW_3D')
-            kmi = km.keymap_items.new('wm.call_menu', 'TWO', 'PRESS', shift=True) #, ctrl=True, alt=True)
+            kmi = km.keymap_items.new('wm.call_menu', addon_prefs.use_hotkey, addon_prefs.use_event, shift=addon_prefs.use_shift, ctrl=addon_prefs.use_ctrl, alt=addon_prefs.use_alt)
             kmi.properties.name = "VIEW3D_MT_SnapFlat_Menu"    
 
 
@@ -45,7 +45,7 @@ def update_snapflat_menu(self, context):
             bpy.utils.register_class(VIEW3D_MT_SnapFlat_Menu_Pie)
 
             km = kc.keymaps.new(name='3D View', space_type='VIEW_3D')
-            kmi = km.keymap_items.new('wm.call_menu_pie', 'TWO', 'PRESS', shift=True) #, ctrl=True, alt=True)
+            kmi = km.keymap_items.new('wm.call_menu_pie', addon_prefs.use_hotkey, addon_prefs.use_event, shift=addon_prefs.use_shift, ctrl=addon_prefs.use_ctrl, alt=addon_prefs.use_alt)
             kmi.properties.name = "VIEW3D_MT_SnapFlat_Menu_Pie"   
             
 

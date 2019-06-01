@@ -26,7 +26,7 @@ from bpy.props import IntProperty, FloatProperty
 
 class VIEW3D_OT_Snap_Origin_Modal_Multi(bpy.types.Operator):
     """Move an object with the mouse, example"""
-    bl_idname = "tpc_ot.snaporigin_modal"
+    bl_idname = "tpc_ops.snaporigin_modal"
     bl_label = "Origin Modal Multi"
     
     # print info in system console

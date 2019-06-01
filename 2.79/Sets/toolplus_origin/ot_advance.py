@@ -577,7 +577,7 @@ def align_function(subject, active_too, consistent, self_or_active, loc_x, loc_y
 
 class VIEW3D_OT_Advanced_Align_Tools(bpy.types.Operator):
     """Advanced Align Tools"""
-    bl_idname = "tpc_ot.advanced_align_tools"
+    bl_idname = "tpc_ops.advanced_align_tools"
     bl_label = "Advanced Align Tools"
     bl_description = "Align Object Tools"
     bl_options = {'REGISTER', 'UNDO'}

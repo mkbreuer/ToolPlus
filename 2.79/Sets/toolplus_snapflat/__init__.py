@@ -23,7 +23,7 @@
 bl_info = {
     "name": "SnapFlat",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 0, 3),
+    "version": (0, 0, 4),
     "blender": (2, 79, 0),
     "location": "3D View > Tool- or Propertyshelf Panel [N], Menus [SHIFT+W], Special Menu [W], Header",
     "description": "flat linked face",
@@ -172,6 +172,25 @@ class Addon_Preferences_SnapFlat(bpy.types.AddonPreferences):
 
     toggle_special_snapflat_separator = bpy.props.BoolProperty(name="Toggle SubSeparator", description="on / off", default=True)   
     toggle_special_snapflat_icon = bpy.props.BoolProperty(name="Toggle SubMenu Icon", description="on / off", default=False)   
+   
+  
+    #----------------------------
+
+
+    # KEYMAP #
+      
+    use_hotkey=bpy.props.StringProperty(name = 'Key', default="TWO", description = 'change hotkey / only capital letters allowed') 
+    use_ctrl=BoolProperty(name= 'use Ctrl', description = 'enable ctrl for button m', default=False) 
+    use_alt=BoolProperty(name= 'use Alt', description = 'enable ctrl for button m', default=False) 
+    use_shift=BoolProperty(name= 'use Shift', description = 'enable ctrl for button m', default=True) 
+    use_event = EnumProperty(
+        items=[('DOUBLE_CLICK',  "DOUBLE CLICK", "key event"),
+               ('CLICK',         "CLICK",        "key event"),
+               ('RELEASE',       "RELEASE",      "key event"),
+               ('PRESS',         "PRESS",        "key event"),
+               ('ANY',           "ANY",          "key event"),],
+        name="key event",
+        default='PRESS')
 
     #----------------------------
 
@@ -190,7 +209,8 @@ class Addon_Preferences_SnapFlat(bpy.types.AddonPreferences):
                name = "Mesh Select Mode",
                default = "vertices",
                description="type of mesh select mode when finish")
-      
+
+
     #----------------------------
     
     
@@ -311,7 +331,7 @@ class Addon_Preferences_SnapFlat(bpy.types.AddonPreferences):
             box.separator()
             
             row = box.row(align=True)  
-            row.label(text="Cascade Menu: [SHIFT+2] ", icon ="COLLAPSEMENU")        
+            row.label(text="Cascade Menu:", icon ="COLLAPSEMENU")        
 
             box.separator() 
 
@@ -328,6 +348,15 @@ class Addon_Preferences_SnapFlat(bpy.types.AddonPreferences):
                 row.label(text="> to create a pie menu for everyone.")
                 row.label(text="> But it would be handy if you work with a bigger screen.")
 
+
+            box.separator() 
+
+            row = box.row(align=True)  
+            row.prop(self, 'use_hotkey')
+            row.prop(self, 'use_event')
+            row.prop(self, 'use_ctrl')
+            row.prop(self, 'use_alt')
+            row.prop(self, 'use_shift')
  
             box.separator()
             box.separator()

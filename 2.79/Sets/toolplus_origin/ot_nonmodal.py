@@ -5,7 +5,7 @@ from bpy.props import *
 
 class VIEW3D_OT_Set_Origin_To(bpy.types.Operator):
     '''set origin to selected...'''
-    bl_idname = "tpc_ot.set_origin_to"
+    bl_idname = "tpc_ops.set_origin_to"
     bl_label = "Set Origin"
     bl_options = {"REGISTER", 'UNDO'}   
   
@@ -65,7 +65,7 @@ class VIEW3D_OT_Set_Origin_To(bpy.types.Operator):
 
 class VIEW3D_OT_Origin_to_Edit(bpy.types.Operator):
     """set origin to selected or active / stay in edit or objectmode"""                 
-    bl_idname = "tpc_ot.origin_to_edit_selected"          
+    bl_idname = "tpc_ops.origin_to_edit_selected"          
     bl_label = "Origin to Edit Selected"                 
     bl_options = {'REGISTER', 'UNDO'}   
   

@@ -48,7 +48,7 @@ def settings_write(self):
 
 class VIEW3D_OT_Zero_to_Global_Axis(bpy.types.Operator):
     """align origin, object or cursor to global axis"""                 
-    bl_idname = "tpc_ot.zero_axis"          
+    bl_idname = "tpc_ops.zero_axis"          
     bl_label = "ZeroAxis"                 
     bl_options = {'REGISTER', 'UNDO'}   
 
@@ -132,10 +132,10 @@ class VIEW3D_OT_Zero_to_Global_Axis(bpy.types.Operator):
             if self.tp_switch == "tp_org":                
                 
                 if context.mode == 'OBJECT':
-                    bpy.ops.tpc_ot.origin_cursor_align(loc_x=True, loc_offset=self.tp_origin_offset)                 
+                    bpy.ops.tpc_ops.origin_cursor_align(loc_x=True, loc_offset=self.tp_origin_offset)                 
                 else:   
                     bpy.ops.object.editmode_toggle()
-                    bpy.ops.tpc_ot.origin_cursor_align(loc_x=True, loc_offset=self.tp_origin_offset)
+                    bpy.ops.tpc_ops.origin_cursor_align(loc_x=True, loc_offset=self.tp_origin_offset)
                     bpy.ops.object.editmode_toggle()
 
 
@@ -154,10 +154,10 @@ class VIEW3D_OT_Zero_to_Global_Axis(bpy.types.Operator):
             if self.tp_switch == "tp_org":
                 
                 if context.mode == 'OBJECT':
-                    bpy.ops.tpc_ot.origin_cursor_align(loc_y=True, loc_offset=self.tp_origin_offset)                  
+                    bpy.ops.tpc_ops.origin_cursor_align(loc_y=True, loc_offset=self.tp_origin_offset)                  
                 else:   
                     bpy.ops.object.editmode_toggle()
-                    bpy.ops.tpc_ot.origin_cursor_align(loc_y=True, loc_offset=self.tp_origin_offset)
+                    bpy.ops.tpc_ops.origin_cursor_align(loc_y=True, loc_offset=self.tp_origin_offset)
                     bpy.ops.object.editmode_toggle()
 
 
@@ -176,10 +176,10 @@ class VIEW3D_OT_Zero_to_Global_Axis(bpy.types.Operator):
             if self.tp_switch == "tp_org":        
                 
                 if context.mode == 'OBJECT':
-                    bpy.ops.tpc_ot.origin_cursor_align(loc_z=True, loc_offset=self.tp_origin_offset)                    
+                    bpy.ops.tpc_ops.origin_cursor_align(loc_z=True, loc_offset=self.tp_origin_offset)                    
                 else:   
                     bpy.ops.object.editmode_toggle()
-                    bpy.ops.tpc_ot.origin_cursor_align(loc_z=True, loc_offset=self.tp_origin_offset)  
+                    bpy.ops.tpc_ops.origin_cursor_align(loc_z=True, loc_offset=self.tp_origin_offset)  
                     bpy.ops.object.editmode_toggle()
 
 
@@ -194,7 +194,7 @@ class VIEW3D_OT_Zero_to_Global_Axis(bpy.types.Operator):
 
 class VIEW3D_OT_Zero_to_Global_Axis_Menu(bpy.types.Operator):
     """align origin, object or cursor to global axis"""                 
-    bl_idname = "tpc_ot.zero_axis_menu"          
+    bl_idname = "tpc_ops.zero_axis_menu"          
     bl_label = "ZeroAxis"                 
     bl_options = {'REGISTER', 'UNDO'}   
 
@@ -247,7 +247,7 @@ class VIEW3D_OT_Zero_to_Global_Axis_Menu(bpy.types.Operator):
 
     def execute(self, context):
 
-        bpy.ops.tpc_ot.zero_axis(tp_switch = self.tp_switch, 
+        bpy.ops.tpc_ops.zero_axis(tp_switch = self.tp_switch, 
                                  align_x   = self.align_x, 
                                  align_y   = self.align_y, 
                                  align_z   = self.align_z, 
@@ -318,7 +318,7 @@ def origin_cursor_function(loc_x, loc_y, loc_z, loc_offset):
 # "author": "Lell, Anfeo"
 class VIEW3D_OT_Origin_Cursor_Align(bpy.types.Operator):
     """align origin to cursor"""
-    bl_idname = "tpc_ot.origin_cursor_align"
+    bl_idname = "tpc_ops.origin_cursor_align"
     bl_label = "origin align"
     bl_description = "Origin Cursor"
     bl_options = {'REGISTER', 'UNDO'}

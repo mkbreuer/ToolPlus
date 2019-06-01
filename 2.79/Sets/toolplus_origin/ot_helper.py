@@ -29,7 +29,7 @@ from bpy_extras import view3d_utils
 
 class VIEW3D_OT_Snap_Origin_to_Helper(bpy.types.Operator):
         """set origin to a snap point"""
-        bl_idname = "tpc_ot.origin_to_snap_helper"
+        bl_idname = "tpc_ops.origin_to_snap_helper"
         bl_label = "Snap Helper"
         #bl_options = {'REGISTER', 'UNDO'}
 

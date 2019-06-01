@@ -23,7 +23,7 @@
 bl_info = {
     "name": "SnapSet",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 4),
+    "version": (0, 2, 5),
     "blender": (2, 79, 0),
     "location": "3D View > Tool- or Propertyshelf Panel [N], Menus [SHIFT+W], Special Menu [W], Shortcut [F], Header",
     "description": "fully customizable buttons for snapping",
@@ -147,7 +147,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     #------------------------------
 
     # PANEL #          
-    tab_snapset_location = EnumProperty(
+    tab_snapset_location=EnumProperty(
         name = 'Panel Location',
         description = 'save user settings and restart blender after switching the panel location',
         items=(('tools', 'Tool Shelf',      'place panel in the tool shelf [T]'),
@@ -202,6 +202,22 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     toggle_special_snapset_separator = bpy.props.BoolProperty(name="Toggle SubSeparator", description="on / off", default=True)   
     toggle_special_snapset_icon = bpy.props.BoolProperty(name="Toggle SubMenu Icon", description="on / off", default=False)   
 
+
+    # KEYMAP #
+      
+    use_hotkey=bpy.props.StringProperty(name = 'Key', default="W", description = 'change hotkey / only capital letters allowed') 
+    use_ctrl=BoolProperty(name= 'use Ctrl', description = 'enable key for menu', default=False) 
+    use_alt=BoolProperty(name= 'use Alt', description = 'enable key for menu', default=False) 
+    use_shift=BoolProperty(name= 'use Shift', description = 'enable key for menu', default=True) 
+    use_event = EnumProperty(
+        items=[('DOUBLE_CLICK',  "DOUBLE CLICK", "key event"),
+               ('CLICK',         "CLICK",        "key event"),
+               ('RELEASE',       "RELEASE",      "key event"),
+               ('PRESS',         "PRESS",        "key event"),
+               ('ANY',           "ANY",          "key event"),],
+        name="",
+        default='PRESS')
+
     #----------------------------
 
 
@@ -255,15 +271,15 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     tpc_use_closest=BoolProperty(name= 'Snap Closest', description = 'botton in menu', default=True)   
     tpc_use_active=BoolProperty(name= 'Snap Active', description = 'botton in menu', default=True)   
 
-    tpc_use_grid_modal=BoolProperty(name= 'Grid Modal', description = 'botton in menu', default=False)   
-    tpc_use_place_modal=BoolProperty(name= 'Place Modal', description = 'botton in menu', default=False)   
-    tpc_use_retopo_modal=BoolProperty(name= 'Retopo Modal', description = 'botton in menu', default=False)   
-    tpc_use_grid_modal_panel=BoolProperty(name= 'Grid Modal', description = 'botton in menu', default=False)   
-    tpc_use_place_modal_panel=BoolProperty(name= 'Place Modal', description = 'botton in menu', default=False)   
-    tpc_use_retopo_modal_panel=BoolProperty(name= 'Retopo Modal', description = 'botton in menu', default=False) 
+    tpc_use_grid_modal=BoolProperty(name= 'Grid Modal', description = 'botton in menu', default=True)   
+    tpc_use_place_modal=BoolProperty(name= 'Place Modal', description = 'botton in menu', default=True)   
+    tpc_use_retopo_modal=BoolProperty(name= 'Retopo Modal', description = 'botton in menu', default=True)   
+    tpc_use_grid_modal_panel=BoolProperty(name= 'Grid Modal', description = 'botton in menu', default=True)   
+    tpc_use_place_modal_panel=BoolProperty(name= 'Place Modal', description = 'botton in menu', default=True)   
+    tpc_use_retopo_modal_panel=BoolProperty(name= 'Retopo Modal', description = 'botton in menu', default=True) 
     tpc_use_custom_modal_panel=BoolProperty(name= 'Custom Modal', description = 'botton in menu', default=True)   
 
-    tab_snapset_add_tools=BoolProperty(name= 'Append hotkey [F] for button m to the preference keymap', description = 'append to keymap', default=False)   
+    tab_snapset_add_tools=BoolProperty(name= 'Append hotkey for button m to the preference keymap', description = 'append to keymap', default=False)   
 
     tpc_use_snap=BoolProperty(name= 'Toggle permanent Snap', description = 'toggle snap on or off', default=True)    
     tpc_use_emposs=BoolProperty(name= 'Toggle transparent for button backround', description = 'toggle emboss on or off', default=False)    
@@ -601,6 +617,19 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     prop_btM_project=BoolProperty(name= 'Project Individual Elements', description = '', default=True)  
     prop_btM_peel_object=BoolProperty(name= 'Snap Peel Object', description = '', default=False)  
 
+    use_hotkey_button=bpy.props.StringProperty(name = 'Key', default="F", description = 'change hotkey / only capital letters allowed') 
+    use_ctrl_button=BoolProperty(name= 'use Ctrl', description = 'enable ctrl for button m', default=False) 
+    use_alt_button=BoolProperty(name= 'use Alt', description = 'enable ctrl for button m', default=False) 
+    use_shift_button=BoolProperty(name= 'use Shift', description = 'enable ctrl for button m', default=False) 
+    use_event_button = EnumProperty(
+        items=[('DOUBLE_CLICK',  "DOUBLE CLICK", "key event"),
+               ('CLICK',         "CLICK",        "key event"),
+               ('RELEASE',       "RELEASE",      "key event"),
+               ('PRESS',         "PRESS",        "key event"),
+               ('ANY',           "ANY",          "key event"),],
+        name="",
+        default='PRESS')
+
 
     #----------------------------
     
@@ -629,125 +658,14 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
 
             row = box.column(1)       
             row.label(text="> This addon contains snap setting presets for the 3d view.")       
-            row.label(text="> They change the pivot and snap functions for respective task at the same time.")                     
+            row.label(text="> They change the pivot and snap functions at the same time.")                     
+            row.label(text="> The modal version also reload the previuos setting after use.")                     
+            row.label(text="> Everytime the right snap for respective task!")                     
                        
             row.separator()             
           
             row.label(text="> Have Fun! ;)")  
-
         
-            box.separator() 
-            box = layout.box().column(align=True)
-            box.separator() 
-          
-            row = box.column(align=False)
-            row.label(text="Order of tools in menu:")   
-
-            box.separator() 
- 
-            row = box.row(align=False)
-            row.alignment = 'LEFT'
-            row.prop(self, "tpc_use_grid", text='')  
-            
-            button_snap_grid = icons.get("icon_snap_grid")
-            row.label(text="Grid", icon_value=button_snap_grid.icon_id)
-            row.label(text="> snap pivot with absolute grid alignment")   
-         
-            box.separator() 
-
-            row = box.row(align=False)
-            row.alignment = 'LEFT'
-            row.prop(self, "tpc_use_grid_modal", text='')  
-            
-            button_snap_grid = icons.get("icon_snap_grid")
-            row.label(text="GridM (*)", icon_value=button_snap_grid.icon_id)
-            row.label(text="> snap pivot with absolute grid alignment til release")              
-
-            box.separator()            
-           
-            row = box.row(align=False)
-            row.alignment = 'LEFT'
-            row.prop(self, "tpc_use_place", text='')   
-           
-            button_snap_place = icons.get("icon_snap_place")
-            row.label(text="Place", icon_value=button_snap_place.icon_id)             
-            row.label(text="> snap pivot to surface of other objects")   
-
-            box.separator() 
-           
-            row = box.row(align=False)
-            row.alignment = 'LEFT'
-            row.prop(self, "tpc_use_place_modal", text='')   
-           
-            button_snap_place = icons.get("icon_snap_place")
-            row.label(text="PlaceM (*)", icon_value=button_snap_place.icon_id)             
-            row.label(text="> snap pivot to surface of other objects til release")   
-
-            box.separator()            
-           
-            row = box.row(align=False)
-            row.alignment = 'LEFT'
-            row.prop(self, "tpc_use_cursor", text='') 
-
-            button_snap_cursor = icons.get("icon_snap_cursor")           
-            row.label(text="Cursor", icon_value=button_snap_cursor.icon_id) 
-            row.label(text="> set 3d cursor to active or selected")   
-           
-            box.separator()            
-           
-            row = box.row(align=False)
-            row.alignment = 'LEFT' 
-            row.prop(self, "tpc_use_closest", text='')  
-
-            button_snap_closest = icons.get("icon_snap_closest")
-            row.label(text="Closest", icon_value=button_snap_closest.icon_id)            
-            row.label(text="> snap closest point onto target")   
-            
-            box.separator()            
-           
-            row = box.row(align=False)
-            row.alignment = 'LEFT'  
-            row.prop(self, "tpc_use_active", text='')
-          
-            button_snap_active = icons.get("icon_snap_active")            
-            row.label(text="Active", icon_value=button_snap_active.icon_id) 
-            row.label(text="> snap active pivot onto target")   
-           
-            box.separator()           
-           
-            row = box.row(align=False)
-            row.alignment = 'LEFT'
-            row.prop(self, "tpc_use_retopo", text='')  
-          
-            button_snap_retopo = icons.get("icon_snap_retopo")
-            row.label(text="Retopo", icon_value=button_snap_retopo.icon_id) 
-            row.label(text="> snap selected onto target in editmode")   
-          
-            box.separator()           
-           
-            row = box.row(align=False)
-            row.alignment = 'LEFT'
-            row.prop(self, "tpc_use_retopo_modal", text='')  
-          
-            button_snap_retopo = icons.get("icon_snap_retopo")
-            row.label(text="RetopoM (*)", icon_value=button_snap_retopo.icon_id) 
-            row.label(text="> snap selected onto target in editmode til release")  
-
-            box.separator() 
-            box = layout.box().column(align=True)
-            box.separator() 
-      
-            row = box.column(align=False)              
-            row.label(text="(*) Modal Tools:")   
-            row.label(text="> After execute the snap setting toggle to the needed preference.")   
-            row.label(text="> When finished the settings switch back to the previous one.")   
-            
-            box.separator() 
-      
-            row = box.column(align=False)              
-            row.label(text="Checkbox:", icon='CHECKBOX_HLT')   
-            row.label(text="> toggle the tools in the menus on or off.")   
-          
             box.separator() 
 
 
@@ -799,11 +717,24 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 box.separator()              
 
                 row = box.row(align=False)                    
-                row.prop(self, "use_internal_icon_bta", text="Use Internal or Custom Icon")     
-            
-                row = box.row(align=False)                    
-                row.prop(self, "icon_bta", text="Icon Name")
-                 
+                row.prop(self, "use_internal_icon_bta", text="Use Internal or External Icon")     
+
+                if self.use_internal_icon_bta ==True:            
+
+                    box.separator()
+                        
+                    row = box.row(align=False)                    
+                    row.label(text="", icon=self.icon_bta)
+                    row.prop(self, "icon_bta", text="Icon Name")                 
+
+                    box.separator()    
+
+                    row = box.column(align=False)      
+                    row.operator('wm.url_open', text = 'Icon Reference Sheet', icon='HELP').url = "https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/reference%20sheets/blender_internal_icons_2.79.png"                           
+                    row.label(text = 'Use only names from the icon reference sheet!', icon='BLANK1')    
+                    row.label(text = 'And only as capital letters!', icon='BLANK1')    
+                    row.label(text = 'Otherwise reboot the addon to avoid infinite recursion!', icon='BLANK1')    
+
                 box.separator() 
                 box.separator() 
 
@@ -850,11 +781,24 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 box.separator()              
 
                 row = box.row(align=False)                    
-                row.prop(self, "use_internal_icon_btb", text="Use Internal or Custom Icon")     
-            
-                row = box.row(align=False)                    
-                row.prop(self, "icon_btb", text="Icon Name")
+                row.prop(self, "use_internal_icon_btb", text="Use Internal or External Icon")     
+
+                if self.use_internal_icon_btb ==True:            
+
+                    box.separator()
+                        
+                    row = box.row(align=False)                    
+                    row.label(text="", icon=self.icon_btb)                
+                    row.prop(self, "icon_btb", text="Icon Name")
                  
+                    box.separator()    
+
+                    row = box.column(align=False)      
+                    row.operator('wm.url_open', text = 'Icon Reference Sheet', icon='HELP').url = "https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/reference%20sheets/blender_internal_icons_2.79.png"                           
+                    row.label(text = 'Use only names from the icon reference sheet!', icon='BLANK1')      
+                    row.label(text = 'And only as capital letters!', icon='BLANK1')    
+                    row.label(text = 'Otherwise reboot the addon to avoid infinite recursion!', icon='BLANK1')    
+
                 box.separator() 
                 box.separator() 
 
@@ -901,11 +845,24 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 box.separator()              
 
                 row = box.row(align=False)                    
-                row.prop(self, "use_internal_icon_btc", text="Use Internal or Custom Icon")     
-            
-                row = box.row(align=False)                    
-                row.prop(self, "icon_btc", text="Icon Name")
-                 
+                row.prop(self, "use_internal_icon_btc", text="Use Internal or External Icon")     
+
+                if self.use_internal_icon_btc ==True:            
+
+                    box.separator()
+                        
+                    row = box.row(align=False)                    
+                    row.label(text="", icon=self.icon_btc)                   
+                    row.prop(self, "icon_btc", text="Icon Name")                 
+
+                    box.separator()    
+
+                    row = box.column(align=False)      
+                    row.operator('wm.url_open', text = 'Icon Reference Sheet', icon='HELP').url = "https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/reference%20sheets/blender_internal_icons_2.79.png"                           
+                    row.label(text = 'Use only names from the icon reference sheet!', icon='BLANK1')       
+                    row.label(text = 'And only as capital letters!', icon='BLANK1')    
+                    row.label(text = 'Otherwise reboot the addon to avoid infinite recursion!', icon='BLANK1')    
+
                 box.separator() 
                 box.separator() 
 
@@ -952,10 +909,23 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 box.separator()              
 
                 row = box.row(align=False)                    
-                row.prop(self, "use_internal_icon_btd", text="Use Internal or Custom Icon")     
-            
-                row = box.row(align=False)                    
-                row.prop(self, "icon_btd", text="Icon Name")
+                row.prop(self, "use_internal_icon_btd", text="Use Internal or External Icon")     
+
+                if self.use_internal_icon_btd ==True:            
+
+                    box.separator()
+                        
+                    row = box.row(align=False)                    
+                    row.label(text="", icon=self.icon_btd)                    
+                    row.prop(self, "icon_btd", text="Icon Name")
+
+                    box.separator()    
+
+                    row = box.column(align=False)      
+                    row.operator('wm.url_open', text = 'Icon Reference Sheet', icon='HELP').url = "https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/reference%20sheets/blender_internal_icons_2.79.png"                           
+                    row.label(text = 'Use only names from the icon reference sheet!', icon='BLANK1')      
+                    row.label(text = 'And only as capital letters!', icon='BLANK1')    
+                    row.label(text = 'Otherwise reboot the addon to avoid infinite recursion!', icon='BLANK1')     
                  
                 box.separator() 
                 box.separator() 
@@ -1003,11 +973,24 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 box.separator()              
 
                 row = box.row(align=False)                    
-                row.prop(self, "use_internal_icon_bte", text="Use Internal or Custom Icon")     
-            
-                row = box.row(align=False)                    
-                row.prop(self, "icon_bte", text="Icon Name")
-                 
+                row.prop(self, "use_internal_icon_bte", text="Use Internal or External Icon")     
+           
+                if self.use_internal_icon_bte ==True:            
+
+                    box.separator()
+                        
+                    row = box.row(align=False)                    
+                    row.label(text="", icon=self.icon_bte)                  
+                    row.prop(self, "icon_bte", text="Icon Name")
+
+                    box.separator()    
+
+                    row = box.column(align=False)      
+                    row.operator('wm.url_open', text = 'Icon Reference Sheet', icon='HELP').url = "https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/reference%20sheets/blender_internal_icons_2.79.png"                           
+                    row.label(text = 'Use only names from the icon reference sheet!', icon='BLANK1')     
+                    row.label(text = 'And only as capital letters!', icon='BLANK1')    
+                    row.label(text = 'Otherwise reboot the addon to avoid infinite recursion!', icon='BLANK1')                    
+
                 box.separator() 
                 box.separator() 
 
@@ -1055,11 +1038,24 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 box.separator()              
 
                 row = box.row(align=False)                    
-                row.prop(self, "use_internal_icon_btf", text="Use Internal or Custom Icon")     
+                row.prop(self, "use_internal_icon_btf", text="Use Internal or External Icon")     
             
-                row = box.row(align=False)                    
-                row.prop(self, "icon_btf", text="Icon Name")
-                 
+                if self.use_internal_icon_btf ==True:            
+
+                    box.separator()
+                        
+                    row = box.row(align=False)                    
+                    row.label(text="", icon=self.icon_btf)                   
+                    row.prop(self, "icon_btf", text="Icon Name")                 
+
+                    box.separator()    
+
+                    row = box.column(align=False)      
+                    row.operator('wm.url_open', text = 'Icon Reference Sheet', icon='HELP').url = "https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/reference%20sheets/blender_internal_icons_2.79.png"                           
+                    row.label(text = 'Use only names from the icon reference sheet!', icon='BLANK1')       
+                    row.label(text = 'And only as capital letters!', icon='BLANK1')    
+                    row.label(text = 'Otherwise reboot the addon to avoid infinite recursion!', icon='BLANK1')    
+
                 box.separator() 
                 box.separator() 
 
@@ -1109,6 +1105,17 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 row.prop(self, 'tab_snapset_add_tools', expand=True)
 
                 box.separator() 
+
+                row = box.row(align=False)  
+                row.prop(self, 'use_hotkey_button')
+                row.prop(self, 'use_event_button')
+
+                row = box.row(align=False)  
+                row.prop(self, 'use_ctrl_button')
+                row.prop(self, 'use_alt_button')
+                row.prop(self, 'use_shift_button')
+     
+                box.separator()
 
                 row = box.column(align=True)  
                 row.label(text="This modal operator with shortcut, it keep the modal close to the selection, while running.")
@@ -1173,6 +1180,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
             row.label(text="> attention: the icon names have always to be written as capitalization.")
 
             box.separator()
+
+
 
 
         # LOCATION #
@@ -1256,22 +1265,52 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
             row.prop(self, 'tab_display_name',  expand=True)
 
             box.separator() 
-            box.separator() 
             
             #-----------------------------------------------------
+           
+            box.separator() 
+            box = col.box().column(align=True)         
+            box.separator()
+         
+            row = box.row(align=True)  
+            row.label(text="Special Menu [W]", icon ="COLLAPSEMENU")         
 
+            box.separator()            
+         
+            row = box.column(align=True)          
+            row.label(text="A snapset menu will be added to the default special menu.")
+
+            box.separator() 
+
+            row = box.row(align=True)  
+            row.prop(self, 'tab_snapset_special', expand=True)
+
+            if self.tab_snapset_special == 'remove':
+                pass
+            else:
+
+                box.separator() 
+
+                row = box.column(align=True)  
+                row.prop(self, 'toggle_special_snapset_separator')
+                row.prop(self, 'toggle_special_snapset_icon')
+
+            box.separator()
+
+            #-----------------------------------------------------
+
+            box.separator()
             box = col.box().column(align=True)
-
             box.separator()
             
             row = box.row(align=True)  
-            row.label(text="Conext Menu: [SHIFT+W] ", icon ="COLLAPSEMENU")        
+            row.label(text="Context Menu:", icon ="COLLAPSEMENU")        
 
             box.separator() 
 
             row = box.row(align=True)  
             row.prop(self, 'tab_snapset_menu', expand=True)
-         
+
             if self.tab_snapset_menu == 'pie': 
                
                 box.separator()   
@@ -1308,73 +1347,160 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 row.prop(self, 'use_ruler_button')
                 row.prop(self, 'use_pencil_menu')
 
- 
-            box.separator()
-            box.separator()
-
-            #-----------------------------------------------------
-
-            box = col.box().column(align=True)
-         
+        
             box.separator()
          
-            row = box.row(align=True)  
-            row.label(text="Special Menu [W]", icon ="COLLAPSEMENU")         
-
-            box.separator()            
-         
-            row = box.column(align=True)          
-            row.label(text="A snapset menu will be added to the default special menu.")
-
-            box.separator() 
-
-            row = box.row(align=True)  
-            row.prop(self, 'tab_snapset_special', expand=True)
-
-            if self.tab_snapset_special == 'remove':
+            if self.tab_snapset_menu == 'remove':
                 pass
-            else:
+            else:  
 
+                box = col.box().column(align=True)
+                box.separator()
+
+                row = box.row(align=False)  
+                row.prop(self, 'use_hotkey')
+                row.prop(self, 'use_event')
+
+                row = box.row(align=False)  
+                row.prop(self, 'use_ctrl')
+                row.prop(self, 'use_alt')
+                row.prop(self, 'use_shift')
+     
+                box.separator()             
+                box.separator()              
+
+                # TIP #            
+                row = box.row(align=True)             
+                row.label(text="! Change Hotkeys !", icon ="INFO")
+
+                row = box.column(align=True) 
+                row.label(text="1 > Only capital letters for a new key allowed!", icon ="BLANK1")
+                row.label(text="2 > Save preferences for a permanet use!", icon ="BLANK1")
+                row.label(text="3 > Restarting blender ensure that the new key was attached!", icon ="BLANK1")
+               
                 box.separator() 
 
-                row = box.column(align=True)  
-                row.prop(self, 'toggle_special_snapset_separator')
-                row.prop(self, 'toggle_special_snapset_icon')
+                row = box.row(align=False)              
+                row.operator('wm.url_open', text = 'Type of Key-Events').url = "https://github.com/mkbreuer/Misc-Share-Archiv/blob/master/images/SHORTCUTS_Type%20of%20key%20event.png?raw=true"
+
+                box.separator()  
+
 
             box.separator()
-            box.separator()
-
-
-            #-----------------------------------------------------
-
             box = col.box().column(align=True)
-           
-            box.separator()              
-            box.separator()              
-
-            # TIP #            
-            row = box.row(align=True)             
-            row.label(text="! For key change go to > Edit: Preferences > Keymap !", icon ="INFO")
-
-            row = box.column(align=True) 
-            row.label(text="1 > change search to key-bindig and insert the hotkey: shift w or f", icon ="BLANK1")
-            row.label(text="2 > go to 3D View > Call Menu [SHIFT+W]: VIEW3D_TP_SnapSet_Menu /_Pie!", icon ="BLANK1")
-            row.label(text="3 > go to Objectmode > Operator [F]: tpc_ot.snapset_modal!", icon ="BLANK1")
-            row.label(text="4 > choose a new key configuration and save preferences !", icon ="BLANK1")
-
-            box.separator()  
-
-            row = box.row(align=True)             
-            row.label(text="Or edit the keymap script directly:", icon ="BLANK1")
-
-            box.separator()  
-
-            row = box.row(align=True)  
-            row.label(text="", icon ="BLANK1")
-            row.operator("tpc_ot.keymap_snapset", text = 'Open KeyMap in Text Editor')
-            row.operator('wm.url_open', text = 'Type of Events').url = "https://github.com/mkbreuer/Misc-Share-Archiv/blob/master/images/SHORTCUTS_Type%20of%20key%20event.png?raw=true"
-            
             box.separator()
+              
+            row = box.column(align=False)
+            row.label(text="Order of tools in all Menus:")   
+
+            box.separator() 
+ 
+            row = box.row(align=False)
+            row.alignment = 'LEFT'
+            row.prop(self, "tpc_use_grid", text='')  
+            
+            button_snap_grid = icons.get("icon_snap_grid")
+            row.label(text="Grid", icon_value=button_snap_grid.icon_id)
+            row.label(text="> snap pivot with absolute grid alignment")   
+         
+            box.separator() 
+
+            row = box.row(align=False)
+            row.alignment = 'LEFT'
+            row.prop(self, "tpc_use_grid_modal", text='')  
+            
+            button_snap_grid = icons.get("icon_snap_grid")
+            row.label(text="GridM", icon_value=button_snap_grid.icon_id)
+            row.label(text="> snap pivot with absolute grid alignment til release")              
+
+            box.separator()            
+           
+            row = box.row(align=False)
+            row.alignment = 'LEFT'
+            row.prop(self, "tpc_use_place", text='')   
+           
+            button_snap_place = icons.get("icon_snap_place")
+            row.label(text="Place", icon_value=button_snap_place.icon_id)             
+            row.label(text="> snap pivot to surface of other objects")   
+
+            box.separator() 
+           
+            row = box.row(align=False)
+            row.alignment = 'LEFT'
+            row.prop(self, "tpc_use_place_modal", text='')   
+           
+            button_snap_place = icons.get("icon_snap_place")
+            row.label(text="PlaceM", icon_value=button_snap_place.icon_id)             
+            row.label(text="> snap pivot to surface of other objects til release")   
+
+            box.separator()            
+           
+            row = box.row(align=False)
+            row.alignment = 'LEFT'
+            row.prop(self, "tpc_use_cursor", text='') 
+
+            button_snap_cursor = icons.get("icon_snap_cursor")           
+            row.label(text="Cursor", icon_value=button_snap_cursor.icon_id) 
+            row.label(text="> set 3d cursor to active or selected")   
+           
+            box.separator()            
+           
+            row = box.row(align=False)
+            row.alignment = 'LEFT' 
+            row.prop(self, "tpc_use_closest", text='')  
+
+            button_snap_closest = icons.get("icon_snap_closest")
+            row.label(text="Closest", icon_value=button_snap_closest.icon_id)            
+            row.label(text="> snap closest point onto target")   
+            
+            box.separator()            
+           
+            row = box.row(align=False)
+            row.alignment = 'LEFT'  
+            row.prop(self, "tpc_use_active", text='')
+          
+            button_snap_active = icons.get("icon_snap_active")            
+            row.label(text="Active", icon_value=button_snap_active.icon_id) 
+            row.label(text="> snap active pivot onto target")   
+           
+            box.separator()           
+           
+            row = box.row(align=False)
+            row.alignment = 'LEFT'
+            row.prop(self, "tpc_use_retopo", text='')  
+          
+            button_snap_retopo = icons.get("icon_snap_retopo")
+            row.label(text="Retopo", icon_value=button_snap_retopo.icon_id) 
+            row.label(text="> snap selected onto target in editmode")   
+          
+            box.separator()           
+           
+            row = box.row(align=False)
+            row.alignment = 'LEFT'
+            row.prop(self, "tpc_use_retopo_modal", text='')  
+          
+            button_snap_retopo = icons.get("icon_snap_retopo")
+            row.label(text="RetopoM", icon_value=button_snap_retopo.icon_id) 
+            row.label(text="> snap selected onto target in editmode til release")  
+
+            box.separator() 
+            box = col.box().column(align=True)
+            box.separator() 
+      
+            row = box.column(align=False)              
+            row.label(text="...M = Modal Tools:")   
+            row.label(text="> After execute the snap setting toggle to the needed preference.")   
+            row.label(text="> When finished the settings switch back to the previous one.")   
+            
+            box.separator() 
+      
+            row = box.column(align=False)              
+            row.label(text="Checkbox:", icon='CHECKBOX_HLT')   
+            row.label(text="> toggle the tools in the menus on or off.")   
+          
+            box.separator() 
+
+
 
 
 

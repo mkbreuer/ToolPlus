@@ -29,345 +29,314 @@ from . icons.icons import load_icons
 
 EDIT = ["EDIT_MESH", "EDIT_CURVE", "EDIT_SURFACE", "EDIT_LATTICE", "EDIT_METABALL", "EDIT_ARMATURE"]
 
-# DRAW UI LAYOUT #
-def draw_origin_ui(self, context, layout):
-    
-    layout = self.layout.column_flow(align=True)  
-    layout.operator_context = 'INVOKE_REGION_WIN'
-    
-    panel_prefs = context.user_preferences.addons[__package__].preferences
+EDIT_REST = ["EDIT_CURVE", "EDIT_SURFACE", "EDIT_LATTICE", "EDIT_METABALL", "EDIT_ARMATURE"]
 
+def draw_originset_panel_layout(self, context, layout):
+          
     icons = load_icons()
-
-    col = layout.column(align=True)   
-
-    box = col.box().column(align=True)                         
     
-    row = box.column(align=True)
-    
-    button_origin_cursor = icons.get("icon_origin_cursor")
-    row.operator("tpc_ot.set_origin_to", text="Origin to Cursor", icon_value=button_origin_cursor.icon_id).mode = "ORIGIN_CURSOR"
-        
-    row.separator()
+    addon_prefs = context.user_preferences.addons[__package__].preferences
 
-    button_origin_center_view = icons.get("icon_origin_center_view")
-    row.operator("tpc_ot.set_origin_to", text="Origin to Center", icon_value=button_origin_center_view.icon_id).mode = "ORIGIN_CENTER"       
-
-    obj = context.active_object
-    if obj:
-        if obj.type in {'MESH'}:
-
-            row = box.row(align=True)  
-            if len(bpy.context.selected_objects) == 1:               
-                if context.mode in EDIT:                   
-                    button_origin_center_loc = icons.get("icon_origin_center_loc")
-                    row.operator("tpc_ot.snaporigin_modal", text="Object to Center", icon_value=button_origin_center_loc.icon_id).mode = "cursor, obm, clear, edm"
-                else:                
-                    button_origin_center_loc = icons.get("icon_origin_center_loc")
-                    row.operator("tpc_ot.snaporigin_modal", text="Object to Center", icon_value=button_origin_center_loc.icon_id).mode = "cursor, obm, clear"
-
-    box.separator()
-
-    row = box.column(align=True)
-    
-    button_origin_tomesh = icons.get("icon_origin_tomesh")
-    row.operator("tpc_ot.set_origin_to", text="Origin to Object", icon_value=button_origin_tomesh.icon_id).mode = "ORIGIN_GEOMETRY"
-  
-    button_origin_meshto = icons.get("icon_origin_meshto")
-    row.operator("tpc_ot.set_origin_to", text="Object to Origin", icon_value=button_origin_meshto.icon_id).mode = "GEOMETRY_ORIGIN"
-
-    row.separator()
-   
-    button_origin_mass = icons.get("icon_origin_mass")           
-    row.operator("tpc_ot.set_origin_to", text="Mass (Surface)", icon_value=button_origin_mass.icon_id).mode = "ORIGIN_CENTER_OF_MASS"
-    row.operator("tpc_ot.set_origin_to", text="Mass (Volume)", icon_value=button_origin_mass.icon_id).mode = "ORIGIN_CENTER_OF_VOLUME"
+    layout.scale_y = addon_prefs.scale_y
  
-    box.separator() 
-
     if context.mode == 'EDIT_MESH':
+        if addon_prefs.display_layout_separator_iA == True: 
+            layout.separator()   
+             
+        if addon_prefs.display_select_edm_A == True:                
+            if addon_prefs.use_button_icons ==True: 
+                button_origin_edm = icons.get("icon_origin_edm")   
+                layout.operator("tpc_ops.origin_to_edit_selected","Select-Edm", icon_value=button_origin_edm.icon_id).mode="SET_EDIT"                 
+            else: 
+                layout.operator("tpc_ops.origin_to_edit_selected","Select-Edm").mode="SET_EDIT"                   
 
-        row = box.column(align=True)
-                    
-        row.operator("tpc_ot.set_origin_to", text="Linked Mesh", icon ="LINKED").mode = "LINKED_MESH, ORIGIN_CURSOR"
-        row.operator("tpc_ot.set_origin_to", text="Selected Mesh", icon ="EDIT").mode = "SELECTED_MESH, ORIGIN_CURSOR"   
+        if addon_prefs.display_select_obm_A == True:
+            if addon_prefs.use_button_icons ==True: 
+                button_origin_obj = icons.get("icon_origin_obj")   
+                layout.operator("tpc_ops.origin_to_edit_selected","Select-Obm", icon_value=button_origin_obj.icon_id).mode="SET_OBJECT"         
+            else: 
+                layout.operator("tpc_ops.origin_to_edit_selected","Select-Obm").mode="SET_OBJECT"     
 
+
+    if context.mode in EDIT_REST: 
+             
+        if addon_prefs.display_select_edm_B == True:
+            if addon_prefs.use_button_icons ==True: 
+                button_origin_edm = icons.get("icon_origin_edm")   
+                layout.operator("tpc_ops.origin_to_edit_selected","Select-Edm", icon_value=button_origin_edm.icon_id).mode="SET_EDIT"                
+            else:                     
+                layout.operator("tpc_ops.origin_to_edit_selected","Select-Edm").mode="SET_EDIT"         
+
+            
+        if addon_prefs.display_select_obm_B == True:
+            if addon_prefs.use_button_icons ==True: 
+                button_origin_obj = icons.get("icon_origin_obj")   
+                layout.operator("tpc_ops.origin_to_edit_selected","Select-Obm", icon_value=button_origin_obj.icon_id).mode="SET_OBJECT"       
+            else:     
+                layout.operator("tpc_ops.origin_to_edit_selected","Select-Obm").mode="SET_OBJECT"     
+
+            
+    if addon_prefs.display_advance_edm == True:
+
+        if context.mode in EDIT_REST: 
+            if addon_prefs.display_layout_separator_iB == True: 
+                layout.separator()   
+        else:
+            if addon_prefs.display_layout_separator_j == True: 
+                layout.separator()   
+           
+        if context.mode in EDIT:   
+            if addon_prefs.use_button_icons ==True: 
+                button_origin_mesh = icons.get("icon_origin_mesh")                
+                layout.operator("tpc_ops.origin_transform", "Advanced Align", icon_value=button_origin_mesh.icon_id)    
+            else:                      
+                layout.operator("tpc_ops.origin_transform", "Advanced Align")   
+  
+
+
+
+
+# DRAW UI LAYOUT #
+def draw_originset_ui(self, context, layout):
     
-        row.separator()        
-      
-        button_origin_edm = icons.get("icon_origin_edm")   
-        row.operator("tpc_ot.snaporigin_modal", text="M-Select-EdM", icon_value=button_origin_edm.icon_id).mode = "cursor, obm, edm"
+    addon_prefs = context.user_preferences.addons[__package__].preferences
+    
+    icons = load_icons()          
+    
+    settings = context.tool_settings
+    layout.operator_context = 'INVOKE_REGION_WIN'
 
-        button_origin_obj = icons.get("icon_origin_obj")   
-        row.operator("tpc_ot.snaporigin_modal", text="M-Select-ObM", icon_value=button_origin_obj.icon_id).mode = "cursor, obm"
+    layout = layout.box().column(align=True) 
+
+    layout.scale_y = addon_prefs.scale_y
+
+    if addon_prefs.display_origin_to_cursor == True:
+        if addon_prefs.use_button_icons ==True: 
+            button_origin_cursor = icons.get("icon_origin_cursor")
+            layout.operator("tpc_ops.set_origin_to", text="Origin to Cursor", icon_value=button_origin_cursor.icon_id).mode = "ORIGIN_CURSOR"
+        else:                
+            layout.operator("tpc_ops.set_origin_to", text="Origin to Cursor").mode = "ORIGIN_CURSOR"
 
 
-   
+
+    if addon_prefs.display_layout_separator_a == True:
+        layout.separator()
+    
+    if addon_prefs.display_origin_to_center == True:
+        if addon_prefs.use_button_icons ==True: 
+            button_origin_center_view = icons.get("icon_origin_center_view")
+            layout.operator("tpc_ops.set_origin_to", text="Origin to Center", icon_value=button_origin_center_view.icon_id).mode = "ORIGIN_CENTER"             
+        else:  
+            layout.operator("tpc_ops.set_origin_to", text="Origin to Center").mode = "ORIGIN_CENTER"       
+
+    if addon_prefs.display_object_to_center == True:
+        if len(bpy.context.selected_objects) == 1:               
+            if context.mode in EDIT:                   
+                if addon_prefs.use_button_icons ==True: 
+                    button_origin_center_loc = icons.get("icon_origin_center_loc")
+                    layout.operator("tpc_ops.snaporigin_modal", text="Object to Center", icon_value=button_origin_center_loc.icon_id).mode = "cursor, obm, clear, edm"
+                else:                         
+                    layout.operator("tpc_ops.snaporigin_modal", text="Object to Center").mode = "cursor, obm, clear, edm"
+
+            else:                
+                if addon_prefs.use_button_icons ==True: 
+                    button_origin_center_loc = icons.get("icon_origin_center_loc")
+                    layout.operator("tpc_ops.snaporigin_modal", text="Object to Center", icon_value=button_origin_center_loc.icon_id).mode = "cursor, obm, clear"             
+                else:                           
+                    layout.operator("tpc_ops.snaporigin_modal", text="Object to Center").mode = "cursor, obm, clear"       
+
+
+
+    if addon_prefs.display_layout_separator_b == True:
+        layout.separator()
+
+    if addon_prefs.display_origin_to_object == True:
+        if addon_prefs.use_button_icons ==True: 
+            button_origin_tomesh = icons.get("icon_origin_tomesh")
+            layout.operator("tpc_ops.set_origin_to", text="Origin to Object", icon_value=button_origin_tomesh.icon_id).mode = "ORIGIN_GEOMETRY"
+        else:                    
+            layout.operator("tpc_ops.set_origin_to", text="Origin to Object").mode = "ORIGIN_GEOMETRY"
+
+
+    if addon_prefs.display_object_to_origin == True:          
+        if addon_prefs.use_button_icons ==True: 
+            button_origin_meshto = icons.get("icon_origin_meshto")
+            layout.operator("tpc_ops.set_origin_to", text="Object to Origin", icon_value=button_origin_meshto.icon_id).mode = "GEOMETRY_ORIGIN"               
+        else:                 
+            layout.operator("tpc_ops.set_origin_to", text="Object to Origin").mode = "GEOMETRY_ORIGIN"
+
+    if addon_prefs.display_layout_separator_c == True:
+        layout.separator()
+
+    button_origin_mass = icons.get("icon_origin_mass") 
+    if addon_prefs.display_mass_surface == True:            
+        if addon_prefs.use_button_icons ==True: 
+            layout.operator("tpc_ops.set_origin_to", text="Mass (Surface)", icon_value=button_origin_mass.icon_id).mode = "ORIGIN_CENTER_OF_MASS"
+        else:                 
+            layout.operator("tpc_ops.set_origin_to", text="Mass (Surface)").mode = "ORIGIN_CENTER_OF_MASS"
+
+    if addon_prefs.display_mass_surface == True:  
+        if addon_prefs.use_button_icons ==True:             
+            layout.operator("tpc_ops.set_origin_to", text="Mass (Volume)", icon_value=button_origin_mass.icon_id).mode = "ORIGIN_CENTER_OF_VOLUME"
+        else:    
+            layout.operator("tpc_ops.set_origin_to", text="Mass (Volume)").mode = "ORIGIN_CENTER_OF_VOLUME"
+
+
+    if addon_prefs.display_layout_separator_d == True:       
+        layout.separator() 
+
 
     if context.mode == 'OBJECT':
-        
-        box.separator() 
-
-        row = box.column(align=True)
 
         selected = bpy.context.selected_objects
-        n = len(selected)                         
-        if n == 1:
+        n = len(selected)  
 
-            button_origin_tosnap = icons.get("icon_origin_tosnap")         
-            row.operator("tpc_ot.origin_to_snap_helper", text="Origin to Snap", icon_value=button_origin_tosnap.icon_id)
-
-        obj = context.active_object
-        if obj:
-            if obj.type in {'MESH'}:
-
-                button_origin_selected= icons.get("icon_origin_selected")   
-                row.operator("tpc_ot.snaporigin_modal", text="Origin to Select", icon_value=button_origin_selected.icon_id).mode = "cursor, obm"  
-                
-        if n > 1:
-            button_origin_to_active = icons.get("icon_origin_to_active") 
-            row.operator("tpc_ot.set_origin_to", text="Origin to Active", icon_value=button_origin_to_active.icon_id).mode = "COPY_ORIGIN, ORIGIN_CURSOR"   
-  
-
-
-    box.separator()
-
-                        
-    if context.mode == 'EDIT_MESH':
-    
-        row = box.column(align=True)
- 
-        button_origin_ccc = icons.get("icon_origin_ccc")            
-        row.operator("tpc_ot.origin_ccc","3P-Circle", icon_value=button_origin_ccc.icon_id)      
-
-
-    row = box.row(align=True)
-
-    obj = context.active_object     
-    if obj:                                                   
-        if obj.type in {'MESH'}: 
-
-            if context.mode == 'OBJECT':        
-                row.operator("tpc_ot.snap_to_bbox", text="BoundBoxM", icon="SNAP_PEEL_OBJECT")
-
-            row = box.row(align=True)
-            if panel_prefs.display_origin_bbox:                             
-                button_origin_bbox = icons.get("icon_origin_bbox")            
-                row.prop(panel_prefs, "display_origin_bbox", text="BoundBoxX", icon_value=button_origin_bbox.icon_id)                                 
-          
-            else:               
-                button_origin_bbox = icons.get("icon_origin_bbox")                
-                row.prop(panel_prefs, "display_origin_bbox", text="BoundBoxX", icon_value=button_origin_bbox.icon_id)
-
-                            
-            if panel_prefs.display_origin_bbox: 
-             
-                box.separator()                   
-                 
-                box.scale_x = 0.1
-                
-                row = box.row(align=True)                                     
-                row.alignment ='CENTER'         
-                row.label(" +Y Axis")
-                row.separator() 
-                row.label("   xY Axis")
-                row.separator()   
-                row.label("--Y Axis")
-
-                #####                  
-                row = box.row(align=True)                                     
-                row.alignment ='CENTER'
-                 
-                button_origin_left_top = icons.get("icon_origin_left_top")   
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_left_top.icon_id).mode='cubeback_cornertop_minus_xy'
-               
-                button_origin_top = icons.get("icon_origin_top")  
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_top.icon_id).mode='cubeback_edgetop_minus_y'
-                
-                button_origin_right_top = icons.get("icon_origin_right_top")
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_right_top.icon_id).mode='cubeback_cornertop_plus_xy'
-
-                row.separator()
-                
-                button_origin_left_top = icons.get("icon_origin_left_top")   
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_left_top.icon_id).mode='cubefront_edgetop_minus_x'
-                
-                button_origin_top = icons.get("icon_origin_top")  
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_top.icon_id).mode='cubefront_side_plus_z'
-                
-                button_origin_right_top = icons.get("icon_origin_right_top")
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_right_top.icon_id).mode='cubefront_edgetop_plus_x'
-
-                row.separator()
-                
-                button_origin_left_top = icons.get("icon_origin_left_top")   
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_left_top.icon_id).mode='cubefront_cornertop_minus_xy'
-                
-                button_origin_top = icons.get("icon_origin_top")  
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_top.icon_id).mode='cubeback_edgetop_plus_y'
-                
-                button_origin_right_top = icons.get("icon_origin_right_top")
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_right_top.icon_id).mode='cubefront_cornertop_plus_xy'
-                
-                #####
-
-                row = box.row(align=True)                          
-                row.alignment ='CENTER' 
-                
-                button_origin_left = icons.get("icon_origin_left")
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_left.icon_id).mode='cubefront_edgemiddle_minus_x'
-               
-                button_origin_cross = icons.get("icon_origin_cross")
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_cross.icon_id).mode='cubefront_side_plus_y'
-                
-                button_origin_right = icons.get("icon_origin_right")
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_right.icon_id).mode='cubefront_edgemiddle_plus_x'
-
-                row.separator()
-
-                button_origin_left = icons.get("icon_origin_left")
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_left.icon_id).mode='cubefront_side_minus_x'
-               
-                if context.mode == 'OBJECT':
-                    button_origin_diagonal = icons.get("icon_origin_diagonal")
-                    row.operator('object.origin_set', text="", icon_value=button_origin_diagonal.icon_id).type='ORIGIN_GEOMETRY'
-                else:
-                    button_origin_diagonal = icons.get("icon_origin_diagonal")
-                    row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_diagonal.icon_id).mode='origin_set_editcenter'
-                
-                button_origin_right = icons.get("icon_origin_right")
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_right.icon_id).mode='cubefront_side_plus_x'
-
-                row.separator()
-                
-                button_origin_left = icons.get("icon_origin_left")
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_left.icon_id).mode='cubefront_edgemiddle_minus_y'
-                
-                button_origin_cross = icons.get("icon_origin_cross")
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_cross.icon_id).mode='cubefront_side_minus_y'
-                
-                button_origin_right = icons.get("icon_origin_right")
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_right.icon_id).mode='cubefront_edgemiddle_plus_y'
-
-                #####
-
-                row = box.row(align=True)
-                row.alignment ='CENTER' 
-                
-                button_origin_left_bottom = icons.get("icon_origin_left_bottom")
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_left_bottom.icon_id).mode='cubeback_cornerbottom_minus_xy'
-                
-                button_origin_bottom = icons.get("icon_origin_bottom")
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_bottom.icon_id).mode='cubefront_edgebottom_plus_y'
-                
-                button_origin_right_bottom = icons.get("icon_origin_right_bottom")
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_right_bottom.icon_id).mode='cubeback_cornerbottom_plus_xy'
-
-                row.separator()
-                
-                button_origin_left_bottom = icons.get("icon_origin_left_bottom")
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_left_bottom.icon_id).mode='cubefront_edgebottom_minus_x'
-                
-                button_origin_bottom = icons.get("icon_origin_bottom")
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_bottom.icon_id).mode='cubefront_side_minus_z'
-                
-                button_origin_right_bottom = icons.get("icon_origin_right_bottom")
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_right_bottom.icon_id).mode='cubefront_edgebottom_plus_x'    
-
-                row.separator()
-
-                button_origin_left_bottom = icons.get("icon_origin_left_bottom")
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_left_bottom.icon_id).mode='cubefront_cornerbottom_minus_xy'
-                
-                button_origin_bottom = icons.get("icon_origin_bottom")
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_bottom.icon_id).mode='cubefront_edgebottom_minus_y'
-                
-                button_origin_right_bottom = icons.get("icon_origin_right_bottom")
-                row.operator('tpc_ot.origin_to_bounding_box', text="", icon_value=button_origin_right_bottom.icon_id).mode='cubefront_cornerbottom_plus_xy'
-
-                box.separator()
-                box.separator()
-
-                row = box.row(align=True)
-                row.prop(context.object, "show_bounds", text="Show Bounds") 
-                row.prop(context.object, "draw_bounds_type", text="") 
-
-                box.separator()
-                box = col.box().column(align=True) 
-
-
-        else:
-            if context.mode == 'OBJECT':        
-                row.operator("tpc_ot.snap_to_bbox", text="BoundBoxM", icon="SNAP_PEEL_OBJECT")
-
+        if addon_prefs.display_origin_to_snap == True:                         
+            if n == 1:                
+                if addon_prefs.use_button_icons ==True:   
+                    button_origin_tosnap = icons.get("icon_origin_tosnap")         
+                    layout.operator("tpc_ops.origin_to_snap_helper", text="Origin to Snap", icon_value=button_origin_tosnap.icon_id)
+                else:                           
+                    layout.operator("tpc_ops.origin_to_snap_helper", text="Origin to Snap")
       
+        if addon_prefs.display_origin_to_select == True: 
+            obj = context.active_object
+            if obj:                
+                if obj.type in {'MESH'}:
+                    if addon_prefs.use_button_icons ==True:   
+                        button_origin_selected= icons.get("icon_origin_selected")   
+                        layout.operator("tpc_ops.snaporigin_modal", text="Origin to SelectM", icon_value=button_origin_selected.icon_id).mode = "cursor, obm"  
+                    else:                             
+                        layout.operator("tpc_ops.snaporigin_modal", text="Origin to SelectM").mode = "cursor, obm"  
+
+        if addon_prefs.display_origin_to_active == True:                         
+            if n > 1:
+                if addon_prefs.use_button_icons ==True:                     
+                    button_origin_to_active = icons.get("icon_origin_to_active") 
+                    layout.operator("tpc_ops.set_origin_to", text="Origin to Active", icon_value=button_origin_to_active.icon_id).mode = "COPY_ORIGIN, ORIGIN_CURSOR"    
+                else:                           
+                    layout.operator("tpc_ops.set_origin_to", text="Origin to Active").mode = "COPY_ORIGIN, ORIGIN_CURSOR"   
+
+
+        if addon_prefs.display_layout_separator_e == True: 
+            layout.separator()         
+
+
+
+    if context.mode == 'EDIT_MESH':
+
+        if addon_prefs.display_linked_mesh == True:            
+            if addon_prefs.use_button_icons ==True:     
+                layout.operator("tpc_ops.set_origin_to", text="Linked Mesh", icon ="LINKED").mode = "LINKED_MESH, ORIGIN_CURSOR"
+            else:                     
+                layout.operator("tpc_ops.set_origin_to", text="Linked Mesh").mode = "LINKED_MESH, ORIGIN_CURSOR"
+           
+        if addon_prefs.display_selected_mesh == True:             
+            if addon_prefs.use_button_icons ==True:  
+                layout.operator("tpc_ops.set_origin_to", text="Selected Mesh", icon ="EDIT").mode = "SELECTED_MESH, ORIGIN_CURSOR"   
+            else:                    
+                layout.operator("tpc_ops.set_origin_to", text="Selected Mesh").mode = "SELECTED_MESH, ORIGIN_CURSOR"   
+
+        if addon_prefs.display_layout_separator_f == True: 
+            layout.separator()
+
+        if addon_prefs.display_mselect_edm == True:  
+            if addon_prefs.use_button_icons ==True:  
+                button_origin_edm = icons.get("icon_origin_edm")   
+                layout.operator("tpc_ops.snaporigin_modal", text="Edm-SelectM", icon_value=button_origin_edm.icon_id).mode = "cursor, obm, edm"
+            else:                     
+                layout.operator("tpc_ops.snaporigin_modal", text="Edm-SelectM").mode = "cursor, obm, edm"
+
+        if addon_prefs.display_mselect_obm == True:  
+            if addon_prefs.use_button_icons ==True:  
+                button_origin_obj = icons.get("icon_origin_obj")   
+                layout.operator("tpc_ops.snaporigin_modal", text="Obm-SelectM", icon_value=button_origin_obj.icon_id).mode = "cursor, obm"
+            else:                    
+                row.operator("tpc_ops.snaporigin_modal", text="Obm-SelectM").mode = "cursor, obm"
+
+        if addon_prefs.display_layout_separator_g == True: 
+            layout.separator()
+       
+        if addon_prefs.display_3_point_circle == True:           
+            if addon_prefs.use_button_icons ==True:  
+                button_origin_ccc = icons.get("icon_origin_ccc")            
+                layout.operator("tpc_ops.origin_ccc","3P-Circle", icon_value=button_origin_ccc.icon_id)          
+            else:                     
+                layout.operator("tpc_ops.origin_ccc","3P-Circle")      
+
+  
+    if context.mode == 'OBJECT':        
+              
+        if addon_prefs.display_boundbox_m == True:  
+            if addon_prefs.use_button_icons ==True:  
+                layout.operator("tpc_ops.snap_to_bbox", text="BoundBoxM", icon="SNAP_PEEL_OBJECT")
+            else:                    
+                layout.operator("tpc_ops.snap_to_bbox", text="BoundBoxM")
+   
+
+    if addon_prefs.display_boundbox_x == True:  
+        obj = context.active_object     
+        if obj:                                                               
+            if obj.type in {'MESH'}: 
+                if addon_prefs.use_button_icons ==True:                                     
+                    button_origin_bbox = icons.get("icon_origin_bbox")            
+                    layout.operator("tpc_ops.bbox_origin_set", text="BoundBoxX", icon_value=button_origin_bbox.icon_id)                                                                 
+                else:                          
+                    layout.operator("tpc_ops.bbox_origin_set", text="BoundBoxX")                                 
 
 
     if context.mode == 'OBJECT':  
 
-        box.separator()          
-       
-        row = box.column(align=True)
+        if addon_prefs.display_layout_separator_h == True: 
+            layout.separator()    
 
-        button_origin_distribute = icons.get("icon_origin_distribute")  
-        row.operator("tpc_ot.distribute_objects_menu", "Distribute", icon_value=button_origin_distribute.icon_id)
+        if addon_prefs.display_distribute == True:   
+            if addon_prefs.use_button_icons ==True:                   
+                button_origin_distribute = icons.get("icon_origin_distribute")  
+                layout.operator("tpc_ops.distribute_objects_menu", "Distribute", icon_value=button_origin_distribute.icon_id)
+            else:                      
+                layout.operator("tpc_ops.distribute_objects_menu", "Distribute")
 
-        button_origin_align = icons.get("icon_origin_align")                
-        row.operator("tpc_ot.advanced_align_tools", "Advanced", icon_value=button_origin_align.icon_id)    
+        if addon_prefs.display_advance_obm == True:   
+            if addon_prefs.use_button_icons ==True:     
+                button_origin_align = icons.get("icon_origin_align")                
+                layout.operator("tpc_ops.advanced_align_tools", "Advanced Align", icon_value=button_origin_align.icon_id)       
+            else:                      
+                layout.operator("tpc_ops.advanced_align_tools", "Advanced Align")    
+                                                      
+
+    if context.mode == 'EDIT_MESH':
+        draw_originset_panel_layout(self, context, layout) 
+
+    if context.mode == 'EDIT_CURVE':            
+        draw_originset_panel_layout(self, context, layout) 
+ 
+    if context.mode == 'EDIT_SURFACE':            
+        draw_originset_panel_layout(self, context, layout) 
+
+    if context.mode == 'EDIT_METABALL':            
+        draw_originset_panel_layout(self, context, layout) 
+   
+    if context.mode == 'EDIT_LATTICE':            
+        draw_originset_panel_layout(self, context, layout)             
+             
+    if  context.mode == 'PARTICLE':       
+        draw_originset_panel_layout(self, context, layout) 
+
+    if context.mode == 'EDIT_ARMATURE':
+        draw_originset_panel_layout(self, context, layout)             
+
+    if context.mode == 'POSE':
+        draw_originset_panel_layout(self, context, layout) 
 
 
-    if context.mode in EDIT:   
+    if addon_prefs.display_layout_separator_k == True: 
+        layout.separator()   
 
-        if context.mode == 'EDIT_MESH':
-            pass
-        else:
-            box.separator()  
-
-            row = box.column(align=True)          
-
-            button_origin_edm = icons.get("icon_origin_edm")   
-            row.operator("tpc_ot.origin_to_edit_selected","Select-EdM", icon_value=button_origin_edm.icon_id).mode="SET_EDIT"       
-            
-            button_origin_obj = icons.get("icon_origin_obj")   
-            row.operator("tpc_ot.origin_to_edit_selected","Select-ObM", icon_value=button_origin_obj.icon_id).mode="SET_OBJECT"           
-
-            
-        box.separator()  
-        
-        row = box.column(align=True)          
-
-        button_origin_mesh = icons.get("icon_origin_mesh")                
-        row.operator("tpc_ot.origin_transform", "Advanced", icon_value=button_origin_mesh.icon_id)    
-
-
-    box.separator()  
-    
-    row = box.row(align=True)         
-
-    if panel_prefs.display_origin_zero_edm:                     
-        button_align_zero = icons.get("icon_align_zero")          
-        row.prop(panel_prefs, "display_origin_zero_edm", text="Zero to Axis", icon_value=button_align_zero.icon_id)                             
-
-    else:
-        button_align_zero = icons.get("icon_align_zero")              
-        row.prop(panel_prefs, "display_origin_zero_edm", text="Zero to Axis", icon_value=button_align_zero.icon_id)               
-                           
-    if panel_prefs.display_origin_zero_edm: 
-
-        box.separator()   
-
-        row = box.row(align=True)
-        row.prop(panel_prefs, 'tp_switch', expand=True)       
-    
-        box.separator() 
-
-        row = box.row()
-        row.prop(panel_prefs, 'align_x')
-        row.prop(panel_prefs, 'align_y')
-        row.prop(panel_prefs, 'align_z')
-        
-        sub = row.row(align=True)
-        sub.scale_x = 0.95         
-        button_origin_apply = icons.get("icon_origin_apply")  
-        sub.operator("tpc_ot.zero_axis", "RUN")#, icon_value=button_origin_apply.icon_id)  
-        
-    box.separator() 
+                   
+    if addon_prefs.display_zero_to_axis == True:  
+        if addon_prefs.use_button_icons ==True:   
+            button_align_zero = icons.get("icon_align_zero")          
+            layout.operator("tpc_ops.zero_axis_menu", text="Zero XYZ-Axis", icon_value=button_align_zero.icon_id)               
+        else: 
+            layout.operator("tpc_ops.zero_axis_menu", text="Zero XYZ-Axis")        

@@ -68,7 +68,7 @@ def edit_align_function(tp_axis, tp_orient, tp_mirror, propedit, falloff, propsi
 class VIEW3D_OT_Origin_Transform(bpy.types.Operator):
     """align selected mesh to an axis"""
     bl_label = "Align to Axis"
-    bl_idname = "tpc_ot.origin_transform"
+    bl_idname = "tpc_ops.origin_transform"
     bl_options = {'REGISTER', 'UNDO'}
     
     tp_axis = bpy.props.EnumProperty(

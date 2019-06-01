@@ -23,7 +23,7 @@
 bl_info = {
     "name": "T+ Origin",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 4),
+    "version": (0, 2, 5),
     "blender": (2, 79, 0),
     "location": "3D View > Tool [T] or Property [N] Shelf Panel, Menus [CTRL+D], Special Menu [W], Header",
     "description": "collection of origin modal operators",
@@ -79,34 +79,34 @@ modules = developer_utils.setup_addon_modules(__path__, __name__, "bpy" in local
 
 
 # PANEL TO CONTAINING THE TOOLS #
-class VIEW3D_PT_Origin_Panel_TOOLS(bpy.types.Panel):
+class VIEW3D_PT_OriginSet_Panel_TOOLS(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
     bl_category = 'T+'
-    bl_label = "Set Origin"
+    bl_label = "OriginSet"
     bl_options = {'DEFAULT_CLOSED'}
 
     def draw(self, context):
         layout = self.layout
         
-        draw_origin_ui(self, context, layout)
+        draw_originset_ui(self, context, layout)
 
 
-class VIEW3D_PT_Origin_Panel_UI(bpy.types.Panel):
+class VIEW3D_PT_OriginSet_Panel_UI(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_label = "Set Origin"
+    bl_label = "OriginSet"
     bl_options = {'DEFAULT_CLOSED'}
 
     def draw(self, context):
         layout = self.layout
         
-        draw_origin_ui(self, context, layout)
+        draw_originset_ui(self, context, layout)
 
 
 
 # UPDATE TAB CATEGORY FOR PANEL IN THE TOOLSHELF #
-panels = (VIEW3D_PT_Origin_Panel_UI, VIEW3D_PT_Origin_Panel_TOOLS)
+panels = (VIEW3D_PT_OriginSet_Panel_UI, VIEW3D_PT_OriginSet_Panel_TOOLS)
 
 def update_panel(self, context):
     message = "Template: Updating Panel locations has failed"
@@ -114,17 +114,19 @@ def update_panel(self, context):
         for panel in panels:
             if "bl_rna" in panel.__dict__:
                 bpy.utils.unregister_class(panel)
-  
-        if context.user_preferences.addons[__name__].preferences.tab_origin_location == 'tools':
-         
-            VIEW3D_PT_Origin_Panel_TOOLS.bl_category = context.user_preferences.addons[__name__].preferences.category
-            bpy.utils.register_class(VIEW3D_PT_Origin_Panel_TOOLS)
-        
-        if context.user_preferences.addons[__name__].preferences.tab_origin_location == 'ui':
-            
-            bpy.utils.register_class(VIEW3D_PT_Origin_Panel_UI)
 
-        if context.user_preferences.addons[__name__].preferences.tab_origin_location == 'off':  
+        addon_key = context.user_preferences.addons[__name__].preferences
+  
+        if addon_key.tab_origin_location == 'tools':
+         
+            VIEW3D_PT_OriginSet_Panel_TOOLS.bl_category = addon_key.category
+            bpy.utils.register_class(VIEW3D_PT_OriginSet_Panel_TOOLS)
+        
+        if addon_key.tab_origin_location == 'ui':
+            
+            bpy.utils.register_class(VIEW3D_PT_OriginSet_Panel_UI)
+
+        if addon_key.tab_origin_location == 'off':  
             return None
 
     except Exception as e:
@@ -146,7 +148,9 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
                ('header',"Header", "Header")),
         default='info')
 
+
     #------------------------------
+
 
     # PANEL #          
     tab_origin_location = EnumProperty(
@@ -164,7 +168,9 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
               update=update_panel
               )
 
+
     #------------------------------
+
 
     # LAYOUT SCALE #
     scale_y = bpy.props.FloatProperty(name="Scale Y",  description="scale layout space for menus", default=1.2, min=1, max=1.5)
@@ -202,8 +208,25 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
         default='remove', update = update_origin_header)   
    
     tab_origin_header_text = bpy.props.BoolProperty(name="Show/Hide Menu Text", description="on / off", default=True)   
+
+
+    # KEYMAP #      
+    use_hotkey=bpy.props.StringProperty(name = 'Key', default="D", description = 'change hotkey / only capital letters allowed') 
+    use_ctrl=BoolProperty(name= 'use Ctrl', description = 'enable key for menu', default=True) 
+    use_alt=BoolProperty(name= 'use Alt', description = 'enable key for menu', default=False) 
+    use_shift=BoolProperty(name= 'use Shift', description = 'enable key for menu', default=False) 
+    use_event = EnumProperty(
+        items=[('DOUBLE_CLICK',  "DOUBLE CLICK", "key event"),
+               ('CLICK',         "CLICK",        "key event"),
+               ('RELEASE',       "RELEASE",      "key event"),
+               ('PRESS',         "PRESS",        "key event"),
+               ('ANY',           "ANY",          "key event"),],
+        name="",
+        default='PRESS')
+
         
     #------------------------------
+
 
     # TOOLS #
     tab_display_tools = bpy.props.BoolProperty(name="Advanced", description="on / off", default=False)   
@@ -220,7 +243,9 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
 
     loc_offset = FloatVectorProperty(name="Location Offset", description="Offset for location align position", default=(0.0, 0.0, 0.0), subtype='XYZ', size=3)       
 
+
     #------------------------------
+
    
     # ZERO AXIS #
     tp_switch = bpy.props.EnumProperty(
@@ -238,7 +263,9 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
     tp_origin_offset = FloatVectorProperty(name="Offset", description="offset align position", default=(0.0, 0.0, 0.0), subtype='XYZ', size=3)
     tp_align_offset = FloatVectorProperty(name="Offset", description="offset align position", default=(0.0, 0.0, 0.0), subtype='XYZ', size=3)
 
+
     #------------------------------
+
 
     # DISPLAY TOOLS IN LAYOUTS #
     
@@ -286,6 +313,10 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
     display_layout_separator_iB = bpy.props.BoolProperty(name="Separator 09",  description="toggle layout separator on or off", default=True) 
     display_layout_separator_j = bpy.props.BoolProperty(name="Separator 10",  description="toggle layout separator on or off", default=True) 
     display_layout_separator_k = bpy.props.BoolProperty(name="Separator 11",  description="toggle layout separator on or off", default=True) 
+
+    # ICONS #
+    use_button_icons = bpy.props.BoolProperty(name="Toggle Icons",  description="toggle icons on or off", default=True) 
+
 
     #------------------------------
     
@@ -391,7 +422,7 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
             box.separator()
             
             row = box.row(align=True)  
-            row.label(text="Context Menu: [CTRL+D] ", icon ="COLLAPSEMENU")        
+            row.label(text="Context Menu:", icon ="COLLAPSEMENU")        
 
             box.separator() 
 
@@ -438,19 +469,31 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
                 box.separator() 
                
                 row = box.column(align=False)                  
-                row.label(text="(*) > Modal Operator = click on a vertex, edge or face to place the origin.")   
+                row.label(text="(*) > Modal Operator = ...M")   
+                row.label(text="(*) > Click on a vertex, edge or face to place the origin.")   
               
-                box.separator()
                 box.separator() 
+                box = col.box().column(align=True)
+                box.separator()   
                
-                row = box.column(align=False)           
-                row.label(text="Order of tools in menu")            
-              
+                row = box.row(align=False)           
+                row.label(text = '', icon='COLLAPSEMENU')   
+                row.label(text="Order of tools in menu")  
+           
+                box.separator()                            
+            
+                row = box.row(align=False)        
+                row.prop(self, 'use_button_icons')                               
+
+                box.separator()           
                 box.separator()           
                
                 row = box.row(align=False)            
                 row.prop(self, 'display_origin_to_cursor', text="")
-                row.label(text="(dft) > Origin to Cursor = set origin to cursor.")
+                if self.use_button_icons ==True: 
+                    button_origin_cursor = icons.get("icon_origin_cursor")                
+                    row.label(text="", icon_value=button_origin_cursor.icon_id)   
+                row.label(text="Origin to Cursor (dft)")
            
                 box.separator()              
             
@@ -460,12 +503,18 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
                 box.separator()  
               
                 row = box.row(align=False)  
-                row.prop(self, 'display_origin_to_center', text="")              
-                row.label(text="(dft) > Origin to Center = set origin to 3D view center.")
+                row.prop(self, 'display_origin_to_center', text="")  
+                if self.use_button_icons ==True: 
+                    button_origin_center_view = icons.get("icon_origin_center_view")                
+                    row.label(text="", icon_value=button_origin_center_view.icon_id)          
+                row.label(text="Origin to Center (dft)")
       
                 row = box.row(align=False)
                 row.prop(self, 'display_object_to_center', text="")
-                row.label(text="(obm) > Object to Center: set origin to mesh and relocate object to 3D view center. (*)")   
+                if self.use_button_icons ==True: 
+                    button_origin_center_loc = icons.get("icon_origin_center_loc")                
+                    row.label(text="", icon_value=button_origin_center_loc.icon_id)   
+                row.label(text="Object to CenterM (obm/*)")   
            
                 box.separator()               
               
@@ -475,12 +524,18 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
                 box.separator()  
 
                 row = box.row(align=False)  
-                row.prop(self, 'display_origin_to_object', text="")            
-                row.label(text="(dft) > Origin to Object = set origin to geometry.")
+                row.prop(self, 'display_origin_to_object', text="")     
+                if self.use_button_icons ==True: 
+                    button_origin_tomesh = icons.get("icon_origin_tomesh")                
+                    row.label(text="", icon_value=button_origin_tomesh.icon_id)         
+                row.label(text="Origin to Object (dft)")
 
                 row = box.row(align=False)  
-                row.prop(self, 'display_object_to_origin', text="")               
-                row.label(text="(dft) > Object to Origin = set geometry to origin. ")
+                row.prop(self, 'display_object_to_origin', text="")  
+                if self.use_button_icons ==True: 
+                    button_origin_meshto = icons.get("icon_origin_meshto")                
+                    row.label(text="", icon_value=button_origin_meshto.icon_id)                
+                row.label(text="Object to Origin (dft)")
            
                 box.separator()                  
                 
@@ -490,12 +545,18 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
                 box.separator()       
      
                 row = box.row(align=False)  
-                row.prop(self, 'display_mass_surface', text="")            
-                row.label(text="(dft) > Mass (Surface) = set origin to center of surface mass.")
+                row.prop(self, 'display_mass_surface', text="")  
+                if self.use_button_icons ==True: 
+                    button_origin_mass = icons.get("icon_origin_mass")                
+                    row.label(text="", icon_value=button_origin_mass.icon_id)            
+                row.label(text="Mass (Surface) (dft)")
 
                 row = box.row(align=False)  
-                row.prop(self, 'display_mass_volume', text="")            
-                row.label(text="(dft) > Mass (Volume) = set origin to center of volume mass.")
+                row.prop(self, 'display_mass_volume', text="")    
+                if self.use_button_icons ==True: 
+                    button_origin_mass = icons.get("icon_origin_mass")                
+                    row.label(text="", icon_value=button_origin_mass.icon_id)        
+                row.label(text="Mass (Volume) (dft)")
            
                 box.separator()        
                           
@@ -506,15 +567,24 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
               
                 row = box.row(align=False)
                 row.prop(self, 'display_origin_to_snap', text="")
-                row.label(text="(obm) > Object to Snap: snap origin with a emtpty to snap point [CTRL]. (*)")               
+                if self.use_button_icons ==True: 
+                    button_origin_tosnap = icons.get("icon_origin_tosnap")                
+                    row.label(text="", icon_value=button_origin_tosnap.icon_id)   
+                row.label(text="Object to SnapM: [CTRL] (obm/*)")               
              
                 row = box.row(align=False)
-                row.prop(self, 'display_origin_to_select', text="")            
-                row.label(text="(obm) > Origin to Select: snap origin to mesh geometry (*)")             
+                row.prop(self, 'display_origin_to_select', text="")     
+                if self.use_button_icons ==True: 
+                    button_origin_selected = icons.get("icon_origin_selected")                
+                    row.label(text="", icon_value=button_origin_selected.icon_id)       
+                row.label(text="Origin to SelectM (obm/*)")             
              
                 row = box.row(align=False)  
-                row.prop(self, 'display_origin_to_active', text="")                        
-                row.label(text="(obm) > Origin to Active: align origin for all selected to a active object.")
+                row.prop(self, 'display_origin_to_active', text="")    
+                if self.use_button_icons ==True: 
+                    button_origin_to_active = icons.get("icon_origin_to_active")                
+                    row.label(text="", icon_value=button_origin_to_active.icon_id)                    
+                row.label(text="Origin to Active (obm)")
            
                 box.separator()  
      
@@ -524,12 +594,16 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
                 box.separator()  
          
                 row = box.row(align=False)  
-                row.prop(self, 'display_linked_mesh', text="")            
-                row.label(text="(edm) > Linked Mesh = select linked mesh and set origin to selected.")
+                row.prop(self, 'display_linked_mesh', text="") 
+                if self.use_button_icons ==True:              
+                    row.label(text="", icon ="LINKED")            
+                row.label(text="Linked Mesh (edm/mesh)")
 
                 row = box.row(align=False)  
                 row.prop(self, 'display_selected_mesh', text="")
-                row.label(text="(edm) > Selected Mesh = set origin to selected geometry: vertices, edges or faces. (*)")         
+                if self.use_button_icons ==True:               
+                    row.label(text="", icon ="EDIT")   
+                row.label(text="Selected Mesh (edm/mesh)")         
            
                 box.separator()        
               
@@ -539,12 +613,19 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
                 box.separator()  
 
                 row = box.row(align=False)  
-                row.prop(self, 'display_mselect_edm', text="")            
-                row.label(text="(edm) > M-Select-EdM = set origin to active or selected mesh and stay in editmode. (*)")                   
+                row.prop(self, 'display_mselect_edm', text="") 
+                if self.use_button_icons ==True: 
+                    button_origin_edm = icons.get("icon_origin_edm")                
+                    row.label(text="", icon_value=button_origin_edm.icon_id)             
+                row.label(text="Edm-SelectM (edm/*/mesh)")                   
 
+                ######
                 row = box.row(align=False)  
                 row.prop(self, 'display_mselect_obm', text="")            
-                row.label(text="(edm) > M-Select-ObM = set origin to active or selected mesh and stay in editmode. (*)")                   
+                if self.use_button_icons ==True: 
+                    button_origin_obj = icons.get("icon_origin_obj")                
+                    row.label(text="", icon_value=button_origin_obj.icon_id)                
+                row.label(text="Obm-SelectM (edm/*/mesh)")                   
            
                 box.separator()                 
                 
@@ -555,15 +636,23 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
 
                 row = box.row(align=False)  
                 row.prop(self, 'display_3_point_circle', text="")            
-                row.label(text="(edm) > 3P-Circle = set origin to a circle center of 3 selected vertices")
+                if self.use_button_icons ==True: 
+                    button_origin_ccc = icons.get("icon_origin_ccc")                
+                    row.label(text="", icon_value=button_origin_ccc.icon_id)  
+                row.label(text="3P-Circle (edm)")
 
                 row = box.row(align=False)  
                 row.prop(self, 'display_boundbox_m', text="")            
-                row.label(text="(obm) > BoundBoxM = set origin to a point on a wrapped bounding box. (*)")
+                if self.use_button_icons ==True:              
+                    row.label(text="", icon="SNAP_PEEL_OBJECT")  
+                row.label(text="BoundBoxM (obm/*)")
 
                 row = box.row(align=False)  
                 row.prop(self, 'display_boundbox_x', text="")              
-                row.label(text="(mesh) > BoundBoxX = set origin to a point on the bounding box for all selected.")          
+                if self.use_button_icons ==True: 
+                    button_origin_bbox = icons.get("icon_origin_bbox")                
+                    row.label(text="", icon_value=button_origin_bbox.icon_id)  
+                row.label(text="(mesh) > BoundBoxX (obm/edm/mesh)")          
            
                 box.separator()  
                 
@@ -574,11 +663,17 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
 
                 row = box.row(align=False)  
                 row.prop(self, 'display_distribute', text="")            
-                row.label(text="(obm) > Distribute: even spacing between selected objects origin with xyz axis and offset.")   
+                if self.use_button_icons ==True: 
+                    button_origin_distribute = icons.get("icon_origin_distribute")                
+                    row.label(text="", icon_value=button_origin_distribute.icon_id)  
+                row.label(text="Distribute (obm)")   
 
                 row = box.row(align=False)  
                 row.prop(self, 'display_advance_obm', text="")
-                row.label(text="(obm) > Advanced: align object, origin or cursor to active with max, mid or min values and offset.")   
+                if self.use_button_icons ==True: 
+                    button_origin_align = icons.get("icon_origin_align")                
+                    row.label(text="", icon_value=button_origin_align.icon_id)  
+                row.label(text="Advanced Align (obm)")   
            
                 box.separator()              
            
@@ -589,11 +684,17 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
                
                 row = box.row(align=False) 
                 row.prop(self, 'display_select_edm_A', text="")
-                row.label(text="(edm) > Edm-Select = set origin to active or selected mesh and stay in editmode.")
+                if self.use_button_icons ==True: 
+                    button_origin_edm = icons.get("icon_origin_edm")                
+                    row.label(text="", icon_value=button_origin_edm.icon_id)  
+                row.label(text="Edm-Select (edm)")
 
                 row = box.row(align=False) 
                 row.prop(self, 'display_select_obm_A', text="")
-                row.label(text="(edm) > Obm-Select = set origin to active or selected mesh and toggle to objectmode.")     
+                if self.use_button_icons ==True: 
+                    button_origin_obj = icons.get("icon_origin_obj")                
+                    row.label(text="", icon_value=button_origin_obj.icon_id)  
+                row.label(text="Obm-Select (edm)")     
 
                 box.separator()              
            
@@ -604,12 +705,17 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
                
                 row = box.row(align=False) 
                 row.prop(self, 'display_select_edm_B', text="")
-                row.label(text="(edit) > Edm-Select = set origin to active or selected mesh and stay in editmode.")
+                if self.use_button_icons ==True: 
+                    button_origin_edm = icons.get("icon_origin_edm")                
+                    row.label(text="", icon_value=button_origin_edm.icon_id)  
+                row.label(text="Edm-Select (edit)")
 
                 row = box.row(align=False) 
                 row.prop(self, 'display_select_obm_B', text="")
-                row.label(text="(edit) > Obm-Select = set origin to active or selected mesh and toggle to objectmode.")     
-
+                if self.use_button_icons ==True: 
+                    button_origin_obj = icons.get("icon_origin_obj")                
+                    row.label(text="", icon_value=button_origin_obj.icon_id)  
+                row.label(text="Obm-Select (edit)")     
            
                 box.separator()              
             
@@ -620,7 +726,10 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
 
                 row = box.row(align=False)  
                 row.prop(self, 'display_advance_edm', text="")
-                row.label(text="(edit) > Advanced: align vertices, edges or faces to axis or normal direction, etc.")   
+                if self.use_button_icons ==True: 
+                    button_origin_mesh = icons.get("icon_origin_mesh")                
+                    row.label(text="", icon_value=button_origin_mesh.icon_id)  
+                row.label(text="Advanced Align (edit)")   
            
                 box.separator()          
             
@@ -631,43 +740,48 @@ class Addon_Preferences_Origin(bpy.types.AddonPreferences):
       
                 row = box.row(align=False)  
                 row.prop(self, 'display_zero_to_axis', text="")            
-                row.label(text="> Zero to Axis = align object, origin or cursor to one of the 3d view axis.")
+                if self.use_button_icons ==True: 
+                    button_align_zero = icons.get("icon_align_zero")                
+                    row.label(text="", icon_value=button_align_zero.icon_id)  
+                row.label(text="Zero to Axis (obm/edit)")
                         
                 box.separator() 
 
 
+            if self.tab_origin_menu == 'remove':
+                box.separator()
+            else: 
+                box.separator()
+                box = layout.box().column(align=True)
+                box.separator()
 
-            #-----------------------------------------------------
+                row = box.row(align=False)  
+                row.prop(self, 'use_hotkey')
+                row.prop(self, 'use_event')
 
-            col = layout.column(align=True)   
+                row = box.row(align=False)  
+                row.prop(self, 'use_ctrl')
+                row.prop(self, 'use_alt')
+                row.prop(self, 'use_shift')
+     
+                box.separator()             
+                box.separator()              
 
-            box = col.box().column(align=True)
-           
-            box.separator()              
-            box.separator()              
+                # TIP #            
+                row = box.row(align=True)             
+                row.label(text="! Change Hotkeys !", icon ="INFO")
 
-            # TIP #            
-            row = box.row(align=True)             
-            row.label(text="! For key change go to > Edit: Preferences > Keymap !", icon ="INFO")
+                row = box.column(align=True) 
+                row.label(text="1 > Only capital letters for a new key allowed!", icon ="BLANK1")
+                row.label(text="2 > Save preferences for a permanet use!", icon ="BLANK1")
+                row.label(text="3 > Restarting blender ensure that the new key was attached!", icon ="BLANK1")
+               
+                box.separator() 
 
-            row = box.column(align=True) 
-            row.label(text="1 > change search to key-bindig and insert the hotkey: ctrl d", icon ="BLANK1")
-            row.label(text="2 > go to 3D View > Call Menu [CTRL+D]: VIEW3D_MT_Origin_Menu /_Pie!", icon ="BLANK1")
-            row.label(text="3 > choose a new key configuration and save preferences !", icon ="BLANK1")
+                row = box.row(align=False)              
+                row.operator('wm.url_open', text = 'Type of Key-Events').url = "https://github.com/mkbreuer/Misc-Share-Archiv/blob/master/images/SHORTCUTS_Type%20of%20key%20event.png?raw=true"
 
-            box.separator()  
-
-            row = box.row(align=True)             
-            row.label(text="Or edit the keymap script directly:", icon ="BLANK1")
-
-            box.separator()  
-
-            row = box.row(align=True)  
-            row.label(text="", icon ="BLANK1")
-            row.operator("tpc_ot.keymap_origin", text = 'Open KeyMap in Text Editor')
-            row.operator('wm.url_open', text = 'Type of Events').url = "https://github.com/mkbreuer/Misc-Share-Archiv/blob/master/images/SHORTCUTS_Type%20of%20key%20event.png?raw=true"
-            
-            box.separator()
+                box.separator()  
 
 
 
@@ -720,7 +834,7 @@ def register():
 
 
     # MANUAL #
-    bpy.utils.register_manual_map(VIEW3D_MT_Origin_Manual)
+    bpy.utils.register_manual_map(VIEW3D_MT_OriginSet_Manual)
 
 
 def unregister():
@@ -729,7 +843,7 @@ def unregister():
     except: traceback.print_exc()
  
     # MANUAL #
-    bpy.utils.unregister_manual_map(VIEW3D_MT_Origin_Manual) 
+    bpy.utils.unregister_manual_map(VIEW3D_MT_OriginSet_Manual) 
 
 if __name__ == "__main__":
     register()

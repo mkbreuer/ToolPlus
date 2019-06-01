@@ -7,7 +7,7 @@ from os.path import dirname
 from . import ui_keymap
 
 class VIEW3D_OT_KeyMap_TextEditor_Origin(bpy.types.Operator):
-    bl_idname = "tpc_ot.keymap_origin"
+    bl_idname = "tpc_ops.keymap_origin"
     bl_label = "Open KeyMap (Text Editor)"
     bl_description = "open keymap file in the text editor"
 

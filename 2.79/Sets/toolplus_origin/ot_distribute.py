@@ -29,7 +29,7 @@ from mathutils import Vector
 
 class VIEW3D_OT_Distribute_Objects(bpy.types.Operator):
     """Space Objects between there Origins"""
-    bl_idname = "tpc_ot.distribute_objects"
+    bl_idname = "tpc_ops.distribute_objects"
     bl_label = "Distribute Objects"       
     bl_options = {'REGISTER', 'UNDO', 'PRESET'}   
 
@@ -154,7 +154,7 @@ class VIEW3D_OT_Distribute_Objects(bpy.types.Operator):
 
 class VIEW3D_OT_Distribute_Objects_Menu(bpy.types.Operator):
     """Space Objects between there Origins"""
-    bl_idname = "tpc_ot.distribute_objects_menu"
+    bl_idname = "tpc_ops.distribute_objects_menu"
     bl_label = "Distribute Objects"       
     bl_options = {'REGISTER', 'UNDO', 'PRESET'}   
 
@@ -202,7 +202,7 @@ class VIEW3D_OT_Distribute_Objects_Menu(bpy.types.Operator):
 
     def execute(self, context):
 
-        bpy.ops.tpc_ot.distribute_objects(Boolx=self.Boolx, Booly=self.Booly, Boolz=self.Boolz, Invert=self.Invert, tp_offset=self.tp_offset)
+        bpy.ops.tpc_ops.distribute_objects(Boolx=self.Boolx, Booly=self.Booly, Boolz=self.Boolz, Invert=self.Invert, tp_offset=self.tp_offset)
 
         return {'FINISHED'}
 

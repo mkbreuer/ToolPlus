@@ -77,7 +77,7 @@ def origin_cursor_function(loc_x, loc_y, loc_z, loc_offset):
 
 class VIEW3D_OT_Origin_Cursor_Align(bpy.types.Operator):
     """align origin to cursor"""
-    bl_idname = "tpc_ot.origin_cursor_align"
+    bl_idname = "tpc_ops.origin_cursor_align"
     bl_label = "origin align"
     bl_description = "Origin Cursor"
     bl_options = {'REGISTER', 'UNDO'}

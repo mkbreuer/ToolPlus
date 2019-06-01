@@ -38,7 +38,12 @@ def update_snapset_menu(self, context):
             bpy.utils.register_class(VIEW3D_MT_SnapSet_Menu)
 
             km = kc.keymaps.new(name='3D View', space_type='VIEW_3D')
-            kmi = km.keymap_items.new('wm.call_menu', 'W', 'PRESS', shift=True) #, ctrl=True, alt=True)
+            kmi = km.keymap_items.new('wm.call_menu', 
+            addon_prefs.use_hotkey, 
+            addon_prefs.use_event, 
+            shift=addon_prefs.use_shift, 
+            ctrl=addon_prefs.use_ctrl, 
+            alt=addon_prefs.use_alt)
             kmi.properties.name = "VIEW3D_MT_SnapSet_Menu"    
 
 
@@ -47,7 +52,12 @@ def update_snapset_menu(self, context):
             bpy.utils.register_class(VIEW3D_MT_SnapSet_Menu_Pie)
 
             km = kc.keymaps.new(name='3D View', space_type='VIEW_3D')
-            kmi = km.keymap_items.new('wm.call_menu_pie', 'W', 'PRESS', shift=True) #, ctrl=True, alt=True)
+            kmi = km.keymap_items.new('wm.call_menu_pie', 
+            addon_prefs.use_hotkey, 
+            addon_prefs.use_event, 
+            shift=addon_prefs.use_shift, 
+            ctrl=addon_prefs.use_ctrl, 
+            alt=addon_prefs.use_alt)
             kmi.properties.name = "VIEW3D_MT_SnapSet_Menu_Pie"   
             
 
@@ -81,7 +91,12 @@ def update_snapset_tools(self, context):
 
             #km = kc.keymaps.new(name='Object Mode', space_type='EMPTY')
             km = kc.keymaps.new(name='3D View', space_type='VIEW_3D')
-            kmi = km.keymap_items.new('tpc_ot.snapset_modal', 'F', 'PRESS') #, ctrl=True, alt=True, shift=True)
+            kmi = km.keymap_items.new('tpc_ot.snapset_modal', 
+            addon_prefs.use_hotkey_button, 
+            addon_prefs.use_event_button, 
+            shift=addon_prefs.use_shift_button, 
+            ctrl=addon_prefs.use_ctrl_button, 
+            alt=addon_prefs.use_alt_button)
             kmi.properties.mode = "place"               
             addon_keymaps.append((km,kmi))
 

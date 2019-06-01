@@ -131,7 +131,7 @@ def create_empty_object(context, self):
 
 class VIEW3D_OT_Zero_Origin_to_Active(bpy.types.Operator):
     """align origin to active object"""                 
-    bl_idname = "tpc_ot.origin_to_active"          
+    bl_idname = "tpc_ops.origin_to_active"          
     bl_label = "Origin to Active"                 
     bl_options = {'REGISTER', 'UNDO'}   
 

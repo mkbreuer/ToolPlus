@@ -18,7 +18,8 @@ class VIEW3D_MT_SnapSet_Menu_Panel(bpy.types.Menu):
 
         layout.scale_y = 1.5
 
-        addon_prefs = context.user_preferences.addons[__package__].preferences
+        addon_key = __package__.split(".")[0]    
+        addon_prefs = context.user_preferences.addons[addon_key].preferences
 
         if addon_prefs.tpc_use_grid == True:
             if addon_prefs.use_internal_icon_bta == True:  
@@ -103,9 +104,11 @@ def draw_snapset_ui(self, context, layout):
             tx_snapset_closet = addon_prefs.name_bte
             tx_snapset_cursor = addon_prefs.name_btc
             tx_snapset_grid   = addon_prefs.name_bta
+            tx_snapset_gridM   = "GridM"
             tx_snapset_place  = addon_prefs.name_btb
+            tx_snapset_placeM  = "PlaceM"
             tx_snapset_retopo = addon_prefs.name_btf
-
+            tx_snapset_retopoM = "RetopoM"
 
         if addon_prefs.tab_display_name_pl == 'icon_id':  
    
@@ -113,8 +116,11 @@ def draw_snapset_ui(self, context, layout):
             tx_snapset_closet = " "
             tx_snapset_cursor = " "
             tx_snapset_grid   = " "
+            tx_snapset_gridM   = " "
             tx_snapset_place  = " "
+            tx_snapset_placeM  = " "
             tx_snapset_retopo = " "
+            tx_snapset_retopoM = " "
  
 
         # OPTIONS #  
@@ -124,6 +130,9 @@ def draw_snapset_ui(self, context, layout):
             row = box.row(align=True)
 
         #row.scale_y = 1.5
+    
+        button_snap_grid = icons.get("icon_snap_grid")
+        row.operator("tpc_ot.snapset_grid", text= tx_snapset_grid, icon_value=button_snap_grid.icon_id)
 
         if addon_prefs.tpc_use_grid == True:
             if addon_prefs.use_internal_icon_bta == True:  
@@ -134,7 +143,7 @@ def draw_snapset_ui(self, context, layout):
  
         if addon_prefs.tpc_use_grid_modal_panel == True:
             button_snap_grid = icons.get("icon_snap_grid")
-            row.operator("tpc_ot.snapset_modal", text="GridM", icon_value=button_snap_grid.icon_id).mode = "grid"
+            row.operator("tpc_ot.snapset_modal", text=tx_snapset_gridM, icon_value=button_snap_grid.icon_id).mode = "grid"
 
 
         if context.mode == 'OBJECT':
@@ -148,7 +157,7 @@ def draw_snapset_ui(self, context, layout):
             
             if addon_prefs.tpc_use_place_modal_panel == True:
                 button_snap_place = icons.get("icon_snap_place")
-                row.operator("tpc_ot.snapset_modal", text="PlaceM", icon_value=button_snap_place.icon_id).mode = "place"
+                row.operator("tpc_ot.snapset_modal", text=tx_snapset_placeM, icon_value=button_snap_place.icon_id).mode = "place"
 
         else:
             if addon_prefs.tpc_use_retopo == True:
@@ -160,7 +169,7 @@ def draw_snapset_ui(self, context, layout):
            
             if addon_prefs.tpc_use_retopo_modal_panel == True:              
                 button_snap_retopo = icons.get("icon_snap_retopo")
-                row.operator("tpc_ot.snapset_modal", text="RetopoM", icon_value=button_snap_retopo.icon_id).mode = "retopo"  
+                row.operator("tpc_ot.snapset_modal", text=tx_snapset_retopoM, icon_value=button_snap_retopo.icon_id).mode = "retopo"  
 
 
         if addon_prefs.use_internal_icon_btc == True:     

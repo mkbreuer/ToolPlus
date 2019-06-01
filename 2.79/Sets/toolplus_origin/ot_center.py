@@ -76,7 +76,7 @@ def get_three_verts_from_selection_(obj):
 
 class VIEW3D_OT_CircleCenterCursor(bpy.types.Operator):
     """circle center of three selected vertices"""
-    bl_idname = 'tpc_ot.tinycad_ccc'
+    bl_idname = 'tpc_ops.tinycad_ccc'
     bl_label = 'circle center from selected'
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -95,7 +95,7 @@ class VIEW3D_OT_CircleCenterCursor(bpy.types.Operator):
 
 class VIEW3D_OT_Origin_to_CCC(bpy.types.Operator):
     '''Set Origin to 3point Circle Center'''
-    bl_idname = "tpc_ot.origin_ccc"
+    bl_idname = "tpc_ops.origin_ccc"
     bl_label = "Origin to 3PCC"
     bl_options = {"REGISTER", 'UNDO'}   
 
@@ -123,7 +123,7 @@ class VIEW3D_OT_Origin_to_CCC(bpy.types.Operator):
             if len(selected_verts) >= 3:            
 
                 # cursor 3point circle center
-                bpy.ops.tpc_ot.tinycad_ccc()
+                bpy.ops.tpc_ops.tinycad_ccc()
                 
                 bpy.ops.mesh.select_all(action='TOGGLE')
                 

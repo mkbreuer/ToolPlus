@@ -30,7 +30,7 @@ from . icons.icons import load_icons
 class VIEW3D_OT_BBox_Origin_Set(bpy.types.Operator):
     """BBox Origin"""
     bl_label = "BBox Origin"
-    bl_idname = "tpc_ot.bbox_origin_set"               
+    bl_idname = "tpc_ops.bbox_origin_set"               
     bl_options = {'REGISTER', 'UNDO'}  
         
     #####
@@ -94,35 +94,35 @@ class VIEW3D_OT_BBox_Origin_Set(bpy.types.Operator):
         row.alignment ='CENTER'
          
         button_origin_left_top = icons.get("icon_origin_left_top")   
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_left_top.icon_id).mode="cubeback_cornertop_minus_xy"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_left_top.icon_id).mode="cubeback_cornertop_minus_xy"
        
         button_origin_top = icons.get("icon_origin_top")  
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_top.icon_id).mode="cubeback_edgetop_minus_y"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_top.icon_id).mode="cubeback_edgetop_minus_y"
         
         button_origin_right_top = icons.get("icon_origin_right_top")
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_right_top.icon_id).mode="cubeback_cornertop_plus_xy"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_right_top.icon_id).mode="cubeback_cornertop_plus_xy"
 
         row.separator()
         
         button_origin_left_top = icons.get("icon_origin_left_top")   
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_left_top.icon_id).mode="cubefront_edgetop_minus_x"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_left_top.icon_id).mode="cubefront_edgetop_minus_x"
         
         button_origin_top = icons.get("icon_origin_top")  
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_top.icon_id).mode="cubefront_side_plus_z"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_top.icon_id).mode="cubefront_side_plus_z"
         
         button_origin_right_top = icons.get("icon_origin_right_top")
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_right_top.icon_id).mode="cubefront_edgetop_plus_x"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_right_top.icon_id).mode="cubefront_edgetop_plus_x"
 
         row.separator()
         
         button_origin_left_top = icons.get("icon_origin_left_top")   
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_left_top.icon_id).mode="cubefront_cornertop_minus_xy"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_left_top.icon_id).mode="cubefront_cornertop_minus_xy"
         
         button_origin_top = icons.get("icon_origin_top")  
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_top.icon_id).mode="cubeback_edgetop_plus_y"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_top.icon_id).mode="cubeback_edgetop_plus_y"
         
         button_origin_right_top = icons.get("icon_origin_right_top")
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_right_top.icon_id).mode="cubefront_cornertop_plus_xy"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_right_top.icon_id).mode="cubefront_cornertop_plus_xy"
         
         #####
 
@@ -130,39 +130,39 @@ class VIEW3D_OT_BBox_Origin_Set(bpy.types.Operator):
         row.alignment ='CENTER' 
         
         button_origin_left = icons.get("icon_origin_left")
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_left.icon_id).mode="cubefront_edgemiddle_minus_x"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_left.icon_id).mode="cubefront_edgemiddle_minus_x"
        
         button_origin_cross = icons.get("icon_origin_cross")
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_cross.icon_id).mode="cubefront_side_plus_y"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_cross.icon_id).mode="cubefront_side_plus_y"
         
         button_origin_right = icons.get("icon_origin_right")
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_right.icon_id).mode="cubefront_edgemiddle_plus_x"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_right.icon_id).mode="cubefront_edgemiddle_plus_x"
 
         row.separator()
 
         button_origin_left = icons.get("icon_origin_left")
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_left.icon_id).mode="cubefront_side_minus_x"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_left.icon_id).mode="cubefront_side_minus_x"
        
         if context.mode == 'OBJECT':
             button_origin_diagonal = icons.get("icon_origin_diagonal")
             row.operator('object.origin_set', text="", icon_value=button_origin_diagonal.icon_id).type='ORIGIN_GEOMETRY'
         else:
             button_origin_diagonal = icons.get("icon_origin_diagonal")
-            row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_diagonal.icon_id).mode="origin_set_editcenter"
+            row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_diagonal.icon_id).mode="origin_set_editcenter"
         
         button_origin_right = icons.get("icon_origin_right")
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_right.icon_id).mode="cubefront_side_plus_x"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_right.icon_id).mode="cubefront_side_plus_x"
 
         row.separator()
         
         button_origin_left = icons.get("icon_origin_left")
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_left.icon_id).mode="cubefront_edgemiddle_minus_y"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_left.icon_id).mode="cubefront_edgemiddle_minus_y"
         
         button_origin_cross = icons.get("icon_origin_cross")
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_cross.icon_id).mode="cubefront_side_minus_y"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_cross.icon_id).mode="cubefront_side_minus_y"
         
         button_origin_right = icons.get("icon_origin_right")
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_right.icon_id).mode="cubefront_edgemiddle_plus_y"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_right.icon_id).mode="cubefront_edgemiddle_plus_y"
 
         #####
 
@@ -170,35 +170,35 @@ class VIEW3D_OT_BBox_Origin_Set(bpy.types.Operator):
         row.alignment ='CENTER' 
         
         button_origin_left_bottom = icons.get("icon_origin_left_bottom")
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_left_bottom.icon_id).mode="cubeback_cornerbottom_minus_xy"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_left_bottom.icon_id).mode="cubeback_cornerbottom_minus_xy"
         
         button_origin_bottom = icons.get("icon_origin_bottom")
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_bottom.icon_id).mode="cubefront_edgebottom_plus_y"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_bottom.icon_id).mode="cubefront_edgebottom_plus_y"
         
         button_origin_right_bottom = icons.get("icon_origin_right_bottom")
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_right_bottom.icon_id).mode="cubeback_cornerbottom_plus_xy"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_right_bottom.icon_id).mode="cubeback_cornerbottom_plus_xy"
 
         row.separator()
         
         button_origin_left_bottom = icons.get("icon_origin_left_bottom")
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_left_bottom.icon_id).mode="cubefront_edgebottom_minus_x"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_left_bottom.icon_id).mode="cubefront_edgebottom_minus_x"
         
         button_origin_bottom = icons.get("icon_origin_bottom")
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_bottom.icon_id).mode="cubefront_side_minus_z"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_bottom.icon_id).mode="cubefront_side_minus_z"
         
         button_origin_right_bottom = icons.get("icon_origin_right_bottom")
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_right_bottom.icon_id).mode="cubefront_edgebottom_plus_x"    
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_right_bottom.icon_id).mode="cubefront_edgebottom_plus_x"    
 
         row.separator()
 
         button_origin_left_bottom = icons.get("icon_origin_left_bottom")
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_left_bottom.icon_id).mode="cubefront_cornerbottom_minus_xy"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_left_bottom.icon_id).mode="cubefront_cornerbottom_minus_xy"
         
         button_origin_bottom = icons.get("icon_origin_bottom")
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_bottom.icon_id).mode="cubefront_edgebottom_minus_y"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_bottom.icon_id).mode="cubefront_edgebottom_minus_y"
         
         button_origin_right_bottom = icons.get("icon_origin_right_bottom")
-        row.operator("tpc_ot.origin_to_bounding_box", text="", icon_value=button_origin_right_bottom.icon_id).mode="cubefront_cornerbottom_plus_xy"
+        row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_right_bottom.icon_id).mode="cubefront_cornerbottom_plus_xy"
 
         box.separator()
 
@@ -332,7 +332,7 @@ class VIEW3D_OT_BBox_Origin_Set(bpy.types.Operator):
 
 class VIEW3D_OT_Origin_to_Bounding_Box(bpy.types.Operator):  
     """BBox Origin"""    
-    bl_idname = "tpc_ot.origin_to_bounding_box"  
+    bl_idname = "tpc_ops.origin_to_bounding_box"  
     bl_label = "BBoX"               
     bl_options = {'REGISTER', 'UNDO'} 
   
