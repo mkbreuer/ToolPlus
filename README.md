@@ -1,5 +1,4 @@
  # T+ Addons Collections for Blender 
- ### Blender is the free and open source 3D creation suite. It supports the entirety of the 3D pipeline-modeling, rigging, animation, simulation, rendering, compositing, motion tracking and video editing. https://www.blender.org/
 
  #### Download
 
@@ -19,3 +18,5 @@
 *  [![Donate](https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/Images/donate_pp.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KB6G3HNM86H9C&source=url)   :)
 
 *  [![Donate](https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/Images/donate_gumroad.png)](https://gumroad.com/l/tp_courier)   :)
+
+Blender is the free and open source 3D creation suite. It supports the entirety of the 3D pipeline-modeling, rigging, animation, simulation, rendering, compositing, motion tracking and video editing. https://www.blender.org/  Blender as a whole is licensed under the GNU Public License, Version 3. Individual files may have a different, but compatible license. See blender.org/about/license for details.
