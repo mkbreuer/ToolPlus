@@ -23,7 +23,7 @@
 bl_info = {
     "name": "OriginSet",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 6),
+    "version": (0, 2, 7),
     "blender": (2, 80, 0),
     "location": "3D View > Tool [T] or Property [N] Shelf Panel, Menus [CTRL+D], Special Menu [W], Header",
     "description": "collection of origin modal operators",
@@ -248,29 +248,174 @@ class Addon_Preferences_OriginSet(bpy.types.AddonPreferences):
             row.label(text="> This collection of tools allows to place the object's origin")               
             row.label(text="> in object mode and in edit mode as well.")               
             row.label(text="> There are different interface layouts to run the operators.")               
-            row.label(text="> From panel, piemenu, header or from a full customizable context menu!")               
-            row.label(text="> todo: more info")               
-
-          
-            row = box.column(align=False)                          
-            row.label(text="(dft) > default operators like in [CTRL+ALT+SHIFT+C]")
-            row.label(text="(obm) > only in object mode available")           
-            row.label(text="(edm) > only in edit mode available")
-            row.label(text="(edit) > in all edit mode except mesh edit mode available")
-            row.label(text="(mesh) > only for mesh objects: obm-edm")
-           
-            box.separator() 
-           
-            row = box.column(align=False)                  
-            row.label(text="(*) > Modal Operator = ...M")   
-            row.label(text="(*) > Click on a vertex, edge or face to place the origin.")   
-          
-        
-            row.separator()
-
+            row.label(text="> From panel, piemenu, header or from a full customizable context menu!")              
             row.label(text="> Have Fun! ;)")               
-    
+
             box.separator()
+            box.separator()
+         
+            row = box.row(align=False)           
+            row.label(text = '', icon='COLLAPSEMENU')   
+            row.label(text="Tools in Panel & Context Menu")  
+            
+            box.separator() 
+            box.separator()                
+
+            row = box.row(align=True)  
+            row.label(text="Layout Scale Y")                   
+            row.prop(self, 'ui_scale_y')            
+
+            box.separator()                                   
+       
+            row = box.row(align=False)        
+            row.prop(self, 'use_button_icons')                               
+    
+            box.separator()           
+            box.separator()           
+           
+            row = box.row(align=False)            
+            row.prop(self, 'display_tpc_origin_to_cursor', text="")
+            if self.use_button_icons ==True: 
+                button_origin_to_cursor = icons.get("icon_origin_cursor")                
+                row.label(text="", icon_value=button_origin_to_cursor.icon_id)   
+            row.label(text="Origin to Cursor")
+
+            box.separator()  
+          
+            row = box.row(align=False)  
+            row.prop(self, 'display_tpc_origin_to_center', text="")  
+            if self.use_button_icons ==True: 
+                button_origin_to_center_view = icons.get("icon_origin_to_center_view")               
+                row.label(text="", icon_value=button_origin_to_center_view.icon_id)          
+            row.label(text="Origin to Center")
+
+            box.separator()  
+
+            row = box.row(align=False)  
+            row.prop(self, 'display_tpc_origin_to_object', text="")     
+            if self.use_button_icons ==True: 
+                button_origin_to_object = icons.get("icon_origin_to_object")               
+                row.label(text="", icon_value=button_origin_to_object.icon_id)         
+            row.label(text="Origin to Object")
+
+            box.separator() 
+     
+            row = box.row(align=False)  
+            row.prop(self, 'display_tpc_object_to_origin', text="")  
+            if self.use_button_icons ==True: 
+                button_object_to_origin = icons.get("icon_object_to_origin")               
+                row.label(text="", icon_value=button_object_to_origin.icon_id)                
+            row.label(text="Object to Origin")
+
+            box.separator()       
+ 
+            row = box.row(align=False)  
+            row.prop(self, 'display_tpc_mass_surface', text="")  
+            if self.use_button_icons ==True: 
+                button_origin_to_surface = icons.get("icon_origin_to_surface")                
+                row.label(text="", icon_value=button_origin_to_surface.icon_id)            
+            row.label(text="Mass (Surface)")
+       
+            box.separator() 
+         
+            row = box.row(align=False)  
+            row.prop(self, 'display_tpc_mass_volume', text="")    
+            if self.use_button_icons ==True: 
+                button_origin_to_volume = icons.get("icon_origin_to_volume")                
+                row.label(text="", icon_value=button_origin_to_volume.icon_id)        
+            row.label(text="Mass (Volume)")
+
+            box.separator()            
+          
+            row = box.row(align=False)
+            row.prop(self, 'display_tpc_origin_to_click_point', text="")
+            if self.use_button_icons ==True: 
+                button_origin_to_click_point = icons.get("icon_origin_to_click_point")                
+                row.label(text="", icon_value=button_origin_to_click_point.icon_id)   
+            row.label(text="Click Point")               
+
+            box.separator()       
+                         
+            row = box.row(align=False)
+            row.prop(self, 'display_tpc_origin_to_snap_point', text="")     
+            if self.use_button_icons ==True: 
+                button_origin_to_snap_point = icons.get("icon_origin_to_snap_point")                 
+                row.label(text="", icon_value=button_origin_to_snap_point.icon_id)       
+            row.label(text="Snap Point")             
+
+            box.separator()       
+
+            row = box.row(align=False)  
+            row.prop(self, 'display_tpc_3_vert_circle', text="")            
+            if self.use_button_icons ==True: 
+                button_origin_to_cc = icons.get("icon_origin_to_cc")                
+                row.label(text="", icon_value=button_origin_to_cc.icon_id)  
+            row.label(text="3Vert Circle")
+       
+            box.separator()       
+
+            row = box.row(align=False)  
+            row.prop(self, 'display_tpc_set_origin_to_edit', text="")            
+            if self.use_button_icons ==True: 
+                button_origin_to_selected = icons.get("icon_origin_to_selected")                 
+                row.label(text="", icon_value=button_origin_to_selected.icon_id)  
+            row.label(text="Selected Edit")
+       
+            box.separator()       
+
+            row = box.row(align=False)  
+            row.prop(self, 'display_tpc_set_origin_to_edit_mesh', text="")            
+            if self.use_button_icons ==True: 
+                button_origin_to_selected = icons.get("icon_origin_to_selected")                 
+                row.label(text="", icon_value=button_origin_to_selected.icon_id)  
+            row.label(text="Selected Edit (Mesh)")
+
+            box.separator()  
+                            
+            row = box.row(align=False)  
+            row.prop(self, 'display_tpc_snap_to_bbox_multi', text="")              
+            if self.use_button_icons ==True: 
+                button_origin_to_bbox_multi = icons.get("icon_origin_to_bbox_multi")                
+                row.label(text="", icon_value=button_origin_to_bbox_multi.icon_id)  
+            row.label(text="BBox Multi")      
+           
+            box.separator()  
+                            
+            row = box.row(align=False)  
+            row.prop(self, 'display_tpc_snap_to_bbox_modal', text="")              
+            if self.use_button_icons ==True: 
+                button_origin_to_bbox_modal = icons.get("icon_origin_to_bbox_modal")                
+                row.label(text="", icon_value=button_origin_to_bbox_modal.icon_id)  
+            row.label(text="BBox Modal")          
+       
+            box.separator()  
+            
+            row = box.row(align=False)  
+            row.prop(self, 'display_tpc_advanced_align_tools', text="")
+            if self.use_button_icons ==True: 
+                button_origin_align_object = icons.get("icon_origin_align_object")                 
+                row.label(text="", icon_value=button_origin_align_object.icon_id)  
+            row.label(text="Advanced Align (Object)")   
+
+            box.separator()                     
+
+            row = box.row(align=False)  
+            row.prop(self, 'display_tpc_align_to_axis', text="")
+            if self.use_button_icons ==True: 
+                button_origin_align_mesh = icons.get("icon_origin_align_mesh")                
+                row.label(text="", icon_value=button_origin_align_mesh.icon_id)  
+            row.label(text="Advanced Align (Edit)")   
+
+            box.separator()       
+
+            row = box.row(align=False)  
+            row.prop(self, 'display_tpc_zero_to_axis', text="")
+            if self.use_button_icons ==True: 
+                button_align_to_zero = icons.get("icon_align_to_zero")                  
+                row.label(text="", icon_value=button_align_to_zero.icon_id)  
+            row.label(text="Zero to XYZ Axis")   
+
+            box.separator()     
 
 
         # LOCATION #
@@ -344,178 +489,6 @@ class Addon_Preferences_OriginSet(bpy.types.AddonPreferences):
                 row.label(text="> to create a pie menu for everyone.")
                 row.label(text="> But it would be handy if you work with a bigger screen.")
       
-            
-            if self.tab_origin_menu == 'menu': 
- 
-                box.separator()
-                box.separator()
-             
-                row = box.row(align=False)           
-                row.label(text = '', icon='COLLAPSEMENU')   
-                row.label(text="Tools in Panel & Context Menu")  
-                
-                box.separator() 
-                box.separator()                
-
-                row = box.row(align=True)  
-                row.label(text="Layout Scale Y")                   
-                row.prop(self, 'ui_scale_y')            
-
-                box.separator()                                   
-           
-                row = box.row(align=False)        
-                row.prop(self, 'use_button_icons')                               
-        
-                box.separator()           
-                box.separator()           
-               
-                row = box.row(align=False)            
-                row.prop(self, 'display_tpc_origin_to_cursor', text="")
-                if self.use_button_icons ==True: 
-                    button_origin_to_cursor = icons.get("icon_origin_cursor")                
-                    row.label(text="", icon_value=button_origin_to_cursor.icon_id)   
-                row.label(text="Origin to Cursor")
-
-                box.separator()  
-              
-                row = box.row(align=False)  
-                row.prop(self, 'display_tpc_origin_to_center', text="")  
-                if self.use_button_icons ==True: 
-                    button_origin_to_center_view = icons.get("icon_origin_to_center_view")               
-                    row.label(text="", icon_value=button_origin_to_center_view.icon_id)          
-                row.label(text="Origin to Center")
-
-                box.separator()  
-
-                row = box.row(align=False)  
-                row.prop(self, 'display_tpc_origin_to_object', text="")     
-                if self.use_button_icons ==True: 
-                    button_origin_to_object = icons.get("icon_origin_to_object")               
-                    row.label(text="", icon_value=button_origin_to_object.icon_id)         
-                row.label(text="Origin to Object")
-
-                box.separator() 
-         
-                row = box.row(align=False)  
-                row.prop(self, 'display_tpc_object_to_origin', text="")  
-                if self.use_button_icons ==True: 
-                    button_object_to_origin = icons.get("icon_object_to_origin")               
-                    row.label(text="", icon_value=button_object_to_origin.icon_id)                
-                row.label(text="Object to Origin")
-
-                box.separator()       
-     
-                row = box.row(align=False)  
-                row.prop(self, 'display_tpc_mass_surface', text="")  
-                if self.use_button_icons ==True: 
-                    button_origin_to_surface = icons.get("icon_origin_to_surface")                
-                    row.label(text="", icon_value=button_origin_to_surface.icon_id)            
-                row.label(text="Mass (Surface)")
-           
-                box.separator() 
-             
-                row = box.row(align=False)  
-                row.prop(self, 'display_tpc_mass_volume', text="")    
-                if self.use_button_icons ==True: 
-                    button_origin_to_volume = icons.get("icon_origin_to_volume")                
-                    row.label(text="", icon_value=button_origin_to_volume.icon_id)        
-                row.label(text="Mass (Volume)")
-
-                box.separator()            
-              
-                row = box.row(align=False)
-                row.prop(self, 'display_tpc_origin_to_click_point', text="")
-                if self.use_button_icons ==True: 
-                    button_origin_to_click_point = icons.get("icon_origin_to_click_point")                
-                    row.label(text="", icon_value=button_origin_to_click_point.icon_id)   
-                row.label(text="Click Point")               
-
-                box.separator()       
-                             
-                row = box.row(align=False)
-                row.prop(self, 'display_tpc_origin_to_snap_point', text="")     
-                if self.use_button_icons ==True: 
-                    button_origin_to_snap_point = icons.get("icon_origin_to_snap_point")                 
-                    row.label(text="", icon_value=button_origin_to_snap_point.icon_id)       
-                row.label(text="Snap Point")             
-
-                box.separator()       
-
-                row = box.row(align=False)  
-                row.prop(self, 'display_tpc_3_vert_circle', text="")            
-                if self.use_button_icons ==True: 
-                    button_origin_to_cc = icons.get("icon_origin_to_cc")                
-                    row.label(text="", icon_value=button_origin_to_cc.icon_id)  
-                row.label(text="3Vert Circle")
-           
-                box.separator()       
-
-                row = box.row(align=False)  
-                row.prop(self, 'display_tpc_set_origin_to_edit', text="")            
-                if self.use_button_icons ==True: 
-                    button_origin_to_selected = icons.get("icon_origin_to_selected")                 
-                    row.label(text="", icon_value=button_origin_to_selected.icon_id)  
-                row.label(text="Selected Edit")
-           
-                box.separator()       
-
-                row = box.row(align=False)  
-                row.prop(self, 'display_tpc_set_origin_to_edit_mesh', text="")            
-                if self.use_button_icons ==True: 
-                    button_origin_to_selected = icons.get("icon_origin_to_selected")                 
-                    row.label(text="", icon_value=button_origin_to_selected.icon_id)  
-                row.label(text="Selected Edit (Mesh)")
-
-                box.separator()  
-                                
-                row = box.row(align=False)  
-                row.prop(self, 'display_tpc_snap_to_bbox_multi', text="")              
-                if self.use_button_icons ==True: 
-                    button_origin_to_bbox_multi = icons.get("icon_origin_to_bbox_multi")                
-                    row.label(text="", icon_value=button_origin_to_bbox_multi.icon_id)  
-                row.label(text="BBox Multi")      
-               
-                box.separator()  
-                                
-                row = box.row(align=False)  
-                row.prop(self, 'display_tpc_snap_to_bbox_modal', text="")              
-                if self.use_button_icons ==True: 
-                    button_origin_to_bbox_modal = icons.get("icon_origin_to_bbox_modal")                
-                    row.label(text="", icon_value=button_origin_to_bbox_modal.icon_id)  
-                row.label(text="BBox Modal")          
-           
-                box.separator()  
-                
-                row = box.row(align=False)  
-                row.prop(self, 'display_tpc_advanced_align_tools', text="")
-                if self.use_button_icons ==True: 
-                    button_origin_align_object = icons.get("icon_origin_align_object")                 
-                    row.label(text="", icon_value=button_origin_align_object.icon_id)  
-                row.label(text="Advanced Align (Object)")   
-
-                box.separator()                     
-
-                row = box.row(align=False)  
-                row.prop(self, 'display_tpc_align_to_axis', text="")
-                if self.use_button_icons ==True: 
-                    button_origin_align_mesh = icons.get("icon_origin_align_mesh")                
-                    row.label(text="", icon_value=button_origin_align_mesh.icon_id)  
-                row.label(text="Advanced Align (Edit)")   
-
-                box.separator()       
-
-                row = box.row(align=False)  
-                row.prop(self, 'display_tpc_zero_to_axis', text="")
-                if self.use_button_icons ==True: 
-                    button_align_to_zero = icons.get("icon_align_to_zero")                  
-                    row.label(text="", icon_value=button_align_to_zero.icon_id)  
-                row.label(text="Zero to XYZ Axis")   
-
-                box.separator()     
-
-
-
-
 
             if self.tab_origin_menu == 'remove':
                 box.separator()
