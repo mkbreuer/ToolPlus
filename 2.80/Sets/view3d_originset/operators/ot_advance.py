@@ -952,6 +952,13 @@ class VIEW3D_OT_advanced_align_tools(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO', 'PRESET'}
 
     # ADVANCED #         
+    open_location : BoolProperty (name = "Align Location", default=True, description= "move the selected")    
+    open_rotation : BoolProperty (name = "Align Rotation", default=True, description= "rotate the selected")    
+    open_scale : BoolProperty (name = "Align Scale", default=True, description= "scale the selected")    
+    open_dimension : BoolProperty (name = "Align Dimension", default=True, description= "set dimension on selected")    
+
+    active_too : BoolProperty (name = "Active too", default=True, description= "move the active object, too")    
+    active_too : BoolProperty (name = "Active too", default=True, description= "move the active object, too")    
     active_too : BoolProperty (name = "Active too", default=True, description= "move the active object, too")    
     show_advanced : BoolProperty (name = "Advanced", default =False, description = "show all advanced options")    
     use_consistent : BoolProperty (name = "Consistent", default = False, description = "use consistent selection")
@@ -1076,7 +1083,8 @@ class VIEW3D_OT_advanced_align_tools(bpy.types.Operator):
         layout = self.layout
         
         #icons = load_icons()
-
+        layout.scale_y = 1.05    
+  
         view_layer = bpy.context.view_layer    
 
         if bpy.context.mode == 'OBJECT':
@@ -1160,7 +1168,6 @@ class VIEW3D_OT_advanced_align_tools(bpy.types.Operator):
                     row.prop(self, 'ref1', expand=True)
 
 
-
             box.separator()       
             box = col.box().column(align=True) 
             box.separator()       
@@ -1168,13 +1175,15 @@ class VIEW3D_OT_advanced_align_tools(bpy.types.Operator):
            
             # LOACATION #
             row = box.row(align=True)
-            row.label(icon='ORIENTATION_VIEW', text="Align Location:")
+            row.prop(self, 'open_location', text='', icon='ORIENTATION_VIEW')
+            row.label(text="Align Location:")
 
             sub = row.row(align=True)
             sub.alignment = 'RIGHT'                 
             if self.used_subject == 'use_object' or self.ref2 == 'set_distribute':
                 sub.prop(self, 'use_invert', text='', icon = 'ARROW_LEFTRIGHT')
-            
+
+
             if self.used_subject == 'use_origin':
                
                 if self.location_x_axis == True or self.location_y_axis == True:
@@ -1186,43 +1195,45 @@ class VIEW3D_OT_advanced_align_tools(bpy.types.Operator):
             sub.label(text="Apply")
             sub.prop(self, 'apply_loc', text='')
 
-            
-            box.separator()  
-           
-            if self.lock_location_x == True:
-                ico_x = 'LOCKED'
-            else:
-                ico_x = 'UNLOCKED'       
+         
+            if self.open_location == True:                 
+               
+                box.separator()  
+               
+                if self.lock_location_x == True:
+                    ico_x = 'LOCKED'
+                else:
+                    ico_x = 'UNLOCKED'       
 
-            if self.lock_location_y == True:
-                ico_y = 'LOCKED'
-            else:
-                ico_y = 'UNLOCKED'       
-          
-            if self.lock_location_z == True:
-                ico_z = 'LOCKED'
-            else:
-                ico_z = 'UNLOCKED'       
+                if self.lock_location_y == True:
+                    ico_y = 'LOCKED'
+                else:
+                    ico_y = 'UNLOCKED'       
+              
+                if self.lock_location_z == True:
+                    ico_z = 'LOCKED'
+                else:
+                    ico_z = 'UNLOCKED'       
 
-            row = box.row(align=True)
-            row.prop(self, "lock_location_x", text="", icon=ico_x) 
-            row.prop(self, "location_x_axis", text="X")       
-
-            row.prop(self, "lock_location_y", text="", icon=ico_y) 
-            row.prop(self, "location_y_axis", text="Y") 
-
-            row.prop(self, "lock_location_z", text="", icon=ico_z) 
-            row.prop(self, "location_z_axis", text="Z")
-
-
-            box.separator()  
-
-            # OFFSET #                
-            if self.show_advanced == True:
                 row = box.row(align=True)
-                row.prop(self, 'location_offset', text='')     
-                                                          
+                row.prop(self, "lock_location_x", text="", icon=ico_x) 
+                row.prop(self, "location_x_axis", text="X")       
 
+                row.prop(self, "lock_location_y", text="", icon=ico_y) 
+                row.prop(self, "location_y_axis", text="Y") 
+
+                row.prop(self, "lock_location_z", text="", icon=ico_z) 
+                row.prop(self, "location_z_axis", text="Z")
+
+
+                box.separator()  
+
+                # OFFSET #                
+                if self.show_advanced == True:
+                    row = box.row(align=True)
+                    row.prop(self, 'location_offset', text='')     
+                                                          
+   
             if self.ref2 != 'set_zero' and self.ref2 != 'set_distribute' and self.used_subject == "use_object":
 
                 # ROTATION #
@@ -1231,7 +1242,8 @@ class VIEW3D_OT_advanced_align_tools(bpy.types.Operator):
                 box.separator()   
 
                 row = box.row(align=True)
-                row.label(icon='ORIENTATION_GIMBAL', text='Align Rotation:')       
+                row.prop(self, 'open_rotation', text='', icon='ORIENTATION_GIMBAL')       
+                row.label(text='Align Rotation:')       
              
                 sub = row.row(align=True)
                 sub.alignment = 'RIGHT'      
@@ -1239,27 +1251,29 @@ class VIEW3D_OT_advanced_align_tools(bpy.types.Operator):
                 sub.prop(self, 'apply_rot', text='')
                
                 box.separator()    
+
+                if self.open_rotation == True: 
       
-                if self.lock_rotation_x == True and self.lock_rotation_y == True and self.lock_rotation_z == True:
-                    ico_value = 'LOCKED'
-                else:
-                    ico_value = 'UNLOCKED'
+                    if self.lock_rotation_x == True and self.lock_rotation_y == True and self.lock_rotation_z == True:
+                        ico_value = 'LOCKED'
+                    else:
+                        ico_value = 'UNLOCKED'
 
-                row = box.row(align=True)
-                row.prop(self, "lock_rotation_x", text="", icon=ico_value)  
-                row.prop(self, 'rotation_x', text='X')
-               
-                row.prop(self, "lock_rotation_y", text="", icon=ico_value)           
-                row.prop(self, 'rotation_y', text='Y')
-
-                row.prop(self, "lock_rotation_z", text="", icon=ico_value) 
-                row.prop(self, 'rotation_z', text='Z')
-
-                box.separator()  
-            
-                if self.show_advanced == True:
                     row = box.row(align=True)
-                    row.prop (self, 'rotation_offset', text = '')
+                    row.prop(self, "lock_rotation_x", text="", icon=ico_value)  
+                    row.prop(self, 'rotation_x', text='X')
+                   
+                    row.prop(self, "lock_rotation_y", text="", icon=ico_value)           
+                    row.prop(self, 'rotation_y', text='Y')
+
+                    row.prop(self, "lock_rotation_z", text="", icon=ico_value) 
+                    row.prop(self, 'rotation_z', text='Z')
+
+                    box.separator()  
+                
+                    if self.show_advanced == True:
+                        row = box.row(align=True)
+                        row.prop (self, 'rotation_offset', text = '')
                
 
                 # SCALE #
@@ -1268,7 +1282,8 @@ class VIEW3D_OT_advanced_align_tools(bpy.types.Operator):
                 box.separator()   
 
                 row = box.row(align=True)
-                row.label(icon='ORIENTATION_LOCAL', text='Match Scale:')
+                row.prop(self, 'open_scale', text='', icon='ORIENTATION_LOCAL') 
+                row.label(text='Match Scale:')
                 
                 sub = row.row(align=True)
                 sub.alignment = 'RIGHT'        
@@ -1277,26 +1292,28 @@ class VIEW3D_OT_advanced_align_tools(bpy.types.Operator):
 
                 box.separator()  
 
-                if self.lock_scale_x == True and self.lock_scale_y == True and self.lock_scale_z == True:
-                    ico_value = 'LOCKED'
-                else:
-                    ico_value = 'UNLOCKED'
+                if self.open_scale == True: 
 
-                row = box.row(align=True)
-                row.prop(self, "lock_scale_x", text="", icon=ico_value)  
-                row.prop(self, 'scale_x', text='X')
-      
-                row.prop(self, "lock_scale_y", text="", icon=ico_value)        
-                row.prop(self, 'scale_y', text='Y')
-      
-                row.prop(self, "lock_scale_z", text="", icon=ico_value)          
-                row.prop(self, 'scale_z', text='Z')   
-                  
-                box.separator()  
+                    if self.lock_scale_x == True and self.lock_scale_y == True and self.lock_scale_z == True:
+                        ico_value = 'LOCKED'
+                    else:
+                        ico_value = 'UNLOCKED'
 
-                if self.show_advanced == True:
                     row = box.row(align=True)
-                    row.prop (self, 'scale_offset', text = '')
+                    row.prop(self, "lock_scale_x", text="", icon=ico_value)  
+                    row.prop(self, 'scale_x', text='X')
+          
+                    row.prop(self, "lock_scale_y", text="", icon=ico_value)        
+                    row.prop(self, 'scale_y', text='Y')
+          
+                    row.prop(self, "lock_scale_z", text="", icon=ico_value)          
+                    row.prop(self, 'scale_z', text='Z')   
+                      
+                    box.separator()  
+
+                    if self.show_advanced == True:
+                        row = box.row(align=True)
+                        row.prop (self, 'scale_offset', text = '')
                 
                
                 # DIMENSION #
@@ -1305,22 +1322,25 @@ class VIEW3D_OT_advanced_align_tools(bpy.types.Operator):
                 box.separator()   
 
                 row = box.row(align=True)
-                row.label(icon='ORIENTATION_LOCAL', text='Fit Dimensions:')
+                row.prop(self, 'open_dimension', text='', icon='ORIENTATION_LOCAL')
+                row.label(text='Fit Dimensions:')
                 
-                sub = row.row(align=True)
-                sub.alignment = 'RIGHT'              
-                sub.label(text="Apply")
-                sub.prop (self, 'apply_dim', text='')
-               
-                box.separator()  
+                if self.open_dimension == True: 
+                
+                    sub = row.row(align=True)
+                    sub.alignment = 'RIGHT'              
+                    sub.label(text="Apply")
+                    sub.prop (self, 'apply_dim', text='')
+                   
+                    box.separator()  
 
-                row = box.row(align=True)
-                row.prop (self, 'fit_x', text='X')
-                row.prop (self, 'fit_y', text='Y')
-                row.prop (self, 'fit_z', text='Z')
+                    row = box.row(align=True)
+                    row.prop (self, 'fit_x', text='X')
+                    row.prop (self, 'fit_y', text='Y')
+                    row.prop (self, 'fit_z', text='Z')
 
                 box.separator()   
-                box.separator()   
+ 
 
            
             if self.viewport_display == True:

@@ -1,5 +1,5 @@
 # LOAD UI #   
-from toolplus_originset.ui_panel import draw_originset_ui
+from view3d_originset.ui_panel import draw_originset_ui
 
 # LOAD MODUL #    
 import bpy

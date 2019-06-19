@@ -200,11 +200,17 @@ class VIEW3D_OT_snap_to_bbox_multi(bpy.types.Operator):
         button_origin_right_bottom = icons.get("icon_origin_right_bottom")
         row.operator("tpc_ops.origin_to_bounding_box", text="", icon_value=button_origin_right_bottom.icon_id).mode="cubefront_cornerbottom_plus_xy"
 
-        box.separator()
+        #box.separator()
 
+        row = box.row(align=True)                                     
+        row.alignment ='CENTER'         
+        row.label(text="    max")
+        row.separator() 
+        row.label(text="   center")
+        row.separator()   
+        row.label(text="  min")
 
         #####
-
 
         box = layout.box().column(align=True) 
          

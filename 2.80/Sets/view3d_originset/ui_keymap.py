@@ -4,8 +4,8 @@ from bpy import *
 
 
 # ADD 3D VIEW MENU #  
-from toolplus_originset.ui_menu         import (VIEW3D_MT_originset_menu)
-from toolplus_originset.ui_menu_pie     import (VIEW3D_MT_originset_menu_pie)
+from view3d_originset.ui_menu         import (VIEW3D_MT_originset_menu)
+from view3d_originset.ui_menu_pie     import (VIEW3D_MT_originset_menu_pie)
 
 # KEY REGISTRY # 
 addon_keymaps_menu = []
@@ -78,7 +78,7 @@ def update_origin_menu(self, context):
 
 
 # ADD TO SPECIAL [W] #  
-from toolplus_originset.ui_menu_special  import (draw_origin_item_special)
+from view3d_originset.ui_menu_special  import (draw_origin_item_special)
 
 def update_origin_special(self, context):
 
@@ -118,7 +118,7 @@ def update_origin_special(self, context):
 
 
 # ADD TO HEADER #  
-from toolplus_originset.ui_header  import (VIEW3D_HT_originset_header_menu)
+from view3d_originset.ui_header  import (VIEW3D_HT_originset_header_menu)
 
 def update_origin_header(self, context):
      

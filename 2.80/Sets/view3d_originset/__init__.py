@@ -23,13 +23,13 @@
 bl_info = {
     "name": "OriginSet",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 8),
+    "version": (0, 2, 9),
     "blender": (2, 80, 0),
     "location": "3D View > Tool [T] or Property [N] Shelf Panel, Menus [CTRL+D], Special Menu [W], Header",
-    "description": "collection of origin modal operators",
-    "warning": "",
+    "description": "collection of align origin tools",
+    "warning": "todo: manual/wiki",
     "wiki_url": "https://github.com/mkbreuer/ToolPlus",
-    "category": "ToolPlus",
+    "category": "3D View",
 }
 
 
@@ -160,8 +160,7 @@ class Addon_Preferences_OriginSet(bpy.types.AddonPreferences):
                ('append',  'Menu Bottom', 'add menus to default special menus'),
                ('remove',  'Menu Remove', 'remove menus from default menus')),
         default='remove', update = update_origin_special)               
-
-    toggle_special_origin_icon : bpy.props.BoolProperty(name="Use Icon", description="on / off", default=True)   
+ 
     toggle_special_origin_separator : bpy.props.BoolProperty(name="Use Separator", description="on / off", default=True)   
 
 
@@ -475,7 +474,6 @@ class Addon_Preferences_OriginSet(bpy.types.AddonPreferences):
                 box.separator() 
 
                 row = box.row(align=True)  
-                row.prop(self, 'toggle_special_origin_icon')
                 row.prop(self, 'toggle_special_origin_separator')
 
 

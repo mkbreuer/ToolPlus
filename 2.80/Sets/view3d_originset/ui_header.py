@@ -1,5 +1,5 @@
 # LOAD UI #   
-from toolplus_originset.ui_panel import draw_originset_ui
+from view3d_originset.ui_panel import draw_originset_ui
 
 # LOAD MODUL #    
 import bpy
@@ -12,7 +12,8 @@ class VIEW3D_MT_originset_menu_header(bpy.types.Menu):
 
     def draw(self, context):
         layout = self.layout
-       
+        layout.operator_context = 'INVOKE_REGION_WIN'       
+        
         draw_originset_ui(self, context, layout)
   
 
@@ -24,7 +25,8 @@ class VIEW3D_PT_originset_panel_header(bpy.types.Panel):
   
     def draw(self, context):
         layout = self.layout.box().column(align=True)
-       
+        layout.operator_context = 'INVOKE_REGION_WIN'       
+        
         draw_originset_ui(self, context, layout)
 
 
@@ -51,7 +53,7 @@ class VIEW3D_HT_originset_header_menu(bpy.types.Header):
 
         if addon_prefs.tab_origin_header_type == True:                        
             if addon_prefs.tab_origin_header_text == True:                        
-                layout.menu("VIEW3D_MT_originset_menu_header", text="Set Origin", icon_value=button_icon_origin_snap_origin.icon_id)      
+                layout.menu("VIEW3D_MT_originset_menu_header", text=" OriginSet", icon_value=button_icon_origin_snap_origin.icon_id)      
             else:
                 layout.menu("VIEW3D_MT_originset_menu_header", text="", icon_value=button_icon_origin_snap_origin.icon_id)               
         else:

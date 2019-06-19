@@ -55,6 +55,8 @@ class VIEW3D_OT_distribute_origins(bpy.types.Operator):
     def draw(self, context):
         layout = self.layout
        
+        layout.scale_y = 1.1        
+      
         col = layout.column(align=True)
 
         box = col.box().column(align=True)              

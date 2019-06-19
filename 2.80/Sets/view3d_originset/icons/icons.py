@@ -2,14 +2,14 @@ import os
 import bpy
 import bpy.utils.previews
 
-toolplus_icon_collections = {}
-toolplus_icons_loaded = False
+mkb_icon_collections = {}
+mkb_icons_loaded = False
 
 def load_icons():
-    global toolplus_icon_collections
-    global toolplus_icons_loaded
+    global mkb_icon_collections
+    global mkb_icons_loaded
 
-    if toolplus_icons_loaded: return toolplus_icon_collections["main"]
+    if mkb_icons_loaded: return mkb_icon_collections["main"]
 
     mkb_icons = bpy.utils.previews.new()
 
@@ -51,14 +51,14 @@ def load_icons():
     mkb_icons.load("icon_origin_snap_origin", os.path.join(icons_dir, "icon_origin_snap_origin.png"), 'IMAGE')
     mkb_icons.load("icon_align_to_zero", os.path.join(icons_dir, "icon_align_to_zero.png"), 'IMAGE')
 
-    toolplus_icon_collections["main"] = mkb_icons
-    toolplus_icons_loaded = True
+    mkb_icon_collections["main"] = mkb_icons
+    mkb_icons_loaded = True
 
-    return toolplus_icon_collections["main"]
+    return mkb_icon_collections["main"]
 
 def clear_icons():
-	global toolplus_icons_loaded
-	for icon in toolplus_icon_collections.values():
+	global mkb_icons_loaded
+	for icon in mkb_icon_collections.values():
 		bpy.utils.previews.remove(icon)
-	toolplus_icon_collections.clear()
-	toolplus_icons_loaded = Falseicon_origin_to_volume
+	mkb_icon_collections.clear()
+	mkb_icons_loaded = False
