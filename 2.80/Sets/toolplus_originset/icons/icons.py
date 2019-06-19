@@ -31,7 +31,7 @@ def load_icons():
     mkb_icons.load("icon_origin_to_surface", os.path.join(icons_dir, "icon_origin_to_surface.png"), 'IMAGE')   
     mkb_icons.load("icon_origin_to_volume", os.path.join(icons_dir, "icon_origin_to_volume.png"), 'IMAGE')
     
-    mkb_icons.load("icon_origin_align", os.path.join(icons_dir, "origin_align.png"), 'IMAGE')
+    mkb_icons.load("icon_distribute_origins", os.path.join(icons_dir, "icon_distribute_origins.png"), 'IMAGE')
     mkb_icons.load("icon_origin_to_bbox_multi", os.path.join(icons_dir, "icon_origin_to_bbox_multi.png"), 'IMAGE')
     mkb_icons.load("icon_origin_to_bbox_modal", os.path.join(icons_dir, "icon_origin_to_bbox_modal.png"), 'IMAGE')
     

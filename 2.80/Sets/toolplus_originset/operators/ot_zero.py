@@ -28,9 +28,9 @@ from mathutils import Vector, Matrix
 
 
 # OPERATOR AS POP UP MENU #
-class VIEW3D_OT_zero_to_global_axis_menu(bpy.types.Operator):
-    """align origin, object or cursor to global axis"""                 
-    bl_idname = "tpc_ops.zero_axis_menu"          
+class VIEW3D_OT_zero_to_global_axis(bpy.types.Operator):
+    """align object, origin or cursor to global axis"""                 
+    bl_idname = "tpc_ops.zero_to_axis"          
     bl_label = "Zero to XYZ Axis"                 
     bl_options = {'REGISTER', 'UNDO'}   
 
@@ -46,17 +46,13 @@ class VIEW3D_OT_zero_to_global_axis_menu(bpy.types.Operator):
     align_y : BoolProperty (name = "Y", default= False, description= "enable Y axis alignment")                               
     align_z : BoolProperty (name = "Z", default= False, description= "enable Z axis alignment")
 
-    lock_x : BoolProperty (name = "X Lock", default= False, description= "lock transform on x axis")
-    lock_y : BoolProperty (name = "Y Lock", default= False, description= "lock transform on y axis")                               
-    lock_z : BoolProperty (name = "Z Lock", default= False, description= "lock transform on z axis")
-
     tp_origin_offset : FloatVectorProperty(name="Offset", description="offset align position", default=(0.0, 0.0, 0.0), subtype='XYZ', size=3)
     tp_align_offset : FloatVectorProperty(name="Offset", description="offset align position", default=(0.0, 0.0, 0.0), subtype='XYZ', size=3)
 
     def draw(self, context):
         layout = self.layout
         
-        box = layout.box().column(align=True)
+        box = layout.box().column(1)
 
         row = box.row()
         row.prop(self, 'tp_switch', expand=True)
@@ -67,61 +63,107 @@ class VIEW3D_OT_zero_to_global_axis_menu(bpy.types.Operator):
         row.prop(self, 'align_x')
         row.prop(self, 'align_y')
         row.prop(self, 'align_z')
-                
+        
         box.separator()
-       
-        if self.tp_switch == 'tp_obj':
-
-            if self.lock_x == True:
-                ico_x = 'LOCKED'
-            else:
-                ico_x = 'UNLOCKED'       
-
-            if self.lock_y == True:
-                ico_y = 'LOCKED'
-            else:
-                ico_y = 'UNLOCKED'       
-          
-            if self.lock_z == True:
-                ico_z = 'LOCKED'
-            else:
-                ico_z = 'UNLOCKED'       
-
-            row = box.row(align=False)
-            row.prop(self, "lock_x", text="X", icon=ico_x)       
-            row.prop(self, "lock_y", text="Y", icon=ico_y) 
-            row.prop(self, "lock_z", text="Z", icon=ico_z) 
-            
-            box.separator()
 
         if self.tp_switch == 'tp_org':
        
-            row = box.row(align=True)      
+            row = box.row(1)      
             row.prop(self, "tp_origin_offset", text="")
           
             box.separator()
 
         if self.tp_switch == 'tp_obj':
        
-            row = box.row(align=True)      
+            row = box.row(1)      
             row.prop(self, "tp_align_offset", text="")
           
             box.separator()
-
+        
 
     def execute(self, context):
+        
+        view_layer = bpy.context.view_layer        
+        selected = bpy.context.selected_objects
 
-        bpy.ops.tpc_ops.zero_axis(tp_switch = self.tp_switch, 
-                                 align_x   = self.align_x, 
-                                 align_y   = self.align_y, 
-                                 align_z   = self.align_z, 
-                                 lock_x   = self.lock_x, 
-                                 lock_y   = self.lock_y, 
-                                 lock_z   = self.lock_z, 
-                                 tp_origin_offset = self.tp_origin_offset, 
-                                 tp_align_offset  = self.tp_align_offset)
+        obj = view_layer.objects.active    
+
+        # STORE ACTIVE # 
+        target = bpy.context.scene.objects.active    
+      
+        bpy.context.space_data.cursor_location = bpy.context.object.location  
+
+        # X AXIS #
+        if self.align_x == True:  
+            
+            if self.tp_switch == "tp_obj":        
+                bpy.context.object.location[0] = 0                    
+                for ob in selected:                  
+                    ob.location[0] = obj.location[0] + self.tp_align_offset[0]
+
+            if self.tp_switch == "tp_crs" or self.tp_switch == "tp_org":
+       
+                bpy.context.space_data.cursor_location[0] = 0 
+
+            if self.tp_switch == "tp_org":                
+                
+                if context.mode == 'OBJECT':
+                    bpy.ops.tpc_ops.origin_cursor_align(loc_x=True, loc_offset=self.tp_origin_offset)                 
+                else:   
+                    bpy.ops.object.editmode_toggle()
+                    bpy.ops.tpc_ops.origin_cursor_align(loc_x=True, loc_offset=self.tp_origin_offset)
+                    bpy.ops.object.editmode_toggle()
+
+
+
+        # Y AXIS #
+        if self.align_y == True:  
+
+            if self.tp_switch == "tp_obj":        
+                bpy.context.object.location[1] = 0  
+                for ob in selected:                  
+                    ob.location[1] = obj.location[1] + self.tp_align_offset[1]
+ 
+            if self.tp_switch == "tp_crs" or self.tp_switch == "tp_org":            
+                bpy.context.space_data.cursor_location[1] = 0 
+
+            if self.tp_switch == "tp_org":
+                
+                if context.mode == 'OBJECT':
+                    bpy.ops.tpc_ops.origin_cursor_align(loc_y=True, loc_offset=self.tp_origin_offset)                  
+                else:   
+                    bpy.ops.object.editmode_toggle()
+                    bpy.ops.tpc_ops.origin_cursor_align(loc_y=True, loc_offset=self.tp_origin_offset)
+                    bpy.ops.object.editmode_toggle()
+
+
+
+        # Z AXIS #
+        if self.align_z == True:  
+
+            if self.tp_switch == "tp_obj":     
+                bpy.context.object.location[2] = 0  
+                for ob in selected:                  
+                    ob.location[2] = obj.location[2] + self.tp_align_offset[2]
+
+            if self.tp_switch == "tp_crs" or self.tp_switch == "tp_org":      
+                bpy.context.space_data.cursor_location[2] = 0 
+
+            if self.tp_switch == "tp_org":        
+                
+                if context.mode == 'OBJECT':
+                    bpy.ops.tpc_ops.origin_cursor_align(loc_z=True, loc_offset=self.tp_origin_offset)                    
+                else:   
+                    bpy.ops.object.editmode_toggle()
+                    bpy.ops.tpc_ops.origin_cursor_align(loc_z=True, loc_offset=self.tp_origin_offset)  
+                    bpy.ops.object.editmode_toggle()
+
+
+        # RELOAD ACTIVE #     
+        bpy.context.scene.objects.active = target
 
         return {'FINISHED'} 
+
 
     def invoke(self, context, event):
         dpi_value = bpy.context.preferences.system.dpi        
@@ -225,4 +267,16 @@ class VIEW3D_OT_origin_cursor_align(bpy.types.Operator):
                                
         return {'FINISHED'} 
     
+
+
+def register():
+    bpy.utils.register_class(VIEW3D_OT_zero_to_global_axis)
+    bpy.utils.register_class(VIEW3D_OT_origin_cursor_align)
+
+def unregister():
+    bpy.utils.unregister_class(VIEW3D_OT_zero_to_global_axis)
+    bpy.utils.unregister_class(VIEW3D_OT_origin_cursor_align)
+
+if __name__ == "__main__":
+    register()
 

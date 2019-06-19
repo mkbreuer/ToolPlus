@@ -73,7 +73,7 @@ def get_three_verts_from_selection_(obj):
 
 
 class VIEW3D_OT_origin_to_circle_center(bpy.types.Operator):
-    """[RMB+SHIFT] = select 3 verts set origin"""
+    """[RMB+SHIFT] = select 3 verts set origin to a circle center"""
     bl_idname = "tpc_ops.origin_to_ccc"
     bl_label = "Origin to Circle Center"
 

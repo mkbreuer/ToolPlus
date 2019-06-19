@@ -28,7 +28,7 @@ from ..icons.icons import load_icons
 
 
 class VIEW3D_OT_snap_to_bbox_multi(bpy.types.Operator):
-    """snap origin to bbox on multi selected objects"""
+    """Snap origin to bounding box on multi selected objects"""
     bl_label = "BBox Multi"
     bl_idname = "tpc_ops.snap_to_bbox_multi"               
     bl_options = {'REGISTER', 'UNDO'}  

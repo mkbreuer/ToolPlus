@@ -23,11 +23,11 @@
 bl_info = {
     "name": "OriginSet",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 7),
+    "version": (0, 2, 8),
     "blender": (2, 80, 0),
     "location": "3D View > Tool [T] or Property [N] Shelf Panel, Menus [CTRL+D], Special Menu [W], Header",
     "description": "collection of origin modal operators",
-    "warning": "/",
+    "warning": "",
     "wiki_url": "https://github.com/mkbreuer/ToolPlus",
     "category": "ToolPlus",
 }
@@ -169,10 +169,12 @@ class Addon_Preferences_OriginSet(bpy.types.AddonPreferences):
     tab_origin_header : EnumProperty(
         name = 'Append to 3D View Header',
         description = 'menu for header',
-        items=(('prepend', 'Add Menu',    'add menus to default header'),
-               ('remove',  'Menu Remove', 'remove menus from header')),
+        items=(('prepend', 'Prepend Menu',   'add menus to 3d view header'),
+               #('append',  'Append Menu',    'add menus to 3d view  header'),
+               ('remove',  'Menu Remove',    'remove menus from 3d view header')),
         default='remove', update = update_origin_header)   
    
+    tab_origin_header_type : bpy.props.BoolProperty(name="Use Menu or Panel", description="on / off", default=True)   
     tab_origin_header_text : bpy.props.BoolProperty(name="Show/Hide Menu Text", description="on / off", default=True)   
 
 
@@ -194,7 +196,9 @@ class Addon_Preferences_OriginSet(bpy.types.AddonPreferences):
     #------------------------------
 
     # DISPLAY TOOLS IN LAYOUTS #
-    
+    display_tpc_hide_defaults_in_object : bpy.props.BoolProperty(name="Hide Defaults in Objects",  description="toggle button on or off", default=False)     
+    display_tpc_hide_defaults_in_edit : bpy.props.BoolProperty(name="Hide Defaults in Edit",  description="toggle button on or off", default=False)     
+
     # DEFAULT FOR ALL MODES #
     display_tpc_origin_to_cursor : bpy.props.BoolProperty(name="origin to cursor",  description="toggle button on or off", default=True) 
     display_tpc_origin_to_center : bpy.props.BoolProperty(name="origin to center",  description="toggle button on or off", default=True) 
@@ -211,15 +215,16 @@ class Addon_Preferences_OriginSet(bpy.types.AddonPreferences):
     display_tpc_set_origin_to_edit : bpy.props.BoolProperty(name="Selected Edit",  description="toggle button on or off", default=True) 
     display_tpc_set_origin_to_edit_mesh : bpy.props.BoolProperty(name="Selected Edit (Mesh)",  description="toggle button on or off", default=True) 
     display_tpc_snap_to_bbox_modal : bpy.props.BoolProperty(name="BBox Modal",  description="toggle button on or off", default=True) 
+    display_tpc_distribute_origins : bpy.props.BoolProperty(name="Distribute (Origins)",  description="toggle button on or off", default=False) 
     display_tpc_align_to_axis : bpy.props.BoolProperty(name="Advance Align (Edit)",  description="toggle button on or off", default=True) 
     display_tpc_advanced_align_tools : bpy.props.BoolProperty(name="Advance Align (Object)",  description="toggle button on or off", default=True) 
 
     # OPTIONAL # 
     display_tpc_snap_to_bbox_multi : bpy.props.BoolProperty(name="BBox Multi",  description="toggle button on or off", default=False) 
-    display_tpc_zero_to_axis : bpy.props.BoolProperty(name="Zero to Axis",  description="toggle button on or off", default=False) 
+    display_tpc_zero_to_axis : bpy.props.BoolProperty(name="Zero to XYZ Axis",  description="toggle button on or off", default=False) 
 
     # ICONS #
-    use_button_icons : bpy.props.BoolProperty(name="Toggle Icons",  description="toggle icons on or off", default=True) 
+    use_button_icons : bpy.props.BoolProperty(name="Icons",  description="toggle icons on or off", default=True) 
 
     #------------------------------
         
@@ -268,7 +273,10 @@ class Addon_Preferences_OriginSet(bpy.types.AddonPreferences):
             box.separator()                                   
        
             row = box.row(align=False)        
-            row.prop(self, 'use_button_icons')                               
+            row.prop(self, 'use_button_icons')
+            row.label(text="Hide Defaults:")                                            
+            row.prop(self, 'display_tpc_hide_defaults_in_object', text="Objects")                               
+            row.prop(self, 'display_tpc_hide_defaults_in_edit', text="Edit")                               
     
             box.separator()           
             box.separator()           
@@ -387,7 +395,16 @@ class Addon_Preferences_OriginSet(bpy.types.AddonPreferences):
                 button_origin_to_bbox_modal = icons.get("icon_origin_to_bbox_modal")                
                 row.label(text="", icon_value=button_origin_to_bbox_modal.icon_id)  
             row.label(text="BBox Modal")          
-       
+         
+            box.separator()  
+            
+            row = box.row(align=False)  
+            row.prop(self, 'display_tpc_distribute_origins', text="")
+            if self.use_button_icons ==True: 
+                button_icon_distribute_origins = icons.get("icon_distribute_origins")                    
+                row.label(text="", icon_value=button_icon_distribute_origins.icon_id)  
+            row.label(text="Distribute (Origins)")         
+           
             box.separator()  
             
             row = box.row(align=False)  
@@ -549,7 +566,10 @@ class Addon_Preferences_OriginSet(bpy.types.AddonPreferences):
                 box.separator() 
 
                 row = box.row(align=True)                  
-                row.prop(self, 'tab_origin_header_text')
+                row.prop(self, 'tab_origin_header_type')
+                
+                if self.tab_origin_header_type == True:
+                    row.prop(self, 'tab_origin_header_text')
            
             box.separator()          
             box.separator()
@@ -561,6 +581,7 @@ classes = (
     VIEW3D_PT_originset_panel_ui,
     VIEW3D_MT_originset_menu_special,
     VIEW3D_MT_originset_menu_header,
+    VIEW3D_PT_originset_panel_header,
     VIEW3D_OT_advanced_align_tools,
     VIEW3D_OT_cycle_through,
     VIEW3D_OT_align_to_axis,
@@ -569,8 +590,7 @@ classes = (
     VIEW3D_OT_snap_origin_to_bbox,
     VIEW3D_OT_origin_to_circle_center,
     VIEW3D_OT_origin_cursor_align,
-    VIEW3D_OT_distribute_objects,
-    VIEW3D_OT_distribute_objects_menu,
+    VIEW3D_OT_distribute_origins,
     VIEW3D_OT_keymap_texteditor_origin,
     VIEW3D_OT_snap_origin_to_click_point,
     VIEW3D_OT_snap_origin_to_click_point_mode,
@@ -578,7 +598,7 @@ classes = (
     VIEW3D_OT_set_origin_to_edit,
     VIEW3D_OT_set_origin_to_edit_mesh,
     VIEW3D_OT_origin_to_snap_point,
-    VIEW3D_OT_zero_to_global_axis_menu,
+    VIEW3D_OT_zero_to_global_axis,
     Addon_Preferences_OriginSet,
 )
 

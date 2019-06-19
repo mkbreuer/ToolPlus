@@ -945,7 +945,7 @@ def align_function(used_subject, active_too, use_consistent, use_self_or_active,
 
 
 class VIEW3D_OT_advanced_align_tools(bpy.types.Operator):
-    """Advanced Align Tools"""
+    """Align Object, Origins and Cursor / Distribute Origins / Zero to XYZ Axis / Align to Bounding Box (use Self)"""
     bl_idname = "tpc_ops.advanced_align_tools"
     bl_label = "Advanced Align"
     bl_description = "Advanced Align"

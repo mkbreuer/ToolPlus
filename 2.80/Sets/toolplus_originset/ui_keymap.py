@@ -121,7 +121,7 @@ def update_origin_special(self, context):
 from toolplus_originset.ui_header  import (VIEW3D_HT_originset_header_menu)
 
 def update_origin_header(self, context):
-
+     
     try:     
         bpy.utils.unregister_class(VIEW3D_HT_originset_header_menu)  
 
@@ -130,8 +130,10 @@ def update_origin_header(self, context):
 
     addon_prefs = context.preferences.addons[__package__].preferences  
 
-    if addon_prefs.tab_origin_header == 'prepend':
+    #if addon_prefs.tab_origin_header == 'append':
+        #bpy.utils.register_class(VIEW3D_HT_originset_header_menu)  
 
+    if addon_prefs.tab_origin_header == 'prepend':
         bpy.utils.register_class(VIEW3D_HT_originset_header_menu)  
 
     if addon_prefs.tab_origin_header == 'remove':  

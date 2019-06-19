@@ -27,7 +27,7 @@ from bpy.props import StringProperty
 
 # OPERATOR WITH STRING MODE ID #
 class VIEW3D_OT_set_origin_to(bpy.types.Operator):
-    '''set origin to selected...'''# Tool-Tip  
+    '''set origin to ...'''# Tool-Tip  
     bl_idname = "tpc_ops.set_origin_to"
     bl_label = "Selected Edit"
     bl_options = {"REGISTER", 'UNDO'}   

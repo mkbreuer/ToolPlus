@@ -27,9 +27,9 @@ from bpy.props import *
 from mathutils import Vector
 
 
-class VIEW3D_OT_distribute_objects(bpy.types.Operator):
+class VIEW3D_OT_distribute_origins(bpy.types.Operator):
     """Space Objects between there Origins"""
-    bl_idname = "tpc_ops.distribute_objects"
+    bl_idname = "tpc_ops.distribute_origins"
     bl_label = "Distribute Objects"       
     bl_options = {'REGISTER', 'UNDO', 'PRESET'}   
 
@@ -145,62 +145,16 @@ class VIEW3D_OT_distribute_objects(bpy.types.Operator):
 
         return {'FINISHED'}
 
-
-
-
-class VIEW3D_OT_distribute_objects_menu(bpy.types.Operator):
-    """Space Objects between there Origins"""
-    bl_idname = "tpc_ops.distribute_objects_menu"
-    bl_label = "Distribute Objects"       
-    bl_options = {'REGISTER', 'UNDO', 'PRESET'}   
-
-    Boolx : bpy.props.BoolProperty(name="X", default =True)
-    Booly : bpy.props.BoolProperty(name="Y", default =True)
-    Boolz : bpy.props.BoolProperty(name="Z", default =True)
-    Invert : bpy.props.BoolProperty(name="I", default =False)
-
-    use_axis : bpy.props.EnumProperty(
-        items=[("axis_x"   ,"X"   ,"distribute X axis"),
-               ("axis_y"   ,"Y"   ,"distribute Y axis"),
-               ("axis_z"   ,"Z"   ,"distribute Z axis"),
-               ("axis_xy"  ,"XY"  ,"distribute XY axis"),
-               ("axis_yz"  ,"YZ"  ,"distribute YZ axis"),
-               ("axis_xz"  ,"XZ"  ,"distribute XZ axis"),
-               ("axis_xyz" ,"XYZ" ,"distribute XYZ axis")],
-               name = "Axis",
-               default = "axis_x")
-    
-    tp_offset : FloatVectorProperty(name="Offset", description="offset", default=(0.0, 0.0, 0.0), subtype='XYZ', size=3)
-
-    # DRAW PROPS [F6] # 
-    def draw(self, context):
-        layout = self.layout
-       
-        col = layout.column(align=True)
-
-        box = col.box().column(align=True)              
-        box.separator() 
-        
-        row = box.row(align=True) 
-        row.prop(self, 'Boolx') 
-        row.prop(self, 'Booly') 
-        row.prop(self, 'Boolz') 
-        row.prop(self, 'Invert', text="", icon="FILE_REFRESH") 
-
-        box.separator() 
-        
-        row = box.row(align=True) 
-        row.prop(self, 'tp_offset', text="") 
-
-        box.separator()
-
-    def execute(self, context):
-
-        bpy.ops.tpc_ops.distribute_objects(Boolx=self.Boolx, Booly=self.Booly, Boolz=self.Boolz, Invert=self.Invert, tp_offset=self.tp_offset)
-
-        return {'FINISHED'}
-
     def invoke(self, context, event):
         return context.window_manager.invoke_props_popup(self, event)   
 
+
+def register():
+    bpy.utils.register_class(VIEW3D_OT_distribute_origins)
+
+def unregister():
+    bpy.utils.unregister_class(VIEW3D_OT_distribute_origins)
+
+if __name__ == "__main__":
+    register()
 

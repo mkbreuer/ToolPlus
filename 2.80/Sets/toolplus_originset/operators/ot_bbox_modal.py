@@ -25,7 +25,7 @@ from bpy.props import IntProperty, FloatProperty
 
 
 class VIEW3D_OT_snap_origin_to_bbox(bpy.types.Operator):
-    """Move an object with the mouse, example"""
+    """Click on a wrapped bounding box to place the origin"""
     bl_idname = "tpc_ops.snap_to_bbox"
     bl_label = "Snap BBox"
    

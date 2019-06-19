@@ -31,8 +31,25 @@ CLICK_OBJECT = {'MESH', 'SURFACE', 'CURVE'}
 MESH_MODE = ["OBJECT", "EDIT_MESH"]
 MESH_OBJECT = {'MESH'}
 
+
+def draw_originset_edit_layout(self, context, layout):
+          
+    icons = load_icons()
+    
+    addon_prefs = context.preferences.addons[__package__].preferences
+
+    layout.scale_y = addon_prefs.ui_scale_y
+     
+    if addon_prefs.use_button_icons ==True: 
+        button_origin_to_selected = icons.get("icon_origin_to_selected")   
+        layout.operator("tpc_ops.set_origin_to_edit", text="Selected Edit", icon_value=button_origin_to_selected.icon_id)             
+    else:                     
+        layout.operator("tpc_ops.set_origin_to_edit", text="Selected Edit")         
+
+
+
 # DRAW UI LAYOUT #
-def draw_originset_ui(self, context, layout):
+def draw_originset_default_ui(self, context, layout):
     
     addon_prefs = context.preferences.addons[__package__].preferences
     
@@ -87,6 +104,33 @@ def draw_originset_ui(self, context, layout):
         else:    
             layout.operator("tpc_ops.set_origin_to", text="Mass (Volume)").mode = "ORIGIN_CENTER_OF_VOLUME"
    
+
+
+
+# DRAW UI LAYOUT #
+def draw_originset_ui(self, context, layout):
+    
+    addon_prefs = context.preferences.addons[__package__].preferences
+    
+    icons = load_icons()
+     
+    layout.operator_context = 'INVOKE_REGION_WIN'
+
+    layout.scale_y = addon_prefs.ui_scale_y
+
+    view_layer = bpy.context.view_layer      
+    obj = view_layer.objects.active
+
+    if context.mode == 'OBJECT':      
+        if addon_prefs.display_tpc_hide_defaults_in_object == False:  
+            draw_originset_default_ui(self, context, layout)
+
+
+    if addon_prefs.display_tpc_hide_defaults_in_edit == False:     
+        if context.mode in EDIT:
+            draw_originset_default_ui(self, context, layout)
+
+
     if addon_prefs.display_tpc_origin_to_click_point == True: 
         if context.mode in CLICK_MODE:  
             if obj: 
@@ -176,6 +220,15 @@ def draw_originset_ui(self, context, layout):
             else:                    
                 layout.operator("tpc_ops.snap_to_bbox", text="BBox Modal")
 
+        
+        if addon_prefs.display_tpc_distribute_origins == True:   
+            if addon_prefs.use_button_icons ==True:     
+                button_icon_distribute_origins = icons.get("icon_distribute_origins")                
+                layout.operator("tpc_ops.distribute_origins", text="Distribute XYZ", icon_value=button_icon_distribute_origins.icon_id)       
+            else:                      
+                layout.operator("tpc_ops.distribute_origins", text="Distribute XYZ")    
+
+
         if addon_prefs.display_tpc_advanced_align_tools == True:   
             if addon_prefs.use_button_icons ==True:     
                 button_origin_align_object = icons.get("icon_origin_align_object")                
@@ -187,21 +240,8 @@ def draw_originset_ui(self, context, layout):
     if addon_prefs.display_tpc_zero_to_axis == True:  
         if addon_prefs.use_button_icons ==True:   
             button_align_to_zero = icons.get("icon_align_to_zero")          
-            layout.operator("tpc_ops.zero_axis_menu", text="Zero to XYZ Axis", icon_value=button_align_to_zero.icon_id)               
+            layout.operator("tpc_ops.zero_to_axis", text="Zero to XYZ Axis", icon_value=button_align_to_zero.icon_id)               
         else: 
-            layout.operator("tpc_ops.zero_axis_menu", text="Zero to XYZ Axis")   
+            layout.operator("tpc_ops.zero_to_axis", text="Zero to XYZ Axis")   
 
 
-def draw_originset_edit_layout(self, context, layout):
-          
-    icons = load_icons()
-    
-    addon_prefs = context.preferences.addons[__package__].preferences
-
-    layout.scale_y = addon_prefs.ui_scale_y
-     
-    if addon_prefs.use_button_icons ==True: 
-        button_origin_to_selected = icons.get("icon_origin_to_selected")   
-        layout.operator("tpc_ops.set_origin_to_edit", text="Selected Edit", icon_value=button_origin_to_selected.icon_id)             
-    else:                     
-        layout.operator("tpc_ops.set_origin_to_edit", text="Selected Edit")         

@@ -93,7 +93,7 @@ def edit_align_function(tp_axis, tp_orient, tp_mirror, tp_use, falloff, propsize
 
       
 class VIEW3D_OT_align_to_axis(bpy.types.Operator):
-    """align selected mesh to an axis"""
+    """Align Selected to XYZ Axis, etc."""
     bl_label = "Align to Axis"
     bl_idname = "tpc_ops.align_to_axis"
     bl_options = {'REGISTER', 'UNDO'}
