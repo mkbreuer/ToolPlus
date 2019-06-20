@@ -2,10 +2,9 @@
 import bpy
 from bpy import *
 
-
 # ADD 3D VIEW MENU #  
-from toolplus_snapset.ui_menu         import (VIEW3D_MT_SnapSet_Menu)
-from toolplus_snapset.ui_menu_pie     import (VIEW3D_MT_SnapSet_Menu_Pie)
+from view3d_snapset.ui_menu         import (VIEW3D_MT_SnapSet_Menu)
+from view3d_snapset.ui_menu_pie     import (VIEW3D_MT_SnapSet_Menu_Pie)
 
 # KEY REGISTRY # 
 addon_keymaps_menu = []
@@ -25,7 +24,6 @@ def update_snapset_menu(self, context):
     except:
         pass
 
-
     
     wm = bpy.context.window_manager
     kc = wm.keyconfigs.addon
@@ -42,7 +40,7 @@ def update_snapset_menu(self, context):
                                                     # ADD NEW KEYS HERE #
             kmi = km.keymap_items.new('wm.call_menu', 'W', 'PRESS', shift=True) #, ctrl=True, alt=True)
             
-            kmi.properties.name = "VIEW3D_MT_SnapSet_Menu"    
+            kmi.properties.name = "VIEW3D_MT_SnapSet_Menu"       
 
 
         if addon_prefs.tab_snapset_menu == 'pie':
@@ -75,7 +73,7 @@ def update_snapset_menu(self, context):
 
 
 # ADD TO SPECIAL [W] #  
-from toolplus_snapset.ui_menu_special  import (draw_snapset_item_special)
+from view3d_snapset.ui_menu_special  import (draw_snapset_item_special)
 
 def update_snapset_special(self, context):
 
@@ -116,7 +114,7 @@ def update_snapset_special(self, context):
 
 
 # ADD TO HEADER #  
-from toolplus_snapset.ui_header  import (VIEW3D_HT_SnapSet_Header_Menu)
+from view3d_snapset.ui_header  import (VIEW3D_HT_SnapSet_Header_Menu)
 
 def update_snapset_header(self, context):
 

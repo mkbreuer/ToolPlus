@@ -23,13 +23,13 @@
 bl_info = {
     "name": "SnapSet",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 6),
+    "version": (0, 2, 7),
     "blender": (2, 80, 0),
     "location": "3D View > Tool- or Propertyshelf Panel [N], Menus [SHIFT+W], Special Menu [W], Shortcut [F], Header",
     "description": "fully customizable buttons for snapping",
     "warning": "/",
     "wiki_url": "https://github.com/mkbreuer/ToolPlus",
-    "category": "ToolPlus",
+    "category": "3D View",
 }
 
 
@@ -52,23 +52,23 @@ from .ot_modal          import *
 from .ot_targets        import *
 
 # LOAD UI # 
-from .ui_panel          import *
+from .ui_layout         import *
 from .ui_header         import *
 from .ui_menu           import *
 from .ui_menu_pie       import *
 from .ui_menu_special   import *
 from .ui_keymap         import *
 
+
 importlib.reload(developer_utils)
 modules = developer_utils.setup_addon_modules(__path__, __name__, "bpy" in locals())
-
 
 
 # PANEL TO CONTAINING THE TOOLS #
 class VIEW3D_PT_snapset_panel_ui(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category = 'Test'
+    bl_category = 'Tools'
     bl_label = "SnapSet"
     bl_options = {'DEFAULT_CLOSED'}
 
@@ -98,7 +98,6 @@ def update_panel(self, context):
     except Exception as e:
         print("\n[{}]\n{}\n\nError:\n{}".format(__name__, message, e))
         pass
-
 
 
 
@@ -139,9 +138,11 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
         default='info')
 
     #------------------------------
-
+   
+    # LAYOUT SCALE #
+    ui_scale_y : bpy.props.FloatProperty(name="Scale Y",  description="scale layout space for menus", default=1.2, min=1.0, max=1.5, precision=2)
+   
     # PANEL #          
-
     tab_display_buttons_pl:EnumProperty(
         name = 'Buttons or Menus', 
         description = 'on = only butttons / off = use menus',
@@ -179,12 +180,22 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                ('remove',  'Menu Remove', 'remove menus from default menus')),
         default='remove', update = update_snapset_special)               
 
-    toggle_special_snapset_separator:bpy.props.BoolProperty(name="Toggle SubSeparator", description="on / off", default=True)   
-    toggle_special_snapset_icon:bpy.props.BoolProperty(name="Toggle SubMenu Icon", description="on / off", default=False)   
-
+    toggle_special_separator:bpy.props.BoolProperty(name="Separator", description="on / off", default=True)   
+    toggle_special_icon:bpy.props.BoolProperty(name="Icons", description="on / off", default=False)   
+    
+  
+    tab_header_type:EnumProperty(
+        name = '3D View Menu',
+        description = 'different layout types',
+        items=(('menu',    'Use Menu',   'enable menu'),
+               ('panel',   'Use Panel',  'enable panel'),
+               ('buttons', 'Use Buttons', 'enable buttons')),
+        default='panel') 
+ 
+    tab_header_text : bpy.props.BoolProperty(name="Show/Hide Name", description="on / off", default=True)   
+    tab_layout_direction : bpy.props.BoolProperty(name="Layout Direction", description="on / off", default=True)   
 
     #----------------------------
-
 
     # HEADER #
     expand_panel_tools:bpy.props.BoolProperty(name="Expand", description="Expand, to display the settings", default=False)    
@@ -696,7 +707,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
 
                 row = box.row(align=False)                    
                 row.prop(self, "use_internal_icon_bta", text="Use Internal or Custom Icon")     
-            
+                row.operator('wm.url_open', text = '', icon='BLENDER').url = "https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/reference%20sheets/blender_internal_icons_2.80.png"
+                    
                 row = box.row(align=False)                    
                 row.prop(self, "icon_bta", text="Icon Name")
                  
@@ -754,7 +766,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
 
                 row = box.row(align=False)                    
                 row.prop(self, "use_internal_icon_btb", text="Use Internal or Custom Icon")     
-            
+                row.operator('wm.url_open', text = '', icon='BLENDER').url = "https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/reference%20sheets/blender_internal_icons_2.80.png"
+                    
                 row = box.row(align=False)                    
                 row.prop(self, "icon_btb", text="Icon Name")
                  
@@ -812,7 +825,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
 
                 row = box.row(align=False)                    
                 row.prop(self, "use_internal_icon_btc", text="Use Internal or Custom Icon")     
-            
+                row.operator('wm.url_open', text = '', icon='BLENDER').url = "https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/reference%20sheets/blender_internal_icons_2.80.png"
+                            
                 row = box.row(align=False)                    
                 row.prop(self, "icon_btc", text="Icon Name")
                  
@@ -870,7 +884,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
 
                 row = box.row(align=False)                    
                 row.prop(self, "use_internal_icon_btd", text="Use Internal or Custom Icon")     
-            
+                row.operator('wm.url_open', text = '', icon='BLENDER').url = "https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/reference%20sheets/blender_internal_icons_2.80.png"
+                            
                 row = box.row(align=False)                    
                 row.prop(self, "icon_btd", text="Icon Name")
                  
@@ -928,7 +943,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
 
                 row = box.row(align=False)                    
                 row.prop(self, "use_internal_icon_bte", text="Use Internal or Custom Icon")     
-            
+                row.operator('wm.url_open', text = '', icon='BLENDER').url = "https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/reference%20sheets/blender_internal_icons_2.80.png"
+                            
                 row = box.row(align=False)                    
                 row.prop(self, "icon_bte", text="Icon Name")
                  
@@ -987,7 +1003,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
 
                 row = box.row(align=False)                    
                 row.prop(self, "use_internal_icon_btf", text="Use Internal or Custom Icon")     
-            
+                row.operator('wm.url_open', text = '', icon='BLENDER').url = "https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/reference%20sheets/blender_internal_icons_2.80.png"
+                            
                 row = box.row(align=False)                    
                 row.prop(self, "icon_btf", text="Icon Name")
                  
@@ -1107,26 +1124,30 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 row.prop(self, "prop_btM_scale")  
 
                 box.separator() 
-
-
             
             
             box.separator()
-            box = layout.box().column(align=True)
-            box.separator()
-         
-            row = box.column(align=False)
-            row.label(text="Icons", icon="INFO")
-            row.label(text="> images in the addon icon folder.")
-            row.label(text="> they can be exchanged by other one.")
 
-            row.separator()
-         
-            row.label(text="> to use internal icons: enable the addon icon viewer for text editor.")
-            row.label(text="> it shows all icons that blender use.")
-            row.label(text="> attention: the icon names have always to be written as capitalization.")
+            if self.tab_button_type != 'button_m':
+                
+                box = layout.box().column(align=True)
+                box.separator()
+             
+                row = box.row(align=False)
+                row.label(text="Icons:", icon="INFO")
+                row.operator('wm.url_open', text = '', icon='BLENDER').url = "https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/reference%20sheets/blender_internal_icons_2.80.png"
+                
+                row = box.column(align=False)
+                row.label(text="> images in the addon icon folder.")
+                row.label(text="> they can be exchanged by other one.")
 
-            box.separator()
+                row.separator()
+             
+                row.label(text="> to use internal icons: enable the addon icon viewer for text editor.")
+                row.label(text="> it shows all icons that blender use.")
+                row.label(text="> attention: the icon names have always to be written as capitalization.")
+
+                box.separator()
 
 
 
@@ -1182,6 +1203,14 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
             box = col.box().column(align=True)
            
             box.separator()            
+
+            row = box.row(align=True)  
+            row.label(text="Layout Scale Y", icon ="COLLAPSEMENU")                   
+            row.prop(self, 'ui_scale_y')      
+           
+            box.separator() 
+            box = col.box().column(align=True)         
+            box.separator()        
            
             row = box.row(align=True)    
             row.label(text="Append Function to 3D View Header", icon ="COLLAPSEMENU")       
@@ -1191,6 +1220,18 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
             row = box.row(align=True)  
             row.prop(self, 'tab_snapset_header', expand=True)
 
+            if self.tab_snapset_header == 'add':
+                box.separator() 
+
+                row = box.row(align=True)                  
+                row.prop(self, 'tab_header_type', text="")
+                
+                if self.tab_header_type == 'buttons':
+                    pass                    
+                else:
+                    row.prop(self, 'tab_header_text')
+                    row.prop(self, 'tab_layout_direction')
+ 
             box.separator() 
 
             row = box.row()           
@@ -1228,9 +1269,9 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
 
                 box.separator() 
 
-                row = box.column(align=True)  
-                row.prop(self, 'toggle_special_snapset_separator')
-                row.prop(self, 'toggle_special_snapset_icon')
+                row = box.row(align=True)  
+                row.prop(self, 'toggle_special_icon')
+                row.prop(self, 'toggle_special_separator')
 
             box.separator()
 
@@ -1415,6 +1456,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
             row.label(text="", icon ="BLANK1")
             row.operator("tpc_ot.keymap_snapset", text = 'Open KeyMap in Text Editor')
             row.operator('wm.url_open', text = 'Type of Events').url = "https://github.com/mkbreuer/Misc-Share-Archiv/blob/master/images/SHORTCUTS_Type%20of%20key%20event.png?raw=true"
+            row.operator('wm.url_open', text = '', icon='BLENDER').url = "https://docs.blender.org/api/blender_python_api_2_77_0/bpy.types.Event.html"
             
             box.separator()
 
@@ -1427,6 +1469,7 @@ addon_keymaps = []
 # REGISTER #
 classes = (
     VIEW3D_PT_snapset_panel_ui,
+    VIEW3D_PT_SnapSet_Header_Panel,
     VIEW3D_OT_KeyMap_Snapset,
     VIEW3D_OT_Snapset_Button_A,
     VIEW3D_OT_Snapset_Button_B,
@@ -1440,10 +1483,9 @@ classes = (
     VIEW3D_OT_SNAP_TARGET,
     VIEW3D_OT_SNAP_ELEMENT,
     VIEW3D_OT_SNAP_USE,
-    VIEW3D_MT_SnapSet_Menu_Panel,
     VIEW3D_MT_SnapSet_Menu_Pencil,
-    VIEW3D_MT_SnapSet_Menu_Special,
     VIEW3D_MT_SnapSet_Header_Menu,
+    VIEW3D_MT_SnapSet_Menu_Special,
     Addon_Preferences_Snapset,
 )
 
