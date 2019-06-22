@@ -58,7 +58,7 @@ class VIEW3D_OT_Snapset_Modal(bpy.types.Operator):
         def modal(self, context, event):
 
             # header info
-            context.area.header_text_set("SnapSet: %s - %s - %s" % (self.mode, event.type, event.value))     
+            #context.area.header_text_set("SnapSet: %s - %s - %s" % (self.mode, event.type, event.value))     
 
             # do til event 
             self.count += 1

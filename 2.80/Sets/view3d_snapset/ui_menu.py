@@ -26,7 +26,6 @@ def draw_snapset_menu_ui(self, context, layout):
     if addon_prefs.tpc_use_grid_modal == True:
         button_snap_grid = icons.get("icon_snap_grid")
         layout.operator("tpc_ot.snapset_modal", text="GridM", icon_value=button_snap_grid.icon_id).mode = "GRID"
-
                 
     if context.mode == 'OBJECT':
 
@@ -53,20 +52,20 @@ def draw_snapset_menu_ui(self, context, layout):
             button_snap_retopo = icons.get("icon_snap_retopo")
             layout.operator("tpc_ot.snapset_modal", text="RetopoM", icon_value=button_snap_retopo.icon_id).mode = "RETOPO"   
       
+    if addon_prefs.tpc_use_cursor == True:
+        if addon_prefs.use_internal_icon_btc == True:     
+            layout.operator("tpc_ot.snapset_button_c", text=addon_prefs.name_btc, icon=addon_prefs.icon_btc) 
+        else:       
+            button_snap_cursor = icons.get("icon_snap_cursor")           
+            layout.operator("tpc_ot.snapset_button_c", text=addon_prefs.name_btc, icon_value=button_snap_cursor.icon_id) 
 
-    if addon_prefs.use_internal_icon_btc == True:     
-        layout.operator("tpc_ot.snapset_button_c", text=addon_prefs.name_btc, icon=addon_prefs.icon_btc) 
-    else:       
-        button_snap_cursor = icons.get("icon_snap_cursor")           
-        layout.operator("tpc_ot.snapset_button_c", text=addon_prefs.name_btc, icon_value=button_snap_cursor.icon_id) 
-
-
-    if addon_prefs.use_internal_icon_bte == True:
-        layout.operator("tpc_ot.snapset_button_e", text=addon_prefs.name_bte, icon=addon_prefs.icon_bte)
-    else:           
-        button_snap_closest = icons.get("icon_snap_closest")
-        layout.operator("tpc_ot.snapset_button_e", text=addon_prefs.name_bte, icon_value=button_snap_closest.icon_id)
-        
+    if addon_prefs.tpc_use_closest == True:
+        if addon_prefs.use_internal_icon_bte == True:
+            layout.operator("tpc_ot.snapset_button_e", text=addon_prefs.name_bte, icon=addon_prefs.icon_bte)
+        else:           
+            button_snap_closest = icons.get("icon_snap_closest")
+            layout.operator("tpc_ot.snapset_button_e", text=addon_prefs.name_bte, icon_value=button_snap_closest.icon_id)
+            
 
     if addon_prefs.tpc_use_active == True: 
         if addon_prefs.use_internal_icon_btd == True:

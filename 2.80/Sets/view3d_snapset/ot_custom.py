@@ -30,7 +30,7 @@ class VIEW3D_OT_Snapset_Button_A(bpy.types.Operator):
         bpy.context.scene.tool_settings.use_snap_scale = addon_prefs.prop_bta_scale
 
         # header info
-        context.area.header_text_set("SnapSet: %s" % (addon_prefs.name_bta))           
+        #context.area.header_text_set("SnapSet: %s" % (addon_prefs.name_bta))           
         return {'FINISHED'}
 
 
@@ -60,7 +60,7 @@ class VIEW3D_OT_Snapset_Button_B(bpy.types.Operator):
         bpy.context.scene.tool_settings.use_snap_scale = addon_prefs.prop_btb_scale
     
         # header info
-        context.area.header_text_set("SnapSet: %s" % (addon_prefs.name_btb))          
+        #context.area.header_text_set("SnapSet: %s" % (addon_prefs.name_btb))          
         return {'FINISHED'}
 
 
@@ -90,7 +90,7 @@ class VIEW3D_OT_Snapset_Button_C(bpy.types.Operator):
         bpy.context.scene.tool_settings.use_snap_scale = addon_prefs.prop_btc_scale
         
         # header info
-        context.area.header_text_set("SnapSet: %s" % (addon_prefs.name_btc))          
+        #context.area.header_text_set("SnapSet: %s" % (addon_prefs.name_btc))          
         return {'FINISHED'}
 
 
@@ -120,7 +120,7 @@ class VIEW3D_OT_Snapset_Button_D(bpy.types.Operator):
         bpy.context.scene.tool_settings.use_snap_scale = addon_prefs.prop_btd_scale
         
         # header info
-        context.area.header_text_set("SnapSet: %s" % (addon_prefs.name_btd))          
+        #context.area.header_text_set("SnapSet: %s" % (addon_prefs.name_btd))          
         return {'FINISHED'}
 
 
@@ -150,7 +150,7 @@ class VIEW3D_OT_Snapset_Button_E(bpy.types.Operator):
         bpy.context.scene.tool_settings.use_snap_scale = addon_prefs.prop_bte_scale
         
         # header info
-        context.area.header_text_set("SnapSet: %s" % (addon_prefs.name_bte))          
+        #context.area.header_text_set("SnapSet: %s" % (addon_prefs.name_bte))          
         return {'FINISHED'}
 
 
@@ -181,7 +181,7 @@ class VIEW3D_OT_Snapset_Button_F(bpy.types.Operator):
         bpy.context.scene.tool_settings.use_snap_scale = addon_prefs.prop_btf_scale
         
         # header info
-        context.area.header_text_set("SnapSet: %s" % (addon_prefs.name_btf))          
+        #context.area.header_text_set("SnapSet: %s" % (addon_prefs.name_btf))          
         return {'FINISHED'}
 
 

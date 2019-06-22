@@ -59,7 +59,7 @@ class VIEW3D_OT_PIVOT_TARGET(bpy.types.Operator):
         bpy.context.scene.tool_settings.use_transform_pivot_point_align = self.tpc_align
 
         # header info
-        context.area.header_text_set("SnapSet: %s" % (self.tpc_pivot))   
+        #context.area.header_text_set("SnapSet: %s" % (self.tpc_pivot))   
         return {'FINISHED'}
     
     
@@ -113,7 +113,7 @@ class VIEW3D_OT_ORIENT_AXIS(bpy.types.Operator):
             bpy.context.scene.transform_orientation_slots[0].type = 'CURSOR'
     
         # header info
-        context.area.header_text_set("SnapSet: %s" % (self.tpc_axis))  
+        #context.area.header_text_set("SnapSet: %s" % (self.tpc_axis))  
         return {'FINISHED'}
 
 
@@ -159,7 +159,7 @@ class VIEW3D_OT_SNAP_TARGET(bpy.types.Operator):
             bpy.context.scene.tool_settings.snap_target = 'ACTIVE'
     
         # header info
-        context.area.header_text_set("SnapSet: %s" % (self.tpc_snapt)) 
+        #context.area.header_text_set("SnapSet: %s" % (self.tpc_snapt)) 
         return {'FINISHED'}
 
 
@@ -209,7 +209,7 @@ class VIEW3D_OT_SNAP_ELEMENT(bpy.types.Operator):
             bpy.context.scene.tool_settings.snap_elements = {'VOLUME'}   
 
         # header info
-        context.area.header_text_set("SnapSet: %s" % (self.tpc_snape)) 
+        #context.area.header_text_set("SnapSet: %s" % (self.tpc_snape)) 
         return {'FINISHED'}
 
 
@@ -231,5 +231,5 @@ class VIEW3D_OT_SNAP_USE(bpy.types.Operator):
             bpy.context.scene.tool_settings.use_snap = False
        
         # header info
-        context.area.header_text_set("SnapSet: %s" % (self.mode)) 
+        #context.area.header_text_set("SnapSet: %s" % (self.mode)) 
         return {'FINISHED'}

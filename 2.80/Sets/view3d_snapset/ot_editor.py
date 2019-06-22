@@ -23,7 +23,6 @@ class VIEW3D_OT_KeyMap_Snapset(bpy.types.Operator):
 
                 bpy.context.space_data.show_line_numbers = True
                 bpy.context.space_data.show_syntax_highlight = True
-
       
         return {"FINISHED"}
 

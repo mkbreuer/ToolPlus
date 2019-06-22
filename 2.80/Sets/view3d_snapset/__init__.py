@@ -23,11 +23,11 @@
 bl_info = {
     "name": "SnapSet",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 7),
+    "version": (0, 2, 8),
     "blender": (2, 80, 0),
-    "location": "3D View > Tool- or Propertyshelf Panel [N], Menus [SHIFT+W], Special Menu [W], Shortcut [F], Header",
-    "description": "fully customizable buttons for snapping",
-    "warning": "/",
+    "location": "3D View > Shelf [N], Menus [SHIFT+W], Special Menu [W], Shortcut [F], Header / Header Settings",
+    "description": "full customizable buttons for snapping task",
+    "warning": "",
     "wiki_url": "https://github.com/mkbreuer/ToolPlus",
     "category": "3D View",
 }
@@ -181,9 +181,20 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
         default='remove', update = update_snapset_special)               
 
     toggle_special_separator:bpy.props.BoolProperty(name="Separator", description="on / off", default=True)   
-    toggle_special_icon:bpy.props.BoolProperty(name="Icons", description="on / off", default=False)   
+    toggle_special_icon:bpy.props.BoolProperty(name="Menu Icon", description="on / off", default=False)   
+
+    #----------------------------
+
+
+    # HEADER #
     
-  
+    tab_snapset_header:EnumProperty(
+        name = 'Header Menu',
+        description = 'enable or disable menu for Header',
+        items=(('add',    'Menu on',  'enable menu for Header'),
+               ('remove', 'Menu off', 'disable menu for Header')),
+        default='remove', update = update_snapset_header)
+
     tab_header_type:EnumProperty(
         name = '3D View Menu',
         description = 'different layout types',
@@ -195,31 +206,56 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     tab_header_text : bpy.props.BoolProperty(name="Show/Hide Name", description="on / off", default=True)   
     tab_layout_direction : bpy.props.BoolProperty(name="Layout Direction", description="on / off", default=True)   
 
+    tab_display_buttons : BoolProperty(name= 'Buttons / Menus', description = 'on = only butttons / off = use menus', default=False) 
+    tab_display_name : BoolProperty(name= 'Name / Icons', description = 'on = names & icons / off = only icons', default=False) 
+
+    tpc_use_custom_layout_header:BoolProperty(name= 'Custom Layout', description = 'customize layout', default=False)   
+    tpc_use_grid_header:BoolProperty(name= 'Snap Grid', description = 'botton in menu', default=True)   
+    tpc_use_place_header:BoolProperty(name= 'Snap Place', description = 'botton in menu', default=True)   
+    tpc_use_retopo_header:BoolProperty(name= 'Snap Retopo', description = 'botton in menu', default=True)   
+    tpc_use_cursor_header:BoolProperty(name= 'Snap Cursor', description = 'botton in menu', default=True)   
+    tpc_use_closest_header:BoolProperty(name= 'Snap Closest', description = 'botton in menu', default=True)   
+    tpc_use_active_header:BoolProperty(name= 'Snap Active', description = 'botton in menu', default=True)   
+    tpc_use_grid_modal_header:BoolProperty(name= 'Grid Modal', description = 'botton in menu', default=True)   
+    tpc_use_place_modal_header:BoolProperty(name= 'Place Modal', description = 'botton in menu', default=True)   
+    tpc_use_retopo_modal_header:BoolProperty(name= 'Retopo Modal', description = 'botton in menu', default=True)   
+
+
     #----------------------------
 
-    # HEADER #
-    expand_panel_tools:bpy.props.BoolProperty(name="Expand", description="Expand, to display the settings", default=False)    
 
-    tab_snapset_header:EnumProperty(
+    # HEADER SNAP SETTING #
+    
+    tab_snapset_header_item:EnumProperty(
         name = 'Header Menu',
         description = 'enable or disable menu for Header',
         items=(('add',    'Menu on',  'enable menu for Header'),
                ('remove', 'Menu off', 'disable menu for Header')),
-        default='remove', update = update_snapset_header)
+        default='remove', update = update_snapset_header_item)
 
-    tab_display_buttons:EnumProperty(
-        name = 'Buttons or Menus', 
-        description = 'on = only butttons / off = use menus',
-        items=(('off', 'Use Menus',   'enable tools in header'), 
-               ('on',  'Use Buttons', 'disable tools in header')), 
-        default='off', update = update_snapset_tools)
+    tab_header_type_item:EnumProperty(
+        name = '3D View Menu',
+        description = 'different layout types',
+        items=(('menu',    'Use Menu',   'enable menu'),
+               ('panel',   'Use Panel',  'enable panel'),
+               ('buttons', 'Use Buttons', 'enable buttons')),
+        default='panel') 
+ 
+    tab_layout_direction_item : bpy.props.BoolProperty(name="Layout Direction", description="on / off", default=True)   
 
-    tab_display_name:EnumProperty(
-        name = 'Name & Icon Toggle', 
-        description = 'on / off',
-        items=(('both_id', 'Show Name & Icon', 'keep names and icons visible in header menus'), 
-               ('icon_id', 'Show only Icons',   'disable icons in header menus')), 
-        default='both_id', update = update_snapset_tools)
+    tab_display_buttons_item : BoolProperty(name= 'Buttons / Menus', description = 'on = only butttons / off = use menus', default=False) 
+    tab_display_name_item : BoolProperty(name= 'Name / Icons', description = 'on = names & icons / off = only icons', default=True) 
+  
+    tpc_use_custom_layout_header_item:BoolProperty(name= 'Custom Layout', description = 'customize layout', default=False)
+    tpc_use_grid_header_item:BoolProperty(name= 'Snap Grid', description = 'botton in menu', default=True)   
+    tpc_use_place_header_item:BoolProperty(name= 'Snap Place', description = 'botton in menu', default=True)   
+    tpc_use_retopo_header_item:BoolProperty(name= 'Snap Retopo', description = 'botton in menu', default=True)   
+    tpc_use_cursor_header_item:BoolProperty(name= 'Snap Cursor', description = 'botton in menu', default=True)   
+    tpc_use_closest_header_item:BoolProperty(name= 'Snap Closest', description = 'botton in menu', default=True)   
+    tpc_use_active_header_item:BoolProperty(name= 'Snap Active', description = 'botton in menu', default=True)   
+    tpc_use_grid_modal_header_item:BoolProperty(name= 'Grid Modal', description = 'botton in menu', default=True)   
+    tpc_use_place_modal_header_item:BoolProperty(name= 'Place Modal', description = 'botton in menu', default=True)   
+    tpc_use_retopo_modal_header_item:BoolProperty(name= 'Retopo Modal', description = 'botton in menu', default=True)   
 
 
     #----------------------------
@@ -238,7 +274,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                ('button_f', 'Button F', 'button settings'),
                ('button_m', 'Button M', 'modal settings')),
         default='button_a')
-
+   
+    tpc_use_custom_layout:BoolProperty(name= 'Custom Layout', description = 'customize layout', default=False)
     tpc_use_grid:BoolProperty(name= 'Snap Grid', description = 'botton in menu', default=True)   
     tpc_use_place:BoolProperty(name= 'Snap Place', description = 'botton in menu', default=True)   
     tpc_use_retopo:BoolProperty(name= 'Snap Retopo', description = 'botton in menu', default=True)   
@@ -648,8 +685,9 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
             box.separator() 
 
             row = box.column(align=True)       
-            row.label(text="> This addon contains snap setting presets for the 3d view.")       
-            row.label(text="> They change the pivot and snap functions for respective task at the same time.")                     
+            row.label(text="> Customizable snap presets for the 3d view.")       
+            row.label(text="> The pivot and snap functions will be changed ")                     
+            row.label(text="> for respective task at the same time.")                     
                        
             row.separator()             
           
@@ -1213,7 +1251,12 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
             box.separator()        
            
             row = box.row(align=True)    
-            row.label(text="Append Function to 3D View Header", icon ="COLLAPSEMENU")       
+            row.label(text="Add to 3D View Header", icon ="COLLAPSEMENU")       
+
+            box.separator()            
+         
+            row = box.column(align=True)          
+            row.label(text="Menu or buttons will be added to the header row.")
 
             box.separator() 
 
@@ -1224,26 +1267,288 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 box.separator() 
 
                 row = box.row(align=True)                  
-                row.prop(self, 'tab_header_type', text="")
+                row.prop(self, 'tab_header_type', text="")                
+
+                row = box.row(align=True)                     
+                row.prop(self, 'tab_header_text')
+                row.prop(self, 'tab_layout_direction')
+ 
+                box.separator() 
+
+                row = box.row()           
+                row.prop(self, 'tab_display_buttons')           
+                row.prop(self, 'tab_display_name')
+
+            box.separator() 
+            
+            row = box.row(align=False)
+            row.prop(self, "tpc_use_custom_layout_header", text='')  
+            row.label(text="Customize order of tools")  
+ 
+            box.separator()  
+            
+            if self.tpc_use_custom_layout_header == True:     
+
+                row = box.row(align=False)
+                row.alignment = 'LEFT'
+                row.prop(self, "tpc_use_grid_header", text='')  
                 
-                if self.tab_header_type == 'buttons':
+                button_snap_grid = icons.get("icon_snap_grid")
+                row.label(text="Grid", icon_value=button_snap_grid.icon_id)
+                row.label(text="> snap pivot with absolute grid alignment")   
+             
+                box.separator() 
+
+                row = box.row(align=False)
+                row.alignment = 'LEFT'
+                row.prop(self, "tpc_use_grid_modal_header", text='')  
+                
+                button_snap_grid = icons.get("icon_snap_grid")
+                row.label(text="GridM (*)", icon_value=button_snap_grid.icon_id)
+                row.label(text="> snap pivot with absolute grid alignment til release")              
+
+                box.separator()            
+               
+                row = box.row(align=False)
+                row.alignment = 'LEFT'
+                row.prop(self, "tpc_use_place_header", text='')   
+               
+                button_snap_place = icons.get("icon_snap_place")
+                row.label(text="Place", icon_value=button_snap_place.icon_id)             
+                row.label(text="> snap pivot to surface of other objects")   
+
+                box.separator() 
+               
+                row = box.row(align=False)
+                row.alignment = 'LEFT'
+                row.prop(self, "tpc_use_place_modal_header", text='')   
+               
+                button_snap_place = icons.get("icon_snap_place")
+                row.label(text="PlaceM (*)", icon_value=button_snap_place.icon_id)             
+                row.label(text="> snap pivot to surface of other objects til release")   
+
+                box.separator()            
+               
+                row = box.row(align=False)
+                row.alignment = 'LEFT'
+                row.prop(self, "tpc_use_cursor_header", text='') 
+
+                button_snap_cursor = icons.get("icon_snap_cursor")           
+                row.label(text="Cursor", icon_value=button_snap_cursor.icon_id) 
+                row.label(text="> set 3d cursor to active or selected")   
+               
+                box.separator()            
+               
+                row = box.row(align=False)
+                row.alignment = 'LEFT' 
+                row.prop(self, "tpc_use_closest_header", text='')  
+
+                button_snap_closest = icons.get("icon_snap_closest")
+                row.label(text="Closest", icon_value=button_snap_closest.icon_id)            
+                row.label(text="> snap closest point onto target")   
+                
+                box.separator()            
+               
+                row = box.row(align=False)
+                row.alignment = 'LEFT'  
+                row.prop(self, "tpc_use_active_header", text='')
+              
+                button_snap_active = icons.get("icon_snap_active")            
+                row.label(text="Active", icon_value=button_snap_active.icon_id) 
+                row.label(text="> snap active pivot onto target")   
+               
+                box.separator()           
+               
+                row = box.row(align=False)
+                row.alignment = 'LEFT'
+                row.prop(self, "tpc_use_retopo_header", text='')  
+              
+                button_snap_retopo = icons.get("icon_snap_retopo")
+                row.label(text="Retopo", icon_value=button_snap_retopo.icon_id) 
+                row.label(text="> snap selected onto target in editmode")   
+              
+                box.separator()           
+               
+                row = box.row(align=False)
+                row.alignment = 'LEFT'
+                row.prop(self, "tpc_use_retopo_modal_header", text='')  
+              
+                button_snap_retopo = icons.get("icon_snap_retopo")
+                row.label(text="RetopoM (*)", icon_value=button_snap_retopo.icon_id) 
+                row.label(text="> snap selected onto target in editmode til release")  
+
+                box.separator() 
+                box = layout.box().column(align=True)
+                box.separator() 
+          
+                row = box.column(align=False)              
+                row.label(text="(*) Modal Tools:")   
+                row.label(text="> After execute the snap setting toggle to the needed preference.")   
+                row.label(text="> When finished the settings switch back to the previous one.")   
+                
+                box.separator() 
+          
+                row = box.column(align=False)              
+                row.label(text="Checkbox:", icon='CHECKBOX_HLT')   
+                row.label(text="> toggle the tools in the menus on or off.")   
+ 
+                box.separator()
+
+         
+            #-----------------------------------------------------
+          
+            box.separator() 
+            box = col.box().column(align=True)         
+            box.separator()        
+           
+            row = box.row(align=True)    
+            row.label(text="Add to Header Snap Settings", icon ="COLLAPSEMENU")       
+
+            box.separator()            
+         
+            row = box.column(align=True)          
+            row.label(text="Menu or buttons will be added to the snap settings menu in the header.")
+
+            box.separator() 
+
+            row = box.row(align=True)  
+            row.prop(self, 'tab_snapset_header_item', expand=True)
+
+
+            if self.tab_snapset_header_item == 'add':
+                
+
+                if self.tab_header_type == False:
                     pass                    
                 else:
-                    row.prop(self, 'tab_header_text')
-                    row.prop(self, 'tab_layout_direction')
+                    box.separator() 
+                  
+                    row = box.row(align=True)                
+                    row.prop(self, 'tab_layout_direction_item')
  
-            box.separator() 
+                
+                box.separator() 
 
-            row = box.row()           
-            row.prop(self, 'tab_display_buttons',  expand=True)
-       
-            box.separator() 
-
-            row = box.row()                  
-            row.prop(self, 'tab_display_name',  expand=True)
+                row = box.row()           
+                row.prop(self, 'tab_display_buttons_item')                
+                row.prop(self, 'tab_display_name_item')
 
             box.separator() 
 
+            row = box.row(align=False)
+            row.prop(self, "tpc_use_custom_layout_header_item", text='')  
+            row.label(text="Customize order of tools")   
+
+            box.separator()  
+            
+            if self.tpc_use_custom_layout_header_item == True:     
+
+                row = box.row(align=False)
+                row.alignment = 'LEFT'
+                row.prop(self, "tpc_use_grid_header_item", text='')  
+                
+                button_snap_grid = icons.get("icon_snap_grid")
+                row.label(text="Grid", icon_value=button_snap_grid.icon_id)
+                row.label(text="> snap pivot with absolute grid alignment")   
+             
+                box.separator() 
+
+                row = box.row(align=False)
+                row.alignment = 'LEFT'
+                row.prop(self, "tpc_use_grid_modal_header_item", text='')  
+                
+                button_snap_grid = icons.get("icon_snap_grid")
+                row.label(text="GridM (*)", icon_value=button_snap_grid.icon_id)
+                row.label(text="> snap pivot with absolute grid alignment til release")              
+
+                box.separator()            
+               
+                row = box.row(align=False)
+                row.alignment = 'LEFT'
+                row.prop(self, "tpc_use_place_header_item", text='')   
+               
+                button_snap_place = icons.get("icon_snap_place")
+                row.label(text="Place", icon_value=button_snap_place.icon_id)             
+                row.label(text="> snap pivot to surface of other objects")   
+
+                box.separator() 
+               
+                row = box.row(align=False)
+                row.alignment = 'LEFT'
+                row.prop(self, "tpc_use_place_modal_header_item", text='')   
+               
+                button_snap_place = icons.get("icon_snap_place")
+                row.label(text="PlaceM (*)", icon_value=button_snap_place.icon_id)             
+                row.label(text="> snap pivot to surface of other objects til release")   
+
+                box.separator()            
+               
+                row = box.row(align=False)
+                row.alignment = 'LEFT'
+                row.prop(self, "tpc_use_cursor_header_item", text='') 
+
+                button_snap_cursor = icons.get("icon_snap_cursor")           
+                row.label(text="Cursor", icon_value=button_snap_cursor.icon_id) 
+                row.label(text="> set 3d cursor to active or selected")   
+               
+                box.separator()            
+               
+                row = box.row(align=False)
+                row.alignment = 'LEFT' 
+                row.prop(self, "tpc_use_closest_header_item", text='')  
+
+                button_snap_closest = icons.get("icon_snap_closest")
+                row.label(text="Closest", icon_value=button_snap_closest.icon_id)            
+                row.label(text="> snap closest point onto target")   
+                
+                box.separator()            
+               
+                row = box.row(align=False)
+                row.alignment = 'LEFT'  
+                row.prop(self, "tpc_use_active_header_item", text='')
+              
+                button_snap_active = icons.get("icon_snap_active")            
+                row.label(text="Active", icon_value=button_snap_active.icon_id) 
+                row.label(text="> snap active pivot onto target")   
+               
+                box.separator()           
+               
+                row = box.row(align=False)
+                row.alignment = 'LEFT'
+                row.prop(self, "tpc_use_retopo_header_item", text='')  
+              
+                button_snap_retopo = icons.get("icon_snap_retopo")
+                row.label(text="Retopo", icon_value=button_snap_retopo.icon_id) 
+                row.label(text="> snap selected onto target in editmode")   
+              
+                box.separator()           
+               
+                row = box.row(align=False)
+                row.alignment = 'LEFT'
+                row.prop(self, "tpc_use_retopo_modal_header_item", text='')  
+              
+                button_snap_retopo = icons.get("icon_snap_retopo")
+                row.label(text="RetopoM (*)", icon_value=button_snap_retopo.icon_id) 
+                row.label(text="> snap selected onto target in editmode til release")  
+
+                box.separator() 
+                box = layout.box().column(align=True)
+                box.separator() 
+          
+                row = box.column(align=False)              
+                row.label(text="(*) Modal Tools:")   
+                row.label(text="> After execute the snap setting toggle to the needed preference.")   
+                row.label(text="> When finished the settings switch back to the previous one.")   
+                
+                box.separator() 
+          
+                row = box.column(align=False)              
+                row.label(text="Checkbox:", icon='CHECKBOX_HLT')   
+                row.label(text="> toggle the tools in the menus on or off.")   
+ 
+                box.separator()
+
+     
             #-----------------------------------------------------
           
             box.separator() 
@@ -1251,12 +1556,13 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
             box.separator()
          
             row = box.row(align=True)  
-            row.label(text="Special Menu [W]", icon ="COLLAPSEMENU")         
+            row.label(text="Add to Special Menu [W]", icon ="COLLAPSEMENU")         
 
             box.separator()            
          
             row = box.column(align=True)          
-            row.label(text="A snapset menu will be added to the default special menu.")
+            row.label(text="Menu or Buttons will be added to the default special menu.")
+            row.label(text="Customize order of tools in context menu.")
 
             box.separator() 
 
@@ -1317,116 +1623,118 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 
                 box.separator() 
               
-                row = box.column(align=False)
-                row.label(text="Order of tools in menu:")   
-
-                box.separator() 
-     
                 row = box.row(align=False)
-                row.alignment = 'LEFT'
-                row.prop(self, "tpc_use_grid", text='')  
-                
-                button_snap_grid = icons.get("icon_snap_grid")
-                row.label(text="Grid", icon_value=button_snap_grid.icon_id)
-                row.label(text="> snap pivot with absolute grid alignment")   
-             
-                box.separator() 
-
-                row = box.row(align=False)
-                row.alignment = 'LEFT'
-                row.prop(self, "tpc_use_grid_modal", text='')  
-                
-                button_snap_grid = icons.get("icon_snap_grid")
-                row.label(text="GridM (*)", icon_value=button_snap_grid.icon_id)
-                row.label(text="> snap pivot with absolute grid alignment til release")              
-
-                box.separator()            
-               
-                row = box.row(align=False)
-                row.alignment = 'LEFT'
-                row.prop(self, "tpc_use_place", text='')   
-               
-                button_snap_place = icons.get("icon_snap_place")
-                row.label(text="Place", icon_value=button_snap_place.icon_id)             
-                row.label(text="> snap pivot to surface of other objects")   
-
-                box.separator() 
-               
-                row = box.row(align=False)
-                row.alignment = 'LEFT'
-                row.prop(self, "tpc_use_place_modal", text='')   
-               
-                button_snap_place = icons.get("icon_snap_place")
-                row.label(text="PlaceM (*)", icon_value=button_snap_place.icon_id)             
-                row.label(text="> snap pivot to surface of other objects til release")   
-
-                box.separator()            
-               
-                row = box.row(align=False)
-                row.alignment = 'LEFT'
-                row.prop(self, "tpc_use_cursor", text='') 
-
-                button_snap_cursor = icons.get("icon_snap_cursor")           
-                row.label(text="Cursor", icon_value=button_snap_cursor.icon_id) 
-                row.label(text="> set 3d cursor to active or selected")   
-               
-                box.separator()            
-               
-                row = box.row(align=False)
-                row.alignment = 'LEFT' 
-                row.prop(self, "tpc_use_closest", text='')  
-
-                button_snap_closest = icons.get("icon_snap_closest")
-                row.label(text="Closest", icon_value=button_snap_closest.icon_id)            
-                row.label(text="> snap closest point onto target")   
-                
-                box.separator()            
-               
-                row = box.row(align=False)
-                row.alignment = 'LEFT'  
-                row.prop(self, "tpc_use_active", text='')
-              
-                button_snap_active = icons.get("icon_snap_active")            
-                row.label(text="Active", icon_value=button_snap_active.icon_id) 
-                row.label(text="> snap active pivot onto target")   
-               
-                box.separator()           
-               
-                row = box.row(align=False)
-                row.alignment = 'LEFT'
-                row.prop(self, "tpc_use_retopo", text='')  
-              
-                button_snap_retopo = icons.get("icon_snap_retopo")
-                row.label(text="Retopo", icon_value=button_snap_retopo.icon_id) 
-                row.label(text="> snap selected onto target in editmode")   
-              
-                box.separator()           
-               
-                row = box.row(align=False)
-                row.alignment = 'LEFT'
-                row.prop(self, "tpc_use_retopo_modal", text='')  
-              
-                button_snap_retopo = icons.get("icon_snap_retopo")
-                row.label(text="RetopoM (*)", icon_value=button_snap_retopo.icon_id) 
-                row.label(text="> snap selected onto target in editmode til release")  
-
-                box.separator() 
-                box = layout.box().column(align=True)
-                box.separator() 
-          
-                row = box.column(align=False)              
-                row.label(text="(*) Modal Tools:")   
-                row.label(text="> After execute the snap setting toggle to the needed preference.")   
-                row.label(text="> When finished the settings switch back to the previous one.")   
-                
-                box.separator() 
-          
-                row = box.column(align=False)              
-                row.label(text="Checkbox:", icon='CHECKBOX_HLT')   
-                row.label(text="> toggle the tools in the menus on or off.")   
-
+                row.prop(self, "tpc_use_custom_layout", text='')  
+                row.label(text="Customize order of tools")  
  
-            box.separator()
+                box.separator()  
+                
+                if self.tpc_use_custom_layout == True:     
+
+                    row = box.row(align=False)
+                    row.alignment = 'LEFT'
+                    row.prop(self, "tpc_use_grid", text='')  
+                    
+                    button_snap_grid = icons.get("icon_snap_grid")
+                    row.label(text="Grid", icon_value=button_snap_grid.icon_id)
+                    row.label(text="> snap pivot with absolute grid alignment")   
+                 
+                    box.separator() 
+
+                    row = box.row(align=False)
+                    row.alignment = 'LEFT'
+                    row.prop(self, "tpc_use_grid_modal", text='')  
+                    
+                    button_snap_grid = icons.get("icon_snap_grid")
+                    row.label(text="GridM (*)", icon_value=button_snap_grid.icon_id)
+                    row.label(text="> snap pivot with absolute grid alignment til release")              
+
+                    box.separator()            
+                   
+                    row = box.row(align=False)
+                    row.alignment = 'LEFT'
+                    row.prop(self, "tpc_use_place", text='')   
+                   
+                    button_snap_place = icons.get("icon_snap_place")
+                    row.label(text="Place", icon_value=button_snap_place.icon_id)             
+                    row.label(text="> snap pivot to surface of other objects")   
+
+                    box.separator() 
+                   
+                    row = box.row(align=False)
+                    row.alignment = 'LEFT'
+                    row.prop(self, "tpc_use_place_modal", text='')   
+                   
+                    button_snap_place = icons.get("icon_snap_place")
+                    row.label(text="PlaceM (*)", icon_value=button_snap_place.icon_id)             
+                    row.label(text="> snap pivot to surface of other objects til release")   
+
+                    box.separator()            
+                   
+                    row = box.row(align=False)
+                    row.alignment = 'LEFT'
+                    row.prop(self, "tpc_use_cursor", text='') 
+
+                    button_snap_cursor = icons.get("icon_snap_cursor")           
+                    row.label(text="Cursor", icon_value=button_snap_cursor.icon_id) 
+                    row.label(text="> set 3d cursor to active or selected")   
+                   
+                    box.separator()            
+                   
+                    row = box.row(align=False)
+                    row.alignment = 'LEFT' 
+                    row.prop(self, "tpc_use_closest", text='')  
+
+                    button_snap_closest = icons.get("icon_snap_closest")
+                    row.label(text="Closest", icon_value=button_snap_closest.icon_id)            
+                    row.label(text="> snap closest point onto target")   
+                    
+                    box.separator()            
+                   
+                    row = box.row(align=False)
+                    row.alignment = 'LEFT'  
+                    row.prop(self, "tpc_use_active", text='')
+                  
+                    button_snap_active = icons.get("icon_snap_active")            
+                    row.label(text="Active", icon_value=button_snap_active.icon_id) 
+                    row.label(text="> snap active pivot onto target")   
+                   
+                    box.separator()           
+                   
+                    row = box.row(align=False)
+                    row.alignment = 'LEFT'
+                    row.prop(self, "tpc_use_retopo", text='')  
+                  
+                    button_snap_retopo = icons.get("icon_snap_retopo")
+                    row.label(text="Retopo", icon_value=button_snap_retopo.icon_id) 
+                    row.label(text="> snap selected onto target in editmode")   
+                  
+                    box.separator()           
+                   
+                    row = box.row(align=False)
+                    row.alignment = 'LEFT'
+                    row.prop(self, "tpc_use_retopo_modal", text='')  
+                  
+                    button_snap_retopo = icons.get("icon_snap_retopo")
+                    row.label(text="RetopoM (*)", icon_value=button_snap_retopo.icon_id) 
+                    row.label(text="> snap selected onto target in editmode til release")  
+
+                    box.separator() 
+                    box = layout.box().column(align=True)
+                    box.separator() 
+              
+                    row = box.column(align=False)              
+                    row.label(text="(*) Modal Tools:")   
+                    row.label(text="> After execute the snap setting toggle to the needed preference.")   
+                    row.label(text="> When finished the settings switch back to the previous one.")   
+                    
+                    box.separator() 
+              
+                    row = box.column(align=False)              
+                    row.label(text="Checkbox:", icon='CHECKBOX_HLT')   
+                    row.label(text="> toggle the tools in the menus on or off.")   
+ 
+                    box.separator()
 
             #-----------------------------------------------------
            
@@ -1515,6 +1823,7 @@ def register():
     update_snapset_menu(None, bpy.context)
     update_snapset_special(None, bpy.context)
     update_snapset_header(None, bpy.context)
+    update_snapset_header_item(None, bpy.context)
     update_snapset_tools(None, bpy.context)
     update_panel(None, bpy.context)
 

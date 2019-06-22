@@ -119,20 +119,38 @@ from view3d_snapset.ui_header  import (VIEW3D_HT_SnapSet_Header_Menu)
 def update_snapset_header(self, context):
 
     try:
-        bpy.utils.unregister_class(VIEW3D_HT_SnapSet_Header_Menu)  
-        
+        bpy.utils.unregister_class(VIEW3D_HT_SnapSet_Header_Menu)       
     except:
         pass
     
     addon_prefs = context.preferences.addons[__package__].preferences   
 
     if addon_prefs.tab_snapset_header == 'add':
-
-        bpy.utils.register_class(VIEW3D_HT_SnapSet_Header_Menu)
+         bpy.utils.register_class(VIEW3D_HT_SnapSet_Header_Menu)
 
     if addon_prefs.tab_snapset_header == 'remove':
+        #bpy.utils.unregister_class(VIEW3D_HT_SnapSet_Header_Menu)
         return None  
 
 
+
+# ADD TO HEADER SNAP SETTINGS #  
+from view3d_snapset.ui_header  import (draw_snapset_item)
+
+def update_snapset_header_item(self, context):
+
+    try:
+        bpy.types.VIEW3D_PT_snapping.remove(draw_snapset_item)        
+    except:
+        pass
+    
+    addon_prefs = context.preferences.addons[__package__].preferences   
+
+    if addon_prefs.tab_snapset_header_item == 'add':
+        bpy.types.VIEW3D_PT_snapping.prepend(draw_snapset_item)
+
+    if addon_prefs.tab_snapset_header_item == 'remove':
+        #bpy.types.VIEW3D_PT_snapping.remove(draw_snapset_item)
+        return None  
 
 

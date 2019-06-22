@@ -90,20 +90,20 @@ def draw_snapset_ui(self, context, layout):
                 button_snap_retopo = icons.get("icon_snap_retopo")
                 row.operator("tpc_ot.snapset_modal", text="RetopoM", icon_value=button_snap_retopo.icon_id).mode = "RETOPO"  
 
+        if addon_prefs.tpc_use_cursor == True:
+            if addon_prefs.use_internal_icon_btc == True:     
+                row.operator("tpc_ot.snapset_button_c", text=tx_snapset_cursor, icon=addon_prefs.icon_btc) 
+            else:       
+                button_snap_cursor = icons.get("icon_snap_cursor")           
+                row.operator("tpc_ot.snapset_button_c", text=tx_snapset_cursor, icon_value=button_snap_cursor.icon_id) 
 
-        if addon_prefs.use_internal_icon_btc == True:     
-            row.operator("tpc_ot.snapset_button_c", text=tx_snapset_cursor, icon=addon_prefs.icon_btc) 
-        else:       
-            button_snap_cursor = icons.get("icon_snap_cursor")           
-            row.operator("tpc_ot.snapset_button_c", text=tx_snapset_cursor, icon_value=button_snap_cursor.icon_id) 
-
-
-        if addon_prefs.use_internal_icon_bte == True:
-            row.operator("tpc_ot.snapset_button_e", text=tx_snapset_closet, icon=addon_prefs.icon_bte)
-        else:           
-            button_snap_closest = icons.get("icon_snap_closest")
-            row.operator("tpc_ot.snapset_button_e", text=tx_snapset_closet, icon_value=button_snap_closest.icon_id)
-            
+        if addon_prefs.tpc_use_closest == True:
+            if addon_prefs.use_internal_icon_bte == True:
+                row.operator("tpc_ot.snapset_button_e", text=tx_snapset_closet, icon=addon_prefs.icon_bte)
+            else:           
+                button_snap_closest = icons.get("icon_snap_closest")
+                row.operator("tpc_ot.snapset_button_e", text=tx_snapset_closet, icon_value=button_snap_closest.icon_id)
+                
 
         if addon_prefs.tpc_use_active == True: 
             if addon_prefs.use_internal_icon_btd == True:
