@@ -23,7 +23,7 @@
 bl_info = {
     "name": "SnapSet",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 8),
+    "version": (0, 2, 9),
     "blender": (2, 80, 0),
     "location": "3D View > Shelf [N], Menus [SHIFT+W], Special Menu [W], Shortcut [F], Header / Header Settings",
     "description": "full customizable buttons for snapping task",
@@ -170,6 +170,32 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                ('remove', 'Disable',  'disable menus for 3D View')),
         default='menu', update = update_snapset_menu)
 
+
+    # PIE MENU #
+    pie_scale_x_b1 : FloatProperty(name = "X",description = "scale buttons in width", default = 1.10, min = 0.00, max = 3.00)
+    pie_scale_y_b1 : FloatProperty(name = "Y",description = "scale buttons in height", default = 1.00, min = 0.00, max = 3.00)
+    pie_scale_x_b2 : FloatProperty(name = "X",description = "scale buttons in width", default = 1.10, min = 0.00, max = 3.00)
+    pie_scale_y_b2 : FloatProperty(name = "Y",description = "scale buttons in height", default = 1.00, min = 0.00, max = 3.00)
+    pie_scale_x_b3 : FloatProperty(name = "X",description = "scale buttons in width", default = 1.10, min = 0.00, max = 3.00)
+    pie_scale_y_b3 : FloatProperty(name = "Y",description = "scale buttons in height", default = 1.00, min = 0.00, max = 3.00)
+      
+    pie_scale_b_b4 : FloatProperty(name = "X",description = "scale box in width", default = 0.65, min = 0.00, max = 3.00)
+    pie_scale_x_b4 : FloatProperty(name = "X",description = "scale buttons in width", default = 1.00, min = 0.00, max = 3.00)
+    pie_scale_y_b4 : FloatProperty(name = "Y",description = "scale buttons in height", default = 1.00, min = 0.00, max = 3.00)
+   
+    pie_scale_b_b5 : FloatProperty(name = "X",description = "scale box in width", default = 0.65, min = 0.00, max = 3.00)
+    pie_scale_x_b5 : FloatProperty(name = "X",description = "scale buttons in width", default = 1.00, min = 0.00, max = 3.00)
+    pie_scale_y_b5 : FloatProperty(name = "Y",description = "scale buttons in height", default = 1.00, min = 0.00, max = 3.00)
+       
+    pie_scale_b_b6 : FloatProperty(name = "X",description = "scale box in width", default = 0.75, min = 0.00, max = 3.00)
+    pie_scale_x_b6 : FloatProperty(name = "X",description = "scale buttons in width", default = 1.00, min = 0.00, max = 3.00)
+    pie_scale_y_b6 : FloatProperty(name = "Y",description = "scale buttons in height", default = 1.00, min = 0.00, max = 3.00)
+     
+    pie_scale_x_b7 : FloatProperty(name = "X",description = "scale buttons in width", default = 1.10, min = 0.00, max = 3.00)
+    pie_scale_y_b7 : FloatProperty(name = "Y",description = "scale buttons in height", default = 1.00, min = 0.00, max = 3.00)
+    pie_scale_x_b8 : FloatProperty(name = "X",description = "scale buttons in width", default = 1.10, min = 0.00, max = 3.00)
+    pie_scale_y_b8 : FloatProperty(name = "Y",description = "scale buttons in height", default = 1.00, min = 0.00, max = 3.00)
+  
 
     # SPECIAL W SUBMENUS #    
     tab_snapset_special:EnumProperty(
@@ -1616,9 +1642,70 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 row = box.column(align=True)    
                 row.label(text="> only for the pie menu.")
                 row.label(text="> if off the active function (icons) have a transparent backround.")
+            
+                box.separator() 
+                box.separator() 
 
+                row = box.row()                  
+                row.label(text="UI Scale for Buttons")
+
+                box.separator() 
+
+                row = box.row()                  
+                row.prop(self, 'pie_scale_x_b1', text="L1 > X")
+                row.prop(self, 'pie_scale_y_b1', text="L1 > Y")
+                row.label(text=" ")
+
+                box.separator() 
+                
+                row = box.row()                  
+                row.prop(self, 'pie_scale_x_b2', text="R2 > X")
+                row.prop(self, 'pie_scale_y_b2', text="R2 > Y")
+                row.label(text=" ")
+
+                box.separator() 
+                
+                row = box.row()                  
+                row.prop(self, 'pie_scale_x_b3', text="B3 > X")
+                row.prop(self, 'pie_scale_y_b3', text="B3 > Y")
+                row.label(text=" ")
            
+                box.separator() 
+            
+                row = box.row()  
+                row.prop(self, 'pie_scale_x_b4', text="T4 > X")
+                row.prop(self, 'pie_scale_y_b4', text="T4 > Y")           
+                row.prop(self, 'pie_scale_b_b4', text="T4 > Box")
+
+                box.separator() 
            
+                row = box.row()  
+                row.prop(self, 'pie_scale_x_b5', text="LT5 > X")
+                row.prop(self, 'pie_scale_y_b5', text="LT5 > Y")
+                row.prop(self, 'pie_scale_b_b5', text="LT5 > Box")
+
+                box.separator() 
+
+                row = box.row()  
+                row.prop(self, 'pie_scale_x_b6', text="RT6 > X")
+                row.prop(self, 'pie_scale_y_b6', text="RT6 > Y")
+                row.prop(self, 'pie_scale_b_b6', text="RT6 > Box")
+
+                box.separator() 
+                
+                row = box.row()                  
+                row.prop(self, 'pie_scale_x_b7', text="LB7 > X")
+                row.prop(self, 'pie_scale_y_b7', text="LB7 > Y")
+                row.label(text=" ")
+
+                box.separator() 
+                
+                row = box.row()                  
+                row.prop(self, 'pie_scale_x_b8', text="RB8 > X")
+                row.prop(self, 'pie_scale_y_b8', text="RB8 > Y")
+                row.label(text=" ")
+
+    
             if self.tab_snapset_menu == 'menu': 
                 
                 box.separator() 

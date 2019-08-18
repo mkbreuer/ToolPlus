@@ -78,9 +78,11 @@ class VIEW3D_MT_SnapSet_Menu_Pie(bpy.types.Menu):
 
         pie = layout.menu_pie()      
 
+
         #Box 1 L
         row = pie.split().column()
-        row.scale_x = 1.1       
+        row.scale_x = addon_prefs.pie_scale_x_b1 #1.1       
+        row.scale_y = addon_prefs.pie_scale_y_b1 #1  
 
         if addon_prefs.use_internal_icon_btd == True:
             row.operator("tpc_ot.snapset_button_d", text=addon_prefs.name_btd, icon=addon_prefs.icon_btd) 
@@ -91,7 +93,9 @@ class VIEW3D_MT_SnapSet_Menu_Pie(bpy.types.Menu):
         
         #Box 2 R
         row = pie.split().column()
-        row.scale_x = 1.1
+        row.scale_x = addon_prefs.pie_scale_x_b2 #1.1          
+        row.scale_y = addon_prefs.pie_scale_y_b2 #1
+        
         if addon_prefs.use_internal_icon_bte == True:
             row.operator("tpc_ot.snapset_button_e", text=addon_prefs.name_bte, icon=addon_prefs.icon_bte)
         else:           
@@ -101,7 +105,9 @@ class VIEW3D_MT_SnapSet_Menu_Pie(bpy.types.Menu):
        
         #Box 3 B
         row = pie.split().column()
-        row.scale_x = 1.1
+        row.scale_x = addon_prefs.pie_scale_x_b3 #1.1         
+        row.scale_y = addon_prefs.pie_scale_y_b3 #1
+        
         if addon_prefs.use_internal_icon_btc == True:     
             row.operator("tpc_ot.snapset_button_c", text=addon_prefs.name_btc, icon=addon_prefs.icon_btc) 
         else:       
@@ -111,12 +117,12 @@ class VIEW3D_MT_SnapSet_Menu_Pie(bpy.types.Menu):
      
         #Box 4 T 
         box = pie.split().column(align = False)
-        box.scale_x = 0.65
-        
+        box.scale_x = addon_prefs.pie_scale_b_b4 #0.65
+
         row = box.row(align = False)
-             
-        row = box.row(align = False)
-        
+        row.scale_x = addon_prefs.pie_scale_x_b4 #1          
+        row.scale_y = addon_prefs.pie_scale_y_b4 #1  
+                
         button_snap_move = icons.get("icon_snap_move")
         row.operator("wm.tool_set_by_id", text=" ", icon_value=button_snap_move.icon_id).name = "builtin.move"
         
@@ -132,7 +138,10 @@ class VIEW3D_MT_SnapSet_Menu_Pie(bpy.types.Menu):
         button_snap_annotate = icons.get("icon_snap_annotate")                
         row.menu("VIEW3D_MT_SnapSet_Menu_Pencil", text=" ", icon_value=button_snap_annotate.icon_id) 
  
+
         row = box.row(align = False)      
+        row.scale_x = addon_prefs.pie_scale_x_b4 #1          
+        row.scale_y = addon_prefs.pie_scale_y_b4 #1  
 
         if bpy.context.scene.tool_settings.transform_pivot_point == 'BOUNDING_BOX_CENTER':   
             row.operator("tpc_ot.set_pivot", text=" ", icon="PIVOT_BOUNDBOX", emboss = addon_prefs.tpc_use_emposs).tpc_pivot="BOUNDING_BOX_CENTER"
@@ -163,9 +172,11 @@ class VIEW3D_MT_SnapSet_Menu_Pie(bpy.types.Menu):
 
         #Box 5 LT
         box = pie.split().column(align = False)
-        box.scale_x = 0.65
+        box.scale_x = addon_prefs.pie_scale_b_b5 #0.65
 
         row = box.row(align = False)
+        row.scale_x = addon_prefs.pie_scale_x_b5 #1          
+        row.scale_y = addon_prefs.pie_scale_y_b5 #1     
 
         if bpy.context.scene.tool_settings.snap_elements == {'VERTEX'}:            
             row.operator("tpc_ot.snap_element", text=" ", icon = "SNAP_VERTEX", emboss = addon_prefs.tpc_use_emposs).tpc_snape="VERTEX"       
@@ -184,7 +195,9 @@ class VIEW3D_MT_SnapSet_Menu_Pie(bpy.types.Menu):
           
      
         row = box.row(align = False)
-      
+        row.scale_x = addon_prefs.pie_scale_x_b5 #1          
+        row.scale_y = addon_prefs.pie_scale_y_b5 #1     
+
         if bpy.context.scene.tool_settings.snap_elements == {'VOLUME'}:
             row.operator("tpc_ot.snap_element", text=" ", icon = "SNAP_VOLUME", emboss = addon_prefs.tpc_use_emposs).tpc_snape="VOLUME" 
         else:
@@ -203,9 +216,11 @@ class VIEW3D_MT_SnapSet_Menu_Pie(bpy.types.Menu):
 
         #Box 6 RT 
         box = pie.split().column(align = False)
-        box.scale_x = 0.75         
-
+        box.scale_x = addon_prefs.pie_scale_b_b6 #0.75         
+         
         row = box.row(align = False)
+        row.scale_x = addon_prefs.pie_scale_x_b6 #1          
+        row.scale_y = addon_prefs.pie_scale_y_b6 #1        
         
         if bpy.context.scene.transform_orientation_slots[0].type == 'GLOBAL':         
             row.operator("tpc_ot.orient_axis", text=" ", icon="ORIENTATION_GLOBAL", emboss = addon_prefs.tpc_use_emposs).tpc_axis="GLOBAL"        
@@ -223,8 +238,10 @@ class VIEW3D_MT_SnapSet_Menu_Pie(bpy.types.Menu):
             row.operator("tpc_ot.orient_axis", text=" ", icon="ORIENTATION_NORMAL").tpc_axis="NORMAL"
 
       
-        row = box.row(align = False)
-
+        row = box.row(align = False)  
+        row.scale_x = addon_prefs.pie_scale_x_b6 #1    
+        row.scale_x = addon_prefs.pie_scale_y_b6 #1    
+             
         if bpy.context.scene.transform_orientation_slots[0].type == 'GIMBAL':   
             row.operator("tpc_ot.orient_axis", text=" ", icon="ORIENTATION_GIMBAL", emboss = addon_prefs.tpc_use_emposs).tpc_axis="GIMBAL"
         else:    
@@ -242,8 +259,10 @@ class VIEW3D_MT_SnapSet_Menu_Pie(bpy.types.Menu):
 
 
         #Box 7 LB 
-        row = pie.split().column()
-        row.scale_x = 1.1                    
+        row = pie.split().column()                  
+        row.scale_x = addon_prefs.pie_scale_x_b7 #1.1                      
+        row.scale_y = addon_prefs.pie_scale_y_b7 #1  
+        
         if context.mode == 'OBJECT':
             if addon_prefs.tpc_use_place_modal == True:
                 button_snap_place = icons.get("icon_snap_place")
@@ -271,8 +290,10 @@ class VIEW3D_MT_SnapSet_Menu_Pie(bpy.types.Menu):
           
 
         #Box 8 RB
-        row = pie.split().column()
-        row.scale_x = 1.1
+        row = pie.split().column()                  
+        row.scale_x = addon_prefs.pie_scale_x_b8 #1.1                     
+        row.scale_y = addon_prefs.pie_scale_y_b8 #1
+        
         if addon_prefs.tpc_use_grid_modal == True:
             button_snap_grid = icons.get("icon_snap_grid")
             row.operator("tpc_ot.snapset_modal", text="GridM", icon_value=button_snap_grid.icon_id).mode = "GRID"
