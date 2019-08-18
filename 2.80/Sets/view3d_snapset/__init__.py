@@ -23,7 +23,7 @@
 bl_info = {
     "name": "SnapSet",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 9),
+    "version": (0, 3, 0),
     "blender": (2, 80, 0),
     "location": "3D View > Shelf [N], Menus [SHIFT+W], Special Menu [W], Shortcut [F], Header / Header Settings",
     "description": "full customizable buttons for snapping task",
@@ -196,6 +196,14 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     pie_scale_x_b8 : FloatProperty(name = "X",description = "scale buttons in width", default = 1.10, min = 0.00, max = 3.00)
     pie_scale_y_b8 : FloatProperty(name = "Y",description = "scale buttons in height", default = 1.00, min = 0.00, max = 3.00)
   
+    pie_menu_box4 : BoolProperty(name="Use Menu or Buttons", description="switch pie menu ui ", default = False)
+    pie_menu_box5 : BoolProperty(name="Use Menu or Buttons", description="switch pie menu ui ", default = False)
+    pie_menu_box6 : BoolProperty(name="Use Menu or Buttons", description="switch pie menu ui ", default = False)
+
+    pie_menu_box4_transform : BoolProperty(name="Show Transfrom Tools", description="switch pie menu ui ", default = True)
+    pie_menu_box4_pivots : BoolProperty(name="Show Pivot Buttons", description="switch pie menu ui ", default = True)
+    pie_menu_box4_menu_name : BoolProperty(name="Show Pivot Menu Name", description="switch pie menu ui ", default = True)
+
 
     # SPECIAL W SUBMENUS #    
     tab_snapset_special:EnumProperty(
@@ -1642,7 +1650,32 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 row = box.column(align=True)    
                 row.label(text="> only for the pie menu.")
                 row.label(text="> if off the active function (icons) have a transparent backround.")
-            
+               
+                box.separator() 
+                box.separator() 
+
+                row = box.row()                  
+                row.label(text="Use Menu or Buttons")
+
+                box.separator() 
+
+                row = box.row()                  
+                row.prop(self, 'pie_menu_box4', text="Top 4")            
+                row.prop(self, 'pie_menu_box5', text="Top-Left 5")            
+                row.prop(self, 'pie_menu_box6', text="Top-Right 6")            
+
+                if self.pie_menu_box4 == False:
+                    
+                    box.separator() 
+
+                    row = box.row()  
+                    row.label(text="Top 4: Buttons / Menu")  
+                                  
+                    row = box.row()
+                    row.prop(self, 'pie_menu_box4_transform', text="Transforms")            
+                    row.prop(self, 'pie_menu_box4_pivots', text="Pivots")            
+                    row.prop(self, 'pie_menu_box4_menu_name', text="Name off")            
+
                 box.separator() 
                 box.separator() 
 
@@ -1680,29 +1713,29 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 box.separator() 
            
                 row = box.row()  
-                row.prop(self, 'pie_scale_x_b5', text="LT5 > X")
-                row.prop(self, 'pie_scale_y_b5', text="LT5 > Y")
-                row.prop(self, 'pie_scale_b_b5', text="LT5 > Box")
+                row.prop(self, 'pie_scale_x_b5', text="TL5 > X")
+                row.prop(self, 'pie_scale_y_b5', text="TL5 > Y")
+                row.prop(self, 'pie_scale_b_b5', text="TL5 > Box")
 
                 box.separator() 
 
                 row = box.row()  
-                row.prop(self, 'pie_scale_x_b6', text="RT6 > X")
-                row.prop(self, 'pie_scale_y_b6', text="RT6 > Y")
-                row.prop(self, 'pie_scale_b_b6', text="RT6 > Box")
+                row.prop(self, 'pie_scale_x_b6', text="TR6 > X")
+                row.prop(self, 'pie_scale_y_b6', text="TR6 > Y")
+                row.prop(self, 'pie_scale_b_b6', text="TR6 > Box")
 
                 box.separator() 
                 
                 row = box.row()                  
-                row.prop(self, 'pie_scale_x_b7', text="LB7 > X")
-                row.prop(self, 'pie_scale_y_b7', text="LB7 > Y")
+                row.prop(self, 'pie_scale_x_b7', text="BL7 > X")
+                row.prop(self, 'pie_scale_y_b7', text="BL7 > Y")
                 row.label(text=" ")
 
                 box.separator() 
                 
                 row = box.row()                  
-                row.prop(self, 'pie_scale_x_b8', text="RB8 > X")
-                row.prop(self, 'pie_scale_y_b8', text="RB8 > Y")
+                row.prop(self, 'pie_scale_x_b8', text="BR8 > X")
+                row.prop(self, 'pie_scale_y_b8', text="BR8 > Y")
                 row.label(text=" ")
 
     
