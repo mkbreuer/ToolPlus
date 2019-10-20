@@ -17,7 +17,7 @@
 
 *  [![Donate](https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/Images/donate_pp.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WRL57AYRPWDAE&source=url)   :)
 
-*  [![Donate](https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/Images/donate_gumroad.png)](https://gumroad.com/l/tp_courier)   :)
+*  [![Donate](https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/Images/donate_gumroad_.png)](https://gumroad.com/l/tp_courier)   :)
 
  <hr style="border: 4px solid blue;" />
 
