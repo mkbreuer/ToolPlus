@@ -15,7 +15,7 @@
 
 *  [![Donate](https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/Images/donate_patreon.png)](https://www.patreon.com/tpc_mkbreuer)   :)
 
-*  [![Donate](https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/Images/donate_pp.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KB6G3HNM86H9C&source=url)   :)
+*  [![Donate](https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/Images/donate_pp.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WRL57AYRPWDAE&source=url)   :)
 
 *  [![Donate](https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/Images/donate_gumroad.png)](https://gumroad.com/l/tp_courier)   :)
 
