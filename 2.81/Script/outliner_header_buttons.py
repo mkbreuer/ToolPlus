@@ -25,7 +25,7 @@ bl_info = {
     "version": (0, 0, 1),
     "blender": (2, 81, 0),
     "location": "Outliner > Header: Button",
-    "description": "add buttons to uotliner header: batch rename, copy name to data name and vice versa",
+    "description": "add buttons to outliner header: batch rename, copy name to data name and vice versa",
     "warning": "",
     "wiki_url": "https://github.com/mkbreuer",
     "tracker_url": "",
