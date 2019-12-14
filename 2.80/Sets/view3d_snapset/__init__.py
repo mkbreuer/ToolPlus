@@ -23,7 +23,7 @@
 bl_info = {
     "name": "SnapSet",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 3, 0),
+    "version": (0, 2, 6),
     "blender": (2, 80, 0),
     "location": "3D View > Shelf [N], Menus [SHIFT+W], Special Menu [W], Shortcut [F], Header / Header Settings",
     "description": "full customizable buttons for snapping task",
