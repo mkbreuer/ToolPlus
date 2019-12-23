@@ -23,7 +23,7 @@
 bl_info = {
     "name": "SnapSet",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 7),
+    "version": (0, 2, 8),
     "blender": (2, 81, 0),
     "location": "3D View > Sidebar [N], Menu [SHIFT+W], Special Menu [W], Shortcut [F], Header and SnapSettings",
     "description": "full customizable buttons for snapping task",
@@ -120,7 +120,7 @@ def update_snapset(self, context):
         
         bpy.types.VIEW3D_MT_editor_menus.remove(draw_snapset_item_editor) 
 
-    except:
+    except RuntimeError:
         pass
     
     addon_prefs = context.preferences.addons[__name__].preferences    
@@ -148,12 +148,7 @@ def update_snapset(self, context):
             bpy.types.VIEW3D_MT_particle_context_menu.prepend(draw_snapset_item_special)  
 
     if addon_prefs.toggle_special_menu == False:  
-     
-        bpy.types.VIEW3D_MT_object_context_menu.remove(draw_snapset_item_special)  
-        bpy.types.VIEW3D_MT_edit_mesh_context_menu.remove(draw_snapset_item_special)  
-        bpy.types.VIEW3D_MT_edit_curve_context_menu.remove(draw_snapset_item_special)  
-        bpy.types.VIEW3D_MT_armature_context_menu.remove(draw_snapset_item_special)  
-        bpy.types.VIEW3D_MT_particle_context_menu.remove(draw_snapset_item_special)  
+        return None
 
 
     # SNAPPING SETTING #  
@@ -161,7 +156,7 @@ def update_snapset(self, context):
         bpy.types.VIEW3D_PT_snapping.prepend(draw_snapset_snapping)
 
     if addon_prefs.toggle_snapping_menu == False:
-        bpy.types.VIEW3D_PT_snapping.remove(draw_snapset_snapping)
+        return None
 
 
     # EDITOR MENUS #    
@@ -173,10 +168,7 @@ def update_snapset(self, context):
             if addon_prefs.toggle_view_type == 'editor': 
                 bpy.types.VIEW3D_MT_editor_menus.prepend(draw_snapset_item_editor) 
             else:
-                #bpy.types.VIEW3D_HT_tool_header.prepend(draw_snapset_item_editor) 
-                #bpy.types.VIEW3D_HT_header.prepend(draw_snapset_item_editor) 
-                bpy.utils.register_class(VIEW3D_HT_snapset_header)
-
+                return None
 
         if addon_prefs.toggle_editor_type == 'prepend':
 
@@ -184,21 +176,14 @@ def update_snapset(self, context):
             if addon_prefs.toggle_view_type == 'editor': 
                 bpy.types.VIEW3D_MT_editor_menus.append(draw_snapset_item_editor) 
             else:
-                #bpy.types.VIEW3D_HT_tool_header.append(draw_snapset_item_editor) 
-                #bpy.types.VIEW3D_HT_header.append(draw_snapset_item_editor) 
-                bpy.utils.register_class(VIEW3D_HT_snapset_header)
-
+                return None
 
     if addon_prefs.toggle_editor_menu == False:  
 
         if addon_prefs.toggle_view_type == 'editor': 
             bpy.types.VIEW3D_MT_editor_menus.remove(draw_snapset_item_editor)  
         else:
-            #bpy.types.VIEW3D_HT_tool_header.remove(draw_snapset_item_editor)  
-            #bpy.types.VIEW3D_HT_header.remove(draw_snapset_item_editor)  
-            bpy.utils.unregister_class(VIEW3D_HT_snapset_header)
-
-
+            return None
 
 
 
@@ -207,8 +192,8 @@ def update_snapset(self, context):
 def update_snapset_tools(self, context):
 
     try:
-        return True
-    except:
+        return None
+    except RuntimeError:
         pass
 
     if context.preferences.addons[__name__].preferences.toggle_display_tools == 'on':
@@ -2841,6 +2826,7 @@ classes = (
     VIEW3D_OT_snap_element,
     VIEW3D_OT_snap_use,
     VIEW3D_MT_snapset_menu,
+    VIEW3D_MT_snapset_menu_panel,
     VIEW3D_MT_snapset_menu_pie,
     VIEW3D_PT_snapset_panel_ui,
     VIEW3D_MT_snapset_menu_pencil,
@@ -2891,9 +2877,6 @@ def register():
 
 
 def unregister():
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
-
     try:
         del bpy.types.WindowManager.snap_global_props
     except Exception as e:
@@ -2904,8 +2887,13 @@ def unregister():
         km.keymap_items.remove(kmi)
     # clear the list
     addon_keymaps.clear()
-    
 
+    try:
+        for cls in reversed(classes):
+            bpy.utils.unregister_class(cls)
+    except RuntimeError:
+        pass
+    
 if __name__ == "__main__":
     register()
 

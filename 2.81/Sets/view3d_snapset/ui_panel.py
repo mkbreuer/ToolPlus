@@ -1,5 +1,5 @@
 # LOAD UI #   
-from view3d_snapset.ui_menu import VIEW3D_MT_snapset_menu
+from view3d_snapset.ui_menu import VIEW3D_MT_snapset_menu_panel
 
 # LOAD MODUL #    
 import bpy
@@ -175,16 +175,18 @@ def draw_snapset_ui(context, layout):
         else:
             pass
 
-        row.menu("VIEW3D_MT_snapset_menu", text= tx_snapset, icon='SNAP_ON') 
+        row.menu("VIEW3D_MT_snapset_menu_panel", text= tx_snapset, icon='SNAP_OFF') 
 
 
     col = layout.row(align=True)
     col.scale_y = 0.8    
     col.operator("preferences.addon_show", text=" ", icon="LAYER_USED").module="view3d_snapset"
 
-    if snap_global.toggle_dropdown == True:        
-        col.prop(snap_global, "toggle_dropdown", text=" ", icon="PINNED")
-    else:
-        col.prop(snap_global, "toggle_dropdown", text=" ", icon="UNPINNED")
+    if addon_prefs.toggle_display_buttons_pl == 'on': 
+             
+        if snap_global.toggle_dropdown == True:        
+            col.prop(snap_global, "toggle_dropdown", text=" ", icon="PINNED")
+        else:
+            col.prop(snap_global, "toggle_dropdown", text=" ", icon="UNPINNED")
 
 

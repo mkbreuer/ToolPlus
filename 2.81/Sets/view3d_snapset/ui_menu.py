@@ -344,6 +344,17 @@ class VIEW3D_MT_snapset_menu(bpy.types.Menu):
         #layout.popover(panel="VIEW3D_PT_snapset_panel_ui", text="Menu Panel")  
 
 
+class VIEW3D_MT_snapset_menu_panel(bpy.types.Menu):
+    bl_label = "SnapSet"
+    bl_idname = "VIEW3D_MT_snapset_menu_panel"
+
+    def draw(self, context):
+        layout = self.layout
+        layout.operator_context = 'INVOKE_REGION_WIN' 
+        
+        draw_snapset_menu_ui(context, layout)
+
+
 # LAYOUT # 
 def draw_snapset_item_special(self, context):
     layout = self.layout
