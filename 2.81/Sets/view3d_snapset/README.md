@@ -3,7 +3,7 @@ Full customizable buttons for snapping task
 
 !! Attention !!
 
-During the zip download, github adding a hyphen into the folder name: view3d_snapset-0.2.9
+During the source code zip download, github adding a hyphen into the folder name: view3d_snapset-0.2.9
 
 Blender cannot read this!
 
