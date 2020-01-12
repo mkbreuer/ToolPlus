@@ -52,7 +52,7 @@ except Exception as e:
 # Must declare this before classes are loaded
 # otherwise the bl_idname's will not match and have errors.
 # Must be all lowercase and no spaces
-updater.addon = "view3d_snapset"
+updater.addon = "view3d_snapset_updater"
 
 
 # -----------------------------------------------------------------------------
@@ -1276,7 +1276,7 @@ def register(bl_info):
 	#updater.addon = # define at top of module, MUST be done first
 
 	# Website for manual addon download, optional but recommended to set
-	updater.website = "https://github.com/mkbreuer/SnapSet"
+	updater.website = "https://github.com/mkbreuer/view3d_snapset"
 
 	# Addon subfolder path
 	# "sample/path/to/addon"
