@@ -5,7 +5,7 @@ from bpy.props import *
 
 
 class VIEW3D_OT_pivot_target(bpy.types.Operator):
-    """set pivot"""
+    """set pivot point"""
     bl_idname = "tpc_ot.set_pivot"
     bl_label = "Set Pivot"
     bl_options = {'REGISTER', 'UNDO'}
@@ -76,7 +76,7 @@ class VIEW3D_OT_orient_axis(bpy.types.Operator):
                ("NORMAL"    ,"Normal"   ,"Normal"),
                ("GIMBAL"    ,"Gimbal"   ,"Gimbal"),
                ("VIEW"      ,"View"     ,"View"),
-               ("CURSOR"    ,"Cursor"     ,"Cursor")],
+               ("CURSOR"    ,"Cursor"   ,"Cursor")],
                name = "Orientation",
                default = "GLOBAL",    
                description = "change manipulator axis")
@@ -111,11 +111,28 @@ class VIEW3D_OT_orient_axis(bpy.types.Operator):
         
         elif self.tpc_axis == "CURSOR":
             bpy.context.scene.transform_orientation_slots[0].type = 'CURSOR'
-    
+
         # header info
         #context.area.header_text_set("SnapSet: %s" % (self.tpc_axis))  
         return {'FINISHED'}
 
+
+
+class VIEW3D_OT_set_orientation(bpy.types.Operator):
+    """creates custom transform orientation and overwrite"""
+    bl_idname = "tpc_ot.set_orientation"
+    bl_label = "Custom Orientation"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    set_orientation_name : StringProperty(name="User Input", default="Custom", description="")
+    use_view : BoolProperty(name="Use View",description="", default=False)
+    use : BoolProperty(name="Use after creation",description="", default=True)
+    overwrite : BoolProperty(name="Overwrite Previous",description="", default=True)
+
+    def execute(self, context):
+        snap_global = context.window_manager.snap_global_props     
+        bpy.ops.transform.create_orientation(name=snap_global.set_orientation_name, use_view=self.use_view, use=self.use, overwrite=self.overwrite)
+        return {"FINISHED"}
 
 
 
@@ -166,21 +183,21 @@ class VIEW3D_OT_snap_target(bpy.types.Operator):
 
 
 class VIEW3D_OT_snap_element(bpy.types.Operator):
-    """set snap element"""
+    """set snap elements"""
     bl_idname = "tpc_ot.snap_element"
     bl_label = "Snap Element"
     bl_options = {'REGISTER', 'UNDO'}
 
-    tpc_snape : bpy.props.EnumProperty(
-                 items=[("INCREMENT"          ,"Increment"           ,"" ,"SNAP_INCREMENT"     , 1),
-                        ("VERTEX"             ,"Vertex"              ,"" ,"SNAP_VERTEX"        , 2),
-                        ("EDGE"               ,"Edge"                ,"" ,"SNAP_EDGE"          , 3),
-                        ("FACE"               ,"Face"                ,"" ,"SNAP_FACE"          , 4),
-                        ("VOLUME"             ,"Volume"              ,"" ,"SNAP_VOLUME"        , 5),
-                        ("EDGE_MIDPOINT"      ,"Edge Center"         ,"" ,"SNAP_MIDPOINT"      , 6),
-                        ("EDGE_PERPENDICULAR" ,"Edge Perpendicular"  ,"" ,"SNAP_PERPENDICULAR" , 7)],
-                        name = "Snap Element", 
-                        default = "INCREMENT")
+    tpc_snape : EnumProperty(
+         items=[("INCREMENT"          ,"Increment"   ,"" ,"SNAP_INCREMENT"     , 1),
+                ("VERTEX"             ,"Vertex"      ,"" ,"SNAP_VERTEX"        , 2),
+                ("EDGE"               ,"Edge"        ,"" ,"SNAP_EDGE"          , 3),
+                ("FACE"               ,"Face"        ,"" ,"SNAP_FACE"          , 4),
+                ("VOLUME"             ,"Volume"      ,"" ,"SNAP_VOLUME"        , 5),
+                ("EDGE_MIDPOINT"      ,"MidPoint"    ,"" ,"SNAP_MIDPOINT"      , 6),
+                ("EDGE_PERPENDICULAR" ,"Perpendic"   ,"" ,"SNAP_PERPENDICULAR" , 7)],
+                name = "Snap Element", 
+                default = "INCREMENT")
 
     def draw(self, context):
         layout = self.layout.column(align = True)  
@@ -189,38 +206,43 @@ class VIEW3D_OT_snap_element(bpy.types.Operator):
         
         row = box.column(align = True)
         row.alignment = 'CENTER'        
-        row.prop(self, 'tpc_snape',text=" ", expand =True)                                            
-     
+        row.prop(self, 'tpc_snape',text=" ", expand=True)                                            
+  
         box.separator()
 
+
     def execute(self, context):
+        
+        # seven_elements = [self.tpc_increment, self.tpc_vertex, self.tpc_edge, self.tpc_face, self.tpc_volume, self.tpc_midpoint, self.tpc_perpendic]                                                            
+        # if seven_elements == True:   
+        #    bpy.context.scene.tool_settings.snap_elements = {'INCREMENT', 'VERTEX', 'EDGE', 'FACE', 'VOLUME', 'EDGE_MIDPOINT', 'EDGE_PERPENDICULAR'}
 
-        #bpy.context.scene.tool_settings.snap_elements = {'INCREMENT', 'VERTEX', 'EDGE', 'FACE', 'VOLUME', 'EDGE_MIDPOINT', 'EDGE_PERPENDICULAR'}
-
-        if self.tpc_snape == "INCREMENT":
+        if self.tpc_snape == "INCREMENT":                        
             bpy.context.scene.tool_settings.snap_elements = {'INCREMENT'}
 
-        elif self.tpc_snape == "VERTEX":
+        if self.tpc_snape == "VERTEX":
             bpy.context.scene.tool_settings.snap_elements = {'VERTEX'}   
-
-        elif self.tpc_snape == "EDGE":
+  
+        if self.tpc_snape == "EDGE":
             bpy.context.scene.tool_settings.snap_elements = {'EDGE'}    
-
-        elif self.tpc_snape == "FACE":
+    
+        if self.tpc_snape == "FACE":
             bpy.context.scene.tool_settings.snap_elements = {'FACE'}                      
-
-        elif self.tpc_snape == "VOLUME":
+    
+        if self.tpc_snape == "VOLUME":
             bpy.context.scene.tool_settings.snap_elements = {'VOLUME'}   
-
-        elif self.tpc_snape == "EDGE_MIDPOINT":
-            bpy.context.scene.tool_settings.snap_elements = {'EDGE_MIDPOINT'}
    
-        elif self.tpc_snape == "EDGE_PERPENDICULAR":
-            bpy.context.scene.tool_settings.snap_elements = {'EDGE_PERPENDICULAR'}            
+        if self.tpc_snape == "EDGE_MIDPOINT":
+            bpy.context.scene.tool_settings.snap_elements = {'EDGE_MIDPOINT'}
+
+        if self.tpc_snape == "EDGE_PERPENDICULAR":
+            bpy.context.scene.tool_settings.snap_elements = {'EDGE_PERPENDICULAR'}          
 
         # header info
-        #context.area.header_text_set("SnapSet: %s" % (self.tpc_snape)) 
+        # context.area.header_text_set("SnapSet: %s" % (self.tpc_snape)) 
+
         return {'FINISHED'}
+
 
 
 
@@ -244,5 +266,26 @@ class VIEW3D_OT_snap_use(bpy.types.Operator):
         #context.area.header_text_set("SnapSet: %s" % (self.mode)) 
         return {'FINISHED'}
     
-    
+
+
+# REGISTER #
+classes = (
+    VIEW3D_OT_pivot_target,
+    VIEW3D_OT_orient_axis,
+    VIEW3D_OT_set_orientation,
+    VIEW3D_OT_snap_target,
+    VIEW3D_OT_snap_element,
+    VIEW3D_OT_snap_use,
+    )
+
+def register():
+    for cls in classes:
+        bpy.utils.register_class(cls)
+
+def unregister():
+    for cls in reversed(classes):
+        bpy.utils.unregister_class(cls)
+
+if __name__ == "__main__":
+    register()    
     

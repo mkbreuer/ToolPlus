@@ -23,9 +23,9 @@
 bl_info = {
     "name": "SnapSet",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 8),
+    "version": (0, 2, 9),
     "blender": (2, 81, 0),
-    "location": "3D View > Sidebar [N], Menu [SHIFT+W], Special Menu [W], Shortcut [F], Header and SnapSettings",
+    "location": "3D View > Sidebar [N], Menu [SHIFT+W], Special Menu [W], Shortcut [F], in Header and Snap Settings",
     "description": "full customizable buttons for snapping task",
     "warning": "",
     "wiki_url": "https://github.com/mkbreuer/ToolPlus",
@@ -36,6 +36,9 @@ bl_info = {
 # LOAD MODULES #
 import bpy
 from bpy.props import *
+
+# updater ops import, all setup in this file
+from . import addon_updater_ops
 
 # LOAD / RELOAD SUBMODULES #
 import importlib
@@ -66,6 +69,9 @@ from .ui_menu_pie   import *
 from .ui_panel      import *
 from .ui_snapping   import *
 from .ui_utils      import *
+
+# updater ops import, all setup in this file
+from . import addon_updater_ops
 
 
 importlib.reload(developer_utils)
@@ -312,6 +318,10 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     tpc_use_custom_modal_pie : BoolProperty(name= 'Custom Modal*', description = 'botton in menu', default=True)   
 
     tpc_use_settings_pie : BoolProperty(name= 'Settings', description = 'botton in panel', default=True)   
+
+    tpc_show_snapping_panel : BoolProperty(name= 'Toggle Menu/Panel', description = 'on/off', default=True)  
+    tpc_show_orientation_panel : BoolProperty(name= 'Toggle Menu/Panel', description = 'on/off', default=True)  
+    tpc_show_orientation_name : BoolProperty(name= 'Toggle Menu/Panel', description = 'on/off', default=False)  
 
     ui_scale_x_b1 : FloatProperty(name="Scale X", description="scale box in pie menu", default=1.10, min=0.00, max=2.00, precision=2)
     ui_scale_x_b2 : FloatProperty(name="Scale X", description="scale box in pie menu", default=1.02, min=0.00, max=2.00, precision=2)
@@ -1050,9 +1060,19 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
 
     #----------------------------
 
+    # ADDON UPDATER #
+
+    auto_check_update : BoolProperty(name = "Auto-check for Update", description = "If enabled, auto-check for updates using an interval", default = False)
+    updater_intrval_months : IntProperty(name='Months', description = "Number of months between checking for updates", default=0, min=0)
+    updater_intrval_days : IntProperty(name='Days', description = "Number of days between checking for updates", default=7, min=0)
+    updater_intrval_hours : IntProperty(name='Hours', description = "Number of hours between checking for updates", default=0, min=0, max=23)
+    updater_intrval_minutes : IntProperty(name='Minutes', description = "Number of minutes between checking for updates", default=0, min=0, max=59)
+
+    #----------------------------
     
     # DRAW PREFENCES #
     def draw(self, context):
+        addon_updater_ops.update_settings_ui(self, context)
         snap_global = context.window_manager.snap_global_props  
 
         layout = self.layout.column(align=True)
@@ -1550,7 +1570,36 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                         row.label(text="> open addon preferences")  
 
                         box.separator() 
+                        box = layout.box().column(align=True)  
+                        box.separator() 
 
+                        row = box.row(align=False)
+                        row.alignment = 'LEFT'
+                        row.prop(self, "tpc_show_snapping_panel", text='')                      
+                        row.label(text="Snap Dropdown", icon='SNAP_INCREMENT') 
+                        row.label(text="> dropdown snap settings")  
+
+                        box.separator() 
+                     
+                        row = box.row(align=False)
+                        row.alignment = 'LEFT'
+                        row.prop(self, "tpc_show_orientation_panel", text='')                      
+                        row.label(text="Orientation Dropdown", icon='ORIENTATION_GLOBAL') 
+                        row.label(text="> dropdown orientation settings")  
+
+                        box.separator() 
+                     
+                        row = box.row(align=False)
+                        row.alignment = 'LEFT'
+                        row.prop(self, "tpc_show_orientation_name", text='')                      
+                        row.label(text="Custom Orientation", icon='ORIENTATION_GLOBAL') 
+                        row.label(text="> text field for custom orientation")  
+
+                        box.separator() 
+                        box = layout.box().column(align=True)  
+                        box.separator() 
+
+                   
                     row = box.row(align=True)
                     row.prop(snap_global, 'toggle_boxes', text="", icon ="ORIENTATION_VIEW")                    
                     row.label(text="Scale Box Size in Pie Menu")                    
@@ -1603,6 +1652,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
 
 
                     box.separator() 
+                    box = layout.box().column(align=True)  
                     box.separator() 
                    
                     row = box.row(align=True)  
@@ -1911,7 +1961,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
             else:
                 ico = 'CHECKBOX_DEHLT'  
             row.prop(self, "toggle_snapping_menu", text="", icon = ico)
-            row.label(text="Append to Snap Setting")
+            row.label(text="Append to Snap Settings")
 
             if self.toggle_snapping_menu == True:          
 
@@ -2806,7 +2856,7 @@ class Global_Property_Group(bpy.types.PropertyGroup):
     toggle_pie_buttons : BoolProperty(name="Toggle Context Buttons", description="on / off", default=False)
     toggle_editor_and_header_buttons : BoolProperty(name="Toggle Context Buttons", description="on / off", default=False)
 
-
+    set_orientation_name : StringProperty(name="User Input", default="Custom", description="")
 
 
 # REGISTER #
@@ -2822,6 +2872,7 @@ classes = (
     VIEW3D_OT_snapset_modal,
     VIEW3D_OT_pivot_target,
     VIEW3D_OT_orient_axis,
+    VIEW3D_OT_set_orientation,
     VIEW3D_OT_snap_target,
     VIEW3D_OT_snap_element,
     VIEW3D_OT_snap_use,
@@ -2846,6 +2897,9 @@ classes = (
 addon_keymaps = []
 
 def register():
+
+    addon_updater_ops.register(bl_info)
+   
     for cls in classes:
         bpy.utils.register_class(cls)
 

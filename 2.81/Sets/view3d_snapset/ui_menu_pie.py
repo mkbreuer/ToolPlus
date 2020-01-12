@@ -356,7 +356,7 @@ class VIEW3D_MT_snapset_menu_pie(bpy.types.Menu):
                     row = box.row(align=True)
 
                     button_align_n = icons.get("icon_align_n") 
-                    props = row.operator("tpc_ops.align_mesh", text="Align: Normal", icon_value=button_align_n.icon_id)
+                    props = row.operator("tpc_ops.align_mesh", text="Align to Normal", icon_value=button_align_n.icon_id)
                     props.use_align_axis='axis_n'
                     props.set_pivot='ACTIVE_ELEMENT'
                   
@@ -563,26 +563,67 @@ class VIEW3D_MT_snapset_menu_pie(bpy.types.Menu):
         box.scale_x = addon_prefs.ui_scale_x_b5
         box.scale_y = addon_prefs.ui_scale_y_b5
 
+        tool_settings = context.tool_settings
+        snap_items = bpy.types.ToolSettings.bl_rna.properties["snap_elements"].enum_items
+        snap_elements = tool_settings.snap_elements
+        if len(snap_elements) == 1:
+            if snap_elements == {"INCREMENT"}:
+                text = "Increment"
+            if snap_elements == {"VERTEX"}:
+                text = "Vertex"
+            if snap_elements == {"EDGE"}:
+                text = "Edge"
+            if snap_elements == {"FACE"}:
+                text = "Face"
+            if snap_elements == {"VOLUME"}:
+                text = "Volume"
+            if snap_elements == {"EDGE_MIDPOINT"}:
+                text = "MidPoint"
+            if snap_elements == {"EDGE_PERPENDICULAR"}:
+                text = "Perpendic"                         
+          
+            for elem in snap_elements:
+                icon = snap_items[elem].icon
+                break
+        else:
+            text = "Mix"
+            icon = 'NONE'
+        del snap_items, snap_elements
+
+        if addon_prefs.tpc_show_snapping_panel == True:
+            row = box.row(align = False)
+            row.popover(panel="VIEW3D_PT_snapping", icon=icon, text=text)
+
         row = box.row(align = False)
 
-        if bpy.context.scene.tool_settings.snap_elements == {'VERTEX'}:            
-            row.operator("tpc_ot.snap_element", text=" ", icon = "SNAP_VERTEX", emboss = addon_prefs.tpc_use_emposs).tpc_snape="VERTEX"       
+        if bpy.context.scene.tool_settings.snap_elements == {'EDGE_MIDPOINT'}:            
+            row.operator("tpc_ot.snap_element", text=" ", icon = "SNAP_MIDPOINT", emboss = addon_prefs.tpc_use_emposs).tpc_snape="EDGE_MIDPOINT"       
         else:
-            row.operator("tpc_ot.snap_element", text=" ", icon = "SNAP_VERTEX").tpc_snape="VERTEX"        
+            row.operator("tpc_ot.snap_element", text=" ", icon = "SNAP_MIDPOINT").tpc_snape="EDGE_MIDPOINT"     
+
+        if bpy.context.scene.tool_settings.snap_elements == {'FACE'}:
+            row.operator("tpc_ot.snap_element", text=" ", icon = "SNAP_FACE", emboss = addon_prefs.tpc_use_emposs).tpc_snape="FACE"
+        else:
+            row.operator("tpc_ot.snap_element", text=" ", icon = "SNAP_FACE").tpc_snape="FACE" 
 
         if bpy.context.scene.tool_settings.snap_elements == {'EDGE'}:
             row.operator("tpc_ot.snap_element", text=" ", icon = "SNAP_EDGE", emboss = addon_prefs.tpc_use_emposs).tpc_snape="EDGE"        
         else:
             row.operator("tpc_ot.snap_element", text=" ", icon = "SNAP_EDGE").tpc_snape="EDGE"        
 
-        if bpy.context.scene.tool_settings.snap_elements == {'FACE'}:
-            row.operator("tpc_ot.snap_element", text=" ", icon = "SNAP_FACE", emboss = addon_prefs.tpc_use_emposs).tpc_snape="FACE"
+        if bpy.context.scene.tool_settings.snap_elements == {'VERTEX'}:            
+            row.operator("tpc_ot.snap_element", text=" ", icon = "SNAP_VERTEX", emboss = addon_prefs.tpc_use_emposs).tpc_snape="VERTEX"       
         else:
-            row.operator("tpc_ot.snap_element", text=" ", icon = "SNAP_FACE").tpc_snape="FACE" 
-          
-     
+            row.operator("tpc_ot.snap_element", text=" ", icon = "SNAP_VERTEX").tpc_snape="VERTEX"     
+
+
         row = box.row(align = False)
       
+        if bpy.context.scene.tool_settings.snap_elements == {'EDGE_PERPENDICULAR'}:
+            row.operator("tpc_ot.snap_element", text=" ", icon = "SNAP_PERPENDICULAR", emboss = addon_prefs.tpc_use_emposs).tpc_snape="EDGE_PERPENDICULAR" 
+        else:
+            row.operator("tpc_ot.snap_element", text=" ", icon = "SNAP_PERPENDICULAR").tpc_snape="EDGE_PERPENDICULAR"  
+
         if bpy.context.scene.tool_settings.snap_elements == {'VOLUME'}:
             row.operator("tpc_ot.snap_element", text=" ", icon = "SNAP_VOLUME", emboss = addon_prefs.tpc_use_emposs).tpc_snape="VOLUME" 
         else:
@@ -604,6 +645,24 @@ class VIEW3D_MT_snapset_menu_pie(bpy.types.Menu):
         box.scale_x = addon_prefs.ui_scale_x_b6         
         box.scale_y = addon_prefs.ui_scale_y_b6         
 
+        if addon_prefs.tpc_show_orientation_panel == True:
+            obj = context.active_object
+            object_mode = 'OBJECT' if obj is None else obj.mode
+            has_pose_mode = ((object_mode == 'POSE') or (object_mode == 'WEIGHT_PAINT' and context.pose_object is not None))
+            tool_settings = context.tool_settings
+            scene = context.scene
+
+            if object_mode in {'OBJECT', 'EDIT', 'EDIT_GPENCIL'} or has_pose_mode:
+                row = box.row(align = False)
+                orient_slot = scene.transform_orientation_slots[0]
+                row.prop_with_popover(orient_slot, "type", text="", panel="VIEW3D_PT_transform_orientations")
+
+            #if object_mode in {'OBJECT', 'EDIT', 'EDIT_GPENCIL', 'SCULPT_GPENCIL'} or has_pose_mode:
+                #row = box.row(align = False)
+                #row.prop(tool_settings, "transform_pivot_point", text="", icon_only=True)
+            #row.label(text="Pivot")
+
+
         row = box.row(align = False)
         
         if bpy.context.scene.transform_orientation_slots[0].type == 'GLOBAL':         
@@ -620,8 +679,10 @@ class VIEW3D_MT_snapset_menu_pie(bpy.types.Menu):
             row.operator("tpc_ot.orient_axis", text=" ", icon="ORIENTATION_NORMAL", emboss = addon_prefs.tpc_use_emposs).tpc_axis="NORMAL"
         else:    
             row.operator("tpc_ot.orient_axis", text=" ", icon="ORIENTATION_NORMAL").tpc_axis="NORMAL"
-
       
+        row.operator("tpc_ot.set_orientation", text=" ", icon="ZOOM_IN", emboss = addon_prefs.tpc_use_emposs)
+
+
         row = box.row(align = False)
 
         if bpy.context.scene.transform_orientation_slots[0].type == 'GIMBAL':   
@@ -638,6 +699,20 @@ class VIEW3D_MT_snapset_menu_pie(bpy.types.Menu):
             row.operator("tpc_ot.orient_axis", text=" ", icon="ORIENTATION_CURSOR", emboss = addon_prefs.tpc_use_emposs).tpc_axis="CURSOR"
         else:    
             row.operator("tpc_ot.orient_axis", text=" ", icon="ORIENTATION_CURSOR").tpc_axis="CURSOR"    
+
+        layout.operator_context = 'INVOKE_REGION_WIN'
+        scene = bpy.context.scene
+        orient_slot = scene.transform_orientation_slots[0]
+        custom_orient = orient_slot.custom_orientation
+        if custom_orient:    
+            row.operator("transform.delete_orientation", text=" ", icon='PANEL_CLOSE')
+            
+            if addon_prefs.tpc_show_orientation_name == True:
+                row = box.row(align = False)   
+                row.prop(custom_orient, "name", text="")
+        
+        else:
+            row.label(text=" ", icon="BLANK1")
 
 
         #Box 7 LB 
