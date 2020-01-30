@@ -43,76 +43,129 @@ def func_processing(self, global_prefs):
     for obj in selected:
         view_layer.objects.active = obj  
                                           
-        if global_prefs.mod_processing == "ADD":
-            if global_prefs.mod_list == "NONE":
+        if global_prefs.mod_processing == "ADD" or self.mod_processing == "ADD":
+            if global_prefs.mod_list == "NONE" or self.mod_list == "NONE":
                 pass
             else:                                                                     
-                mod_type = bpy.context.object.modifiers.get(global_prefs.mod_list)   
+                mod_type = bpy.context.object.modifiers.get(global_prefs.mod_list or self.mod_list)   
                 if not mod_type :   
-                    bpy.ops.object.modifier_add(type=global_prefs.mod_list)
+                    bpy.ops.object.modifier_add(type=global_prefs.mod_list or self.mod_list)
         else:
             for obj in selected:
 
-                if global_prefs.mod_string != '':
+                if global_prefs.mod_string != '' or self.mod_string != '' or global_prefs.mod_string != 'None' or self.mod_string != 'None':
 
                     # How to ignore naming index in modifiers? 
                     # https://blender.stackexchange.com/questions/165032/how-to-ignore-naming-index-in-modifiers
-                    # thx to robert gützkow for fixing this...
                     
-                    prefix = global_prefs.mod_string                       
+                    prefix = global_prefs.mod_string or self.mod_string                       
                     for key, modifier in bpy.context.object.modifiers.items():
                         # iterate through all modifiers check if its name starts with a given prefix
                         if key.startswith(prefix):
                                                       
-                            if self.mod_processing == "RENDER" or global_prefs.mod_processing == "RENDER":                                                        
-                                if modifier.show_render == True:                         
-                                    modifier.show_render = False
-                                else:
-                                    modifier.show_render = True   
+                            if global_prefs.mod_list_lock == True or self.mod_list_lock == True:
+                                
+                                if (modifier.type == global_prefs.mod_list) or global_prefs.mod_list in global_prefs.mod_mode or (modifier.type == self.mod_list) or global_prefs.mod_list in self.mod_mode:
                             
-                            if self.mod_processing == "UNHIDE" or global_prefs.mod_processing == "UNHIDE":                                                        
-                                if modifier.show_viewport == True:                         
-                                    modifier.show_viewport = False
-                                else:
-                                    modifier.show_viewport = True
-
-                            if self.mod_processing == "EDIT" or global_prefs.mod_processing == "EDIT":                                                        
-                                if modifier.show_viewport == True:                         
-                                    modifier.show_in_editmode = False
-                                else:
-                                    modifier.show_in_editmode = True
-
-                            if self.mod_processing == "CAGE" or global_prefs.mod_processing == "CAGE":                                                        
-                                if modifier.show_viewport == True:                         
-                                    modifier.show_on_cage = False
-                                else:
-                                    modifier.show_on_cage = True
-
-                            if self.mod_processing == "STACK" or global_prefs.mod_processing == "STACK":  
-                                if modifier.show_expanded == True:
-                                    modifier.show_expanded = False                                            
-                                else:
-                                    modifier.show_expanded = True
+                                    if self.mod_processing == "RENDER" or global_prefs.mod_processing == "RENDER":                                                        
+                                        if modifier.show_render == True:                         
+                                            modifier.show_render = False
+                                        else:
+                                            modifier.show_render = True   
                                     
+                                    if self.mod_processing == "UNHIDE" or global_prefs.mod_processing == "UNHIDE":                                                        
+                                        if modifier.show_viewport == True:                         
+                                            modifier.show_viewport = False
+                                        else:
+                                            modifier.show_viewport = True
+
+                                    if self.mod_processing == "EDIT" or global_prefs.mod_processing == "EDIT":                                                        
+                                        if modifier.show_viewport == True:                         
+                                            modifier.show_in_editmode = False
+                                        else:
+                                            modifier.show_in_editmode = True
+
+                                    if self.mod_processing == "CAGE" or global_prefs.mod_processing == "CAGE":                                                        
+                                        if modifier.show_viewport == True:                         
+                                            modifier.show_on_cage = False
+                                        else:
+                                            modifier.show_on_cage = True
+
+                                    if self.mod_processing == "STACK" or global_prefs.mod_processing == "STACK":  
+                                        if modifier.show_expanded == True:
+                                            modifier.show_expanded = False                                            
+                                        else:
+                                            modifier.show_expanded = True
+                                                                        
+                                    name = modifier.name
+                  
+                                    if self.mod_processing == "UP" or global_prefs.mod_processing == "UP":   
+                                        bpy.ops.object.modifier_move_up(modifier=name)
+
+                                    if self.mod_processing == "DOWN" or global_prefs.mod_processing == "DOWN":   
+                                        bpy.ops.object.modifier_move_down(modifier=name)
+
+                                    if self.mod_processing == "APPLY" or global_prefs.mod_processing == "APPLY": 
+                                        bpy.ops.object.modifier_apply(apply_as='DATA', modifier=name)
+                                   
+                                    if self.mod_processing == "REMOVE" or global_prefs.mod_processing == "REMOVE":   
+                                        bpy.ops.object.modifier_remove(modifier=name)  
+                                                           
+                                    print(self)
+                                    self.report({'INFO'}, "Modifier adjusted!")  
                             
-                            name = modifier.name
-          
-                            if self.mod_processing == "UP" or global_prefs.mod_processing == "UP":   
-                                bpy.ops.object.modifier_move_up(modifier=name)
+                            else:
+                            
+                                if self.mod_processing == "RENDER" or global_prefs.mod_processing == "RENDER":                                                        
+                                    if modifier.show_render == True:                         
+                                        modifier.show_render = False
+                                    else:
+                                        modifier.show_render = True   
+                                
+                                if self.mod_processing == "UNHIDE" or global_prefs.mod_processing == "UNHIDE":                                                        
+                                    if modifier.show_viewport == True:                         
+                                        modifier.show_viewport = False
+                                    else:
+                                        modifier.show_viewport = True
 
-                            if self.mod_processing == "DOWN" or global_prefs.mod_processing == "DOWN":   
-                                bpy.ops.object.modifier_move_down(modifier=name)
+                                if self.mod_processing == "EDIT" or global_prefs.mod_processing == "EDIT":                                                        
+                                    if modifier.show_viewport == True:                         
+                                        modifier.show_in_editmode = False
+                                    else:
+                                        modifier.show_in_editmode = True
 
-                            if self.mod_processing == "APPLY" or global_prefs.mod_processing == "APPLY": 
-                                bpy.ops.object.modifier_apply(apply_as='DATA', modifier=name)
-                           
-                            if self.mod_processing == "REMOVE" or global_prefs.mod_processing == "REMOVE":   
-                                bpy.ops.object.modifier_remove(modifier=name)  
+                                if self.mod_processing == "CAGE" or global_prefs.mod_processing == "CAGE":                                                        
+                                    if modifier.show_viewport == True:                         
+                                        modifier.show_on_cage = False
+                                    else:
+                                        modifier.show_on_cage = True
+
+                                if self.mod_processing == "STACK" or global_prefs.mod_processing == "STACK":  
+                                    if modifier.show_expanded == True:
+                                        modifier.show_expanded = False                                            
+                                    else:
+                                        modifier.show_expanded = True
+                                        
+                                
+                                name = modifier.name
+              
+                                if self.mod_processing == "UP" or global_prefs.mod_processing == "UP":   
+                                    bpy.ops.object.modifier_move_up(modifier=name)
+
+                                if self.mod_processing == "DOWN" or global_prefs.mod_processing == "DOWN":   
+                                    bpy.ops.object.modifier_move_down(modifier=name)
+
+                                if self.mod_processing == "APPLY" or global_prefs.mod_processing == "APPLY": 
+                                    bpy.ops.object.modifier_apply(apply_as='DATA', modifier=name)
+                               
+                                if self.mod_processing == "REMOVE" or global_prefs.mod_processing == "REMOVE":   
+                                    bpy.ops.object.modifier_remove(modifier=name)  
+
+                                print(self)
+                                self.report({'INFO'}, " Modifier adjusted!")  
                                                       
-                    else:
-                        print(self)
-                        self.report({'INFO'}, "Modifier not found!")  
-
+                        else:
+                            pass
 
                 else:
 
@@ -180,6 +233,7 @@ class VIEW3D_OT_modifier_by_type(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     mod_mode : StringProperty(default="", options={'HIDDEN'})
+    mod_string : StringProperty(name="None", description="Use name of modifier", default="")
 
     mod_processing : bpy.props.EnumProperty(                            
       items = [("ADD",     "Add",       "",    "ADD",                   0),                                  
@@ -255,7 +309,9 @@ class VIEW3D_OT_modifier_by_type(bpy.types.Operator):
                default = "NONE", 
                description="change modifier type")
   
+    mod_list_lock : BoolProperty(name="Lock ModType", description="lock modifier type for custom", default = False)
  
+
     def draw(self, context):
         layout = self.layout
         
@@ -264,20 +320,35 @@ class VIEW3D_OT_modifier_by_type(bpy.types.Operator):
         col = layout.column(align=True)
         box = col.box().column(align=False)             
 
-        row = box.row(align=True)  
-        row.label(text='Processing:')   
-        row.prop(global_prefs, 'mod_processing', text='')
+        row = col.row(align=True)        
+        row.label(text="Custom:")   
+        row.prop(self, "mod_string", text="")
+            
+        if self.mod_string !='' and self.mod_string !='None':  
+            row.operator("tpc_ot.clear_string", text="", icon='X')  
+            
+        col.separator()
+     
+        row = col.row(align=True)        
+        row.label(text="Modifier:") 
+        row.prop(self, "mod_list", text="")
 
-        row = box.row(align=True)   
-        row.label(text='Modifier Type:')   
-        row.prop(global_prefs, 'mod_list', text='')          
+        if self.mod_string !='' and self.mod_string !='None':
+            if self.mod_list_lock == True:
+                ico='LOCKED'
+            else:
+                ico='UNLOCKED'                                      
+            row.prop(self, "mod_list_lock", text="", icon=ico)   
 
-        row = box.row(align=True)   
-        row.label(text='Modifier Name:')   
-        row.prop(global_prefs, 'mod_string', text='')    
+        col.separator()
 
-        box.separator()
-   
+        row = col.row(align=True)
+        row.label(text="Process:")   
+        row.prop(self, "mod_processing", text="")
+        
+        col.separator()
+
+
     # EXECUTE MAIN OPERATOR #
     def execute(self, context):
   
@@ -298,11 +369,27 @@ class VIEW3D_OT_modifier_by_type(bpy.types.Operator):
 
 
 
+class VIEW3D_OT_clear_string(bpy.types.Operator):
+    """selection buttons for repattern lights"""
+    bl_idname = "tpc_ot.clear_string"
+    bl_label = "Clear string"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+  
+        bpy.data.window_managers["WinMan"].global_props_modbytype.mod_string = ""
+        #bpy.data.window_managers["WinMan"].global_props_modbytype.mod_string = ""
+        print(self)
+        self.report({'INFO'}, "String removed!") 
+
+        return {'FINISHED'}
+
+
 # REGISTER #
 classes = (
     VIEW3D_OT_modifier_by_type,
+    VIEW3D_OT_clear_string,
     )
-
 
 def register():
     for cls in classes:

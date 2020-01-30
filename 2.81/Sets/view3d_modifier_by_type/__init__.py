@@ -23,7 +23,7 @@
 bl_info = {
     "name": "Modifier by Type",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2),
+    "version": (0, 2, 1),
     "blender": (2, 81, 0),
     "location": "3D View > Tab: Edit > Panel or Properties > Tab: Modifier > on Top",
     "description": "modifier function processing for all selected object",
@@ -100,7 +100,8 @@ class AddonPreferences(AddonPreferences):
     toggle_sidebar_panel : BoolProperty(name="Sidebar Panel", description="enable or disable", default = True, update=update_panel)
     category : StringProperty(name="", description="Choose a name for the category of the panel", default="Item", update=update_panel)
     ui_scale_y : bpy.props.FloatProperty(name="Scale Y",  description="scale layout space", default=1.1, min=1.0, max=1.5, precision=2)
-    toggle_display_name : BoolProperty(name="", default=True, description="enable/disable layout separator")
+    toggle_name_dropdowns : BoolProperty(name="", default=True, description="enable/disable layout separator")
+    toggle_name_buttons : BoolProperty(name="", default=True, description="enable/disable layout separator")
     toggle_display_custom1 : BoolProperty(name="", default=False, description="enable/disable custom string")
 
     toggle_layout_type : EnumProperty(
@@ -116,7 +117,8 @@ class AddonPreferences(AddonPreferences):
 
     toggle_layout_properties : BoolProperty(name="Property Menu", description="enable or disable", default = True, update=update_properties)
     ui_scale_y_properties : bpy.props.FloatProperty(name="Scale Y",  description="scale layout space", default=1.0, min=1.0, max=1.5, precision=2)
-    toggle_display_name_properties : BoolProperty(name="", default=True, description="enable/disable layout separator")
+    toggle_name_dropdowns_properties : BoolProperty(name="", default=True, description="enable/disable layout separator")
+    toggle_name_buttons_properties : BoolProperty(name="", default=True, description="enable/disable layout separator")
     toggle_display_custom2 : BoolProperty(name="", default=False, description="enable/disable custom string")
 
     toggle_layout_type_properties : EnumProperty(
@@ -192,8 +194,14 @@ class AddonPreferences(AddonPreferences):
         box.separator() 
 
         row = box.row(align=True)  
-        row.label(text="Layout Name:")                   
-        row.prop(self, 'toggle_display_name')  
+        row.label(text="Name Dropdowns:")                   
+        row.prop(self, 'toggle_name_dropdowns')  
+
+        box.separator() 
+
+        row = box.row(align=True)  
+        row.label(text="Name Buttons:")                   
+        row.prop(self, 'toggle_name_buttons')  
       
         box.separator()     
 
@@ -204,7 +212,7 @@ class AddonPreferences(AddonPreferences):
         box.separator()  
 
         row = box.row(align=True) 
-        row.label(text="! Refesh Category with 3D View Panel buttons!", icon ="INFO")  
+        row.label(text="! Refesh category with 3D View panel button > dis-/enable!", icon ="INFO")  
 
         box.separator()                    
         box = layout.box().column(align=True)
@@ -228,11 +236,19 @@ class AddonPreferences(AddonPreferences):
       
         box.separator()
 
-        row = box.row(align=True)  
-        row.label(text="Layout Name:")                   
-        row.prop(self, 'toggle_display_name_properties')  
+        if self.toggle_layout_type_properties !='type_b':
+            
+            row = box.row(align=True)  
+            row.label(text="Name Dropdowns:")                   
+            row.prop(self, 'toggle_name_dropdowns_properties')  
 
-        box.separator()
+            box.separator()
+
+            row = box.row(align=True)  
+            row.label(text="Name Buttons:")                   
+            row.prop(self, 'toggle_name_buttons_properties')  
+
+            box.separator()
 
         row = box.row(align=True)  
         row.label(text="Display Custom:")                   
@@ -290,7 +306,7 @@ class Global_Property_Group(bpy.types.PropertyGroup):
 
     mod_mode : StringProperty(default="", options={'HIDDEN'})
     mod_string : StringProperty(name="None", description="Use name of modifier", default="None")
-
+    
     mod_processing : bpy.props.EnumProperty(                            
       items = [("ADD",     "Add",       "",    "ADD",                   0),                                  
                ("RENDER",  "Render",    "",    "RESTRICT_RENDER_OFF",   1), 
@@ -365,11 +381,15 @@ class Global_Property_Group(bpy.types.PropertyGroup):
                default = "NONE", 
                description="change modifier type")
 
-     
+    mod_list_lock : BoolProperty(name="Lock ModType", description="lock modifier type for custom", default = False)
+    mod_list_stack : BoolProperty(name="Modifier Stack", description="show modifier stack", default = False)
+ 
+
 
 # REGISTER #
 classes = (
     VIEW3D_OT_modifier_by_type,
+    VIEW3D_OT_clear_string,
     VIEW3D_PT_modifier_by_type_panel_ui,
     AddonPreferences,
     Global_Property_Group,
