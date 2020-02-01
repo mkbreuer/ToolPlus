@@ -23,7 +23,7 @@
 bl_info = {
     "name": "Modifier by Type",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 1),
+    "version": (0, 2, 2),
     "blender": (2, 81, 0),
     "location": "3D View > Tab: Edit > Panel or Properties > Tab: Modifier > on Top",
     "description": "modifier function processing for all selected object",
@@ -39,33 +39,27 @@ import bpy.utils.previews
 from bpy.props import *
 from bpy.types import AddonPreferences, PropertyGroup
 
+
+# ADDON CHECK #
+import addon_utils   
+from . ui_utils import addon_exists
+
 # LOAD / RELOAD SUBMODULES #
 import importlib
 from . import developer_utils
 
 # LOAD OPERATORS #   
-from .ot_process   import *
+from .ot_copy     import *
+from .ot_process  import *
+from .ui_utils    import *
 
 # LOAD UI # 
-from .ui_layout  import * 
 from .ui_keymap  import *
-
+from .ui_layout  import *
+from .ui_layout  import VIEW3D_PT_modifier_by_type_panel_ui
 
 importlib.reload(developer_utils)
 modules = developer_utils.setup_addon_modules(__path__, __name__, "bpy" in locals())
-
-
-# PANEL TO CONTAINING THE TOOLS #
-class VIEW3D_PT_modifier_by_type_panel_ui(bpy.types.Panel):
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI'
-    bl_category = 'Item'
-    bl_label = "Modifier by Type"
-    bl_options = {'DEFAULT_CLOSED'}
-
-    def draw(self, context):       
-        layout = self.layout.column(align=True)         
-        draw_modifier_by_type_ui(self, context, layout)
 
 
 # UPDATE TAB CATEGORY FOR PANEL IN THE TOOLSHELF #
@@ -91,7 +85,6 @@ def update_panel(self, context):
     except Exception as e:
         print("\n[{}]\n{}\n\nError:\n{}".format(__name__, message, e))
         pass
-
 
 
 class AddonPreferences(AddonPreferences):
@@ -156,6 +149,7 @@ class AddonPreferences(AddonPreferences):
     toggle_popover_icon : BoolProperty(name="", default=True, description="enable/disable layout separator")
     toggle_popover_separator : BoolProperty(name="", default=True, description="enable/disable layout separator")
 
+    toggle_addon_modifier_tools : BoolProperty(name="", default=True, description="enable/disable modifier tools")
 
     def draw(self, context):
         layout = self.layout.column(align=True)
@@ -296,16 +290,35 @@ class AddonPreferences(AddonPreferences):
             row = box.row(align=True) 
             row.label(text="! Refesh with Top/Left - Bottom/Right buttons!", icon ="INFO")  
 
-                
+
         box.separator()                    
+        box = layout.box().column(align=True)
+        box.separator()    
 
+        row = box.row(align=True)  
+        row.label(text="Recommended Addons: ", icon='PLUGIN')
+        
+        row = box.row(align=True)
+        row.prop(self, 'toggle_addon_modifier_tools', text='Modifier Tools')  
+  
+        if self.toggle_addon_modifier_tools == True:  
 
+            modifier_tools_addon = "space_view3d_modifier_tools" 
+            modifier_tools_state = addon_utils.check(modifier_tools_addon)
+            if not modifier_tools_state[0]:
+                row.operator("preferences.addon_show", text="Activate: Modifier Tools", icon="ERROR").module="space_view3d_modifier_tools"    
+            else:
+                row.label(text="Modifier Tools is active and available!", icon ="INFO")  
+        else:
+            row.label(text="Modifier Tools is hidden!", icon ="INFO")  
+   
+        box.separator()                    
 
 
 class Global_Property_Group(bpy.types.PropertyGroup):
 
     mod_mode : StringProperty(default="", options={'HIDDEN'})
-    mod_string : StringProperty(name="None", description="Use name of modifier", default="None")
+    mod_string : StringProperty(name="None", description="Use name of modifier", default="")
     
     mod_processing : bpy.props.EnumProperty(                            
       items = [("ADD",     "Add",       "",    "ADD",                   0),                                  
@@ -390,6 +403,8 @@ class Global_Property_Group(bpy.types.PropertyGroup):
 classes = (
     VIEW3D_OT_modifier_by_type,
     VIEW3D_OT_clear_string,
+    VIEW3D_OT_modifier_copy,
+    VIEW3D_OT_modifier_tools,
     VIEW3D_PT_modifier_by_type_panel_ui,
     AddonPreferences,
     Global_Property_Group,

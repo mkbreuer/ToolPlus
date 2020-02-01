@@ -23,44 +23,63 @@
 import bpy
 from bpy import *
 from bpy.props import *
+from bpy.app.translations import pgettext_iface as iface_
 
+from .ui_utils import get_addon_prefs
+from .ui_utils import get_addon_props
 
-def get_addon_props():
-    addon_global_props = bpy.context.window_manager.global_props_modbytype
-    return (addon_global_props)
+# ADDON CHECK #
+import addon_utils   
+from . ui_utils import addon_exists
 
+# PANEL TO CONTAINING THE TOOLS #
+class VIEW3D_PT_modifier_by_type_panel_ui(bpy.types.Panel):
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = 'Item'
+    bl_label = "Modifier by Type"
+    bl_options = {'DEFAULT_CLOSED'}
 
-# DRAW UI LAYOUT #
-def draw_modifier_by_type_ui(self, context, layout):
+    def draw(self, context):       
+        layout = self.layout.column(align=True)         
   
-    addon_prefs = context.preferences.addons[__package__].preferences         
-    global_props = get_addon_props()         
-   
-    layout.scale_y = addon_prefs.ui_scale_y   
- 
-    box = layout.box().column(align=True) 
+        addon_prefs = context.preferences.addons[__package__].preferences         
+        global_props = get_addon_props()         
+       
+        layout.scale_y = addon_prefs.ui_scale_y   
+     
+        box = layout.box().column(align=True) 
 
-    view_layer = bpy.context.view_layer
-    selected = bpy.context.selected_objects
-    for obj in selected:
-        if obj:                
-            mod_list = obj.modifiers
+        view_layer = bpy.context.view_layer
+        selected = bpy.context.selected_objects     
+
+        ob = context.object
+        if not ob:
+            box.separator()
+
+            row = box.row(align=True)
+            row.label(text="Nothing Selected!", icon ='ERROR')
+          
+            box.separator()    
+        else:
+            mod_list = bpy.context.object.modifiers
             if mod_list:
-                
+
+                obj = context.object              
                 contx = bpy.context.copy()
                 contx['object'] = obj    
                 
-                for mod in mod_list: 
+                for mod in obj.modifiers: 
                     contx['modifier'] = mod
                     name = contx['modifier'].name    
                
-                mod = mod_list[name]
+                mod = bpy.context.object.modifiers[name]
 
                 if mod.show_render == True:
                     ico_render = 'RESTRICT_RENDER_OFF'
                 else:
                     ico_render = 'RESTRICT_RENDER_ON' 
-          
+              
                 if mod.show_viewport == True:
                     ico_viewport = 'RESTRICT_VIEW_OFF'
                 else:
@@ -103,28 +122,28 @@ def draw_modifier_by_type_ui(self, context, layout):
                     txt_render  = "Render"
                     txt_remove  = "Remove"
                     txt_apply   = "Apply"
-     
-     
+             
+             
                 if addon_prefs.toggle_display_custom1 == True:
                     box.separator()
-         
+             
                     row = box.row(align=True)        
                     if addon_prefs.toggle_name_dropdowns == True:
                         row.label(text="Custom:")   
                     row.prop(global_props, "mod_string", text="")
                 
-                    if global_props.mod_string !='' and global_props.mod_string !='None':  
+                    if global_props.mod_string !='':  
                         row.operator("tpc_ot.clear_string", text="", icon='X')   
- 
+             
                 box.separator()
-     
+             
                 row = box.row(align=True)        
                 if addon_prefs.toggle_name_dropdowns == True:
                     row.label(text="Modifier:")   
                 row.prop(global_props, "mod_list", text="")
 
                 if addon_prefs.toggle_display_custom2 == True:
-                    if global_props.mod_string !='' and global_props.mod_string !='None':
+                    if global_props.mod_string !='':
                         if global_props.mod_list_lock == True:
                             ico='LOCKED'
                         else:
@@ -155,7 +174,7 @@ def draw_modifier_by_type_ui(self, context, layout):
                     row.prop_enum(global_props, "mod_processing", "UNHIDE", text=txt_unhide, icon=ico_viewport)         
                     row.prop_enum(global_props, "mod_processing", "EDIT", text=txt_edit, icon=ico_editmode)       
                     row.prop_enum(global_props, "mod_processing", "CAGE", text=txt_cage, icon=ico_cage)       
-     
+             
                     row = box.row(align=True)      
                     row.prop_enum(global_props, "mod_processing", "UP", text=txt_up, icon='TRIA_UP')       
                     row.prop_enum(global_props, "mod_processing", "DOWN", text=txt_down, icon='TRIA_DOWN')                        
@@ -189,7 +208,7 @@ def draw_modifier_by_type_ui(self, context, layout):
                     props.mod_list=global_props.mod_list
 
                     row = box.row(align=True) 
-         
+             
                     props = row.operator("tpc_ot.modifier_by_type", text=txt_up, icon='TRIA_UP')       
                     props.mod_processing='UP'
                     props.mod_list=global_props.mod_list
@@ -263,7 +282,7 @@ def draw_modifier_by_type_ui(self, context, layout):
                     props.mod_processing='APPLY'
                     props.mod_list=global_props.mod_list
                 
-     
+             
                 if addon_prefs.toggle_layout_type == 'type_e':
 
                     row = box.row(align=True)
@@ -311,34 +330,68 @@ def draw_modifier_by_type_ui(self, context, layout):
                     props.mod_processing='APPLY'
                     props.mod_list=global_props.mod_list
 
-
-
                 box.separator()
+
+         
             else:
-                row = box.row(align=True)        
-                row.label(text="No modifier found!")
+                box.separator()
 
-    
-    col = layout.row(align=True)
-    col.scale_y = 0.75
-    if global_props.mod_list_stack == True:    
-        icon_mod = "MODIFIER_ON"
-    else: 
-        icon_mod = "MODIFIER_OFF" 
-    col.prop(global_props, "mod_list_stack", text=" ", icon=icon_mod)
-    col.operator("preferences.addon_show", text="", icon="LAYER_USED").module="view3d_modifier_by_type"
-  
-    if global_props.mod_list_stack == True:
+                row = box.row(align=True)
+                row.operator_menu_enum("object.modifier_add", "type")
+              
+                box.separator()
 
-        mod_list = context.active_object.modifiers
-        if mod_list:
+               
+
             
-            if context.mode == 'OBJECT':
+            col = layout.row(align=True)
+            col.scale_y = 0.85
+            if len(bpy.context.selected_objects) > 1:
+                #col.operator("tpc_ot.modifier_copy", text="", icon="PASTEFLIPDOWN")
+                col.operator("tpc_ot.modifier_copy", text="", icon="PASTEDOWN")
+            if global_props.mod_list_stack == True:    
+                icon_mod = "MODIFIER_ON"
+            else: 
+                icon_mod = "MODIFIER_OFF" 
+            col.prop(global_props, "mod_list_stack", text=" ", icon=icon_mod)
+            col.operator("preferences.addon_show", text="", icon="LAYER_USED").module="view3d_modifier_by_type"
+          
+            if global_props.mod_list_stack == True:
 
-                layout.separator()
-                layout.operator_menu_enum("object.modifier_add", "type")
-                layout.separator()
-                
+                mod_list = context.active_object.modifiers
+                if mod_list:
+                    
+                    if context.mode == 'OBJECT':
+                        
+                        if addon_prefs.toggle_addon_modifier_tools == True:  
+                    
+                            layout.separator()
+
+                            modifier_tools_addon = "space_view3d_modifier_tools" 
+                            modifier_tools_state = addon_utils.check(modifier_tools_addon)
+                            if not modifier_tools_state[0]:
+                                row = layout.row(align=True)
+                                row.operator("preferences.addon_show", text="Activate: Modifier Tools", icon="ERROR").module="space_view3d_modifier_tools"                  
+                            else:   
+                                row = layout.row(align=True)
+                                row.operator('object.apply_all_modifiers', icon='IMPORT', text="Apply All")
+                                row.operator('object.delete_all_modifiers', icon='X', text="Delete All")
+
+                                row = layout.row(align=True)
+                                row.operator('object.toggle_apply_modifiers_view', icon='RESTRICT_VIEW_OFF', text="Viewport Vis")
+                                row.operator('wm.toggle_all_show_expanded', icon='FULLSCREEN_ENTER', text="Toggle Stack")
+
+                        layout.separator()
+                        layout.operator_menu_enum("object.modifier_add", "type")
+                        layout.separator()
+                        
+                else:
+                    
+                    layout.separator()
+                    layout.label(text="No modifier on active!")
+                    layout.separator()
+                            
+
                 ob = context.object
                 for md in ob.modifiers:
                     box = layout.template_modifier(md)
