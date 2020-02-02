@@ -43,7 +43,7 @@ class VIEW3D_PT_modifier_by_type_panel_ui(bpy.types.Panel):
     def draw(self, context):       
         layout = self.layout.column(align=True)         
   
-        addon_prefs = context.preferences.addons[__package__].preferences         
+        addon_prefs = get_addon_prefs()     
         global_props = get_addon_props()         
        
         layout.scale_y = addon_prefs.ui_scale_y   
@@ -142,7 +142,7 @@ class VIEW3D_PT_modifier_by_type_panel_ui(bpy.types.Panel):
                     row.label(text="Modifier:")   
                 row.prop(global_props, "mod_list", text="")
 
-                if addon_prefs.toggle_display_custom2 == True:
+                if addon_prefs.toggle_display_custom1 == True:
                     if global_props.mod_string !='':
                         if global_props.mod_list_lock == True:
                             ico='LOCKED'
@@ -193,176 +193,111 @@ class VIEW3D_PT_modifier_by_type_panel_ui(bpy.types.Panel):
 
                 if addon_prefs.toggle_layout_type == 'type_c':
 
-                    row = box.row(align=True)
-                   
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_unhide, icon=ico_viewport)       
-                    props.mod_processing='UNHIDE'
-                    props.mod_list=global_props.mod_list
+                    row = box.row(align=True)         
+                    row.operator("tpc_ot.execute_direct", text=txt_unhide, icon=ico_viewport).mode='UNHIDE'
+                    row.operator("tpc_ot.execute_direct", text=txt_edit, icon=ico_editmode).mode='EDIT'
+                    row.operator("tpc_ot.execute_direct", text=txt_cage, icon=ico_cage).mode='CAGE'
 
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_edit, icon=ico_editmode)       
-                    props.mod_processing='EDIT'
-                    props.mod_list=global_props.mod_list
-
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_cage, icon=ico_cage)       
-                    props.mod_processing='CAGE'
-                    props.mod_list=global_props.mod_list
-
+                    row = box.row(align=True)  
+                    row.operator("tpc_ot.execute_direct", text=txt_up, icon='TRIA_UP').mode='UP'
+                    row.operator("tpc_ot.execute_direct", text=txt_down, icon='TRIA_DOWN').mode='DOWN'                
+                    row.operator("tpc_ot.execute_direct", text=txt_stack, icon='FULLSCREEN_ENTER').mode='STACK'
+                    
                     row = box.row(align=True) 
-             
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_up, icon='TRIA_UP')       
-                    props.mod_processing='UP'
-                    props.mod_list=global_props.mod_list
-
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_down, icon='TRIA_DOWN')       
-                    props.mod_processing='DOWN'
-                    props.mod_list=global_props.mod_list         
-                 
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_stack, icon='FULLSCREEN_ENTER')       
-                    props.mod_processing='STACK'
-                    props.mod_list=global_props.mod_list
-
-                    row = box.row(align=True) 
-
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_render, icon=ico_render)          
-                    props.mod_processing='RENDER'
-                    props.mod_list=global_props.mod_list
-
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_remove, icon='PANEL_CLOSE')       
-                    props.mod_processing='REMOVE'
-                    props.mod_list=global_props.mod_list
-
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_apply, icon='CHECKMARK')       
-                    props.mod_processing='APPLY'
-                    props.mod_list=global_props.mod_list
+                    row.operator("tpc_ot.execute_direct", text=txt_render, icon=ico_render).mode='RENDER'
+                    row.operator("tpc_ot.execute_direct", text=txt_remove, icon='PANEL_CLOSE').mode='REMOVE'
+                    row.operator("tpc_ot.execute_direct", text=txt_apply, icon='CHECKMARK').mode='APPLY'
 
 
                 if addon_prefs.toggle_layout_type == 'type_d':
 
                     row = box.column(align=True)
+                    row.operator("tpc_ot.execute_direct", text=txt_stack, icon='FULLSCREEN_ENTER').mode='STACK'
+
+                    row.separator()                    
+                    row.operator("tpc_ot.execute_direct", text=txt_render, icon=ico_render).mode='RENDER'
+                    row.operator("tpc_ot.execute_direct", text=txt_unhide, icon=ico_viewport).mode='UNHIDE'
+                    row.operator("tpc_ot.execute_direct", text=txt_edit, icon=ico_editmode).mode='EDIT'
+                    row.operator("tpc_ot.execute_direct", text=txt_cage, icon=ico_cage).mode='CAGE'
+
+                    row.separator()   
+                    row.operator("tpc_ot.execute_direct", text=txt_up, icon='TRIA_UP').mode='UP'
+                    row.operator("tpc_ot.execute_direct", text=txt_down, icon='TRIA_DOWN').mode='DOWN'       
                  
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_stack, icon='FULLSCREEN_ENTER')       
-                    props.mod_processing='STACK'
-                    props.mod_list=global_props.mod_list
+                    row.separator()   
+                    row.operator("tpc_ot.execute_direct", text=txt_remove, icon='PANEL_CLOSE').mode='REMOVE'
+                    row.operator("tpc_ot.execute_direct", text=txt_apply, icon='CHECKMARK').mode='APPLY'
 
-                    row.separator() 
-                   
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_render, icon=ico_render)          
-                    props.mod_processing='RENDER'
-                    props.mod_list=global_props.mod_list
-
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_unhide, icon=ico_viewport)       
-                    props.mod_processing='UNHIDE'
-                    props.mod_list=global_props.mod_list
-
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_edit, icon=ico_editmode)       
-                    props.mod_processing='EDIT'
-                    props.mod_list=global_props.mod_list
-
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_cage, icon=ico_cage)       
-                    props.mod_processing='CAGE'
-                    props.mod_list=global_props.mod_list
-
-                    row.separator() 
-
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_up, icon='TRIA_UP')       
-                    props.mod_processing='UP'
-                    props.mod_list=global_props.mod_list
-
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_down, icon='TRIA_DOWN')       
-                    props.mod_processing='DOWN'
-                    props.mod_list=global_props.mod_list         
-
-                    row.separator() 
-
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_remove, icon='PANEL_CLOSE')       
-                    props.mod_processing='REMOVE'
-                    props.mod_list=global_props.mod_list
-
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_apply, icon='CHECKMARK')       
-                    props.mod_processing='APPLY'
-                    props.mod_list=global_props.mod_list
-                
              
                 if addon_prefs.toggle_layout_type == 'type_e':
 
                     row = box.row(align=True)
-                   
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_stack, icon='FULLSCREEN_ENTER')       
-                    props.mod_processing='STACK'
-                    props.mod_list=global_props.mod_list
+                    row.operator("tpc_ot.execute_direct", text=txt_stack, icon='FULLSCREEN_ENTER').mode='STACK'
 
-                    row.separator()            
-                
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_render, icon=ico_render)          
-                    props.mod_processing='RENDER'
-                    props.mod_list=global_props.mod_list
-
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_unhide, icon=ico_viewport)       
-                    props.mod_processing='UNHIDE'
-                    props.mod_list=global_props.mod_list
-
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_edit, icon=ico_editmode)       
-                    props.mod_processing='EDIT'
-                    props.mod_list=global_props.mod_list
-
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_cage, icon=ico_cage)       
-                    props.mod_processing='CAGE'
-                    props.mod_list=global_props.mod_list
+                    row.separator()                    
+                    row.operator("tpc_ot.execute_direct", text=txt_render, icon=ico_render).mode='RENDER'
+                    row.operator("tpc_ot.execute_direct", text=txt_unhide, icon=ico_viewport).mode='UNHIDE'
+                    row.operator("tpc_ot.execute_direct", text=txt_edit, icon=ico_editmode).mode='EDIT'
+                    row.operator("tpc_ot.execute_direct", text=txt_cage, icon=ico_cage).mode='CAGE'
 
                     row.separator()   
-
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_up, icon='TRIA_UP')       
-                    props.mod_processing='UP'
-                    props.mod_list=global_props.mod_list
-
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_down, icon='TRIA_DOWN')       
-                    props.mod_processing='DOWN'
-                    props.mod_list=global_props.mod_list         
+                    row.operator("tpc_ot.execute_direct", text=txt_up, icon='TRIA_UP').mode='UP'
+                    row.operator("tpc_ot.execute_direct", text=txt_down, icon='TRIA_DOWN').mode='DOWN'       
                  
-
                     row.separator()   
+                    row.operator("tpc_ot.execute_direct", text=txt_remove, icon='PANEL_CLOSE').mode='REMOVE'
+                    row.operator("tpc_ot.execute_direct", text=txt_apply, icon='CHECKMARK').mode='APPLY'     
 
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_remove, icon='PANEL_CLOSE')       
-                    props.mod_processing='REMOVE'
-                    props.mod_list=global_props.mod_list
-
-                    props = row.operator("tpc_ot.modifier_by_type", text=txt_apply, icon='CHECKMARK')       
-                    props.mod_processing='APPLY'
-                    props.mod_list=global_props.mod_list
-
-                box.separator()
-
-         
+                box.separator()         
             else:
                 box.separator()
 
                 row = box.row(align=True)
-                row.operator_menu_enum("object.modifier_add", "type")
+                row.operator_menu_enum("tpc_ot.modifier_add","mod_list", icon='ADD')
               
                 box.separator()
-
-               
 
             
             col = layout.row(align=True)
             col.scale_y = 0.85
+            if global_props.mod_list_stack == False:
+                col.operator_menu_enum("tpc_ot.modifier_add","mod_list", text="", icon='ADD')
             if len(bpy.context.selected_objects) > 1:
                 #col.operator("tpc_ot.modifier_copy", text="", icon="PASTEFLIPDOWN")
-                col.operator("tpc_ot.modifier_copy", text="", icon="PASTEDOWN")
+                col.operator("tpc_ot.modifier_copy", text="", icon="PASTEFLIPDOWN")
             if global_props.mod_list_stack == True:    
-                icon_mod = "MODIFIER_ON"
+                icon_mod = "MODIFIER"
             else: 
-                icon_mod = "MODIFIER_OFF" 
+                icon_mod = "MODIFIER_DATA" 
             col.prop(global_props, "mod_list_stack", text=" ", icon=icon_mod)
             col.operator("preferences.addon_show", text="", icon="LAYER_USED").module="view3d_modifier_by_type"
-          
-            if global_props.mod_list_stack == True:
+            col.operator("tpc_ot.reset_all", text="", icon='RECOVER_LAST')   
+               
+            if global_props.mod_list_stack == False:
+                if addon_prefs.toggle_addon_modifier_tools == True:              
+                    if context.mode == 'OBJECT':   
+                        mod_list = context.active_object.modifiers
+                        if mod_list:
+                            
+                            layout.separator()
 
-                mod_list = context.active_object.modifiers
-                if mod_list:
-                    
-                    if context.mode == 'OBJECT':
-                        
+                            modifier_tools_addon = "space_view3d_modifier_tools" 
+                            modifier_tools_state = addon_utils.check(modifier_tools_addon)
+                            if not modifier_tools_state[0]:
+                                row = layout.row(align=True)
+                                row.operator("preferences.addon_show", text="Activate: Modifier Tools", icon="ERROR").module="space_view3d_modifier_tools"                  
+                            else:   
+                                row = layout.row(align=True)
+                                row.operator('object.toggle_apply_modifiers_view', icon='RESTRICT_VIEW_OFF', text="ViewPorts")
+                                row.operator('object.delete_all_modifiers', icon='X', text="DeleteAll")
+                                row.operator('object.apply_all_modifiers', icon='IMPORT', text="ApplyAll")
+
+
+            if global_props.mod_list_stack == True:
+                if context.mode == 'OBJECT':
+                    mod_list = context.active_object.modifiers
+                    if mod_list:
+
                         if addon_prefs.toggle_addon_modifier_tools == True:  
                     
                             layout.separator()
@@ -374,30 +309,29 @@ class VIEW3D_PT_modifier_by_type_panel_ui(bpy.types.Panel):
                                 row.operator("preferences.addon_show", text="Activate: Modifier Tools", icon="ERROR").module="space_view3d_modifier_tools"                  
                             else:   
                                 row = layout.row(align=True)
-                                row.operator('object.apply_all_modifiers', icon='IMPORT', text="Apply All")
-                                row.operator('object.delete_all_modifiers', icon='X', text="Delete All")
+                                row.operator('object.toggle_apply_modifiers_view', icon='RESTRICT_VIEW_OFF', text="View")
+                                row.operator('wm.toggle_all_show_expanded', icon='FULLSCREEN_ENTER', text="Expand")
+                                row.operator('object.apply_all_modifiers', icon='IMPORT', text="Apply")
+                                row.operator('object.delete_all_modifiers', icon='X', text="Delete")
 
-                                row = layout.row(align=True)
-                                row.operator('object.toggle_apply_modifiers_view', icon='RESTRICT_VIEW_OFF', text="Viewport Vis")
-                                row.operator('wm.toggle_all_show_expanded', icon='FULLSCREEN_ENTER', text="Toggle Stack")
 
                         layout.separator()
-                        layout.operator_menu_enum("object.modifier_add", "type")
+                        layout.operator_menu_enum("tpc_ot.modifier_add","mod_list", icon='ADD')
                         layout.separator()
-                        
-                else:
-                    
-                    layout.separator()
-                    layout.label(text="No modifier on active!")
-                    layout.separator()
                             
+                    else:
+                        
+                        layout.separator()
+                        layout.label(text="No modifier on active!")
+                        layout.separator()
+                                
 
-                ob = context.object
-                for md in ob.modifiers:
-                    box = layout.template_modifier(md)
-                    if box:
-                        # match enum type to our functions, avoids a lookup table.
-                        getattr(self, md.type)(box, ob, md)   
+                    ob = context.object
+                    for md in ob.modifiers:
+                        box = layout.template_modifier(md)
+                        if box:
+                            # match enum type to our functions, avoids a lookup table.
+                            getattr(self, md.type)(box, ob, md)   
 
 
     def ARMATURE(self, layout, ob, md):

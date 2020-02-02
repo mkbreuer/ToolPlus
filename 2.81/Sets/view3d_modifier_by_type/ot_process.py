@@ -19,29 +19,15 @@
 # ##### END GPL LICENSE BLOCK #####
 #
 
-
 # LOAD MODUL #    
 import bpy, os
 from bpy import*
 from bpy.props import *
-from .ui_utils import get_addon_prefs
+#from .ui_utils import get_addon_prefs
 from .ui_utils import get_addon_props
 
-
 EDIT = ["EDIT_MESH", "EDIT_CRUVE", "EDIT_SURFACE", "EDIT_LATTICE", "EDIT_METABALL", "EDIT_TEXT", "EDIT_ARMATURE"]  
-
   
-def func_processing_add(self, global_prefs):
-    view_layer = bpy.context.view_layer
-    selected = bpy.context.selected_objects 
-                               
-    for obj in selected:
-        view_layer.objects.active = obj
-                                                                               
-        mod_type = bpy.context.object.modifiers.get(global_prefs.mod_list)   
-        if not mod_type :   
-            bpy.ops.object.modifier_add(type=global_prefs.mod_list)
-
 # How to ignore naming index in modifiers? 
 # https://blender.stackexchange.com/questions/165032/how-to-ignore-naming-index-in-modifiers
 def func_processing_custom(self, global_prefs):
@@ -72,13 +58,13 @@ def func_processing_custom(self, global_prefs):
                                 modifier.show_viewport = True
 
                         if global_prefs.mod_processing == "EDIT":                                                        
-                            if modifier.show_viewport == True:                         
+                            if modifier.show_in_editmode == True:                         
                                 modifier.show_in_editmode = False
                             else:
                                 modifier.show_in_editmode = True
 
                         if global_prefs.mod_processing == "CAGE":                                                        
-                            if modifier.show_viewport == True:                         
+                            if modifier.show_on_cage == True:                         
                                 modifier.show_on_cage = False
                             else:
                                 modifier.show_on_cage = True
@@ -122,13 +108,13 @@ def func_processing_custom(self, global_prefs):
                             modifier.show_viewport = True
 
                     if global_prefs.mod_processing == "EDIT":                                                        
-                        if modifier.show_viewport == True:                         
+                        if modifier.show_in_editmode == True:                         
                             modifier.show_in_editmode = False
                         else:
                             modifier.show_in_editmode = True
 
                     if global_prefs.mod_processing == "CAGE":                                                        
-                        if modifier.show_viewport == True:                         
+                        if modifier.show_on_cage == True:                         
                             modifier.show_on_cage = False
                         else:
                             modifier.show_on_cage = True
@@ -186,13 +172,13 @@ def func_processing(self, global_prefs):
                             modifier.show_viewport = True
 
                     if global_prefs.mod_processing == "EDIT":                                                        
-                        if modifier.show_viewport == True:                         
+                        if modifier.show_in_editmode == True:                         
                             modifier.show_in_editmode = False
                         else:
                             modifier.show_in_editmode = True
 
                     if global_prefs.mod_processing == "CAGE":                                                        
-                        if modifier.show_viewport == True:                         
+                        if modifier.show_on_cage == True:                         
                             modifier.show_on_cage = False
                         else:
                             modifier.show_on_cage = True
@@ -208,7 +194,6 @@ def func_processing(self, global_prefs):
 
                     print(self)
                     self.report({'INFO'}, " Modifier adjusted!")  
-
 
    
     obj_list = [obj for obj in selected]
@@ -237,19 +222,10 @@ def func_processing(self, global_prefs):
               
 
 
-
-
-
-
-
-
-
-
-
 class VIEW3D_OT_modifier_by_type(bpy.types.Operator):
-    """copy, apply & remove modifier by type"""
+    """> adjust modifier by type or as group"""
     bl_idname = "tpc_ot.modifier_by_type"
-    bl_label = "Modifier by Type"
+    bl_label = "Modifier Processing"
     bl_options = {'REGISTER', 'UNDO'}
 
     def draw(self, context):
@@ -290,12 +266,10 @@ class VIEW3D_OT_modifier_by_type(bpy.types.Operator):
         box.separator()
 
 
-
     # EXECUTE MAIN OPERATOR #
     def execute(self, context):
 
         #addon_prefs = get_addon_prefs()
-
         global_prefs = get_addon_props()  
         
         view_layer = bpy.context.view_layer  
@@ -304,58 +278,222 @@ class VIEW3D_OT_modifier_by_type(bpy.types.Operator):
         # store active # 
         target = view_layer.objects.active    
 
-#        if global_prefs.mod_processing == "ADD" or global_prefs.mod_list == "NONE":
-#            pass
-#        else:
+        if global_prefs.mod_processing == "ADD" and global_prefs.mod_list != "NONE":
+            func_processing_add(self, global_prefs) 
 
-        if context.mode in EDIT:
-            bpy.ops.object.editmode_toggle()              
+        else:        
+            if bpy.context.mode in EDIT:
+                bpy.ops.object.editmode_toggle()              
 
-            if global_prefs.mod_string != '':
-                func_processing_custom(self, global_prefs)                                  
-            else:
-                func_processing(self, global_prefs) 
+                if global_prefs.mod_string != '':
+                    func_processing_custom(self, global_prefs)                                  
+                else:
+                    func_processing(self, global_prefs) 
+                               
+                bpy.ops.object.editmode_toggle()   
+
+            else:                   
+                oldmode = bpy.context.mode                     
+                bpy.ops.object.mode_set(mode='OBJECT')  
                            
-            bpy.ops.object.editmode_toggle()   
-
-        else:                   
-            oldmode = bpy.context.mode                     
-            bpy.ops.object.mode_set(mode='OBJECT')  
-                       
-            if global_prefs.mod_string != '':
-                func_processing_custom(self, global_prefs)                                  
-            else:
-                func_processing(self, global_prefs) 
-                         
-            bpy.ops.object.mode_set(mode=oldmode)     
-
+                if global_prefs.mod_string != '':
+                    func_processing_custom(self, global_prefs)                                  
+                else:
+                    func_processing(self, global_prefs) 
+                             
+                bpy.ops.object.mode_set(mode=oldmode)     
 
         # reload active #     
         view_layer.objects.active = target
         return {'FINISHED'}
 
 
-
-class VIEW3D_OT_clear_string(bpy.types.Operator):
-    """selection buttons for repattern lights"""
-    bl_idname = "tpc_ot.clear_string"
-    bl_label = "Clear string"
+class VIEW3D_OT_execute_direct(bpy.types.Operator):
+    bl_idname = "tpc_ot.execute_direct"
+    bl_label = "Execute (Run)"
     bl_options = {'REGISTER', 'UNDO'}
 
-    def execute(self, context):
-  
+    mode : StringProperty(name="", description="", default="", options={'SKIP_SAVE','HIDDEN'})
+
+    def execute(self, context):  
+
+        if "RENDER" in self.mode:
+            bpy.data.window_managers["WinMan"].global_props_modbytype.mod_processing = "RENDER"
+            bpy.ops.tpc.OT_modifier_by_type()
+
+        if "UNHIDE" in self.mode:
+            bpy.data.window_managers["WinMan"].global_props_modbytype.mod_processing = "UNHIDE"
+            bpy.ops.tpc.OT_modifier_by_type()
+        
+        if "EDIT" in self.mode:
+            bpy.data.window_managers["WinMan"].global_props_modbytype.mod_processing = "EDIT"
+            bpy.ops.tpc.OT_modifier_by_type()
+       
+        if "CAGE" in self.mode:
+            bpy.data.window_managers["WinMan"].global_props_modbytype.mod_processing = "CAGE"
+            bpy.ops.tpc.OT_modifier_by_type()
+
+        if "STACK" in self.mode:
+            bpy.data.window_managers["WinMan"].global_props_modbytype.mod_processing = "STACK"
+            bpy.ops.tpc.OT_modifier_by_type()
+ 
+        if "REMOVE" in self.mode:
+            bpy.data.window_managers["WinMan"].global_props_modbytype.mod_processing = "REMOVE"
+            bpy.ops.tpc.OT_modifier_by_type()
+
+        if "UP" in self.mode:
+            bpy.data.window_managers["WinMan"].global_props_modbytype.mod_processing = "UP"
+            bpy.ops.tpc.OT_modifier_by_type()
+
+        if "DOWN" in self.mode:
+            bpy.data.window_managers["WinMan"].global_props_modbytype.mod_processing = "DOWN"
+            bpy.ops.tpc.OT_modifier_by_type()
+
+        if "APPLY" in self.mode:
+            bpy.data.window_managers["WinMan"].global_props_modbytype.mod_processing = "APPLY"
+            bpy.ops.tpc.OT_modifier_by_type()
+        
+        message = "Adjust: %s" % (self.mode)
+        self.report({'INFO'}, message)
+        print(message)
+        return {'FINISHED'}
+
+
+class VIEW3D_OT_clear_string(bpy.types.Operator):
+    bl_idname = "tpc_ot.clear_string"
+    bl_label = "Clear String"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):  
         bpy.data.window_managers["WinMan"].global_props_modbytype.mod_string = ""
-        #bpy.data.window_managers["WinMan"].global_props_modbytype.mod_string = ""
         print(self)
         self.report({'INFO'}, "String removed!") 
 
         return {'FINISHED'}
 
 
+class VIEW3D_OT_reset_all(bpy.types.Operator):
+    bl_idname = "tpc_ot.reset_all"
+    bl_label = "Reset all"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        bpy.data.window_managers["WinMan"].global_props_modbytype.mod_string = ""  
+        bpy.data.window_managers["WinMan"].global_props_modbytype.mod_list = 'NONE'
+        bpy.data.window_managers["WinMan"].global_props_modbytype.mod_processing = 'NONE'
+
+        print(self)
+        self.report({'INFO'}, "Reset all!") 
+        return {'FINISHED'}
+
+
+# Submenus
+# https://docs.blender.org/api/current/bpy.types.UILayout.html#bpy.types.UILayout.operator_menu_enum
+# https://docs.blender.org/api/current/bpy.props.html#bpy.props.EnumProperty
+# https://blenderartists.org/t/best-way-to-have-icons-in-an-enumproperty/564437/17?u=mkbreuer
+class VIEW3D_OT_modifier_add(bpy.types.Operator):
+    bl_idname = "tpc_ot.modifier_add"
+    bl_label = "Modifier to Selected"
+    bl_options = {'REGISTER', 'UNDO'}
+ 
+              #(identifier,                 name,              description, icon,            number)       
+    mod_list : EnumProperty(                         
+      items = [("WIREFRAME",                "Wireframe",                "", "MOD_WIREFRAME",      1),  
+               ("TRIANGULATE",              "Triangulate",              "", "MOD_TRIANGULATE",    2),                                 
+               ("SUBSURF",                  "Subsurf",                  "", "MOD_SUBSURF",        3),  
+               ("SOLIDIFY",                 "Solidify",                 "", "MOD_SOLIDIFY",       4),                             
+               ("SKIN",                     "Skin",                     "", "MOD_SKIN",           5),                              
+               ("SCREW",                    "Screw",                    "", "MOD_SCREW",          6),                               
+               ("REMESH",                   "Remesh",                   "", "MOD_REMESH",         7),                                  
+               ("MULTIRES",                 "Multires",                 "", "MOD_MULTIRES",       8),                                  
+               ("MIRROR",                   "Mirror",                   "", "MOD_MIRROR",         9),                                                                   
+               ("MASK",                     "Mask",                     "", "MOD_MASK",          10),                                  
+               ("EDGE_SPLIT",               "Edge Split",               "", "MOD_EDGESPLIT",     11),                                   
+               ("DECIMATE",                 "Decimate",                 "", "MOD_DECIM",         12),                                  
+               ("BUILD",                    "Build",                    "", "MOD_BUILD",         13), 
+               ("BOOLEAN",                  "Boolean",                  "", "MOD_BOOLEAN",       14),  
+               ("BEVEL",                    "Bevel",                    "", "MOD_BEVEL",         15), 
+               ("ARRAY",                    "Array",                    "", "MOD_ARRAY",         16),                                   
+             
+               ("UV_WARP",                  "UV Warp",                  "", "MOD_UVPROJECT",     17),                                                                      
+               ("UV_PROJECT",               "UV Project",               "", "MOD_UVPROJECT",     18),
+               ("WAVE",                     "Wave",                     "", "MOD_WAVE",          19),                                   
+               ("WARP",                     "Warp",                     "", "MOD_WARP",          20),                                   
+               ("SMOOTH",                   "Smooth",                   "", "MOD_SMOOTH",        21),                                   
+               ("SIMPLE_DEFORM",            "Simple Deform",            "", "MOD_SIMPLEDEFORM",  22),                                   
+               ("SHRINKWRAP",               "Shrinkwrap",               "", "MOD_SHRINKWRAP",    23),                                   
+               ("MESH_DEFORM",              "Mesh Deform",              "", "MOD_MESHDEFORM",    24),                                   
+               ("LATTICE",                  "Lattice",                  "", "MOD_LATTICE",       25),
+               ("LAPLACIANDEFORM",          "Laplacian Deform",         "", "MOD_MESHDEFORM",    26),
+               ("LAPLACIANSMOOTH",          "Laplacian Smooth",         "", "MOD_SMOOTH",        27),
+               ("HOOK",                     "Hook",                     "", "HOOK",              28),  
+               ("DISPLACE",                 "Displace",                 "", "MOD_DISPLACE",      29),
+               ("CURVE",                    "Curve",                    "", "MOD_CURVE",         30),
+               ("CAST",                     "Cast",                     "", "MOD_CAST",          31),                                    
+               ("ARMATURE",                 "Armature",                 "", "MOD_ARMATURE",      32),                                   
+
+               ("VERTEX_WEIGHT_PROXIMITY",  "Vertex Weight Proximity",  "", "MOD_VERTEX_WEIGHT", 33),
+               ("VERTEX_WEIGHT_MIX",        "Vertex Weight Mix",        "", "MOD_VERTEX_WEIGHT", 34),
+               ("VERTEX_WEIGHT_EDIT",       "Vertex Weight Edit",       "", "MOD_VERTEX_WEIGHT", 35),
+               ("MESH_CACHE",               "Mesh Cache",               "", "MOD_MESHDEFORM",    36),                                   
+               ("SURFACE",                  "Surface",                  "", "PHYSICS",           37),                               
+               ("SOFT_BODY",                "Soft Body",                "", "MOD_SOFT",          38),
+               ("SMOKE",                    "Smoke",                    "", "MOD_SMOKE",         39),
+               ("PARTICLE_SYSTEM",          "Particle System",          "", "MOD_PARTICLES",     40),
+               ("PARTICLE_INSTANCE",        "Particle Instance",        "", "MOD_PARTICLES",     41),
+               ("OCEAN",                    "Ocean",                    "", "MOD_OCEAN",         42),
+               ("FLUID_SIMULATION",         "Fluid Simulation",         "", "MOD_FLUIDSIM",      43),
+               ("EXPLODE",                  "Explode",                  "", "MOD_EXPLODE",       44),
+               ("DYNAMIC_PAINT",            "Dynamic Paint",            "", "MOD_DYNAMICPAINT",  45),
+               ("COLLISION",                "Collision",                "", "MOD_PHYSICS",       46),
+               ("CLOTH",                    "Cloth",                    "", "MOD_CLOTH",         47), 
+               
+               ("NONE",                      "None",                    "", "INFO",              48)], 
+
+               name = "Modifier Type", 
+               default = "NONE", 
+               description="change modifier type",
+               options={'SKIP_SAVE'}) 
+
+
+    def draw(self, context):
+        layout = self.layout
+
+        box = layout.box().column(align=False)                   
+        box.separator()
+      
+        row = box.row(align=True)        
+        row.label(text="Add Modifier:")   
+        row.prop(self, "mod_list", text="")
+                
+        box.separator()
+
+    # EXECUTE MAIN OPERATOR #
+    def execute(self, context):
+        message = "Added: %s" % (self.mod_list)
+        self.report({'INFO'}, message)
+        print(message)
+
+        view_layer = bpy.context.view_layer
+        selected = bpy.context.selected_objects 
+                                   
+        for obj in selected:
+            view_layer.objects.active = obj       
+           
+            mod_type = bpy.context.object.modifiers.get(self.mod_list)   
+            if not mod_type :   
+                bpy.ops.object.modifier_add(type=self.mod_list)
+
+        return {'FINISHED'}
+
+
 # REGISTER #
 classes = (
+    VIEW3D_OT_execute_direct,
+    VIEW3D_OT_modifier_add,
     VIEW3D_OT_modifier_by_type,
     VIEW3D_OT_clear_string,
+    VIEW3D_OT_reset_all,
     )
 
 def register():

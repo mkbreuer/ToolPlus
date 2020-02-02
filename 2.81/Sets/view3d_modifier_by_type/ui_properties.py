@@ -82,6 +82,7 @@ def draw_modifier_by_type_ui_properties(self, context, layout):
 
 
         if addon_prefs.toggle_name_buttons_properties == False:         
+            txt_reset   = " "
             txt_unhide  = " "
             txt_edit    = " "
             txt_cage    = " "
@@ -93,6 +94,7 @@ def draw_modifier_by_type_ui_properties(self, context, layout):
             txt_apply   = " "
         
         else: 
+            txt_reset   = "Reset"
             txt_unhide  = "(Un)Hide"
             txt_edit    = "Edit"
             txt_cage    = "Cage"
@@ -144,6 +146,7 @@ def draw_modifier_by_type_ui_properties(self, context, layout):
             if addon_prefs.toggle_name_buttons_properties == True:
                 row.label(text="Execute:")  
             row.operator("tpc_ot.modifier_by_type", text="Run", icon='FRAME_NEXT')       
+            row.operator("tpc_ot.reset_all", text="", icon='RECOVER_LAST')   
 
 
         if addon_prefs.toggle_layout_type_properties == 'type_b':
@@ -167,13 +170,13 @@ def draw_modifier_by_type_ui_properties(self, context, layout):
                 row = col.row(align=True)  
                 row.prop(global_props, "mod_processing", text="")
                 row.operator("tpc_ot.modifier_by_type", text="Run", icon='FRAME_NEXT')    
-
+                row.operator("tpc_ot.reset_all", text="", icon='RECOVER_LAST')   
             else:
                 row = col.row(align=True)          
                 row.prop(global_props, "mod_list", text="") 
                 row.prop(global_props, "mod_processing", text="")
                 row.operator("tpc_ot.modifier_by_type", text="Run", icon='FRAME_NEXT')  
-
+                row.operator("tpc_ot.reset_all", text="", icon='RECOVER_LAST')   
 
         if addon_prefs.toggle_layout_type_properties == 'type_c':
 
@@ -182,8 +185,8 @@ def draw_modifier_by_type_ui_properties(self, context, layout):
                 if addon_prefs.toggle_name_dropdowns_properties == True:
                     row.label(text="Custom:")   
                 row.prop(global_props, "mod_string", text="")  
-               
-                if global_props.mod_string !='' and global_props.mod_string !='None':  
+           
+                if global_props.mod_string !='' and global_props.mod_string !='None':               
                     row.operator("tpc_ot.clear_string", text="", icon='X')  
 
                 col.separator()
@@ -199,51 +202,29 @@ def draw_modifier_by_type_ui_properties(self, context, layout):
                 else:
                     ico='UNLOCKED'                                      
                 row.prop(global_props, "mod_list_lock", text="", icon=ico)   
-
+         
+            
             col.separator()
 
             row = col.row(align=True)
-           
-            props = row.operator("tpc_ot.modifier_by_type", text=txt_unhide, icon=ico_viewport)       
-            props.mod_processing='UNHIDE'
-            props.mod_list=global_props.mod_list
+            row.alignment = 'RIGHT'                 
+            row.operator("tpc_ot.reset_all", text='', icon='RECOVER_LAST')   
 
-            props = row.operator("tpc_ot.modifier_by_type", text=txt_edit, icon=ico_editmode)       
-            props.mod_processing='EDIT'
-            props.mod_list=global_props.mod_list
+            row = col.row(align=True)           
+            row.operator("tpc_ot.execute_direct", text=txt_unhide, icon=ico_viewport).mode='UNHIDE'
+            row.operator("tpc_ot.execute_direct", text=txt_edit, icon=ico_editmode).mode='EDIT'
+            row.operator("tpc_ot.execute_direct", text=txt_cage, icon=ico_cage).mode='CAGE'
 
-            props = row.operator("tpc_ot.modifier_by_type", text=txt_cage, icon=ico_cage)       
-            props.mod_processing='CAGE'
-            props.mod_list=global_props.mod_list
-
+            row = col.row(align=True)  
+            row.operator("tpc_ot.execute_direct", text=txt_up, icon='TRIA_UP').mode='UP'
+            row.operator("tpc_ot.execute_direct", text=txt_down, icon='TRIA_DOWN').mode='DOWN'                
+            row.operator("tpc_ot.execute_direct", text=txt_stack, icon='FULLSCREEN_ENTER').mode='STACK'
+            
             row = col.row(align=True) 
- 
-            props = row.operator("tpc_ot.modifier_by_type", text=txt_up, icon='TRIA_UP')       
-            props.mod_processing='UP'
-            props.mod_list=global_props.mod_list
+            row.operator("tpc_ot.execute_direct", text=txt_render, icon=ico_render).mode='RENDER'
+            row.operator("tpc_ot.execute_direct", text=txt_remove, icon='PANEL_CLOSE').mode='REMOVE'
+            row.operator("tpc_ot.execute_direct", text=txt_apply, icon='CHECKMARK').mode='APPLY'
 
-            props = row.operator("tpc_ot.modifier_by_type", text=txt_down, icon='TRIA_DOWN')       
-            props.mod_processing='DOWN'
-            props.mod_list=global_props.mod_list         
-         
-            props = row.operator("tpc_ot.modifier_by_type", text=txt_stack, icon='FULLSCREEN_ENTER')       
-            props.mod_processing='STACK'
-            props.mod_list=global_props.mod_list
-
-            row = col.row(align=True) 
-
-            props = row.operator("tpc_ot.modifier_by_type", text=txt_render, icon=ico_render)          
-            props.mod_processing='RENDER'
-            props.mod_list=global_props.mod_list
-
-            props = row.operator("tpc_ot.modifier_by_type", text=txt_remove, icon='PANEL_CLOSE')       
-            props.mod_processing='REMOVE'
-            props.mod_list=global_props.mod_list
-
-            props = row.operator("tpc_ot.modifier_by_type", text=txt_apply, icon='CHECKMARK')       
-            props.mod_processing='APPLY'
-            props.mod_list=global_props.mod_list
-        
  
         if addon_prefs.toggle_layout_type_properties == 'type_d':
 
@@ -274,6 +255,7 @@ def draw_modifier_by_type_ui_properties(self, context, layout):
 
             row = col.row(align=True)                    
             if addon_prefs.toggle_name_buttons_properties == False:         
+                txt_reset   = " "
                 txt_unhide  = " "
                 txt_edit    = " "
                 txt_cage    = " "
@@ -286,6 +268,7 @@ def draw_modifier_by_type_ui_properties(self, context, layout):
             
             else: 
                 row.label(text="Process Type:")   
+                txt_reset   = ""
                 txt_unhide  = ""
                 txt_edit    = ""
                 txt_cage    = ""
@@ -295,47 +278,22 @@ def draw_modifier_by_type_ui_properties(self, context, layout):
                 txt_render  = ""
                 txt_remove  = ""
                 txt_apply   = ""
+            
+            row.operator("tpc_ot.reset_all", text=txt_reset, icon='RECOVER_LAST')
+            row.operator("tpc_ot.execute_direct", text=txt_stack, icon='FULLSCREEN_ENTER').mode='STACK'
 
-            props = row.operator("tpc_ot.modifier_by_type", text=txt_stack, icon='FULLSCREEN_ENTER')       
-            props.mod_processing='STACK'
-            props.mod_list=global_props.mod_list
-
-            row.separator()            
-        
-            props = row.operator("tpc_ot.modifier_by_type", text=txt_render, icon=ico_render)          
-            props.mod_processing='RENDER'
-            props.mod_list=global_props.mod_list
-
-            props = row.operator("tpc_ot.modifier_by_type", text=txt_unhide, icon=ico_viewport)       
-            props.mod_processing='UNHIDE'
-            props.mod_list=global_props.mod_list
-
-            props = row.operator("tpc_ot.modifier_by_type", text=txt_edit, icon=ico_editmode)       
-            props.mod_processing='EDIT'
-            props.mod_list=global_props.mod_list
-
-            props = row.operator("tpc_ot.modifier_by_type", text=txt_cage, icon=ico_cage)       
-            props.mod_processing='CAGE'
-            props.mod_list=global_props.mod_list
+            row.separator()                    
+            row.operator("tpc_ot.execute_direct", text=txt_render, icon=ico_render).mode='RENDER'
+            row.operator("tpc_ot.execute_direct", text=txt_unhide, icon=ico_viewport).mode='UNHIDE'
+            row.operator("tpc_ot.execute_direct", text=txt_edit, icon=ico_editmode).mode='EDIT'
+            row.operator("tpc_ot.execute_direct", text=txt_cage, icon=ico_cage).mode='CAGE'
 
             row.separator()   
-
-            props = row.operator("tpc_ot.modifier_by_type", text=txt_up, icon='TRIA_UP')       
-            props.mod_processing='UP'
-            props.mod_list=global_props.mod_list
-
-            props = row.operator("tpc_ot.modifier_by_type", text=txt_down, icon='TRIA_DOWN')       
-            props.mod_processing='DOWN'
-            props.mod_list=global_props.mod_list         
+            row.operator("tpc_ot.execute_direct", text=txt_up, icon='TRIA_UP').mode='UP'
+            row.operator("tpc_ot.execute_direct", text=txt_down, icon='TRIA_DOWN').mode='DOWN'       
          
             row.separator()   
-
-            props = row.operator("tpc_ot.modifier_by_type", text=txt_remove, icon='PANEL_CLOSE')       
-            props.mod_processing='REMOVE'
-            props.mod_list=global_props.mod_list
-
-            props = row.operator("tpc_ot.modifier_by_type", text=txt_apply, icon='CHECKMARK')       
-            props.mod_processing='APPLY'
-            props.mod_list=global_props.mod_list
+            row.operator("tpc_ot.execute_direct", text=txt_remove, icon='PANEL_CLOSE').mode='REMOVE'
+            row.operator("tpc_ot.execute_direct", text=txt_apply, icon='CHECKMARK').mode='APPLY'
          
   

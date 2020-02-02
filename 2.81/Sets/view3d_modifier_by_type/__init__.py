@@ -23,9 +23,9 @@
 bl_info = {
     "name": "Modifier by Type",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 2),
+    "version": (0, 2, 3),
     "blender": (2, 81, 0),
-    "location": "3D View > Tab: Edit > Panel or Properties > Tab: Modifier > on Top",
+    "location": "3D View Editor > Tab: Modifier by Type / Properties Editor > Tab: Modifier > on Top",
     "description": "modifier function processing for all selected object",
     "warning": "",
     "wiki_url": "",
@@ -68,30 +68,28 @@ panels = (
         )
 
 def update_panel(self, context):
+    addon_prefs = context.preferences.addons[__name__].preferences                                        
     message = "Updating Panel locations has failed"
     try:
-        addon_prefs = context.preferences.addons[__name__].preferences   
-
         for panel in panels:             
             if "bl_rna" in panel.__dict__:
-                if addon_prefs.toggle_sidebar_panel == False: 
-                    bpy.utils.unregister_class(panel)
-        
-        for panel in panels:
-            if addon_prefs.toggle_sidebar_panel == True:  
-                panel.bl_category = context.preferences.addons[__name__].preferences.category
-                bpy.utils.register_class(panel)
+                bpy.utils.unregister_class(panel)
+      
+        for panel in panels: 
+            panel.bl_category = addon_prefs.category 
+            bpy.utils.register_class(panel)
 
     except Exception as e:
         print("\n[{}]\n{}\n\nError:\n{}".format(__name__, message, e))
         pass
 
 
+
 class AddonPreferences(AddonPreferences):
     bl_idname = __name__
         
-    toggle_sidebar_panel : BoolProperty(name="Sidebar Panel", description="enable or disable", default = True, update=update_panel)
-    category : StringProperty(name="", description="Choose a name for the category of the panel", default="Item", update=update_panel)
+    category : StringProperty(name="", description="Choose a name for the category of the panel", default="Modifier by Type", update=update_panel)
+    #toggle_sidebar_panel : BoolProperty(name="Sidebar Panel", description="enable or disable", default = True, update=update_panel)
     ui_scale_y : bpy.props.FloatProperty(name="Scale Y",  description="scale layout space", default=1.1, min=1.0, max=1.5, precision=2)
     toggle_name_dropdowns : BoolProperty(name="", default=True, description="enable/disable layout separator")
     toggle_name_buttons : BoolProperty(name="", default=True, description="enable/disable layout separator")
@@ -130,13 +128,13 @@ class AddonPreferences(AddonPreferences):
         items=(('prepend', 'Top/Left',     'menu layout position'),
                ('append',  'Bottom/Right', 'menu layout position'),
                ('off',     'Off',    'disable menu for 3d view')),
-               default='append', update = update_menu)
+               default='off', update = update_menu)
 
     toggle_MT_menu : EnumProperty(
         name = 'Menu Location',
         description = 'save user settings',
-        items=[('menu_special',  'Special Menu ', 'Keys: [W]'),
-               ('menu_header',   '3D View Header',  'Keys: none')],
+        items=[('menu_special',  'Special Menu ',  'Keys: [W]'),
+               ('menu_header',   '3D View Header', 'Keys: none')],
                default='menu_special')
 
     toggle_MT_menu_location : EnumProperty(
@@ -149,20 +147,14 @@ class AddonPreferences(AddonPreferences):
     toggle_popover_icon : BoolProperty(name="", default=True, description="enable/disable layout separator")
     toggle_popover_separator : BoolProperty(name="", default=True, description="enable/disable layout separator")
 
-    toggle_addon_modifier_tools : BoolProperty(name="", default=True, description="enable/disable modifier tools")
+    toggle_addon_modifier_tools : BoolProperty(name="Modifier Tools", default=True, description="enable/disable")
 
     def draw(self, context):
         layout = self.layout.column(align=True)
        
         box = layout.box().column(align=True)
         box.separator()                                   
-      
-        row = box.row(align=True)  
-        row.label(text="3D View Panel:")                   
-        row.prop(self, 'toggle_sidebar_panel', text="")  
-
-        box.separator() 
-         
+       
         row = box.row(align=True) 
         row.label(text="Tab Category:")             
         row.prop(self, "category", text="")    
@@ -296,21 +288,21 @@ class AddonPreferences(AddonPreferences):
         box.separator()    
 
         row = box.row(align=True)  
-        row.label(text="Recommended Addons: ", icon='PLUGIN')
+        row.label(text="Recommended Addon:", icon='PLUGIN')
         
         row = box.row(align=True)
-        row.prop(self, 'toggle_addon_modifier_tools', text='Modifier Tools')  
-  
+        row.prop(self, 'toggle_addon_modifier_tools', text="")  
+        row.label(text="Modifier Tools")
+        
         if self.toggle_addon_modifier_tools == True:  
-
             modifier_tools_addon = "space_view3d_modifier_tools" 
             modifier_tools_state = addon_utils.check(modifier_tools_addon)
             if not modifier_tools_state[0]:
                 row.operator("preferences.addon_show", text="Activate: Modifier Tools", icon="ERROR").module="space_view3d_modifier_tools"    
             else:
-                row.label(text="Modifier Tools is active and available!", icon ="INFO")  
+                row.label(text="Tools are available!", icon ="INFO")  
         else:
-            row.label(text="Modifier Tools is hidden!", icon ="INFO")  
+            row.label(text="Tools are hidden!", icon ="ERROR")  
    
         box.separator()                    
 
@@ -401,10 +393,13 @@ class Global_Property_Group(bpy.types.PropertyGroup):
 
 # REGISTER #
 classes = (
+    VIEW3D_OT_execute_direct,
+    VIEW3D_OT_modifier_add,
     VIEW3D_OT_modifier_by_type,
-    VIEW3D_OT_clear_string,
     VIEW3D_OT_modifier_copy,
     VIEW3D_OT_modifier_tools,
+    VIEW3D_OT_clear_string,
+    VIEW3D_OT_reset_all,
     VIEW3D_PT_modifier_by_type_panel_ui,
     AddonPreferences,
     Global_Property_Group,
