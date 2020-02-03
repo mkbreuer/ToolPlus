@@ -288,9 +288,9 @@ class VIEW3D_PT_modifier_by_type_panel_ui(bpy.types.Panel):
                                 row.operator("preferences.addon_show", text="Activate: Modifier Tools", icon="ERROR").module="space_view3d_modifier_tools"                  
                             else:   
                                 row = layout.row(align=True)
-                                row.operator('object.toggle_apply_modifiers_view', icon='RESTRICT_VIEW_OFF', text="ViewPorts")
-                                row.operator('object.delete_all_modifiers', icon='X', text="DeleteAll")
-                                row.operator('object.apply_all_modifiers', icon='IMPORT', text="ApplyAll")
+                                row.operator('object.toggle_apply_modifiers_view', icon='RESTRICT_VIEW_OFF', text="View")
+                                row.operator('object.delete_all_modifiers', icon='X', text="Delete")
+                                row.operator('object.apply_all_modifiers', icon='IMPORT', text="Apply")
 
 
             if global_props.mod_list_stack == True:
@@ -310,13 +310,15 @@ class VIEW3D_PT_modifier_by_type_panel_ui(bpy.types.Panel):
                             else:   
                                 row = layout.row(align=True)
                                 row.operator('object.toggle_apply_modifiers_view', icon='RESTRICT_VIEW_OFF', text="View")
-                                row.operator('wm.toggle_all_show_expanded', icon='FULLSCREEN_ENTER', text="Expand")
-                                row.operator('object.apply_all_modifiers', icon='IMPORT', text="Apply")
                                 row.operator('object.delete_all_modifiers', icon='X', text="Delete")
-
+                                row.operator('object.apply_all_modifiers', icon='IMPORT', text="Apply")
 
                         layout.separator()
-                        layout.operator_menu_enum("tpc_ot.modifier_add","mod_list", icon='ADD')
+                       
+                        row = layout.row(align=True)
+                        row.operator_menu_enum("tpc_ot.modifier_add","mod_list", icon='ADD')
+                        row.operator('wm.toggle_all_show_expanded', icon='FULLSCREEN_ENTER', text="")
+                        
                         layout.separator()
                             
                     else:
@@ -325,7 +327,6 @@ class VIEW3D_PT_modifier_by_type_panel_ui(bpy.types.Panel):
                         layout.label(text="No modifier on active!")
                         layout.separator()
                                 
-
                     ob = context.object
                     for md in ob.modifiers:
                         box = layout.template_modifier(md)

@@ -23,7 +23,7 @@
 bl_info = {
     "name": "Modifier by Type",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 3),
+    "version": (0, 2, 4),
     "blender": (2, 81, 0),
     "location": "3D View Editor > Tab: Modifier by Type / Properties Editor > Tab: Modifier > on Top",
     "description": "modifier function processing for all selected object",
