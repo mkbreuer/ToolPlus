@@ -24,7 +24,7 @@ import bpy, os
 from bpy import*
 from bpy.props import *
 #from .ui_utils import get_addon_prefs
-from .ui_utils import get_addon_props
+#from .ui_utils import get_addon_props
 
 EDIT = ["EDIT_MESH", "EDIT_CRUVE", "EDIT_SURFACE", "EDIT_LATTICE", "EDIT_METABALL", "EDIT_TEXT", "EDIT_ARMATURE"]  
   
@@ -391,65 +391,72 @@ class VIEW3D_OT_reset_all(bpy.types.Operator):
 # https://docs.blender.org/api/current/bpy.types.UILayout.html#bpy.types.UILayout.operator_menu_enum
 # https://docs.blender.org/api/current/bpy.props.html#bpy.props.EnumProperty
 # https://blenderartists.org/t/best-way-to-have-icons-in-an-enumproperty/564437/17?u=mkbreuer
-class VIEW3D_OT_modifier_add(bpy.types.Operator):
+class VIEW3D_OT_modifier_add_mbt(bpy.types.Operator):
     bl_idname = "tpc_ot.modifier_add"
     bl_label = "Modifier to Selected"
     bl_options = {'REGISTER', 'UNDO'}
- 
-              #(identifier,                 name,              description, icon,            number)       
+     
     mod_list : EnumProperty(                         
-      items = [("WIREFRAME",                "Wireframe",                "", "MOD_WIREFRAME",      1),  
-               ("TRIANGULATE",              "Triangulate",              "", "MOD_TRIANGULATE",    2),                                 
-               ("SUBSURF",                  "Subsurf",                  "", "MOD_SUBSURF",        3),  
-               ("SOLIDIFY",                 "Solidify",                 "", "MOD_SOLIDIFY",       4),                             
-               ("SKIN",                     "Skin",                     "", "MOD_SKIN",           5),                              
-               ("SCREW",                    "Screw",                    "", "MOD_SCREW",          6),                               
-               ("REMESH",                   "Remesh",                   "", "MOD_REMESH",         7),                                  
-               ("MULTIRES",                 "Multires",                 "", "MOD_MULTIRES",       8),                                  
-               ("MIRROR",                   "Mirror",                   "", "MOD_MIRROR",         9),                                                                   
-               ("MASK",                     "Mask",                     "", "MOD_MASK",          10),                                  
-               ("EDGE_SPLIT",               "Edge Split",               "", "MOD_EDGESPLIT",     11),                                   
-               ("DECIMATE",                 "Decimate",                 "", "MOD_DECIM",         12),                                  
-               ("BUILD",                    "Build",                    "", "MOD_BUILD",         13), 
-               ("BOOLEAN",                  "Boolean",                  "", "MOD_BOOLEAN",       14),  
-               ("BEVEL",                    "Bevel",                    "", "MOD_BEVEL",         15), 
-               ("ARRAY",                    "Array",                    "", "MOD_ARRAY",         16),                                   
+      items = [
+               ("DATA_TRANSFER",            "Data Transfer",            "", "MOD_DATA_TRANSFER",  101),       
+               ("MESH_CACHE",               "Mesh Cache",               "", "MOD_MESHDEFORM",     102),                                   
+               ("MESH_SEQUENCE_CACHE",      "Mesh Sequence Cache",      "", "MOD_MESHDEFORM",     103),                                            
+               ("NORMAL_EDIT",              "Normal Edit",              "", "MOD_UVPROJECT",      104),               
+               ("WEIGHTED_NORMAL",          "Weighted Normal",          "", "MOD_UVPROJECT",      105),               
+               ("UV_PROJECT",               "UV Project",               "", "MOD_UVPROJECT",      106),               
+               ("UV_WARP",                  "UV Warp",                  "", "MOD_UVPROJECT",      107),                                                                      
+               ("VERTEX_WEIGHT_EDIT",       "Vertex Weight Edit",       "", "MOD_VERTEX_WEIGHT",  108),
+               ("VERTEX_WEIGHT_MIX",        "Vertex Weight Mix",        "", "MOD_VERTEX_WEIGHT",  109),          
+               ("VERTEX_WEIGHT_PROXIMITY",  "Vertex Weight Proximity",  "", "MOD_VERTEX_WEIGHT",  110),      
+      
+               ("WIREFRAME",                "Wireframe",                "", "MOD_WIREFRAME",      201),  
+               ("TRIANGULATE",              "Triangulate",              "", "MOD_TRIANGULATE",    202),                                 
+               ("SUBSURF",                  "Subsurf",                  "", "MOD_SUBSURF",        203),  
+               ("SOLIDIFY",                 "Solidify",                 "", "MOD_SOLIDIFY",       204),                             
+               ("SKIN",                     "Skin",                     "", "MOD_SKIN",           205),                              
+               ("SCREW",                    "Screw",                    "", "MOD_SCREW",          206),                               
+               ("REMESH",                   "Remesh",                   "", "MOD_REMESH",         207),                                  
+               ("MULTIRES",                 "Multires",                 "", "MOD_MULTIRES",       208),                                  
+               ("MIRROR",                   "Mirror",                   "", "MOD_MIRROR",         209),                                                                   
+               ("MASK",                     "Mask",                     "", "MOD_MASK",           210),                                  
+               ("EDGE_SPLIT",               "Edge Split",               "", "MOD_EDGESPLIT",      211),                                   
+               ("DECIMATE",                 "Decimate",                 "", "MOD_DECIM",          212),                                  
+               ("BUILD",                    "Build",                    "", "MOD_BUILD",          213), 
+               ("BOOLEAN",                  "Boolean",                  "", "MOD_BOOLEAN",        214),  
+               ("BEVEL",                    "Bevel",                    "", "MOD_BEVEL",          215), 
+               ("ARRAY",                    "Array",                    "", "MOD_ARRAY",          216),                                   
              
-               ("UV_WARP",                  "UV Warp",                  "", "MOD_UVPROJECT",     17),                                                                      
-               ("UV_PROJECT",               "UV Project",               "", "MOD_UVPROJECT",     18),
-               ("WAVE",                     "Wave",                     "", "MOD_WAVE",          19),                                   
-               ("WARP",                     "Warp",                     "", "MOD_WARP",          20),                                   
-               ("SMOOTH",                   "Smooth",                   "", "MOD_SMOOTH",        21),                                   
-               ("SIMPLE_DEFORM",            "Simple Deform",            "", "MOD_SIMPLEDEFORM",  22),                                   
-               ("SHRINKWRAP",               "Shrinkwrap",               "", "MOD_SHRINKWRAP",    23),                                   
-               ("MESH_DEFORM",              "Mesh Deform",              "", "MOD_MESHDEFORM",    24),                                   
-               ("LATTICE",                  "Lattice",                  "", "MOD_LATTICE",       25),
-               ("LAPLACIANDEFORM",          "Laplacian Deform",         "", "MOD_MESHDEFORM",    26),
-               ("LAPLACIANSMOOTH",          "Laplacian Smooth",         "", "MOD_SMOOTH",        27),
-               ("HOOK",                     "Hook",                     "", "HOOK",              28),  
-               ("DISPLACE",                 "Displace",                 "", "MOD_DISPLACE",      29),
-               ("CURVE",                    "Curve",                    "", "MOD_CURVE",         30),
-               ("CAST",                     "Cast",                     "", "MOD_CAST",          31),                                    
-               ("ARMATURE",                 "Armature",                 "", "MOD_ARMATURE",      32),                                   
-
-               ("VERTEX_WEIGHT_PROXIMITY",  "Vertex Weight Proximity",  "", "MOD_VERTEX_WEIGHT", 33),
-               ("VERTEX_WEIGHT_MIX",        "Vertex Weight Mix",        "", "MOD_VERTEX_WEIGHT", 34),
-               ("VERTEX_WEIGHT_EDIT",       "Vertex Weight Edit",       "", "MOD_VERTEX_WEIGHT", 35),
-               ("MESH_CACHE",               "Mesh Cache",               "", "MOD_MESHDEFORM",    36),                                   
-               ("SURFACE",                  "Surface",                  "", "PHYSICS",           37),                               
-               ("SOFT_BODY",                "Soft Body",                "", "MOD_SOFT",          38),
-               ("SMOKE",                    "Smoke",                    "", "MOD_SMOKE",         39),
-               ("PARTICLE_SYSTEM",          "Particle System",          "", "MOD_PARTICLES",     40),
-               ("PARTICLE_INSTANCE",        "Particle Instance",        "", "MOD_PARTICLES",     41),
-               ("OCEAN",                    "Ocean",                    "", "MOD_OCEAN",         42),
-               ("FLUID_SIMULATION",         "Fluid Simulation",         "", "MOD_FLUIDSIM",      43),
-               ("EXPLODE",                  "Explode",                  "", "MOD_EXPLODE",       44),
-               ("DYNAMIC_PAINT",            "Dynamic Paint",            "", "MOD_DYNAMICPAINT",  45),
-               ("COLLISION",                "Collision",                "", "MOD_PHYSICS",       46),
-               ("CLOTH",                    "Cloth",                    "", "MOD_CLOTH",         47), 
-               
-               ("NONE",                      "None",                    "", "INFO",              48)], 
-
+               ("WAVE",                     "Wave",                     "", "MOD_WAVE",           301),                                   
+               ("WARP",                     "Warp",                     "", "MOD_WARP",           302),                                   
+               ("SURFACE_DEFORM",           "Smooth Deform",            "", "MOD_SMOOTH",         303),
+               ("LAPLACIANSMOOTH",          "Smooth Laplacian",         "", "MOD_SMOOTH",         304),
+               ("CORRECTIVE_SMOOTH",        "Smooth Corrective",        "", "MOD_SMOOTH",         305),
+               ("SMOOTH",                   "Smooth",                   "", "MOD_SMOOTH",         306),                                   
+               ("SIMPLE_DEFORM",            "Simple Deform",            "", "MOD_SIMPLEDEFORM",   307),                                   
+               ("SHRINKWRAP",               "Shrinkwrap",               "", "MOD_SHRINKWRAP",     308),                                   
+               ("MESH_DEFORM",              "Mesh Deform",              "", "MOD_MESHDEFORM",     309),                                   
+               ("LATTICE",                  "Lattice",                  "", "MOD_LATTICE",        310),
+               ("LAPLACIANDEFORM",          "Laplacian Deform",         "", "MOD_MESHDEFORM",     311),
+               ("HOOK",                     "Hook",                     "", "HOOK",               312),  
+               ("DISPLACE",                 "Displace",                 "", "MOD_DISPLACE",       313),
+               ("CURVE",                    "Curve",                    "", "MOD_CURVE",          314),
+               ("CAST",                     "Cast",                     "", "MOD_CAST",           315),                                    
+               ("ARMATURE",                 "Armature",                 "", "MOD_ARMATURE",       316),                                   
+             
+               ("NONE",                     "",                         "", "BLANK1",             400),
+               ("SOFT_BODY",                "Soft Body",                "", "MOD_SOFT",           401),
+               ("SMOKE",                    "Smoke",                    "", "MOD_SMOKE",          402),
+               ("PARTICLE_SYSTEM",          "Particle System",          "", "MOD_PARTICLES",      403),
+               ("PARTICLE_INSTANCE",        "Particle Instance",        "", "MOD_PARTICLES",      404),
+               ("OCEAN",                    "Ocean",                    "", "MOD_OCEAN",          405),
+               ("FLUID_SIMULATION",         "Fluid Simulation",         "", "MOD_FLUIDSIM",       406),
+               ("EXPLODE",                  "Explode",                  "", "MOD_EXPLODE",        407),
+               ("DYNAMIC_PAINT",            "Dynamic Paint",            "", "MOD_DYNAMICPAINT",   408),
+               ("COLLISION",                "Collision",                "", "MOD_PHYSICS",        409),
+               ("CLOTH",                    "Cloth",                    "", "MOD_CLOTH",          410)], 
+            
+              #(identifier,                 name,              description, icon,                 number)   
+             
                name = "Modifier Type", 
                default = "NONE", 
                description="change modifier type",
@@ -487,10 +494,44 @@ class VIEW3D_OT_modifier_add(bpy.types.Operator):
         return {'FINISHED'}
 
 
+# https://blenderartists.org/t/how-to-rebuild-the-add-modifier-menu-layout/1204906/2
+# Categories start on these modifiers
+mods = ('DATA_TRANSFER', 'ARRAY', 'ARMATURE', 'CLOTH')
+
+# Rna enum items are listed in same order as menu.
+op = bpy.ops.object.modifier_add
+enum_rna = op.get_rna_type().properties['type'].enum_items
+mdict = {"Modify": [], "Generate": [], "Deform": [], "Simulate": []}
+
+for item, cat in zip(mods, mdict):
+    for mod in enum_rna[enum_rna.find(item):]:
+        mod_id = mod.identifier
+        # Delimit at next item in mods
+        if mod_id != item and mod_id in mods[mods.index(item):]:
+            break
+        mdict[cat].append((mod_id, mod.name, mod.icon))
+
+# There's an invalid entry called Surface at the end of "Simulate" category. 
+# It's a duplicate of Simple Deform so we remove it.
+if mdict["Simulate"] and mdict["Simulate"][-1][0] == "SURFACE":
+    del mdict["Simulate"][-1]
+
+class VIEW3D_MT_add_modifier_mbt(bpy.types.Menu):
+    bl_label = ""
+    def draw(self, context):
+        layout = self.layout
+        split = layout.split()
+        for cat, mods in mdict.items():
+            col = split.column()
+            col.label(text=cat)
+            for idx, name, icon in mods:
+                col.operator("tpc_ot.modifier_add", text=name, icon=icon).mod_list = idx
+
 # REGISTER #
 classes = (
+    VIEW3D_MT_add_modifier_mbt,
+    VIEW3D_OT_modifier_add_mbt,
     VIEW3D_OT_execute_direct,
-    VIEW3D_OT_modifier_add,
     VIEW3D_OT_modifier_by_type,
     VIEW3D_OT_clear_string,
     VIEW3D_OT_reset_all,
@@ -499,6 +540,9 @@ classes = (
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
+  
+    #bpy.ops.wm.call_menu(name="VIEW3D_MT_tpc_add_modifier")
+
 
 def unregister():
     for cls in reversed(classes):

@@ -253,7 +253,7 @@ class VIEW3D_PT_modifier_by_type_panel_ui(bpy.types.Panel):
                 box.separator()
 
                 row = box.row(align=True)
-                row.operator_menu_enum("tpc_ot.modifier_add","mod_list", icon='ADD')
+                row.label(text="No Modifier available!", icon='INFO')
               
                 box.separator()
 
@@ -261,7 +261,7 @@ class VIEW3D_PT_modifier_by_type_panel_ui(bpy.types.Panel):
             col = layout.row(align=True)
             col.scale_y = 0.85
             if global_props.mod_list_stack == False:
-                col.operator_menu_enum("tpc_ot.modifier_add","mod_list", text="", icon='ADD')
+                col.menu("VIEW3D_MT_add_modifier_mbt", text="", icon='ADD')
             if len(bpy.context.selected_objects) > 1:
                 #col.operator("tpc_ot.modifier_copy", text="", icon="PASTEFLIPDOWN")
                 col.operator("tpc_ot.modifier_copy", text="", icon="PASTEFLIPDOWN")
@@ -316,7 +316,7 @@ class VIEW3D_PT_modifier_by_type_panel_ui(bpy.types.Panel):
                         layout.separator()
                        
                         row = layout.row(align=True)
-                        row.operator_menu_enum("tpc_ot.modifier_add","mod_list", icon='ADD')
+                        row.menu("VIEW3D_MT_add_modifier_mbt", text="Modifier to Selected", icon='ADD')                        
                         row.operator('wm.toggle_all_show_expanded', icon='FULLSCREEN_ENTER', text="")
                         
                         layout.separator()
@@ -324,7 +324,7 @@ class VIEW3D_PT_modifier_by_type_panel_ui(bpy.types.Panel):
                     else:
                         
                         layout.separator()
-                        layout.label(text="No modifier on active!")
+                        row.label(text="No Modifier in the stack!", icon='INFO')
                         layout.separator()
                                 
                     ob = context.object
