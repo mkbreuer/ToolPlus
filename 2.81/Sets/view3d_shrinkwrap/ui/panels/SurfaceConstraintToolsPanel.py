@@ -30,6 +30,8 @@ from ..layouts.smooth_vertices.smooth_vertices_ui import (
 
 from .. utils.registration import get_path
 
+
+
 class SurfaceConstraintToolsPanel(bpy.types.Panel):
     bl_category = "Retopology"
     bl_idname = "VIEW3D_PT_surface_constraint_tools"
@@ -41,6 +43,7 @@ class SurfaceConstraintToolsPanel(bpy.types.Panel):
     def poll(cls, context):
         return context.mode in {'EDIT_CURVE','EDIT_MESH', 'OBJECT'}
 
+ 
     def draw(self, context):
         layout = self.layout
         layout.operator_context = 'INVOKE_REGION_WIN'

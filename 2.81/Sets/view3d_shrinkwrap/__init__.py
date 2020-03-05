@@ -21,7 +21,7 @@
 bl_info = {
     "name": "Surface Constraint Tools",
     "author": "Brett Fedack (Umdee) / Contribution by Vladimir Spivak (cwolf3d), Jose Conseco, Marvin.K.Breuer (MKB)",
-    "version": (2, 3),
+    "version": (2, 4),
     "blender": (2, 81, 0),
     "location": "3D View > Tool Shelf > Surface Constraint Tools",
     "description": "A collection of tools for modeling on the surface of another mesh",

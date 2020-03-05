@@ -38,7 +38,7 @@ class MeshBrush(bpy.types.Operator):
     def poll(cls, context):
         # An active mesh object with polygons in Edit mode is required, and the
         # operator is only valid in a 'VIEW_3D' space.
-        active_object = context.active_object
+        active_object = context.active_object        
         return (
             active_object and
             active_object.type == 'MESH' and
@@ -96,7 +96,7 @@ class MeshBrush(bpy.types.Operator):
         pass
 
     def finish(self):
-        active_object = bpy.context.active_object
+        active_object = bpy.context.active_object        
         props = self.props
 
         # Remove the draw callback handle.
@@ -125,7 +125,8 @@ class MeshBrush(bpy.types.Operator):
         # necessary.
         if props.selection_is_isolated and self.selection_is_isolatable:
             # Reveal the hidden mesh object.
-            self.hidden_portion.hide.hide_set(False)
+            self.hidden_portion.hide_set(False)
+            bpy.data.objects[self.hidden_portion.name].select_set(True) 
 
             # Rejoin the separate mesh objects into one.
             bpy.ops.object.join()
@@ -174,8 +175,7 @@ class MeshBrush(bpy.types.Operator):
 
     def invoke(self, context, event):
         props = self.props
-        octree = props.octree
-
+        octree = props.octree        
         active_object = context.active_object
         modifiers = active_object.modifiers
         polygons = active_object.data.polygons
@@ -245,7 +245,7 @@ class MeshBrush(bpy.types.Operator):
 
                 # Create a vertex group, and assign it to the selected indices.
                 self.selected_indices =\
-                    active_object.vertex_groups.new("Selected Indices")
+                    active_object.vertex_groups.new(name="Selected Indices")
                 bpy.ops.object.vertex_group_assign()
 
                 # Record the state of the mesh selection mode, and force face
@@ -260,7 +260,7 @@ class MeshBrush(bpy.types.Operator):
                 # Create a vertex group, and assign it to the unselected faces.
                 bpy.ops.mesh.select_all(action = 'INVERT')
                 self.unselected_faces =\
-                    active_object.vertex_groups.new("Unselected Faces")
+                    active_object.vertex_groups.new(name="Unselected Faces")
                 bpy.ops.object.vertex_group_assign()
 
                 # Separate the active mesh object into two objects containing
@@ -271,7 +271,7 @@ class MeshBrush(bpy.types.Operator):
                     set(context.selected_objects).difference(selected).pop()
                 self.hidden_portion.name =\
                     "{0} (Hidden)".format(active_object.name)
-                self.hidden_portion.hide = True
+                self.hidden_portion.hide_set(True)
 
                 # Now, the only vertices that remain in the active mesh
                 # object's active vertex group are those that were along the
@@ -441,7 +441,7 @@ class MeshBrush(bpy.types.Operator):
         return {'RUNNING_MODAL'}
 
     def move_brush(self, region_x, region_y):
-        context = bpy.context
+        context = bpy.context        
         active_object = context.active_object
         props = self.props
         brushes = props.brushes 
@@ -474,7 +474,7 @@ class MeshBrush(bpy.types.Operator):
         # Execute a redo operation if at least one redoable stroke exists in
         # the stack.
         if redo_stack:
-            active_object = bpy.context.active_object
+            active_object = bpy.context.active_object            
             octree = props.octree
             vertices = active_object.data.vertices
 
@@ -508,7 +508,7 @@ class MeshBrush(bpy.types.Operator):
         # Execute an undo operation if at least one undoable stroke exists in
         # the stack.
         if undo_stack:
-            active_object = bpy.context.active_object
+            active_object = bpy.context.active_object            
             octree = props.octree
             vertices = active_object.data.vertices
 
