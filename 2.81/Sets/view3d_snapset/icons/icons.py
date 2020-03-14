@@ -36,6 +36,7 @@ def load_icons():
 
     mkb_icons.load("icon_snap_center", os.path.join(icons_dir, "snap_center.png"), 'IMAGE')
     mkb_icons.load("icon_snap_perpendic", os.path.join(icons_dir, "snap_perpendic.png"), 'IMAGE')
+    mkb_icons.load("icon_snap_pcursor", os.path.join(icons_dir, "snap_pcursor.png"), 'IMAGE')
 
     mkb_icons.load("icon_snap_custom", os.path.join(icons_dir, "snap_custom.png"), 'IMAGE')
 

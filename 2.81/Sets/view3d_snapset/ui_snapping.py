@@ -18,6 +18,7 @@ def draw_snapset_snapping_layout(self, context):
     icon_snap_active = icons.get("icon_snap_active")  
     icon_snap_center = icons.get("icon_snap_center")
     icon_snap_perpendic = icons.get("icon_snap_perpendic")    
+    icon_snap_pcursor = icons.get("icon_snap_pcursor")  
     icon_snap_custom = icons.get("icon_snap_custom")   
     
     addon_prefs = get_addon_prefs()
@@ -36,6 +37,7 @@ def draw_snapset_snapping_layout(self, context):
         tx_snapset_retopo    = addon_prefs.name_btf
         tx_snapset_center    = addon_prefs.name_btg
         tx_snapset_perpendic = addon_prefs.name_bth
+        tx_snapset_pcursor   = addon_prefs.name_bti
         tx_snapset_custom    = addon_prefs.name_btM
   
         tx_snapset_gridm      = "Grid*"
@@ -43,6 +45,7 @@ def draw_snapset_snapping_layout(self, context):
         tx_snapset_retopom    = "Retopo*"
         tx_snapset_centerm    = "MidPoint*"
         tx_snapset_perpendicm = "Perpendic*"
+        tx_snapset_pcursorm   = "PlaceCursor*"  
         tx_snapset_customM    = "Custom*"
 
     else:  
@@ -55,6 +58,7 @@ def draw_snapset_snapping_layout(self, context):
         tx_snapset_retopo    = " "                  
         tx_snapset_center    = " "
         tx_snapset_perpendic = " "   
+        tx_snapset_pcursor   = " "  
         tx_snapset_custom    = " "   
 
         tx_snapset_gridm      = " "
@@ -62,6 +66,7 @@ def draw_snapset_snapping_layout(self, context):
         tx_snapset_retopom    = " "
         tx_snapset_centerm    = " "
         tx_snapset_perpendicm = " "
+        tx_snapset_pcursorm   = " "   
         tx_snapset_custoM     = " "
 
 
@@ -155,12 +160,12 @@ def draw_snapset_snapping_layout(self, context):
         else:      
             row.operator("tpc_ot.snapset_button_h", text=tx_snapset_perpendic, icon_value=icon_snap_perpendic.icon_id) 
 
-    if addon_prefs.tpc_use_custom_snapping == True: 
-        if addon_prefs.use_internal_icon_btM == True: 
-            row.operator("preferences.addon_show", text=tx_snapset_custom, icon="LAYER_USED").module="view3d_snapset"                
-        else:
-            row.operator("preferences.addon_show", text=tx_snapset_custom, icon="LAYER_USED").module="view3d_snapset"
- 
+    if addon_prefs.tpc_use_pcursor_snapping == True:
+        if addon_prefs.use_internal_icon_bti == True:     
+            row.operator("tpc_ot.place_cursor", text=tx_snapset_pcursor, icon=addon_prefs.icon_bti) 
+        else:             
+            row.operator("tpc_ot.place_cursor", text=tx_snapset_pcursor, icon_value=icon_snap_pcursor.icon_id) 
+
 
     
     # HIDDEN MODAL BUTTONS #
@@ -232,9 +237,9 @@ def draw_snapset_snapping(self, context):
     
     if addon_prefs.toggle_snapping_type in ['buttons', 'icons']: 
        
-        row = layout.column(align=True)
+        row = layout.row(align=True)
         row.label(text="SnapSet")
-       
+        row.operator("preferences.addon_show", text='', icon="LAYER_USED", emboss=False).module="view3d_snapset" 
         draw_snapset_snapping_layout(self, context)
 
     else:

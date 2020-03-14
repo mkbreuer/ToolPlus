@@ -5,7 +5,7 @@ from bpy.props import*
 
 
 class VIEW3D_OT_snapset_button_A(bpy.types.Operator):
-    """Snap to Button A Snap Settings"""
+    """Default Snap Grid > Button A Settings"""
     bl_idname = "tpc_ot.snapset_button_a"
     bl_label = "Snap Button A..."
     bl_options = {'REGISTER', 'UNDO'}
@@ -35,7 +35,7 @@ class VIEW3D_OT_snapset_button_A(bpy.types.Operator):
 
 
 class VIEW3D_OT_snapset_button_B(bpy.types.Operator):
-    """Snap to Button B Snap Settings"""
+    """Default Snap Place > Button B Settings"""
     bl_idname = "tpc_ot.snapset_button_b"
     bl_label = "Snap Button B..."
     bl_options = {'REGISTER', 'UNDO'}
@@ -65,7 +65,7 @@ class VIEW3D_OT_snapset_button_B(bpy.types.Operator):
 
 
 class VIEW3D_OT_snapset_button_C(bpy.types.Operator):
-    """Snap to Button C Snap Settings"""
+    """Default Snap Cursor > Button C Settings"""
     bl_idname = "tpc_ot.snapset_button_c"
     bl_label = "Snap Button C..."
     bl_options = {'REGISTER', 'UNDO'}
@@ -95,7 +95,7 @@ class VIEW3D_OT_snapset_button_C(bpy.types.Operator):
 
 
 class VIEW3D_OT_snapset_button_D(bpy.types.Operator):
-    """Snap to Button D Snap Settings"""
+    """Default Snap Active > Button D Settings"""
     bl_idname = "tpc_ot.snapset_button_d"
     bl_label = "Snap Button D..."
     bl_options = {'REGISTER', 'UNDO'}
@@ -125,7 +125,7 @@ class VIEW3D_OT_snapset_button_D(bpy.types.Operator):
 
 
 class VIEW3D_OT_snapset_button_E(bpy.types.Operator):
-    """Snap to Button E Snap Settings"""
+    """Default Snap Closest > Button E Settings"""
     bl_idname = "tpc_ot.snapset_button_e"
     bl_label = "Snap Button E..."
     bl_options = {'REGISTER', 'UNDO'}
@@ -156,7 +156,7 @@ class VIEW3D_OT_snapset_button_E(bpy.types.Operator):
 
 
 class VIEW3D_OT_snapset_button_F(bpy.types.Operator):
-    """Snap to Button F Snap Settings"""
+    """Default Snap Retopo > Button F Settings"""
     bl_idname = "tpc_ot.snapset_button_f"
     bl_label = "Snap Button F..."
     bl_options = {'REGISTER', 'UNDO'}
@@ -187,7 +187,7 @@ class VIEW3D_OT_snapset_button_F(bpy.types.Operator):
 
 
 class VIEW3D_OT_snapset_button_G(bpy.types.Operator):
-    """Snap to Button G Snap Settings"""
+    """Default Snap MidPoint > Button G Settings"""
     bl_idname = "tpc_ot.snapset_button_g"
     bl_label = "Snap Button G..."
     bl_options = {'REGISTER', 'UNDO'}
@@ -217,7 +217,7 @@ class VIEW3D_OT_snapset_button_G(bpy.types.Operator):
 
 
 class VIEW3D_OT_snapset_button_H(bpy.types.Operator):
-    """Snap to Button H Snap Settings"""
+    """Default Snap Perpendic > Button H Settings"""
     bl_idname = "tpc_ot.snapset_button_h"
     bl_label = "Snap Button H..."
     bl_options = {'REGISTER', 'UNDO'}

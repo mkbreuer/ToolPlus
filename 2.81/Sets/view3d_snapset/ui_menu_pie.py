@@ -191,6 +191,108 @@ class VIEW3D_MT_snapset_menu_pie(bpy.types.Menu):
                 
                     box.separator() 
 
+                    
+                    # cursor copy
+                    if addon_prefs.toggle_align_tools_compact == False:  
+                        row = box.row(align = False)
+                        row.label(text="Cursor Rotation:")
+                        row = box.column_flow(columns=4, align=True)
+                    else:
+                        row = box.column_flow(columns=5, align=True)                        
+                        row.label(text="CRot:")
+                        
+                    props = row.operator("tpc_ot.cursor_copy", text="X")
+                    props.copy_rot = False
+                    props.copy_rot_x = True
+                    props.copy_rot_y = False
+                    props.copy_rot_z = False
+                    props.copy_loc = False
+                    props.copy_loc_x = False
+                    props.copy_loc_y = False
+                    props.copy_loc_z = False
+                    
+                    props = row.operator("tpc_ot.cursor_copy", text="Y")
+                    props.copy_rot = False
+                    props.copy_rot_x = False
+                    props.copy_rot_y = True
+                    props.copy_rot_z = False                    
+                    props.copy_loc = False
+                    props.copy_loc_x = False
+                    props.copy_loc_y = False
+                    props.copy_loc_z = False
+                    
+                    props = row.operator("tpc_ot.cursor_copy", text="Z")
+                    props.copy_rot = False
+                    props.copy_rot_x = False
+                    props.copy_rot_y = False
+                    props.copy_rot_z = True                       
+                    props.copy_loc = False
+                    props.copy_loc_x = False
+                    props.copy_loc_y = False
+                    props.copy_loc_z = False
+                    
+                    props = row.operator("tpc_ot.cursor_copy", text="All")
+                    props.copy_rot = True
+                    props.copy_rot_x = False
+                    props.copy_rot_y = False
+                    props.copy_rot_z = False    
+                    props.copy_loc = False
+                    props.copy_loc_x = False
+                    props.copy_loc_y = False
+                    props.copy_loc_z = False
+              
+              
+                    if addon_prefs.toggle_align_tools_compact == False:  
+                        row = box.row(align = False)
+                        row.label(text="Cursor Location:")
+                        row = box.column_flow(columns=4, align=True)
+                    else:
+                        row = box.column_flow(columns=5, align=True)                        
+                        row.label(text="CLoc:")              
+
+                    props = row.operator("tpc_ot.cursor_copy", text="X")
+                    props.copy_rot = False
+                    props.copy_rot_x = False
+                    props.copy_rot_y = False
+                    props.copy_rot_z = False
+                    props.copy_loc = False
+                    props.copy_loc_x = True
+                    props.copy_loc_y = False
+                    props.copy_loc_z = False
+                    
+                    props = row.operator("tpc_ot.cursor_copy", text="Y")
+                    props.copy_rot = False
+                    props.copy_rot_x = False
+                    props.copy_rot_y = False
+                    props.copy_rot_z = False
+                    props.copy_loc = False
+                    props.copy_loc_x = False
+                    props.copy_loc_y = True
+                    props.copy_loc_z = False                    
+                    
+                    props = row.operator("tpc_ot.cursor_copy", text="Z")
+                    props.copy_rot = False
+                    props.copy_rot_x = False
+                    props.copy_rot_y = False
+                    props.copy_rot_z = False
+                    props.copy_loc = False
+                    props.copy_loc_x = False
+                    props.copy_loc_y = False
+                    props.copy_loc_z = True                       
+                    
+                    props = row.operator("tpc_ot.cursor_copy", text="All")
+                    props.copy_rot = False
+                    props.copy_rot_x = False
+                    props.copy_rot_y = False
+                    props.copy_rot_z = False
+                    props.copy_loc = True
+                    props.copy_loc_x = False
+                    props.copy_loc_y = False
+                    props.copy_loc_z = False    
+              
+                    box.separator() 
+
+
                     if addon_prefs.toggle_align_tools_compact == False:  
                         row = box.row(align = True)
                         row.label(text="Align Tools:")
@@ -200,8 +302,14 @@ class VIEW3D_MT_snapset_menu_pie(bpy.types.Menu):
                         row.operator("object.align_tools", text="Advanced")
                     else:
                         row.label(text="No Selection!")                                  
-                    row.operator("object.align", text="Loc + Rot: XYZ")
-                  
+                    row.operator("object.align", text="Loc+Rot XYZ")
+
+                    if addon_prefs.tpc_use_pcursor_pie == True:
+                        if addon_prefs.use_internal_icon_bti == True:     
+                            row.operator("tpc_ot.place_cursor_modal", text=addon_prefs.name_bti, icon=addon_prefs.icon_bti) 
+                        else:       
+                            icon_snap_pcursor = icons.get("icon_snap_pcursor")           
+                            row.operator("tpc_ot.place_cursor_modal", text=addon_prefs.name_bti, icon_value=icon_snap_pcursor.icon_id) 
 
                     if addon_prefs.toggle_mirror_func == True:                         
 

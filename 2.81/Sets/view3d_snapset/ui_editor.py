@@ -32,6 +32,7 @@ def draw_snapset_item_editor(self, context):
     icon_snap_active = icons.get("icon_snap_active")  
     icon_snap_center = icons.get("icon_snap_center")
     icon_snap_perpendic = icons.get("icon_snap_perpendic")   
+    icon_snap_pcursor = icons.get("icon_snap_pcursor") 
 
     # layout spacer
     if addon_prefs.toggle_editor_separator_prepend == True:
@@ -54,13 +55,15 @@ def draw_snapset_item_editor(self, context):
                 tx_snapset_retopo    = ""
                 tx_snapset_center    = ""
                 tx_snapset_perpendic = ""              
-
+                tx_snapset_pcursor   = ""
+                
                 tx_snapset_gridm      = ""
                 tx_snapset_placem     = ""
                 tx_snapset_retopom    = ""
                 tx_snapset_centerm    = ""
                 tx_snapset_perpendicm = ""
-
+                tx_snapset_pcursorm   = ""
+          
             else:
             
                 # for x scale
@@ -72,13 +75,14 @@ def draw_snapset_item_editor(self, context):
                 tx_snapset_retopo    = " "                  
                 tx_snapset_center    = " "
                 tx_snapset_perpendic = " "   
-     
+                tx_snapset_pcursor   = ""     
+             
                 tx_snapset_gridm      = " "
                 tx_snapset_placem     = " "
                 tx_snapset_retopom    = " "  
                 tx_snapset_centerm    = " "
                 tx_snapset_perpendicm = " "
-     
+                tx_snapset_pcursorm   = ""     
 
         if addon_prefs.toggle_editor_menu_name in ['namend', 'both']:  
             
@@ -90,12 +94,14 @@ def draw_snapset_item_editor(self, context):
             tx_snapset_retopo    = addon_prefs.name_btf
             tx_snapset_center    = addon_prefs.name_btg
             tx_snapset_perpendic = addon_prefs.name_bth
+            tx_snapset_pcursor   = addon_prefs.name_bti
 
             tx_snapset_gridm      = "Grid*"
             tx_snapset_placem     = "Place*"
             tx_snapset_retopom    = "Retopo*"
             tx_snapset_centerm    = "MidPoint*"
             tx_snapset_perpendicm = "Perpendic*"
+            tx_snapset_pcursorm   = "PlaceCursor*"
 
                       
         if addon_prefs.tpc_use_grid_editor == True:           
@@ -177,6 +183,16 @@ def draw_snapset_item_editor(self, context):
                     row.operator("tpc_ot.snapset_button_h", text=tx_snapset_perpendic, icon_value=icon_snap_perpendic.icon_id) 
 
 
+        if addon_prefs.tpc_use_pcursor_editor == True:
+            if addon_prefs.toggle_editor_menu_name == 'namend': 
+                row.operator("tpc_ot.place_cursor", text=tx_snapset_pcursor)
+            else:
+                if addon_prefs.use_internal_icon_bti == True:     
+                    row.operator("tpc_ot.place_cursor", text=tx_snapset_pcursor, icon=addon_prefs.icon_bti) 
+                else:       
+                    row.operator("tpc_ot.place_cursor", text=tx_snapset_pcursor, icon_value=icon_snap_pcursor.icon_id) 
+
+
      
         # MODAL BUTTONS #
         if addon_prefs.tpc_use_grid_modal_editor == True:
@@ -209,6 +225,14 @@ def draw_snapset_item_editor(self, context):
                 row.operator("tpc_ot.snapset_modal", text=tx_snapset_perpendicm).mode = "PERPENDICULAR"
             else:
                 row.operator("tpc_ot.snapset_modal", text=tx_snapset_perpendicm, icon_value=icon_snap_perpendic.icon_id).mode = "PERPENDICULAR"  
+
+        if addon_prefs.tpc_use_pcursor_modal_editor == True:
+            if addon_prefs.toggle_editor_menu_name == 'namend': 
+                row.operator("tpc_ot.place_cursor_modal", text=tx_snapset_pcursorm)
+            else:      
+                row.operator("tpc_ot.place_cursor_modal", text=tx_snapset_pcursorm, icon_value=icon_snap_pcursor.icon_id) 
+
+
 
 
     # USE PANEL #

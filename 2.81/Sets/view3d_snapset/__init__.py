@@ -23,12 +23,12 @@
 bl_info = {
     "name": "SnapSet",
     "author": "marvin.k.breuer (MKB)",
-    "version": (0, 2, 9),
+    "version": (0, 3, 1),
     "blender": (2, 81, 0),
     "location": "3D View > Sidebar [N], Menu [SHIFT+W], Special Menu [W], Shortcut [F], in Header and Snap Settings",
     "description": "full customizable buttons for snapping task",
     "warning": "",
-    "wiki_url": "https://github.com/mkbreuer/ToolPlus",
+    "wiki_url": "https://github.com/mkbreuer/view3d_snapset",
     "category": "3D View",
 }
 
@@ -120,11 +120,9 @@ def update_snapset(self, context):
         bpy.types.VIEW3D_MT_edit_mesh_context_menu.remove(draw_snapset_item_special)  
         bpy.types.VIEW3D_MT_edit_curve_context_menu.remove(draw_snapset_item_special)  
         bpy.types.VIEW3D_MT_armature_context_menu.remove(draw_snapset_item_special)  
-        bpy.types.VIEW3D_MT_particle_context_menu.remove(draw_snapset_item_special)  
-
-        bpy.types.VIEW3D_PT_snapping.remove(draw_snapset_snapping)   
-        
+        bpy.types.VIEW3D_MT_particle_context_menu.remove(draw_snapset_item_special)         
         bpy.types.VIEW3D_MT_editor_menus.remove(draw_snapset_item_editor) 
+        bpy.types.VIEW3D_PT_snapping.remove(draw_snapset_snapping)    
 
     except RuntimeError:
         pass
@@ -153,17 +151,6 @@ def update_snapset(self, context):
             bpy.types.VIEW3D_MT_armature_context_menu.prepend(draw_snapset_item_special)  
             bpy.types.VIEW3D_MT_particle_context_menu.prepend(draw_snapset_item_special)  
 
-    if addon_prefs.toggle_special_menu == False:  
-        return None
-
-
-    # SNAPPING SETTING #  
-    if addon_prefs.toggle_snapping_menu == True:
-        bpy.types.VIEW3D_PT_snapping.prepend(draw_snapset_snapping)
-
-    if addon_prefs.toggle_snapping_menu == False:
-        return None
-
 
     # EDITOR MENUS #    
     if addon_prefs.toggle_editor_menu == True:  
@@ -173,24 +160,16 @@ def update_snapset(self, context):
             # ADD TO MENUS: TOP #
             if addon_prefs.toggle_view_type == 'editor': 
                 bpy.types.VIEW3D_MT_editor_menus.prepend(draw_snapset_item_editor) 
-            else:
-                return None
 
         if addon_prefs.toggle_editor_type == 'prepend':
 
             # ADD TO MENUS: BOTTOM #
             if addon_prefs.toggle_view_type == 'editor': 
                 bpy.types.VIEW3D_MT_editor_menus.append(draw_snapset_item_editor) 
-            else:
-                return None
 
-    if addon_prefs.toggle_editor_menu == False:  
-
-        if addon_prefs.toggle_view_type == 'editor': 
-            bpy.types.VIEW3D_MT_editor_menus.remove(draw_snapset_item_editor)  
-        else:
-            return None
-
+    # SNAPPING SETTING #  
+    if addon_prefs.toggle_snapping_menu == True:
+        bpy.types.VIEW3D_PT_snapping.prepend(draw_snapset_snapping)
 
 
 
@@ -308,6 +287,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     tpc_use_active_pie : BoolProperty(name= 'Snap Active', description = 'botton in menu', default=True)   
     tpc_use_center_pie : BoolProperty(name= 'Snap MidPoint', description = 'botton in menu', default=True)   
     tpc_use_perpendic_pie : BoolProperty(name= 'Snap Perpendic', description = 'botton in menu', default=True)   
+    tpc_use_pcursor_pie : BoolProperty(name= 'Snap PlaceCursor', description = 'botton in menu', default=True)   
     tpc_use_custom_pie : BoolProperty(name= 'Snap Custom', description = 'botton in menu', default=True)   
 
     tpc_use_grid_modal_pie : BoolProperty(name= 'Grid Modal*', description = 'botton in menu', default=True)   
@@ -315,6 +295,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     tpc_use_retopo_modal_pie : BoolProperty(name= 'Retopo Modal*', description = 'botton in menu', default=True)   
     tpc_use_center_modal_pie : BoolProperty(name= 'MidPoint Modal*', description = 'botton in menu', default=True)   
     tpc_use_perpendic_modal_pie : BoolProperty(name= 'Perpendic Modal*', description = 'botton in menu', default=True)   
+    tpc_use_pcursor_modal_pie : BoolProperty(name= 'PlaceCursor Modal*', description = 'botton in menu', default=True)   
     tpc_use_custom_modal_pie : BoolProperty(name= 'Custom Modal*', description = 'botton in menu', default=True)   
 
     tpc_use_settings_pie : BoolProperty(name= 'Settings', description = 'botton in panel', default=True)   
@@ -325,7 +306,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
 
     ui_scale_x_b1 : FloatProperty(name="Scale X", description="scale box in pie menu", default=1.10, min=0.00, max=2.00, precision=2)
     ui_scale_x_b2 : FloatProperty(name="Scale X", description="scale box in pie menu", default=1.02, min=0.00, max=2.00, precision=2)
-    ui_scale_x_b3 : FloatProperty(name="Scale X", description="scale box in pie menu", default=1.10, min=0.00, max=2.00, precision=2)
+    ui_scale_x_b3 : FloatProperty(name="Scale X", description="scale box in pie menu", default=1.05, min=0.00, max=2.00, precision=2)
     ui_scale_x_b4 : FloatProperty(name="Scale X", description="scale box in pie menu", default=0.65, min=0.00, max=2.00, precision=2)
     ui_scale_x_b5 : FloatProperty(name="Scale X", description="scale box in pie menu", default=0.65, min=0.00, max=2.00, precision=2)
     ui_scale_x_b6 : FloatProperty(name="Scale X", description="scale box in pie menu", default=0.65, min=0.00, max=2.00, precision=2)
@@ -400,6 +381,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     tpc_use_active_editor : BoolProperty(name= 'Snap Active', description = 'botton in menu', default=True)   
     tpc_use_center_editor : BoolProperty(name= 'Snap MidPoint', description = 'botton in menu', default=True)   
     tpc_use_perpendic_editor : BoolProperty(name= 'Snap Perpendic', description = 'botton in menu', default=True)   
+    tpc_use_pcursor_editor : BoolProperty(name= 'Snap PlaceCursor', description = 'botton in menu', default=True)   
     tpc_use_custom_editor : BoolProperty(name= 'Snap Custom', description = 'botton in menu', default=True)   
 
     tpc_use_grid_modal_editor : BoolProperty(name= 'Grid Modal*', description = 'botton in menu', default=True)   
@@ -407,6 +389,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     tpc_use_retopo_modal_editor : BoolProperty(name= 'Retopo Modal*', description = 'botton in menu', default=True)   
     tpc_use_center_modal_editor : BoolProperty(name= 'MidPoint Modal*', description = 'botton in menu', default=True)   
     tpc_use_perpendic_modal_editor : BoolProperty(name= 'Perpendic Modal*', description = 'botton in menu', default=True)   
+    tpc_use_pcursor_modal_editor : BoolProperty(name= 'PlaceCursor Modal*', description = 'botton in menu', default=True)   
     tpc_use_custom_modal_editor : BoolProperty(name= 'Custom Modal*', description = 'botton in menu', default=True)   
 
 
@@ -451,6 +434,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     tpc_use_closest_special : BoolProperty(name= 'Snap Closest', description = 'botton in menu', default=True)   
     tpc_use_active_special : BoolProperty(name= 'Snap Active', description = 'botton in menu', default=True)   
     tpc_use_center_special : BoolProperty(name= 'Snap MidPoint', description = 'botton in menu', default=True)   
+    tpc_use_pcursor_special : BoolProperty(name= 'Snap PlaceCursor', description = 'botton in menu', default=True)   
     tpc_use_perpendic_special : BoolProperty(name= 'Snap Perpendic', description = 'botton in menu', default=True)   
 
     tpc_use_separator_modal_special : BoolProperty(name= 'Separator', description = 'separator line in menu', default=True)   
@@ -461,6 +445,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     tpc_use_retopo_modal_special : BoolProperty(name= 'Retopo Modal*', description = 'botton in menu', default=True)   
     tpc_use_center_modal_special : BoolProperty(name= 'MidPoint Modal*', description = 'botton in menu', default=True)   
     tpc_use_perpendic_modal_special : BoolProperty(name= 'Perpendic Modal*', description = 'botton in menu', default=True)   
+    tpc_use_pcursor_modal_special : BoolProperty(name= 'PlaceCursor Modal*', description = 'botton in menu', default=True)   
     tpc_use_custom_modal_special : BoolProperty(name= 'Custom Modal*', description = 'botton in menu', default=True)   
 
     tpc_use_settings_special : BoolProperty(name= 'Settings', description = 'botton in panel', default=True)   
@@ -498,6 +483,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     tpc_use_active_snapping : BoolProperty(name= 'Snap Active', description = 'botton in menu', default=True)   
     tpc_use_center_snapping : BoolProperty(name= 'Snap Center', description = 'botton in menu', default=True)   
     tpc_use_perpendic_snapping : BoolProperty(name= 'Snap Perpendic', description = 'botton in menu', default=True)   
+    tpc_use_pcursor_snapping : BoolProperty(name= 'Snap PlaceCursor', description = 'botton in menu', default=True)   
     tpc_use_custom_snapping : BoolProperty(name= 'Snap Custom', description = 'botton in menu', default=True)   
 
     tpc_use_grid_modal_snapping : BoolProperty(name= 'Grid Modal*', description = 'botton in menu', default=True)   
@@ -505,6 +491,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     tpc_use_retopo_modal_snapping : BoolProperty(name= 'Retopo Modal*', description = 'botton in menu', default=True)   
     tpc_use_center_modal_snapping : BoolProperty(name= 'MidPoint Modal*', description = 'botton in menu', default=True)   
     tpc_use_perpendic_modal_snapping : BoolProperty(name= 'Perpendic Modal*', description = 'botton in menu', default=True)   
+    tpc_use_pcursor_modal_snapping : BoolProperty(name= 'PlaceCursor Modal*', description = 'botton in menu', default=True)   
     tpc_use_custom_modal_snapping : BoolProperty(name= 'Custom Modal*', description = 'botton in menu', default=True)   
 
     tpc_use_settings_snapping : BoolProperty(name= 'Settings', description = 'botton in panel', default=True)   
@@ -526,6 +513,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                ('button_f', 'Button F', 'button settings'),
                ('button_g', 'Button G', 'button settings'),
                ('button_h', 'Button H', 'button settings'),
+               ('button_i', 'Button I', 'button settings'),
                ('button_m', 'Custom M', 'button settings')),
         default='button_a')
 
@@ -537,6 +525,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     tpc_use_active : BoolProperty(name= 'Snap Active', description = 'botton in menu', default=True)   
     tpc_use_center : BoolProperty(name= 'Snap Center', description = 'botton in menu', default=True)   
     tpc_use_perpendic : BoolProperty(name= 'Snap Perpendic', description = 'botton in menu', default=True)   
+    tpc_use_pcursor : BoolProperty(name= 'Snap PlaceCursor', description = 'botton in menu', default=True)   
     tpc_use_custom : BoolProperty(name= 'Snap Custom', description = 'botton in menu', default=True)   
 
     tpc_use_grid_modal : BoolProperty(name= 'Grid Modal*', description = 'botton in menu', default=True)   
@@ -544,6 +533,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     tpc_use_retopo_modal : BoolProperty(name= 'Retopo Modal*', description = 'botton in menu', default=True)   
     tpc_use_center_modal : BoolProperty(name= 'MidPoint Modal*', description = 'botton in menu', default=True)   
     tpc_use_perpendic_modal : BoolProperty(name= 'Perpendic Modal*', description = 'botton in menu', default=True)   
+    tpc_use_pcursor_modal : BoolProperty(name= 'PlaceCursor Modal*', description = 'botton in menu', default=True)   
     tpc_use_custom_modal : BoolProperty(name= 'Custom Modal*', description = 'botton in menu', default=True)   
 
     tpc_use_grid_modal_panel : BoolProperty(name= 'Grid Modal*', description = 'botton in panel', default=True)   
@@ -551,6 +541,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     tpc_use_retopo_modal_panel : BoolProperty(name= 'Retopo Modal*', description = 'botton in panel', default=True) 
     tpc_use_center_modal_panel : BoolProperty(name= 'MidPoint Modal*', description = 'botton in panel', default=True)   
     tpc_use_perpendic_modal_panel : BoolProperty(name= 'Perpendic Modal*', description = 'botton in panel', default=True)   
+    tpc_use_pcursor_modal_panel : BoolProperty(name= 'PlaceCursor Modal*', description = 'botton in panel', default=True)   
     tpc_use_custom_modal_panel : BoolProperty(name= 'Custom Modal*', description = 'botton in panel', default=True)   
 
     toggle_snapset_add_tools : BoolProperty(name= 'Append hotkey to the preference keymap', description = 'append to keymap', default=False)   
@@ -986,6 +977,57 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
     prop_bth_scale : BoolProperty(name= 'Scale', description = '', default=False)  
 
     #----------------------------
+
+
+    # BUTTON I = PLACE 3D CURSOR #
+    name_bti : StringProperty(default="PlaceCursor") 
+    icon_bti : StringProperty(default="BLENDER") 
+    use_internal_icon_bti : BoolProperty(name= 'Internal Icon', description = '', default=False)  
+
+    prop_bti_pivot : EnumProperty(
+        name = 'Pivot Point', 
+        description = 'transform pivot point',
+        items=(('BOUNDING_BOX_CENTER',  'Bounding Box Center', 'transform pivot point'), 
+               ('CURSOR',               'Cursor',              'transform pivot point'), 
+               ('INDIVIDUAL_ORIGINS',   'Individual Orign',    'transform pivot point'), 
+               ('MEDIAN_POINT',         'Median Point',        'transform pivot point'), 
+               ('ACTIVE_ELEMENT',       'Active Element',      'transform pivot point')), 
+        default='MEDIAN_POINT') 
+
+    prop_bti_use_pivot : BoolProperty(name= 'Origin Only', description = '', default=False)  
+
+    prop_bti_elements : EnumProperty(
+        name = 'Snap Elements', 
+        description = 'snap elements',
+        items=[('INCREMENT'          ,'Increment'           ,'snap elements'), 
+               ('VERTEX'             ,'Vertex'              ,'snap elements'), 
+               ('EDGE'               ,'Edge'                ,'snap elements'), 
+               ('FACE'               ,'Face'                ,'snap elements'), 
+               ('VOLUME'             ,'Volume'              ,'snap elements'), 
+               ("EDGE_MIDPOINT"      ,"Edge MidPoint"       ,"snap elements"),
+               ("EDGE_PERPENDICULAR" ,"Edge Perpendicular"  ,"snap elements")],
+        default='FACE') 
+
+    prop_bti_target : EnumProperty(
+        name = 'Snap Target', 
+        description = 'snap target',
+        items=(('CLOSEST', 'Closest', 'snap target'), 
+               ('CENTER',  'Center',  'snap target'), 
+               ('MEDIAN',  'Median',  'snap target'), 
+               ('ACTIVE',  'Active',  'snap target')), 
+        default='MEDIAN') 
+
+    prop_bti_absolute_grid : BoolProperty(name= 'Absolute Grid Snap', description = '', default=False)  
+    prop_bti_snap_self : BoolProperty(name= 'Project onto Self', description = '', default=False)  
+    prop_bti_align_rotation : BoolProperty(name= 'Align Rotation to Target', description = '', default=True)  
+    prop_bti_project : BoolProperty(name= 'Project Individual Elements', description = '', default=False)  
+    prop_bti_peel_object : BoolProperty(name= 'Snap Peel Object', description = '', default=False)  
+    
+    prop_bti_translate : BoolProperty(name= 'Move', description = '', default=True)  
+    prop_bti_rotation : BoolProperty(name= 'Rotation', description = '', default=False)  
+    prop_bti_scale : BoolProperty(name= 'Scale', description = '', default=False)  
+
+    #----------------------------
     
 
     # BUTTON MODAL = HOTKEY = PLACE #
@@ -1191,6 +1233,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 icon_snap_retopo = icons.get("icon_snap_retopo")
                 icon_snap_center = icons.get("icon_snap_center")          
                 icon_snap_perpendic = icons.get("icon_snap_perpendic")
+                icon_snap_pcursor = icons.get("icon_snap_pcursor")  
                 icon_snap_custom = icons.get("icon_snap_custom")    
 
                 if snap_global.toggle_special_buttons == True:     
@@ -1265,6 +1308,14 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                     row.prop(self, "tpc_use_perpendic_special", text='')                        
                     row.label(text="Perpendic", icon_value=icon_snap_perpendic.icon_id) 
                     row.label(text="> snap selected onto target")  
+                   
+                    box.separator()
+                   
+                    row = box.row(align=False)
+                    row.alignment = 'LEFT'
+                    row.prop(self, "tpc_use_pcursor_special", text='')           
+                    row.label(text="PlaceCursor", icon_value=icon_snap_pcursor.icon_id) 
+                    row.label(text="> place 3D cursor onto a surface target")   
 
                     if self.toggle_special_type_layout in ['column', 'switch']:
 
@@ -1325,6 +1376,14 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                     row.prop(self, "tpc_use_perpendic_modal_special", text='')                        
                     row.label(text="Perpendic*", icon_value=icon_snap_perpendic.icon_id) 
                     row.label(text="> snap selected onto target til release")  
+
+                    box.separator()           
+                   
+                    row = box.row(align=False)
+                    row.alignment = 'LEFT'
+                    row.prop(self, "tpc_use_pcursor_modal_special", text='')                        
+                    row.label(text="PlaceCursor*", icon_value=icon_snap_pcursor.icon_id) 
+                    row.label(text="> snap 3d cursor onto surface target til release")  
 
                     box.separator() 
                    
@@ -1429,6 +1488,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                     icon_snap_retopo = icons.get("icon_snap_retopo")
                     icon_snap_center = icons.get("icon_snap_center")          
                     icon_snap_perpendic = icons.get("icon_snap_perpendic")
+                    icon_snap_pcursor = icons.get("icon_snap_pcursor")  
                     icon_snap_custom = icons.get("icon_snap_custom")    
 
                     if snap_global.toggle_pie_buttons == True:     
@@ -1503,6 +1563,14 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                         row.prop(self, "tpc_use_perpendic_pie", text='')                        
                         row.label(text="Perpendic", icon_value=icon_snap_perpendic.icon_id) 
                         row.label(text="> snap selected onto target")  
+                  
+                        box.separator()            
+                       
+                        row = box.row(align=False)
+                        row.alignment = 'LEFT'
+                        row.prop(self, "tpc_use_pcursor_pie", text='')           
+                        row.label(text="PlaceCursor", icon_value=icon_snap_pcursor.icon_id) 
+                        row.label(text="> snap 3d cursor onto surface target")   
 
                         box.separator() 
                         box = layout.box().column(align=True)
@@ -1553,6 +1621,14 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                         row.label(text="Perpendic*", icon_value=icon_snap_perpendic.icon_id) 
                         row.label(text="> snap selected onto target til release")  
 
+                        box.separator() 
+                       
+                        row = box.row(align=False)
+                        row.alignment = 'LEFT'
+                        row.prop(self, "tpc_use_pcursor_pie", text='')           
+                        row.label(text="PlaceCursor*", icon_value=icon_snap_pcursor.icon_id) 
+                        row.label(text="> place 3d cursor onto a surface target")   
+                       
                         box.separator() 
                        
                         row = box.row(align=False)
@@ -1810,8 +1886,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                     icon_snap_retopo = icons.get("icon_snap_retopo")
                     icon_snap_center = icons.get("icon_snap_center")          
                     icon_snap_perpendic = icons.get("icon_snap_perpendic")
+                    icon_snap_pcursor = icons.get("icon_snap_pcursor")  
                     icon_snap_custom = icons.get("icon_snap_custom")    
-
 
                     if snap_global.toggle_editor_and_header_buttons == True:     
 
@@ -1887,7 +1963,14 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                         row.label(text="> snap selected onto target")  
 
                         box.separator() 
-
+                       
+                        row = box.row(align=False)
+                        row.alignment = 'LEFT'
+                        row.prop(self, "tpc_use_pcursor_editor", text='')           
+                        row.label(text="PlaceCursor", icon_value=icon_snap_pcursor.icon_id) 
+                        row.label(text="> place 3d cursor onto a surface")   
+                       
+                        box.separator() 
 
                         box = layout.box().column(align=True)
                         box.separator() 
@@ -2000,8 +2083,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 icon_snap_retopo = icons.get("icon_snap_retopo")
                 icon_snap_center = icons.get("icon_snap_center")          
                 icon_snap_perpendic = icons.get("icon_snap_perpendic")
+                icon_snap_pcursor = icons.get("icon_snap_pcursor")  
                 icon_snap_custom = icons.get("icon_snap_custom")    
-
 
                 if snap_global.toggle_snapping_buttons == True:     
 
@@ -2076,8 +2159,17 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                     row.label(text="Perpendic", icon_value=icon_snap_perpendic.icon_id) 
                     row.label(text="> snap selected onto target")  
 
-                    box.separator() 
-                    
+                    box.separator()                     
+                   
+                    row = box.row(align=False)
+                    row.alignment = 'LEFT'
+                    row.prop(self, "tpc_use_pcursor_snapping", text='')           
+                    row.label(text="PlaceCursor", icon_value=icon_snap_pcursor.icon_id) 
+                    row.label(text="> place 3d cursor onto a surface")   
+                   
+                    box.separator()            
+    
+
                     # HIDDEN MODAL TOOLS
                     """
                     box = layout.box().column(align=True)
@@ -2200,9 +2292,15 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
             row = box.row(align=False)
             row.prop_enum(self, "toggle_button_type", "button_g", text="BT-G / MidPoint")
             row.prop_enum(self, "toggle_button_type", "button_h", text="BT-H / Perpendic")
-            row.prop_enum(self, "toggle_button_type", "button_m", text="Custom M / Key")
+            row.prop_enum(self, "toggle_button_type", "button_i", text="BT-I / PlaceCursor")
 
+            row = box.row(align=False)
+            row.prop_enum(self, "toggle_button_type", "button_m", text="Custom M / Key")
+            row.label(text=" ")  
+            row.label(text=" ")  
             
+            box.separator() 
+            box = layout.box().column(align=True)
             box.separator() 
 
             if self.toggle_button_type == 'button_a':
@@ -2218,6 +2316,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 row = box.row(align=False)                    
                 row.prop(self, "use_internal_icon_bta", text="Use Internal or Custom Icon")     
                 row.operator('wm.url_open', text = '', icon='BLENDER').url = "https://raw.githubusercontent.com/mkbreuer/ToolPlus/master/icons_sheets/blender_internal_icons_2.80.png"
+
+                box.separator()              
                     
                 row = box.row(align=False)                    
                 row.prop(self, "icon_bta", text="Icon Name")
@@ -2277,6 +2377,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 row = box.row(align=False)                    
                 row.prop(self, "use_internal_icon_btb", text="Use Internal or Custom Icon")     
                 row.operator('wm.url_open', text = '', icon='BLENDER').url = "https://raw.githubusercontent.com/mkbreuer/ToolPlus/master/icons_sheets/blender_internal_icons_2.80.png"
+
+                box.separator()              
                     
                 row = box.row(align=False)                    
                 row.prop(self, "icon_btb", text="Icon Name")
@@ -2336,6 +2438,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 row = box.row(align=False)                    
                 row.prop(self, "use_internal_icon_btc", text="Use Internal or Custom Icon")     
                 row.operator('wm.url_open', text = '', icon='BLENDER').url = "https://raw.githubusercontent.com/mkbreuer/ToolPlus/master/icons_sheets/blender_internal_icons_2.80.png"
+
+                box.separator()              
                             
                 row = box.row(align=False)                    
                 row.prop(self, "icon_btc", text="Icon Name")
@@ -2396,6 +2500,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 row.prop(self, "use_internal_icon_btd", text="Use Internal or Custom Icon")     
                 row.operator('wm.url_open', text = '', icon='BLENDER').url = "https://raw.githubusercontent.com/mkbreuer/ToolPlus/master/icons_sheets/blender_internal_icons_2.80.png"
                             
+                box.separator()              
+
                 row = box.row(align=False)                    
                 row.prop(self, "icon_btd", text="Icon Name")
                  
@@ -2454,6 +2560,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 row = box.row(align=False)                    
                 row.prop(self, "use_internal_icon_bte", text="Use Internal or Custom Icon")     
                 row.operator('wm.url_open', text = '', icon='BLENDER').url = "https://raw.githubusercontent.com/mkbreuer/ToolPlus/master/icons_sheets/blender_internal_icons_2.80.png"
+
+                box.separator()              
                             
                 row = box.row(align=False)                    
                 row.prop(self, "icon_bte", text="Icon Name")
@@ -2515,6 +2623,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 row.prop(self, "use_internal_icon_btf", text="Use Internal or Custom Icon")     
                 row.operator('wm.url_open', text = '', icon='BLENDER').url = "https://raw.githubusercontent.com/mkbreuer/ToolPlus/master/icons_sheets/blender_internal_icons_2.80.png"
                             
+                box.separator()              
+
                 row = box.row(align=False)                    
                 row.prop(self, "icon_btf", text="Icon Name")
                  
@@ -2573,8 +2683,10 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
 
                 row = box.row(align=False)                    
                 row.prop(self, "use_internal_icon_btg", text="Use Internal or Custom Icon")     
-                row.operator('wm.url_open', text = '', icon='BLENDER').url = "https://raw.githubusercontent.com/mkbreuer/ToolPlus/master/icons_sheets/blender_internal_icons_2.80.png"
-                            
+                row.operator('wm.url_open', text = '', icon='BLENDER').url = "https://raw.githubusercontent.com/mkbreuer/ToolPlus/master/icons_sheets/blender_internal_icons_2.80.png"                           
+
+                box.separator()              
+
                 row = box.row(align=False)                    
                 row.prop(self, "icon_btg", text="Icon Name")
                  
@@ -2633,6 +2745,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 row = box.row(align=False)                    
                 row.prop(self, "use_internal_icon_bth", text="Use Internal or Custom Icon")     
                 row.operator('wm.url_open', text = '', icon='BLENDER').url = "https://raw.githubusercontent.com/mkbreuer/ToolPlus/master/icons_sheets/blender_internal_icons_2.80.png"
+
+                box.separator()              
                             
                 row = box.row(align=False)                    
                 row.prop(self, "icon_bth", text="Icon Name")
@@ -2679,6 +2793,68 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 box.separator() 
 
 
+            if self.toggle_button_type == 'button_i':
+
+                box.separator() 
+
+                row = box.row(align=False)
+                row.prop(self, "name_bti", text="Custom Name")   
+ 
+                box.separator()              
+                box.separator()              
+
+                row = box.row(align=False)                    
+                row.prop(self, "use_internal_icon_bti", text="Use Internal or Custom Icon")     
+                row.operator('wm.url_open', text = '', icon='BLENDER').url = "https://raw.githubusercontent.com/mkbreuer/ToolPlus/master/icons_sheets/blender_internal_icons_2.80.png"
+
+                box.separator()              
+                            
+                row = box.row(align=False)                    
+                row.prop(self, "icon_bti", text="Icon Name")
+                 
+                box.separator() 
+                box.separator() 
+
+                row = box.column(align=False)
+                row.prop(self, "prop_bti_pivot")               
+                row.prop(self, "prop_bti_use_pivot")   
+
+                box.separator() 
+                
+                row = box.column(align=False)
+
+                row.prop(self, "prop_bti_target")  
+                row.prop(self, "prop_bti_elements")   
+     
+                box.separator() 
+                
+                row = box.column(align=False)
+
+                if self.prop_bti_elements == "INCREMENT":
+                    row.prop(self, "prop_bti_absolute_grid")  
+
+                else:
+                    row.prop(self, "prop_bti_snap_self", text ="Project onto Self / Editmode")  
+                
+                    row.prop(self, "prop_bti_align_rotation")  
+
+                    if self.prop_bti_elements == "FACE":
+                        row.prop(self, "pro_bti_project")  
+                   
+                    if self.prop_bti_elements == "VOLUME":
+                        row.prop(self, "prop_bti_peel_object")  
+         
+                box.separator() 
+
+                row = box.row(align=True)
+                row.prop(self, "prop_bti_translate")  
+                row.prop(self, "prop_bti_rotation")  
+                row.prop(self, "prop_bti_scale")  
+
+                box.separator() 
+
+
+
             if self.toggle_button_type == 'button_m':
              
                 box.separator()
@@ -2718,6 +2894,8 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 row = box.row(align=False)                    
                 row.prop(self, "use_internal_icon_btM", text="Use Internal or Custom Icon")     
                 row.operator('wm.url_open', text = '', icon='BLENDER').url = "https://raw.githubusercontent.com/mkbreuer/ToolPlus/master/icons_sheets/blender_internal_icons_2.80.png"
+
+                box.separator()              
                             
                 row = box.row(align=False)                    
                 row.prop(self, "icon_btM", text="Icon Name")
@@ -2796,7 +2974,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
             row = box.row(align=True)             
             row.prop(snap_global, 'toggle_keychange', text="", icon ="INFO")
             row.label(text="< Changing Shortcut Key !")
-            row.operator('wm.url_open', text="", icon='SCRIPT').url = "https://github.com/mkbreuer/Misc-Share-Archiv/blob/master/images/SHORTCUTS_Type%20of%20key%20event.png?raw=true"
+            row.operator('wm.url_open', text="", icon='SCRIPT').url = "https://docs.blender.org/api/2.80/bpy.types.Event.html"
                            
             box.separator()
            
@@ -2831,7 +3009,7 @@ class Addon_Preferences_Snapset(bpy.types.AddonPreferences):
                 row = box.row(align=True)  
                 row.label(text="", icon ="BLANK1")
                 row.operator("tpc_ot.keymap_snapset", text = 'Open KeyMap in Text Editor')
-                row.operator('wm.url_open', text = 'Type of Events').url = "https://docs.blender.org/api/blender_python_api_2_77_0/bpy.types.Event.html"
+                row.operator('wm.url_open', text = 'Type of Events').url = "https://docs.blender.org/api/2.80/bpy.types.Event.html"
  
                 box.separator()
 
@@ -2888,7 +3066,9 @@ classes = (
     VIEW3D_OT_align_tools,
     VIEW3D_OT_align_mesh,
     VIEW3D_OT_looptools,
-    VIEW3D_OT_3d_cursor_align,
+    VIEW3D_OT_3d_cursor_copy,
+    VIEW3D_OT_place_cursor,
+    VIEW3D_OT_place_cursor_modal,
     VIEW3D_OT_keymap_snapset,
     Addon_Preferences_Snapset,
     Global_Property_Group,

@@ -17,6 +17,7 @@ def draw_snapset_menu_ui(context, layout):
     icon_snap_active = icons.get("icon_snap_active")  
     icon_snap_center = icons.get("icon_snap_center")
     icon_snap_perpendic = icons.get("icon_snap_perpendic")    
+    icon_snap_pcursor = icons.get("icon_snap_pcursor") 
     icon_snap_custom = icons.get("icon_snap_custom")    
 
     addon_prefs = get_addon_prefs()
@@ -31,6 +32,7 @@ def draw_snapset_menu_ui(context, layout):
     tx_snapset_retopo    = addon_prefs.name_btf
     tx_snapset_center    = addon_prefs.name_btg
     tx_snapset_perpendic = addon_prefs.name_bth
+    tx_snapset_pcursor   = addon_prefs.name_bti
     tx_snapset_custom    = addon_prefs.name_btM
 
     tx_snapset_gridm      = "Grid*"
@@ -38,6 +40,7 @@ def draw_snapset_menu_ui(context, layout):
     tx_snapset_retopom    = "Retopo*"
     tx_snapset_centerm    = "MidPoint*"
     tx_snapset_perpendicm = "Perpendic*"
+    tx_snapset_pcursorm   = "PlaceCursor*"
     tx_snapset_customM    = "Custom*"
                   
 
@@ -133,6 +136,17 @@ def draw_snapset_menu_ui(context, layout):
                 else:          
                     row.operator("tpc_ot.snapset_button_h", text=tx_snapset_perpendic, icon_value=icon_snap_perpendic.icon_id) 
 
+        if addon_prefs.tpc_use_pcursor_special == True:
+            if addon_prefs.toggle_special_name == 'namend': 
+                row.operator("tpc_ot.place_cursor", text=tx_snapset_pcursor)
+            else:
+                if addon_prefs.use_internal_icon_bti == True:     
+                    row.operator("tpc_ot.place_cursor", text=tx_snapset_pcursor, icon=addon_prefs.icon_bti) 
+                else:       
+                    row.operator("tpc_ot.place_cursor", text=tx_snapset_pcursor, icon_value=icon_snap_pcursor.icon_id) 
+
+
+
 
         if addon_prefs.toggle_special_type_layout == 'flow': 
             row.label(text='')
@@ -171,8 +185,14 @@ def draw_snapset_menu_ui(context, layout):
             if addon_prefs.toggle_special_name == 'namend': 
                 row.operator("tpc_ot.snapset_modal", text=tx_snapset_perpendicm).mode = "PERPENDICULAR"
             else:
-                row.operator("tpc_ot.snapset_modal", text=tx_snapset_perpendicm, icon_value=icon_snap_perpendic.icon_id).mode = "PERPENDICULAR"  
-        
+                row.operator("tpc_ot.snapset_modal", text=tx_snapset_perpendicm, icon_value=icon_snap_perpendic.icon_id).mode = "PERPENDICULAR"                  
+
+        if addon_prefs.tpc_use_pcursor_modal_special == True:  
+            if addon_prefs.toggle_special_name == 'namend': 
+                row.operator("tpc_ot.place_cursor_modal", text=tx_snapset_pcursorm) 
+            else:
+                row.operator("tpc_ot.place_cursor_modal", text=tx_snapset_pcursorm, icon_value=icon_snap_pcursor.icon_id)
+       
         if addon_prefs.tpc_use_custom_modal_special == True:  
             if addon_prefs.toggle_special_name == 'namend': 
                 row.operator("tpc_ot.snapset_modal", text=tx_snapset_customM).mode = "CUSTOM"  
@@ -276,6 +296,16 @@ def draw_snapset_menu_ui(context, layout):
                         layout.operator("tpc_ot.snapset_button_h", text=tx_snapset_perpendic, icon=addon_prefs.icon_bth) 
                     else:          
                         layout.operator("tpc_ot.snapset_button_h", text=tx_snapset_perpendic, icon_value=icon_snap_perpendic.icon_id) 
+            
+            if addon_prefs.tpc_use_pcursor == True: 
+                if addon_prefs.toggle_special_name == 'namend': 
+                    layout.operator("tpc_ot.place_cursor", text=tx_snapset_pcursor)
+                else:
+                    if addon_prefs.use_internal_icon_bti == True:
+                        layout.operator("tpc_ot.place_cursor", text=tx_snapset_pcursor, icon=addon_prefs.icon_bti) 
+                    else:          
+                        layout.operator("tpc_ot.place_cursor", text=tx_snapset_pcursor, icon_value=icon_snap_pcursor.icon_id)   
+  
 
         else:
 
@@ -311,11 +341,19 @@ def draw_snapset_menu_ui(context, layout):
                 else:
                     layout.operator("tpc_ot.snapset_modal", text=tx_snapset_perpendicm, icon_value=icon_snap_perpendic.icon_id).mode = "PERPENDICULAR"  
 
+            if addon_prefs.tpc_use_pcursor_modal_special == True:  
+                if addon_prefs.toggle_special_name == 'namend': 
+                    layout.operator("tpc_ot.place_cursor_modal", text=tx_snapset_pcursorm) 
+                else:
+                    layout.operator("tpc_ot.place_cursor_modal", text=tx_snapset_pcursorm, icon_value=icon_snap_pcursor.icon_id)
+
             if addon_prefs.tpc_use_custom_modal == True:  
                 if addon_prefs.toggle_special_name == 'namend': 
                     layout.operator("tpc_ot.snapset_modal", text=tx_snapset_customM).mode = "CUSTOM"  
                 else:
                     layout.operator("tpc_ot.snapset_modal", text=tx_snapset_customM, icon_value=icon_snap_custom.icon_id).mode = "CUSTOM"  
+
+ 
 
         if addon_prefs.tpc_use_separator_settings_special == True:              
             layout.separator()
