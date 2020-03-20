@@ -10,6 +10,9 @@
    > go to the [wiki-page](https://github.com/mkbreuer/ToolPlus/wiki) for more information
 
 
+[![Watch the video](https://i.imgur.com/vKb2F1B.png)](https://github.com/mkbreuer/ToolPlus/blob/master/Stay_Healthy.mp4?raw=true)
+
+
 * This collections of free-to-use addons run under following licencens: [GNU General Public License](https://www.gnu.org/licenses/gpl-3.0.html) 
 
 * If you like this collections, consider to supporting my work and place a smile
