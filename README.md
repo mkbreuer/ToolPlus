@@ -4,7 +4,8 @@
 
    > complete collection: [ToolPlus-master.zip](https://github.com/mkbreuer/ToolPlus/archive/master.zip)
 
-   > separated set folder: [Zip Folder 2.79](https://github.com/mkbreuer/ToolPlus/tree/master/2.79/Sets/zip) / [Zip Folder 2.80](https://github.com/mkbreuer/ToolPlus/tree/master/2.80/Sets/zip)
+   > zip folder: [2.79](https://github.com/mkbreuer/ToolPlus/tree/master/2.79/Sets/zip) / [2.80](https://github.com/mkbreuer/ToolPlus/tree/master/2.80/Sets/zip) / [2.81](https://github.com/mkbreuer/ToolPlus/tree/master/2.81/Sets/zip) / [2.82](https://github.com/mkbreuer/ToolPlus/tree/master/2.82/Sets/zip)
+
 
    > go to the [wiki-page](https://github.com/mkbreuer/ToolPlus/wiki) for more information
 
@@ -13,11 +14,11 @@
 
 * If you like this collections, consider to supporting my work and place a smile
 
-*  [![Donate](https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/Images/donate_patreon.png)](https://www.patreon.com/tpc_mkbreuer)   :)
+*  [![Donate](https://raw.githubusercontent.com/mkbreuer/ToolPlus/master/references/donate/donate_patreon.png)](https://www.patreon.com/tpc_mkbreuer)   :)
 
-*  [![Donate](https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/Images/donate_pp.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WRL57AYRPWDAE&source=url)   :)
+*  [![Donate](https://raw.githubusercontent.com/mkbreuer/ToolPlus/master/references/donate/donate_pp.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WRL57AYRPWDAE&source=url)   :)
 
-*  [![Donate](https://raw.githubusercontent.com/mkbreuer/TP-Courier/master/Images/donate_gumroad_.png)](https://gumroad.com/l/tp_courier)   :)
+*  [![Donate](https://raw.githubusercontent.com/mkbreuer/ToolPlus/master/references/donate/donate_gumroad_.png)](https://gumroad.com/l/tp_courier)   :)
 
  <hr style="border: 4px solid blue;" />
 
