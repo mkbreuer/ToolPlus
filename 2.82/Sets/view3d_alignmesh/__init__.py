@@ -66,7 +66,7 @@ class VIEW3D_PT_align_mesh_panel_ui(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = 'Item'
-    bl_label = "ReAlign Mesh"
+    bl_label = "Align Mesh"
     bl_context = "mesh_edit"
     bl_options = {'DEFAULT_CLOSED'}
 
